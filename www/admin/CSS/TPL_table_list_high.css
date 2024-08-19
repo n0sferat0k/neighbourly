@@ -1,0 +1,170 @@
+form
+{
+	margin:0px;
+	padding:0px;
+}
+
+/*list*/
+
+.LIST_CONT
+{
+	padding-right:10px;
+}
+
+
+.TAB
+{
+	width:600px;
+	height:50px;
+	float:left;
+	clear:both;
+	
+	background-color:rgb(238,242,252);
+	margin-right:29px;
+	margin-bottom:1px;		
+	
+	overflow:hidden;
+}
+.TAB_TITLE
+{ 
+	width:220px;
+	float:left;	
+	
+	font-family:arial, verdana, tahoma;
+	font-size:13px;
+	font-weight:bold;
+	color:rgb(58,107,137);
+	text-align:left;
+	padding-left:10px;
+	line-height:30px;
+			
+}
+.TAB_IMG
+{
+	width:50px;
+	height:50px;
+	float:right;
+	
+	font-family:arial, verdana, tahoma;
+	font-size:9px;
+	font-weight:normal;
+	color:rgb(58,107,137);
+	text-align:left;
+	line-height:9px;				
+}
+.TAB_IMAGE
+{
+	max-width:50px;
+	max-height:50px;
+	float:left;
+}
+.TAB_OPS
+{
+	width:204px;
+	height:65px;
+	float:right;				
+}
+.TAB_OPS_INN
+{
+	width:200px;
+	height:46px;
+	float:left;	
+	background:white;
+    margin:2px;
+}
+.TAB_OPLINK_POS
+{
+ 	float:left;
+}
+.TAB_OPLINK
+{
+	font-family:arial, verdana, tahoma;
+	font-size:12px;
+	font-weight:normal;
+	color:rgb(58,107,137);
+	text-align:right;
+	text-indent:10px;
+	line-height:14px;
+	cursor:pointer;
+}
+.TAB_OPLINK_DEL
+{
+ 	height:15px;
+	width:80px;
+	font-family:arial, verdana, tahoma;
+	font-size:12px;
+	font-weight:normal;
+	color:rgb(58,107,137);
+	text-align:left;
+	text-indent:10px;
+	line-height:14px;
+	cursor:pointer;
+	text-indent:15px;
+	
+	background-image:url(../graphics/del.jpg);
+	background-position:top left;
+	background-repeat:no-repeat;
+	
+}
+.TAB_OPLINK_MODI
+{
+	height:15px;
+ 	width:80px;
+	font-family:arial, verdana, tahoma;
+	font-size:12px;
+	font-weight:normal;
+	color:rgb(58,107,137);
+	text-align:left;
+	text-indent:10px;
+	line-height:14px;
+	cursor:pointer;
+	text-indent:15px;	
+
+	background-image:url(../graphics/add.jpg);
+	background-position:top left;
+	background-repeat:no-repeat;		
+}
+.TAB_UPARROW
+{
+	width:10px;
+	height:10px;	
+	background-image:url(../graphics/UP.jpg);
+	
+	float:right;
+	margin-left:5px;
+	margin-top:5px;
+	
+	overflow:hidden;
+}
+.TAB_DOWNARROW
+{
+ 	width:10px;
+	height:10px;
+	background-image:url(../graphics/DOWN.jpg);	
+
+	float:right;
+	clear:right;
+	margin-left:5px;
+	margin-top:5px;
+	
+	overflow:hidden;	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

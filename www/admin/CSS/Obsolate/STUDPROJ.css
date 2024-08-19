@@ -1,0 +1,206 @@
+.CONT
+{
+	width:940px;
+	overflow:hidden;
+	background-color:white;
+}
+.CONT_TOP
+{
+	width:940px;
+	float:left;
+	border-bottom:1px solid black;
+	padding-bottom:5px;	
+}
+.error_message
+{
+	color:red;
+	font-family:tahoma,verdana,Trebuchet MS;
+	font-size:12px;
+	font-weight:bold;
+	text-decoration:none;
+	line-height:15px;
+}
+.box
+{
+ 	float:left;
+	width:460px;
+	border:1px solid rgb(220,220,220);
+	margin-right:1px;
+}
+.box_title
+{
+	float:left;
+	clear:both;
+	height:20px;
+	width:460px;
+	
+	font-family:tahoma,verdana,Trebuchet MS;
+	font-size:12px;
+	font-weight:bold;
+	text-decoration:none;
+	text-indent:2px;
+	line-height:20px;
+	color:white;
+	background-color:rgb(60,60,60);	
+}
+.box_list
+{
+	float:left;
+	width:460px;
+	height:205px;
+}
+.box_lable
+{
+	height:20px;
+	float:left;
+	width:460px;
+	
+	font-family:tahoma,verdana,Trebuchet MS;
+	font-size:12px;
+	font-weight:bold;
+	text-decoration:none;
+	text-indent:2px;
+	line-height:20px;
+	color:black;	
+}
+.box_addform_cont
+{
+	float:left;
+	width:460px;
+	height:65px;	
+	
+	font-family:tahoma,verdana,Trebuchet MS;
+	font-size:11px;
+	font-weight:bold;
+	text-decoration:none;
+	text-indent:2px;
+	line-height:20px;
+	color:black;	
+}
+.box_list_head
+{
+ 	float:left;
+	clear:both;
+	height:20px;
+	width:460px;
+}
+.box_list_scroll
+{
+ 	float:left;
+	clear:both;
+	height:180px;
+	width:460px;
+	
+	font-family:tahoma,verdana,Trebuchet MS;
+	font-size:11px;
+	font-weight:normal;
+	text-decoration:none;
+	text-indent:2px;
+	line-height:20px;
+	color:black;	
+	
+	overflow:auto;
+}
+.head_table
+{
+	float:left;
+	clear:both;
+	height:20px;
+	width:430px;			
+	
+	font-family:tahoma,verdana,Trebuchet MS;
+	font-size:11px;
+	font-weight:bold;
+	text-decoration:none;
+	line-height:15px;
+	color:black;
+}
+.scroll_table
+{
+	float:left;
+	clear:both;
+	width:430px;			
+	
+	font-family:tahoma,verdana,Trebuchet MS;
+	font-size:10px;
+	font-weight:bold;
+	text-decoration:none;
+	line-height:17px;
+	color:black;
+}
+.table_divider_h
+{
+ 	background-position:bottom left;
+ 	background-repeat:repeat-x;
+	background-image:url(../graphics/blackpixel.jpg);
+}
+.sched_form_lable
+{
+ 	height:35px;
+ 	width:115px;
+ 	float:left;
+ 	overflow:hidden;
+ 	
+	font-family:tahoma,verdana,Trebuchet MS;
+	font-size:10px;
+	font-weight:bold;
+	text-decoration:none;
+	line-height:15px;
+	color:black;	
+}
+.sched_form_input
+{
+	height:20px;
+	width:110px;
+ 	float:left;
+ 	overflow:hidden;
+ 	
+	font-family:tahoma,verdana,Trebuchet MS;
+	font-size:10px;
+	font-weight:bold;
+	text-decoration:none;
+	line-height:15px;
+	color:black;	
+}
+.sched_form_submit
+{
+	border:1px solid black;
+	background:white;
+	width:100px;
+	height:20px;
+	float:left;
+	margin-top:5px;
+	clear:both;
+}
+.sched_form_static
+{
+ 	float:left;
+	width:65px;
+	height:20px;
+	
+	font-family:tahoma,verdana,Trebuchet MS;
+	font-size:10px;
+	font-weight:bold;
+	text-decoration:none;
+	line-height:15px;
+	color:black;	
+}
+.sched_form_date
+{
+	background-image:url(../graphics/DT_caliendar.jpg);
+	cursor:pointer;
+	float:left;
+	height:20px;
+	margin-left:2px;
+	margin-top:2px;
+	width:20px;	
+}
+.delico
+{
+ 	width:15px;
+ 	height:12px;
+	background-image:url(../graphics/del.jpg);
+	background-position:center center;
+	margin-top:4px;
+	cursor:pointer;
+}

@@ -1,0 +1,284 @@
+body{
+    padding:0px;
+    margin:0px;
+}
+.header_left {
+    height:250px;
+    width:100%;
+
+    background-image:url("../graphics/header.jpg");
+    background-repeat:no-repeat;
+    background-position:top left;
+}
+
+.header_title {
+    float:left;
+    height:100px;
+    width:100%;
+    margin-top:100px;
+    margin-left:100px;
+    border-top:1px solid blue;
+}
+
+.header_right {
+    height:230px;
+    margin:10px;
+    padding-left:10px;
+    border-left:1px solid blue;
+}
+
+.header_titlu {
+    margin-top:35px;
+    font-family:Arial, Verdana, Tahoma;
+    font-size:20px;
+    height:70px;
+}
+
+.header_text {
+    margin-top:25px;
+    margin-left:20px;
+    font-family:Arial, Verdana, Tahoma;
+    font-size:13px;
+    font-weight:bold;
+}
+
+.loginout_cont {
+    height:85px;
+    width:350px;
+    float:right;
+}
+
+.input_cont {
+    float:left;
+    width:117px;
+    height:25px;
+    border:0px;
+    margin-bottom:4px;
+
+    background-image:url("../graphics/input.jpg");
+}
+.input {
+    float:left;
+    width:112px;
+    height:25px;
+    border:0px;
+    padding:0px;
+
+    text-indent:5px;
+    line-height:25px;
+    font-family:Arial, Verdana, Tahoma;
+    font-size:13px;
+    font-weight:bold;
+    background-color:transparent;
+}
+
+.okbutton {
+    float:RIGHT;
+    width:35px;
+    height:31px;
+    border:0px;
+    padding:0px;
+
+    background-image:url("../graphics/OK.jpg");
+    cursor:pointer;
+}
+
+.label {
+    float:left;
+    width:220px;
+    height:25px;
+    margin-right:10px;
+    margin-bottom:4px;
+
+    line-height:25px;
+    font-family:Arial, Verdana, Tahoma;
+    font-size:13px;
+    font-weight:bold;
+    text-align:right;
+}
+
+.welcome {
+    float:left;
+    width:340px;
+    height:25px;
+    margin-right:10px;
+    margin-bottom:4px;
+
+    line-height:25px;
+    font-family:Arial, Verdana, Tahoma;
+    font-size:13px;
+    font-weight:bold;
+    text-align:right;
+}
+
+.language {
+    float:right;
+    width:50px;
+    height:25px;
+    margin-left:10px;
+    margin-bottom:4px;
+
+    line-height:25px;
+    font-family:Arial, Verdana, Tahoma;
+    font-size:13px;
+    font-weight:bold;
+    text-align:right;
+}
+
+.pic_cont {
+    float:right;
+    width:80px;
+    height:80px;
+    margin-top:5px;
+}
+.menutitle {
+    height:25px;
+    line-height:20px;
+    font-family:Arial, Verdana, Tahoma;
+    font-size:13px;
+    font-weight:bold;
+    text-align:left;
+}
+.menulable {
+    line-height:20px;
+    font-family:Arial, Verdana, Tahoma;
+    font-size:13px;
+    font-weight:bold;
+    text-align:left;
+}
+.menuentry {
+    line-height:20px;
+    font-family:Arial, Verdana, Tahoma;
+    font-size:13px;
+    font-weight:bold;
+    text-align:left;
+}
+
+.bigmenu_dayname {
+    width:180px;
+    border-bottom:1px solid black;
+}
+
+.bigmenu_content {
+    border-bottom:1px solid black;
+}
+.bigmenu_lable {
+    height:100px;
+}
+.monday {
+    background-image:url("../graphics/luni.jpg");
+    background-repeat:no-repeat;
+    background-position:center left;
+}
+.tuesday {
+    background-image:url("../graphics/marti.jpg");
+    background-repeat:no-repeat;
+    background-position:center left;
+}
+.wednsday {
+    background-image:url("../graphics/miercuri.jpg");
+    background-repeat:no-repeat;
+    background-position:center left;
+}
+.thursday {
+    background-image:url("../graphics/joi.jpg");
+    background-repeat:no-repeat;
+    background-position:center left;
+}
+.friday {
+    background-image:url("../graphics/vineri.jpg");
+    background-repeat:no-repeat;
+    background-position:center left;
+}
+
+
+/*
+    checkboxes
+*/
+
+.option_cont {
+    float:left;
+    width:200px;
+    height:
+}
+
+.option_check {
+    width:29px;
+    height:29px;
+    float:left;
+    margin-right:5px;
+    cursor:pointer;
+}
+
+.state_checked {
+    background-image:url("../graphics/checked.jpg");
+}
+
+.state_unchecked {
+    background-image:url("../graphics/unchecked.jpg");
+}
+
+.option_details {
+    float:left;
+
+    line-height:15px;
+    font-family:Arial, Verdana, Tahoma;
+    font-size:12px;
+    font-weight:bold;
+    text-align:left;
+}
+
+.option_price {
+    float:left;
+    clear:both;
+
+    line-height:15px;
+    font-family:Arial, Verdana, Tahoma;
+    font-size:12px;
+    font-weight:bold;
+    text-align:left;
+    color:green;
+}
+
+.note {
+    width:105px;
+    height:98px;
+    background-image:url("../graphics/note.jpg");
+    position:relative;
+}
+.note_label {
+    margin-left:20px;
+    height:50px;
+    position:absolute;
+
+    line-height:50px;
+    font-family:Arial, Verdana, Tahoma;
+    font-size:12px;
+    font-weight:bold;
+    text-align:left;
+    color:black;
+}
+.note_price {
+    margin-left:20px;
+    position:absolute;
+    top:50px;
+
+    line-height:15px;
+    font-family:Arial, Verdana, Tahoma;
+    font-size:29px;
+    font-weight:bold;
+    text-align:left;
+    color:green;
+}
+.note_alert {
+    margin-left:20px;
+    position:absolute;
+    top:50px;
+
+    line-height:15px;
+    font-family:Arial, Verdana, Tahoma;
+    font-size:29px;
+    font-weight:bold;
+    text-align:left;
+    color:red;
+}

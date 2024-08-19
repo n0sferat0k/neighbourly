@@ -1,0 +1,363 @@
+/****************************************************** CALENDAR */
+
+.calendar_cont
+{
+	position:absolute;
+	z-index:2;	
+	width:666px;
+	height:400px;	
+	background-color:rgb(230,230,230);	
+}
+.calendar_frame
+{
+	float:left;
+	width:222px;
+	height:400px;
+	background-image:url(../graphics/calendar_frame.jpg);
+	background-position:bottom left;
+	background-repeat:no-repeat;
+}
+.frame_title
+{
+	height:28px;
+	width:222px;
+	
+	line-height:30px;
+	font-family:arial, verdana, tahoma;
+	text-indent:5px;
+	font-size:15px;
+	font-weight:bold;	
+	color:black;
+}
+.calendar_middle
+{
+	float:left;
+	width:211px;
+	margin-right:11px;
+	margin-top:20px;
+	height:352px;
+}
+.calendar_dropdown
+{
+	float:right;
+	width:200px;
+	height:20px;
+	
+	font-family:arial, verdana, tahoma;
+	font-size:12px;	
+	font-weight:bold;	
+	color:black;
+}
+.calendar_daylist
+{
+	width:200px;
+	height:160px;		
+	float:right;	
+}
+.calendar_day_entry
+{
+	width:26px;
+	height:22px;
+	margin-right:2px;
+	margin-top:1px;
+	float:left;
+	
+	font-family:arial, verdana, tahoma;
+	font-size:12px;	
+	font-weight:bold;	
+	color:black;
+	text-align:center;
+}
+.calendar_day_entry_unsel
+{
+ 	cursor:pointer;
+	background-image:url(../graphics/calendar_day_entry_unsel_BG.jpg);
+}
+.calendar_day_entry_sel
+{
+	background-image:url(../graphics/calendar_day_entry_sel_BG.jpg);
+}
+.calendar_day_entry_resunsel
+{
+ 	cursor:pointer;
+	background-image:url(../graphics/calendar_day_entry_resunsel_BG.jpg);
+}
+.calendar_day_entry_ressel
+{
+	background-image:url(../graphics/calendar_day_entry_ressel_BG.jpg);
+}
+.calendar_middle_lable
+{
+	width:200px;
+	height:15px;
+	float:right;
+	margin-top:4px;
+	
+	text-align:left;
+	font-family:arial, verdana, tahoma;
+	font-size:12px;	
+	font-weight:bold;	
+	color:black;	
+}
+.timetable_content
+{
+	height:360px;
+	width:218px;
+	margin-top:6px;		
+	float:right;
+}
+.timetable_hours
+{
+	height:360px;
+	width:40px;
+	float:left;
+}
+.timetable_appointments
+{
+	position:relative;
+	height:360px;
+	width:175px;
+}
+.timetable_appointments_cont
+{
+	height:360px;
+	width:175px;
+	float:left;		
+}
+.timetable_hours_entry
+{
+	height:14px;
+	width:40px;
+	float:left;	
+	border-bottom:1px solid rgb(200,200,200);
+	border-right:1px solid rgb(200,200,200);
+	
+	font-family:arial,verdana, tahoma;
+	font-size:11px;	
+	font-weight:bold;	
+	color:black;	
+	text-indent:2px;
+}
+.timetable_appointments_entry
+{
+	position:absolute;
+	width:173px;
+	left:2px;
+	background-color:rgb(110,100,100);
+	opacity:.50;
+	moz-opacity:.50;
+	filter:alpha(opacity=50);
+	
+	font-family:arial,verdana, tahoma;
+	font-size:9px;
+	font-weight:normal;	
+	color:black;
+	
+	z-index:1;		
+}
+.timetable_appointments_entry_selected
+{
+	position:absolute;
+	width:173px;
+	left:2px;
+	background-color:orange;
+	opacity:.50;
+	moz-opacity:.50;
+	filter:alpha(opacity=50);
+	
+	font-family:arial,verdana, tahoma;
+	font-size:9px;
+	font-weight:normal;	
+	color:black;		
+	
+	z-index:2;
+}
+.timetable_appointments_entry_marked
+{
+	position:absolute;
+	width:173px;
+	left:2px;
+	background-color:rgb(0,0,255);
+	opacity:.50;
+	moz-opacity:.50;
+	filter:alpha(opacity=50);
+	
+	font-family:arial,verdana, tahoma;
+	font-size:9px;
+	font-weight:normal;	
+	color:orange;		
+	
+	z-index:3;
+}
+.timetable_appointments_entry_invalid
+{
+	position:absolute;
+	width:173px;
+	left:2px;
+	background-image:url(../graphics/stripedout.gif);
+	opacity:.70;
+	moz-opacity:.70;
+	filter:alpha(opacity=70);
+	
+	font-family:arial,verdana, tahoma;
+	font-size:9px;
+	font-weight:normal;	
+	color:black;		
+	
+	z-index:4;
+}
+.timetable_appointments_entry_tag
+{
+ 	float:left;
+ 	width:10px;
+	overflow:hidden;
+ 	
+	background:white;
+	font-family:arial,verdana, tahoma;
+	font-size:9px;	
+	font-weight:normal;	
+	text-align:center;
+	color:black;
+	
+	margin-top:1px;
+	margin-left:1px;
+	margin-right:2px;
+}
+.calendar_applist_cont
+{
+ 	float:right;
+	width:218px;
+	height:360px;
+	margin-top:5px;
+	overflow:hidden;
+}
+.calendar_applist
+{
+ 	float:left;
+	width:214px;
+	height:360px;
+	overflow-y:scroll;
+}
+.calendar_applist_entry
+{
+	float:left;
+	width:190px;
+	overflow:hidden;
+	background-color:rgb(200,200,220);
+	border-bottom:1px solid rgb(100,100,100);
+	cursor:pointer;
+	
+	font-family:arial,verdana, tahoma;
+	font-size:11px;	
+	font-weight:normal;	
+	color:black;
+}
+.calendar_applist_entry_selected
+{
+	float:left;
+	width:190px;
+	overflow:hidden;
+	background-color:orange;
+	border-bottom:1px solid rgb(100,100,100);
+	cursor:pointer;
+	
+	font-family:arial,verdana, tahoma;
+	font-size:11px;	
+	font-weight:normal;	
+	color:black;
+}
+.calendar_applist_entry_tag
+{
+	float:left;
+	width:20px;
+	height:15px;
+	background-color:rgb(230,230,230);
+	border:1px solid black;
+	overflow:hidden;
+	margin-right:4px;
+	
+	font-family:arial,verdana, tahoma;
+	font-size:10px;	
+	font-weight:bold;	
+	color:black;	
+	text-align:center;	
+}
+.insertion_params_cont
+{
+	width:200px;
+	height:80px;
+	float:right;
+}
+.buttons_cont
+{
+	width:200px;
+	height:20px;
+	float:right;
+}
+.insert_params_entry
+{
+	height:18px;	
+	float:left;
+}
+.insert_params_entry_lable
+{
+	height:18px;	
+	float:left;
+	
+	font-family:arial,verdana, tahoma;
+	font-size:11px;	
+	font-weight:bold;	
+	color:black;	
+	text-align:right;	
+	line-height:20px;
+}
+.insert_params_entry_input
+{
+	width:25px;
+	height:18px;	
+	float:left;
+	margin-right:2px;
+	overflow:hidden;
+	
+	font-family:arial,verdana, tahoma;
+	font-size:10px;	
+	font-weight:normal;	
+	color:black;	
+	text-align:left;
+	line-height:18px;
+}
+.insert_params_entry_text
+{
+	width:200px;
+	height:40px;
+}
+.ok_icon
+{
+	height:20px;
+	width:20px;
+	float:left;
+	
+	background-image:url(../graphics/ok.jpg);	
+}
+.cancel_icon
+{
+	height:20px;
+	width:20px;
+	float:left;
+	
+	background-image:url(../graphics/cancel.jpg);		
+}
+.insert_params_button
+{
+	height:20px;	
+	margin-right:4px;
+	float:left;
+	
+	font-family:arial,verdana, tahoma;
+	font-size:11px;	
+	font-weight:bold;	
+	color:black;	
+	text-align:right;	
+	line-height:20px;
+	cursor:pointer;
+}

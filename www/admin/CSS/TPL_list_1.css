@@ -1,0 +1,210 @@
+form
+{
+	margin:0px;
+	padding:0px;
+}
+
+.TABLE_list_navbar
+{
+	float:left;
+	width:100%;
+	margin:10px;
+	height:25px;	
+	
+}
+.TD_list_navbar_padright
+{
+ 	width:20px;
+}
+.TD_list_navbar_main
+{
+	background:rgb(242,242,242);
+	padding-left:10px;
+}
+.DIV_list_addlink
+{
+	float:right;
+	width:300px;
+	margin-right:10px;
+	height:25px;
+	text-align:right;
+	cursor:pointer;	
+	overflow:hidden;
+	font-family:tahoma, verdana, Trebuchet MS;	
+}
+.A_list_pageinglinkunselected
+{
+	font-family:tahoma, verdana, Trebuchet MS;	
+	font-weight:normal;
+	text-decoration:none;
+	font-size:14px;
+	color:black;
+	float:left;
+	line-height:25px;
+}
+.DIV_list_pageinglinkselected
+{
+	font-family:tahoma, verdana, Trebuchet MS;	
+	font-weight:normal;
+	font-weight:bold;
+	text-decoration:none;
+	color:black;
+	font-size:14px;
+	float:left;
+	line-height:25px;
+}
+
+/*list*/
+
+
+.TABLE_list_container
+{
+	float:left;
+	width:630px;
+	margin-left:30px;	
+}
+.TR_list_item
+{
+	width:630px;
+	height:160px;
+	background:rgb(242,242,242);
+}
+.TD_list_leftspacer
+{
+	width:20px;	
+}
+.TD_list_main
+{
+	width:510px;
+}
+.TD_list_right
+{
+	width:100px;
+	padding-left:3px;
+	vertical-align:top;
+}
+.DIV_list_operations
+{
+	width:92px;
+	height:57px;
+	margin-top:3px;	
+	float:left;	
+	background:white;
+}
+.DIV_list_pic_lable
+{
+	width:92px;
+	height:20px;
+	float:left;	
+	line-height:25px;
+	font-size:13px;
+	font-family:tahoma, verdana, Trebuchet MS;	
+}
+
+.DIV_list_pic
+{
+	width:92px;
+	height:77px;
+	margin-bottom:3px;	
+	float:left;	
+}
+
+.IMG_list_pic
+{
+	width:92px;
+	height:77px;	
+	float:left;
+}
+.TR_list_divider
+{
+	width:800px;
+	height:10px;	
+}
+
+
+
+
+.DIV_list_title
+{
+	width:510px;
+	float:left;
+	height:30px;
+	
+	text-align:left;
+	font-size:15px;
+	font-family:tahoma, verdana, Trebuchet MS;	
+	color:black;
+	line-height:30px;
+	font-weight:bold;	
+}
+.DIV_list_text
+{
+	width:510px;
+	float:left;
+	height:110px;	
+	
+	text-align:left;
+	font-size:12px;
+	font-family:tahoma, verdana, Trebuchet MS;	
+	color:black;
+	overflow:hidden;
+}
+.DIV_list_date
+{
+	width:510px;
+	float:left;
+	height:20px;
+	
+	text-align:left;
+	font-size:13px;
+	font-family:tahoma, verdana, Trebuchet MS;	
+	color:black;
+	font-style:italic;
+	line-height:30px;
+	color:rgb(160,160,160);
+}
+.opbutton_del
+{
+	width:25px;
+	height:25px;
+	border:0px;
+	background-image:url(../graphics/ex.jpg);	
+	margin-left:6px;
+	margin-top:6px;
+	cursor:pointer;
+	float:left;
+}
+.opbutton_mod
+{
+	width:25px;
+	height:25px;
+	border:0px;
+	background-image:url(../graphics/check.jpg);	
+	margin-left:6px;
+	margin-top:6px;
+	cursor:pointer;
+	float:left;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

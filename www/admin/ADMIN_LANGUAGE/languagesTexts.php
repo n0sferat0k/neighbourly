@@ -1,0 +1,47 @@
+<?php 
+if(!defined("IN_ADMIN"))
+	die("HACKING IS FUN!");
+	
+	$TEXTS['EN']=array	(
+							'addnew_text' => "add ",
+							'op1_text' => "delete",							
+							'op1_confirm' => "Are you sure you want to delete this instance of type",
+							'modi_text' =>  "edit",	
+							'del_text' => "delete",						
+							'lable_image' => "Add picture:",
+							"lable_file" => "Add file:",
+							'lable_images' => "Pictures:",
+							'lable_title' => "Title:",
+							'lable_date' => "Date: (dd/mm/yyyy hh:mm:ss)",
+							'lable_link' => "Link:",
+							'lable_text' => "Text:",
+							'lable_accent' => "Accent:",
+							'lable_zindex' => "Z index:",
+                            'lable_sortindex' => "Sorting index",
+							'submitbuttonlable' => "Save",							
+							'auxform_onsubmit_1' => "Are you sure you want to delete this picture ?",
+							'auxform_onsubmit_2' => "Are you sure you want to delete this file ?",
+							'del_confirm' => 'Are you sure you want to delete node ?',
+							'exit' => 'Exit',
+							'users' => 'Users',
+							'picture' => 'Picture:',
+							'lable_addpic' => 'add image file (jpg, gif, png, bmp ...)',
+							'lable_addfile' => 'add file document (pdf, doc ...)',							
+							'lable_delpic' => 'Delete picture',
+							'lable_defpic' => 'Default',
+							'lable_delfile' => 'Delete file',							
+							'Categorie' => 'Category',
+							'Nume' => 'Name',
+							'Ingrediente' => 'Ingredients',
+							'Descriere' => 'Description',
+							'Informatii_nutritive' => 'Nutritional information',
+							'Detalii' => 'Details',
+							'Valoare_energetica' => 'Kalories',
+							'Poza' => 'Picture',
+							'savleaza' => 'save',
+							'addedit' => 'Add/Edit',
+							'images_null_text' => "There are no uploaded images yet !",
+							'files_null_text' => "There are no uploaded files yet !",
+							'lable_noname' => "no name"
+						);	
+?>

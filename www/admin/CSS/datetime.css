@@ -1,0 +1,135 @@
+.datetime_choose_button
+{
+ 	float:left;
+	width:20px;
+	height:20px;
+	background-image:url(../graphics/DT_caliendar.jpg);
+	margin-top:2px;
+	margin-left:2px;
+	cursor:pointer;
+}
+.datetime_show
+{
+	float:left;
+	height:17px;		
+	margin-top:3px;
+}
+.datetime_choose_cont
+{
+	width:150px;
+	height:140px;
+	float:left;
+	background-image:url(../graphics/DT_bg.jpg);	
+}
+.datetime_close
+{
+	float:left;
+	width:20px;
+	height:20px;
+	overflow:hidden;
+	margin-left:2px;
+	cursor:pointer;
+	
+	background-image:url(../graphics/DT_close.jpg);
+}
+.datetime_save
+{
+	float:left;
+	width:20px;
+	height:20px;
+	overflow:hidden;
+	margin-left:2px;
+	cursor:pointer;
+	
+	background-image:url(../graphics/DT_save.jpg);
+}
+.days_pos
+{
+ 	width:144px;
+ 	float:left;
+}
+.days_cont
+{
+	width:140px;
+	float:right;
+}
+.days_entry
+{
+	width:17px;
+	height:12px;
+	float:left;
+	margin-right:3px;
+	margin-bottom:1px;
+	color:green;
+	font-family:arial, verdana, tahoma;
+	font-size:11px;
+	font-weight:bold;	
+	line-height:12px;
+	text-decoration:none;
+	text-align:center;
+}
+.days_entry_filled
+{
+	background-image:url(../graphics/DT_entry.jpg);
+	cursor:pointer;	
+}
+.days_entry_filled_focus
+{
+	background-image:url(../graphics/DT_entry_focus.jpg);
+	cursor:pointer;	
+}
+.days_entry_filled_selected
+{
+	background-image:url(../graphics/DT_entry_selected.jpg);
+	cursor:pointer;	
+}
+.datetime_choose_cont select
+{
+	float:left;
+	color:green;
+	font-family:arial, verdana, tahoma;
+	font-size:11px;
+	font-weight:bold;	
+	line-height:14px;
+	text-decoration:none;
+	text-align:left;
+	margin-top:2px;
+	margin-left:2px;
+}
+.datetime_time_cont
+{
+	float:left;
+	margin-left:2px;
+	border-top:1px solid black;
+	width:140px;
+	height:20px;	
+}
+.datetime_time_cont input
+{
+	float:left;
+	width:20px;
+	height:20px;
+	
+	float:left;
+	color:green;
+	font-family:arial, verdana, tahoma;
+	font-size:11px;
+	font-weight:bold;	
+	line-height:20px;
+	text-decoration:none;
+	text-align:left;
+}
+.datetime_time_cont span
+{
+	float:left;
+	height:20px;
+	
+	color:green;
+	font-family:arial, verdana, tahoma;
+	font-size:11px;
+	font-weight:bold;	
+	line-height:20px;
+	text-decoration:none;
+	text-align:left;
+}
+

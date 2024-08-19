@@ -1,0 +1,83 @@
+.DIV_tree_root
+{
+	height:24px;
+	float:left;
+	clear:both;
+	padding-left:20px;
+	background-image:url(../graphics/treeFiller.jpg);	
+	background-repeat:repeat-y;
+	background-position:top left;
+}
+.DIV_input_container
+{
+	height:24px;
+	width:150px;
+	float:left;
+	margin-right:5px;
+}
+.DIV_save_container
+{
+	height:24px;
+	width:24px;
+	float:left;
+	margin-right:5px;
+	background:red;
+	background:url(../graphics/check.jpg);
+	cursor:pointer;
+}
+.DIV_del_container
+{
+	height:24px;
+	width:24px;
+	float:left;
+	margin-right:5px;
+	background:green;
+	background:url(../graphics/ex.jpg);
+	cursor:pointer;
+}
+.DIV_openchild_container
+{
+	height:24px;
+	width:30px;
+	float:left;
+	margin-right:5px;
+	background:url(../graphics/treeFullNode.jpg);
+	cursor:pointer;
+}
+.DIV_noopenchild_container
+{
+	height:24px;
+	width:30px;
+	float:left;
+	margin-right:5px;
+	background:url(../graphics/treeEmptyNode.jpg);
+}
+.DIV_openasroot_container
+{
+	height:24px;
+	width:24px;
+	float:left;
+	margin-right:5px;
+	background:orange;
+	background:url(../graphics/magnifier.jpg);
+	cursor:pointer;	
+}
+.DIV_tree_children
+{
+	padding-left:20px;
+	float:left;
+	clear:both;
+	background-image:url(../graphics/treeFiller.jpg);	
+	background-repeat:repeat-y;
+	background-position:top left;
+}
+.DIV_addassocobj_container
+{
+	height:24px;
+	width:24px;
+	float:left;
+	margin-right:5px;
+	background:orange;
+	background:url(../graphics/addobject.jpg);
+	cursor:pointer;	
+}

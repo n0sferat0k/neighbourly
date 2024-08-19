@@ -1,0 +1,130 @@
+.ABC_hash_list_container
+{
+	float:left;
+	width:530px;	
+}
+.ABC_hash_list_filter_container
+{
+	float:right;
+	width:500px;
+	height:22px;
+	clear:both;	
+}
+.ABC_hash_list_filter_lable
+{
+ 	float:left;
+	font-family:Trebuchet MS, arial, verdana;
+	font-size:18px;
+	color:black;
+	text-decoration:none;
+	text-align:left;
+}
+.ABC_hash_list_filter
+{
+ 	float:left;
+ 	width:300px;
+	font-family:Trebuchet MS, arial, verdana;
+	font-size:14px;
+	color:black;
+	text-decoration:none;
+	text-align:left;
+	
+	border:1px solid rgb(224,224,224);
+	background:white;
+}
+.ABC_hash_list_entry
+{
+ 	float:right;
+ 	width:500px;
+	height:35px;
+	
+	border-bottom:1px solid rgb(224,224,224);
+}
+.ABC_hash_list_text
+{
+ 	float:left;
+	width:150px;
+	height:35px;
+}
+.ABC_hash_list_name
+{
+ 	float:left;
+	width:150px;
+	height:25px;
+	
+	font-family:Trebuchet MS, arial, verdana;
+	font-size:18px;
+	color:rgb(158,11,15);
+	line-height:25px;
+	text-align:left;	
+}
+.ABC_hash_list_pin
+{
+ 	float:left;
+	width:150px;
+	height:12px;
+	
+	font-family:Trebuchet MS, arial, verdana;
+	font-size:10px;
+	color:black;
+	line-height:10px;
+	text-align:left;	
+}
+.ABC_hash_list_op
+{
+	float:left;
+	width:160px;
+	height:35px;
+	
+	cursor:pointer;
+	text-align:left;
+}
+.ABC_hash_list_op_link
+{
+	
+	font-family:Trebuchet MS, arial, verdana;
+	font-size:12px;
+	color:black;
+	line-height:35px;	
+	text-decoration:none;
+}
+.ABC_hash_list_op_old
+{
+	background-image:url(../graphics/ABC_hash_list_op_old.jpg);
+	background-position:center left;
+	background-repeat:no-repeat;
+	
+	text-indent:40px;
+	text-align:left;
+}
+.ABC_hash_list_op_new
+{
+	background-image:url(../graphics/ABC_hash_list_op_new.jpg);
+	background-position:center left;
+	background-repeat:no-repeat;
+	
+	text-indent:40px;
+	text-align:left;
+}
+
+.ABC_hash_list_group
+{
+	font-family:Trebuchet MS, arial, verdana;
+	font-size:18px;
+	color:black;
+	text-decoration:none;
+	text-align:left;
+	overflow:hidden;
+}
+.ABC_hash_list_group_lable
+{
+ 	width:20px;
+ 	height:20px;
+ 	clear:both;
+ 	
+	font-family:Trebuchet MS, arial, verdana;
+	font-size:18px;
+	color:black;
+	text-decoration:none;
+	text-align:left;
+}

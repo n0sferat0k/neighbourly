@@ -1,0 +1,453 @@
+    .CONT
+{
+	width:993px;
+	overflow:hidden;
+	background-color:white;
+	margin-top:15px;
+}
+.CONT_LEFT
+{
+	width:240px;
+	min-height:500px;
+	height:auto !important;
+	height:500px;
+	
+	float:left;
+	margin-bottom:20px;
+	overflow-x:hidden;
+	
+	border-right:1px solid rgb(169,182,188);
+}
+.CONT_RIGHT
+{
+	width:733px;
+	min-height:500px;
+	height:auto !important;
+	height:500px;
+	
+	float:left;
+	margin-bottom:20px;
+	padding-left:10px;
+	overflow-x:hidden;
+}
+.CONT_LEFT_2
+{
+	width:470px;
+	min-height:400px;
+	height:auto !important;
+	height:400px;
+	
+	float:left;
+	margin-bottom:20px;
+	overflow-x:hidden;	
+	border-right:1px solid rgb(169,182,188);
+}
+.CONT_RIGHT_2
+{
+	width:450px;
+	min-height:400px;
+	height:auto !important;
+	height:400px;
+	
+	float:left;
+	margin-bottom:20px;
+	padding-left:10px;
+	overflow-x:hidden;
+}
+.TAB
+{
+	width:220px;
+	height:90px;
+	float:left;
+	
+	background-color:rgb(236,240,243);
+	margin-right:10px;
+	margin-bottom:10px;		
+	
+	overflow:hidden;
+}
+.TAB_HIGH
+{
+	width:220px;
+	height:140px;
+	float:left;
+	
+	background-color:rgb(236,240,243);
+	margin-right:15px;
+	margin-bottom:10px;		
+	
+	overflow:hidden;
+}
+.SUBNAV
+{
+	width:220px;
+	height:25px;
+	float:left;
+
+	background-color:rgb(236,240,243);
+	margin-right:30px;
+	margin-bottom:10px;	
+}
+.SUBNAV_TITLE
+{
+	width:200px;
+	height:25px;
+	float:left;	
+	overflow:hidden;
+	text-align:left;	
+	text-indent:10px;
+}
+.SUBNAV_LINK
+{
+	font-family:arial, verdana, tahoma;
+	font-size:13px;
+	font-weight:bold;
+	color:rgb(58,107,137);
+	line-height:25px;
+	text-decoration:none;
+}
+
+.SUBNAV_DEL
+{
+	width:20px;
+	height:25px;
+	float:left;	
+	
+	background-image:url(../graphics/ex2.jpg);
+	background-position:left center;
+	background-repeat:no-repeat;	
+}
+.TAB_TITLE
+{
+	width:220px;
+	height:25px;
+	float:left;	
+	
+	font-family:arial, verdana, tahoma;
+	font-size:13px;
+	font-weight:bold;
+	color:rgb(58,107,137);
+	text-align:left;
+	text-indent:10px;
+	line-height:25px;
+			
+}
+.TAB_SUBTITLE
+{
+	width:210px;
+	height:15px;
+	float:left;	
+	
+	font-family:arial, verdana, tahoma;
+	font-size:10px;
+	font-weight:bold;
+	color:rgb(137,107,58);
+	text-align:left;
+	padding-left:10px;
+	line-height:10px;	
+}
+.TAB_IMG
+{
+	width:160px;
+	height:40px;
+	margin-top:5px;
+	float:right;
+	
+	font-family:arial, verdana, tahoma;
+	font-size:9px;
+	font-weight:normal;
+	color:rgb(58,107,137);
+	text-align:left;
+	line-height:9px;				
+}
+.TAB_VID
+{
+	width:130px;
+	height:90px;
+	margin-top:5px;
+	float:right;
+	
+	font-family:arial, verdana, tahoma;
+	font-size:9px;
+	font-weight:normal;
+	color:rgb(58,107,137);
+	text-align:left;
+	line-height:9px;				
+}
+.TAB_IMAGE
+{
+	max-width:40px;
+	max-height:40px;
+	float:left;
+	margin-right:2px;
+}
+.TAB_OPS
+{
+	width:50px;
+	height:50px;
+	float:right;				
+	margin-left:2px;
+}
+.TAB_OPS_INN
+{
+	width:45px;
+	height:50px;
+	margin-top:5px;
+	float:left;				
+}
+.TAB_OPLINK_POS
+{
+ 	float:right;
+ 	clear:both;	
+}
+.TAB_OPLINK
+{
+	font-family:arial, verdana, tahoma;
+	font-size:12px;
+	font-weight:normal;
+	color:rgb(58,107,137);
+	text-align:right;
+	text-indent:10px;
+	line-height:14px;
+}
+.TAB_UPARROW
+{
+	width:10px;
+	height:10px;	
+	background-image:url(../graphics/UP.jpg);
+	
+	float:right;
+	margin-left:5px;
+	margin-top:5px;
+	
+	overflow:hidden;
+}
+.TAB_DOWNARROW
+{
+ 	width:10px;
+	height:10px;
+	background-image:url(../graphics/DOWN.jpg);	
+
+	float:right;
+	clear:right;
+	margin-left:5px;
+	margin-top:5px;
+	
+	overflow:hidden;	
+}
+
+.FORM_TITLE 
+{
+	color:rgb(58,107,137);
+	font-family:arial,verdana,tahoma;
+	font-size:13px;
+	font-weight:bold;
+	height:20px;
+	text-align:left;
+}
+.FORM_CLEAR 
+{
+	height:20px;
+	padding-left:10px;
+	text-align:right;
+}
+.FORM_CLEAR_LINK
+{
+	color:rgb(58,107,137);
+	font-family:arial,verdana,tahoma;
+	font-size:11px;
+	font-weight:normal;
+	text-decoration:none;
+}
+.FORM_LIST_ENTRY
+{
+	float:left;
+	width:570px;
+	overflow:hidden;
+	
+	padding:6px;
+}
+.FORM_LIST_ENTRY_2
+{
+	float:left;
+	width:470px;
+	overflow:hidden;
+	
+	padding:6px;
+}
+.FLE1
+{
+	background:white;
+}
+.FLE2
+{
+	background:rgb(237,242,246);	
+}
+.FORM_LIST_ENTRY_LEFT
+{
+	float:left;
+	width:208px;
+	overflow:hidden;
+	
+	font-family:arial, verdana, tahoma;
+	font-size:14px;
+	font-weight:normal;
+	color:rgb(58,107,137);
+	text-align:left;
+}
+.FORM_LIST_ENTRY_RIGHT
+{
+	float:left;
+	width:350px;
+	overflow:hidden;
+}
+.FORM_HELP
+{
+	float:left;
+	width:25px;	
+	height:25px;
+	
+	background-image:url(../graphics/help.jpg);
+	
+}
+.FORM_SELECT
+{
+	float:left;
+	width:230px;	
+	height:25px;
+	
+	border:1px solid rgb(58,107,137);	
+	background-color:white;
+	
+	font-family:arial, verdana, tahoma;
+	font-size:14px;
+	font-weight:normal;
+	color:rgb(58,107,137);
+	text-align:left;
+	
+	margin-right:5px;
+}
+.FORM_INPUT
+{
+	float:left;
+	width:350px;	
+	height:25px;
+	
+	border:1px solid rgb(58,107,137);	
+	background-color:white;
+	
+	font-family:arial, verdana, tahoma;
+	font-size:14px;
+	font-weight:normal;
+	color:rgb(58,107,137);
+	text-align:left;	
+}
+.FORM_FILE
+{
+	float:left;
+	width:350px;	
+	height:25px;
+	
+	border:1px solid rgb(58,107,137);	
+	background-color:white;
+	
+	font-family:arial, verdana, tahoma;
+	font-size:14px;
+	font-weight:normal;
+	color:rgb(58,107,137);
+	text-align:left;	
+}
+.FORM_SUBMIT
+{
+	width:115px;
+	height:30px;
+	
+	margin-top:30px;
+	background-color:rgb(58,107,137);
+	border:0px;
+	float:left;
+	
+	font-family:arial, verdana, tahoma;
+	font-size:14px;
+	font-weight:normal;
+	color:white;
+	text-align:center;
+}
+
+
+.FORM_LIST_ENTRY_LEFT_2
+{
+	float:left;
+	width:90px;
+	overflow:hidden;
+	
+	font-family:arial, verdana, tahoma;
+	font-size:14px;
+	font-weight:normal;
+	color:rgb(58,107,137);
+	text-align:left;
+}
+.FORM_LIST_ENTRY_RIGHT_2
+{
+	float:left;
+	width:380px;
+	overflow:hidden;
+}
+.FORM_SELECT_2
+{
+	float:left;
+	width:230px;	
+	height:25px;
+	
+	border:1px solid rgb(58,107,137);	
+	background-color:white;
+	
+	font-family:arial, verdana, tahoma;
+	font-size:14px;
+	font-weight:normal;
+	color:rgb(58,107,137);
+	text-align:left;
+}
+.FORM_INPUT_2
+{
+	float:left;
+	width:380px;	
+	height:25px;
+	
+	border:1px solid rgb(58,107,137);	
+	background-color:white;
+	
+	font-family:arial, verdana, tahoma;
+	font-size:14px;
+	font-weight:normal;
+	color:rgb(58,107,137);
+	text-align:left;	
+}
+.FORM_TEXTAREA_2
+{
+	float:left;
+	width:380px;		
+}
+.FORM_FILE_2
+{
+	float:left;
+	width:235px;	
+	height:25px;
+	
+	border:1px solid rgb(58,107,137);	
+	background-color:white;
+	
+	font-family:arial, verdana, tahoma;
+	font-size:14px;
+	font-weight:normal;
+	color:rgb(58,107,137);
+	text-align:left;	
+}
+.ADD_PIC
+{
+	float:left;
+	width:25px;
+	height:25px;
+	cursor:pointer;
+	background-image:url(../graphics/addobject.jpg);	
+}
