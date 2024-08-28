@@ -2,31 +2,20 @@
 $no_pic = "graphics/no_pic.jpg";
 $img_src = $_REQUEST['img_url'];
 $tip = $_REQUEST['img_tip'];
+
+if (!@file_exists($img_src)) {    
+    $img_src = $no_pic;
+}
 if (is_dir($img_src)) {
     $img_src = $no_pic;
 }
-else
-    if (!@file_exists($img_src)) {
-        if (FALSE !== strpos($img_src, 'http/')) {
-            $img_src_a = explode('http/', $img_src);
-            $img_src = 'http://' . $img_src_a[1];
-            $img_src = str_replace(array(' '), array('%20'), $img_src);
-            if (!@getimagesize($img_src)) {
-                $img_src = $no_pic;
-            }
-        }
-        else
-        {
-            $img_src = $no_pic;
-        }
-    }
 
-switch ($tip)
-{
-    //*****************************************************
-    //*****************************************************
-    //*****************************************************
-    // USED IN ADMIN DO NOT DELETE !!!!!!!!!!!!!!!!!!!!!!!!
+
+switch ($tip) {
+        //*****************************************************
+        //*****************************************************
+        //*****************************************************
+        // USED IN ADMIN DO NOT DELETE !!!!!!!!!!!!!!!!!!!!!!!!
     case '0':
         $MAX_WIDTH = 100;
         $MAX_HEIGHT = 100;
@@ -97,16 +86,15 @@ switch ($tip)
         $Vcenter = true;
         $Hcenter = true;
         break;
-    //*****************************************************
-    //*****************************************************
-    //*****************************************************
+        //*****************************************************
+        //*****************************************************
+        //*****************************************************
 
 }
 
 
 $what = @getimagesize($img_src);
-switch ($what['mime'])
-{
+switch ($what['mime']) {
     case 'image/gif':
         header('content-type: image/gif');
         break;
@@ -121,8 +109,7 @@ switch ($what['mime'])
         break;
 }
 
-switch ($what['mime'])
-{
+switch ($what['mime']) {
     case 'image/gif':
         $image = @imagecreatefromgif($img_src);
         break;
@@ -144,23 +131,19 @@ $imgHeight = $what[1];
 if ($imgWidth / $imgHeight > $MAX_WIDTH / $MAX_HEIGHT) {
     $imgHeight = $MAX_WIDTH * $imgHeight / $imgWidth;
     $imgWidth = $MAX_WIDTH;
-}
-else
-{
+} else {
     $imgWidth = $MAX_HEIGHT * $imgWidth / $imgHeight;
     $imgHeight = $MAX_HEIGHT;
 }
 
-switch ($frame_type)
-{
+switch ($frame_type) {
     case 0:
         $img = imagecreatetruecolor($MAX_WIDTH, $MAX_HEIGHT);
         break;
     case 1:
         $img = imagecreatetruecolor($MAX_WIDTH + 6, $MAX_HEIGHT + 6);
         break;
-    default:
-        ;
+    default:;
 }
 $col = imagecolorallocate($img, $R, $G, $B);
 imagefill($img, 0, 0, $col);
@@ -177,8 +160,7 @@ else
     $Vdif = 0;
 
 
-switch ($frame_type)
-{
+switch ($frame_type) {
     case 0:
         imagecopyresampled($img, $image, $Hdif, $Vdif, 0, 0, $imgWidth, $imgHeight, $what[0], $what[1]);
         break;
@@ -193,13 +175,11 @@ switch ($frame_type)
 
         imagecopyresampled($img, $image, $Hdif + 3, $Vdif + 3, 0, 0, $imgWidth, $imgHeight, $what[0], $what[1]);
         break;
-    default:
-        ;
+    default:;
 }
 
 // output
-switch ($what['mime'])
-{
+switch ($what['mime']) {
     case 'image/gif':
         @imagegif($img);
         @imagegif($img, $img_dst);
@@ -220,5 +200,3 @@ switch ($what['mime'])
 
 // destroy
 @imagedestroy($img);
-
-?>

@@ -385,7 +385,7 @@ if($DISPLAY_TEMPLATE_BODY) {?>
 													<div class="IMAGE_INNER">
 														<div class="IMAGE_PIC" style="background-image:url('thumb.php?img_tip=0&img_url=<?php echo $pic_src; ?>')">
 														</div>
-														<?php if($pic_isdeletable) { ?>
+														<?php if($pic_isdeleteable) { ?>
 															<div class="OP_DELETE" onclick="if(document.getElementById('<?php echo $auxform_id; ?>').onsubmit()) document.getElementById('<?php echo $auxform_id; ?>').submit()">
 																<?php echo $lable_delpic; ?>
 															</div>

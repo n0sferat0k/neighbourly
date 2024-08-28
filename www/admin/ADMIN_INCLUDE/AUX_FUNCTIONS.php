@@ -111,8 +111,9 @@ function recursiveDelete($TABLE, $ID_VALUE)
 //SAVE AN UPLOADED FILE, IF OTHER FILE WITH SAME NAME EXISTS RENAME CURRENT FILE TO filename_1.extension, or filename_2.extension or ...
 function SaveFile($fstruct, $dir)
 {
-	$tokens = explode("\.", basename($fstruct['name']));
-	$FILE_NAME = $tokens[0];
+	$tokens = explode(".", basename($fstruct['name']));
+	
+	$FILE_NAME = str_replace(" ", "_", $tokens[0]);
 	$FILE_EXT = $tokens[1];
 
 	$DEST_1 = $dir . "/" . $FILE_NAME;

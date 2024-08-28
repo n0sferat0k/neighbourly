@@ -7,3 +7,8 @@ plugins {
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
 }
+repositories {
+    mavenCentral()
+    jcenter()
+    maven("https://jogamp.org/deployment/maven")
+}

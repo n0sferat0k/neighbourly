@@ -93,7 +93,7 @@ $p['PIC']=true;
 $p['PIC_del']=true;
 $p['PICHASNAME']=false;
 $p['MULTIPIC']=false;
-$p['ORDER']="titlu_RO";
+$p['ORDER']="titlu_EN";
 $p['ORDERDIR']="ASC";
 
 $p['TITLE']=true;
@@ -113,7 +113,7 @@ $p['ADD_NUMERICS'] = array(
 	array("EN" => "Latitude"),
 	array("EN" => "Longitude"),
 );
-$p['nb'] = array(
+$p['ADD_NUMERICS_modif'] = array(
 	array(0 => true,1 => true),
 	array(0 => true,1 => true)
 );

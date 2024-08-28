@@ -2,7 +2,7 @@
 		$DATABASE = "neighbourly"; //DO NOT DELETE - USED ELSEWHERE ALSO
 		
 		global $connection;
-		$connection = mysqli_connect("localhost","root","") or die (mysqli_error($connection));
+		$connection = mysqli_connect("localhost","root","qwerty1234") or die (mysqli_error($connection));
 		mysqli_query($connection, "SET NAMES 'utf8'");
 		mysqli_select_db($connection, $DATABASE) or die(mysqli_error($connection));
 		mysqli_query($connection, 'USE ' . $DATABASE) or die(mysqli_error($connection));		

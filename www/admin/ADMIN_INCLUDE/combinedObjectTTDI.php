@@ -652,7 +652,7 @@ class combinedObjectTTDI //Text Title Date Image
 								//daca s-a uploadat fisier								
 								//salveaza fisier
 
-								$IMG = SaveFile($_FILES[$fileInputName], $this->params['KEY'] . "IMGS/");
+								$IMG = SaveFile($_FILES[$fileInputName], $this->params['KEY'] . "IMGS");
 							} else {
 								$IMG = "";
 							}
@@ -798,7 +798,7 @@ class combinedObjectTTDI //Text Title Date Image
 							if (is_uploaded_file($_FILES[$fileInputName]["tmp_name"])) {
 								//daca s-a uploadat fisier salveaza fisier
 
-								$IMG = SaveFile($_FILES[$fileInputName], $this->params['KEY'] . "FILES/");
+								$IMG = SaveFile($_FILES[$fileInputName], $this->params['KEY'] . "FILES");
 								$NAME = $_REQUEST[$this->params['KEY'] . "_filename_" . $i];
 
 								if ($this->params['FILEHASNAME'])
@@ -820,7 +820,7 @@ class combinedObjectTTDI //Text Title Date Image
 								//daca s-a uploadat fisier									
 								//salveaza fisier
 
-								$IMG = SaveFile($_FILES[$fileInputName], $this->params['KEY'] . "IMGS/");
+								$IMG = SaveFile($_FILES[$fileInputName], $this->params['KEY'] . "IMGS");
 								$NAME = $_REQUEST[$this->params['KEY'] . "_picname_" . $i];
 
 								if ($this->params['FILEHASNAME'])
@@ -871,7 +871,7 @@ class combinedObjectTTDI //Text Title Date Image
 						if (is_uploaded_file($_FILES[$fileInputName]["tmp_name"])) {
 							//daca s-a uploadat fisier salveaza fisier
 
-							$IMG = SaveFile($_FILES[$fileInputName], $this->params['KEY'] . "FILES/");
+							$IMG = SaveFile($_FILES[$fileInputName], $this->params['KEY'] . "FILES");
 							$NAME = $_REQUEST[$this->params['KEY'] . "_filename_" . $i];
 
 							if ($this->params['FILEHASNAME'])
@@ -894,7 +894,7 @@ class combinedObjectTTDI //Text Title Date Image
 								//daca s-a uploadat fisier									
 								//salveaza fisier							 																
 
-								$IMG = SaveFile($_FILES[$fileInputName], $this->params['KEY'] . "IMGS/");
+								$IMG = SaveFile($_FILES[$fileInputName], $this->params['KEY'] . "IMGS");
 
 								$query_imgs = "INSERT INTO " . $this->params['KEY'] . "_imgs (" . $this->params['KEY'] . "_IMGS_pic," . $this->params['KEY'] . "_id) VALUES ('" . $IMG . "','" . $_REQUEST[$this->params['KEY'] . '_id'] . "')";
 								mysqli_query($connection, $query_imgs) or die(mysqli_error($connection) . $query_imgs);
@@ -911,7 +911,7 @@ class combinedObjectTTDI //Text Title Date Image
 							//daca s-a uploadat fisier								
 							//salveaza fisier
 
-							$IMG = SaveFile($_FILES[$fileInputName], $this->params['KEY'] . "IMGS/");
+							$IMG = SaveFile($_FILES[$fileInputName], $this->params['KEY'] . "IMGS");
 						} else {
 							$IMG = "";
 						}
@@ -1059,12 +1059,7 @@ class combinedObjectTTDI //Text Title Date Image
 		$tpl->set('has_right', ($this->params['PIC'] || $this->params['FILE']));
 
 		$tpl->set('needs_auxform', ($this->params['PIC'] || $this->params['FILE']));
-
-		$tpl->set('pic_isdeleteable', $this->params['PIC_del']);
-		$tpl->set('pic_iseditable', $this->params['PIC_modif']);
-
-		$tpl->set('file_iseditable', $this->params['FILE_modif']);
-		$tpl->set('file_isdeleteable', $this->params['FILE_del']);
+		
 
 		$tpl->set('title_iseditable', $this->params['TITLE_modif']);
 		$tpl->set('date_iseditable', $this->params['DATE_modif']);
@@ -1094,7 +1089,10 @@ class combinedObjectTTDI //Text Title Date Image
 		//seteaza parametrii tin template
 
 		//***************************************************************************lable-uri si texte statice
-		if ($this->params['PIC']) {
+		if ($this->params['PIC']) {			
+			$tpl->set('pic_isdeleteable', $this->params['PIC_del']);
+			$tpl->set('pic_iseditable', $this->params['PIC_modif']);
+
 			$tpl->set('lable_image', $TEXTS[$LANG]['lable_image']);
 			$tpl->set('lable_images', $TEXTS[$LANG]['lable_images']);
 			$tpl->set('auxform2_onsubmit', $TEXTS[$LANG]['auxform_onsubmit_1']);
@@ -1110,7 +1108,10 @@ class combinedObjectTTDI //Text Title Date Image
 			$tpl->set('auxform3_param1', "setdefpic"); //parametru ce imi spune sa sterg poza
 
 		}
-		if ($this->params['FILE']) {
+		if ($this->params['FILE']) {			
+			$tpl->set('file_iseditable', $this->params['FILE_modif']);
+			$tpl->set('file_isdeleteable', $this->params['FILE_del']);
+
 			$tpl->set('lable_addfile', $TEXTS[$LANG]['lable_addfile']);
 			$tpl->set('lable_file', $TEXTS[$LANG]['lable_file']);
 			$tpl->set('lable_delfile', $TEXTS[$LANG]['lable_delfile']);
@@ -1286,6 +1287,7 @@ class combinedObjectTTDI //Text Title Date Image
 						{
 							$tpl->set('pic_src', $this->params['NOPICSRC']);
 							$tpl->set('pic_isdeletable', FALSE);
+							$tpl->set('pic_rel_url', "");
 						} else {
 							$tpl->set('pic_src', "../" . $row[$this->params['KEY'] . '_pic']);
 							$tpl->set('pic_rel_url', SITE_BASE_DIR . $row[$this->params['KEY'] . '_pic']);

@@ -20,7 +20,7 @@
 		{	 	
 		 	$tag = str_replace(" ","_",trim($tag));
 		 	$var = $this->eliminate_spaces($var);
-			$this->tagvalues[$tag] = $var;
+			$this->tagvalues[$tag] = $var;			
 		}
 		
 		public function eliminate_spaces($var)
