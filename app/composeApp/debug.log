@@ -1,0 +1,183 @@
+[0819/121840.750:INFO:CONSOLE(0)] "Autofocus processing was blocked because a document already has a focused element.", source: https://www.google.com/ (0)
+[0819/124935.967:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/124936.798:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/124938.726:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/124938.734:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/124943.749:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/124943.762:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/124953.764:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/124953.779:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/124958.511:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/124958.708:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/124958.734:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125003.716:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125003.744:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125006.562:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125006.563:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125006.842:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125007.038:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125007.044:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125012.053:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125012.074:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125022.060:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125022.085:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125036.369:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125036.392:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125036.465:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125036.518:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125041.472:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125041.528:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125051.479:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125051.542:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125111.491:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/125111.555:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/142452.252:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/142452.296:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/142455.394:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/142455.538:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0819/142455.640:WARNING:dns_config_service_win.cc(586)] Failed to read DnsConfig.
+[0820/105709.217:INFO:child_thread_impl.cc(957)] ChildThreadImpl::EnsureConnected()
+[0820/105709.217:INFO:child_thread_impl.cc(957)] ChildThreadImpl::EnsureConnected()
+[0820/105729.799:ERROR:network_service_instance_impl.cc(599)] Network service crashed, restarting service.
+[0826/114148.653:INFO:CONSOLE(1)] "The Cross-Origin-Opener-Policy header has been ignored, because the URL's origin was untrustworthy. It was defined either in the final response or a redirect. Please deliver the response using the HTTPS protocol. You can also use the 'localhost' origin instead. See https://www.w3.org/TR/powerful-features/#potentially-trustworthy-origin and https://html.spec.whatwg.org/#the-cross-origin-opener-policy-header.", source: https://www.google.com/?gws_rd=ssl (1)
+[0826/114149.237:INFO:CONSOLE(0)] "Autofocus processing was blocked because a document already has a focused element.", source: https://www.google.com/?gws_rd=ssl (0)
+[0826/114227.667:INFO:CONSOLE(1)] "The Cross-Origin-Opener-Policy header has been ignored, because the URL's origin was untrustworthy. It was defined either in the final response or a redirect. Please deliver the response using the HTTPS protocol. You can also use the 'localhost' origin instead. See https://www.w3.org/TR/powerful-features/#potentially-trustworthy-origin and https://html.spec.whatwg.org/#the-cross-origin-opener-policy-header.", source: https://www.google.com/?gws_rd=ssl (1)
+[0826/114228.194:INFO:CONSOLE(0)] "Autofocus processing was blocked because a document already has a focused element.", source: https://www.google.com/?gws_rd=ssl (0)
+[0826/114254.567:INFO:CONSOLE(1)] "The Cross-Origin-Opener-Policy header has been ignored, because the URL's origin was untrustworthy. It was defined either in the final response or a redirect. Please deliver the response using the HTTPS protocol. You can also use the 'localhost' origin instead. See https://www.w3.org/TR/powerful-features/#potentially-trustworthy-origin and https://html.spec.whatwg.org/#the-cross-origin-opener-policy-header.", source: https://www.google.com/?gws_rd=ssl (1)
+[0826/114255.103:INFO:CONSOLE(0)] "Autofocus processing was blocked because a document already has a focused element.", source: https://www.google.com/?gws_rd=ssl (0)
+[0826/114350.870:INFO:CONSOLE(1)] "The Cross-Origin-Opener-Policy header has been ignored, because the URL's origin was untrustworthy. It was defined either in the final response or a redirect. Please deliver the response using the HTTPS protocol. You can also use the 'localhost' origin instead. See https://www.w3.org/TR/powerful-features/#potentially-trustworthy-origin and https://html.spec.whatwg.org/#the-cross-origin-opener-policy-header.", source: https://www.google.com/?gws_rd=ssl (1)
+[0826/114523.822:INFO:CONSOLE(1)] "The Cross-Origin-Opener-Policy header has been ignored, because the URL's origin was untrustworthy. It was defined either in the final response or a redirect. Please deliver the response using the HTTPS protocol. You can also use the 'localhost' origin instead. See https://www.w3.org/TR/powerful-features/#potentially-trustworthy-origin and https://html.spec.whatwg.org/#the-cross-origin-opener-policy-header.", source: https://www.google.com/?gws_rd=ssl (1)
+[0826/114523.959:INFO:CONSOLE(87)] "Autofocus processing was blocked because a document already has a focused element.", source: https://www.google.com/?gws_rd=ssl (87)
+[0826/114526.006:ERROR:shared_image_manager.cc(221)] SharedImageManager::ProduceSkia: Trying to Produce a Skia representation from a non-existent mailbox.
+[0826/114532.930:INFO:CONSOLE(1)] "The Cross-Origin-Opener-Policy header has been ignored, because the URL's origin was untrustworthy. It was defined either in the final response or a redirect. Please deliver the response using the HTTPS protocol. You can also use the 'localhost' origin instead. See https://www.w3.org/TR/powerful-features/#potentially-trustworthy-origin and https://html.spec.whatwg.org/#the-cross-origin-opener-policy-header.", source: https://www.google.com/?gws_rd=ssl (1)
+[0826/114533.077:INFO:CONSOLE(87)] "Autofocus processing was blocked because a document already has a focused element.", source: https://www.google.com/?gws_rd=ssl (87)
+[0826/114719.384:WARNING:spdy_session.cc(2978)] Received HEADERS for invalid stream 5
+[0826/121246.529:WARNING:spdy_session.cc(2978)] Received HEADERS for invalid stream 3
+[0826/183804.611:ERROR:cert_verify_proc_builtin.cc(874)] CertVerifyProcBuiltin for 192.168.11.166 failed:
+----- Certificate i=0 (emailAddress=lorand.krucz@yahoo.com,CN=Krucz Lorand,OU=One,O=Neighbourly,L=Baia Sprie,ST=Maramures,C=RO) -----
+ERROR: No matching issuer found
+
+
+[0826/183805.856:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0826/184038.956:ERROR:cert_verify_proc_builtin.cc(874)] CertVerifyProcBuiltin for neighbourly.go.ro failed:
+----- Certificate i=0 (emailAddress=lorand.krucz@yahoo.com,CN=Krucz Lorand,OU=One,O=Neighbourly,L=Baia Sprie,ST=Maramures,C=RO) -----
+ERROR: No matching issuer found
+
+
+[0826/184038.956:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0826/184643.122:ERROR:cert_verify_proc_builtin.cc(874)] CertVerifyProcBuiltin for neighbourly.go.ro failed:
+----- Certificate i=0 (emailAddress=lorand.krucz@yahoo.com,CN=Krucz Lorand,OU=One,O=Neighbourly,L=Baia Sprie,ST=Maramures,C=RO) -----
+ERROR: No matching issuer found
+
+
+[0826/184643.263:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0826/185825.467:ERROR:cert_verify_proc_builtin.cc(874)] CertVerifyProcBuiltin for neighbourly.go.ro failed:
+----- Certificate i=0 (emailAddress=lorand.krucz@yahoo.com,CN=Krucz Lorand,OU=One,O=Neighbourly,L=Baia Sprie,ST=Maramures,C=RO) -----
+ERROR: No matching issuer found
+
+
+[0826/185826.122:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0826/185930.712:ERROR:cert_verify_proc_builtin.cc(874)] CertVerifyProcBuiltin for neighbourly.go.ro failed:
+----- Certificate i=0 (emailAddress=lorand.krucz@yahoo.com,CN=Krucz Lorand,OU=One,O=Neighbourly,L=Baia Sprie,ST=Maramures,C=RO) -----
+ERROR: No matching issuer found
+
+
+[0826/185930.712:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/080805.861:ERROR:cert_verify_proc_builtin.cc(874)] CertVerifyProcBuiltin for neighbourly.go.ro failed:
+----- Certificate i=0 (emailAddress=lorand.krucz@yahoo.com,CN=Krucz Lorand,OU=One,O=Neighbourly,L=Baia Sprie,ST=Maramures,C=RO) -----
+ERROR: No matching issuer found
+
+
+[0827/080805.909:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/080808.132:ERROR:cert_verify_proc_builtin.cc(874)] CertVerifyProcBuiltin for neighbourly.go.ro failed:
+----- Certificate i=0 (emailAddress=lorand.krucz@yahoo.com,CN=Krucz Lorand,OU=One,O=Neighbourly,L=Baia Sprie,ST=Maramures,C=RO) -----
+ERROR: No matching issuer found
+
+
+[0827/080808.132:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/082703.926:ERROR:cert_verify_proc_builtin.cc(874)] CertVerifyProcBuiltin for neighbourly.go.ro failed:
+----- Certificate i=0 (emailAddress=lorand.krucz@yahoo.com,CN=Krucz Lorand,OU=One,O=Neighbourly,L=Baia Sprie,ST=Maramures,C=RO) -----
+ERROR: No matching issuer found
+
+
+[0827/082704.165:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085659.450:ERROR:cert_verify_proc_builtin.cc(874)] CertVerifyProcBuiltin for neighbourly.go.ro failed:
+----- Certificate i=0 (emailAddress=lorand.krucz@yahoo.com,CN=Krucz Lorand,OU=One,O=Neighbourly,L=Baia Sprie,ST=Maramures,C=RO) -----
+ERROR: No matching issuer found
+
+
+[0827/085659.730:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085705.725:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085705.857:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085705.897:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085705.898:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085706.136:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085706.145:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085706.180:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085706.669:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085706.669:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085706.669:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085724.582:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085724.823:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085724.827:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085724.894:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.046:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.046:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.047:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.111:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.125:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.200:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.200:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.200:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.228:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.228:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.339:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.339:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.340:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.431:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.431:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.497:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.518:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.519:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.548:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.548:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.577:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.627:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.627:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.628:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085725.661:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085802.953:ERROR:cert_verify_proc_builtin.cc(874)] CertVerifyProcBuiltin for neighbourly.go.ro failed:
+----- Certificate i=0 (emailAddress=lorand.krucz@yahoo.com,CN=Krucz Lorand,OU=One,O=Neighbourly,L=Baia Sprie,ST=Maramures,C=RO) -----
+ERROR: No matching issuer found
+
+
+[0827/085802.954:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085802.975:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/085809.143:INFO:permission_prompt.cc(288)] Implement OnShowPermissionPrompt to override default IGNORE handling of permission prompts.
+[0827/102131.710:ERROR:cert_verify_proc_builtin.cc(874)] CertVerifyProcBuiltin for neighbourly.go.ro failed:
+----- Certificate i=0 (emailAddress=lorand.krucz@yahoo.com,CN=Krucz Lorand,OU=One,O=Neighbourly,L=Baia Sprie,ST=Maramures,C=RO) -----
+ERROR: No matching issuer found
+
+
+[0827/102131.911:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/102141.810:INFO:permission_prompt.cc(288)] Implement OnShowPermissionPrompt to override default IGNORE handling of permission prompts.
+[0827/114659.369:ERROR:cert_verify_proc_builtin.cc(874)] CertVerifyProcBuiltin for neighbourly.go.ro failed:
+----- Certificate i=0 (emailAddress=lorand.krucz@yahoo.com,CN=Krucz Lorand,OU=One,O=Neighbourly,L=Baia Sprie,ST=Maramures,C=RO) -----
+ERROR: No matching issuer found
+
+
+[0827/114659.369:ERROR:ssl_client_socket_impl.cc(970)] handshake failed; returned -1, SSL error code 1, net_error -202
+[0827/214018.246:INFO:CONSOLE(17)] "Uncaught Error: Invalid arguments; expecting a single integer", source: http://neighbourly.go.ro/map.php?userid=1 (17)
+[0828/151242.319:WARNING:backend_impl.cc(1759)] Destroying invalid entry.
+[0828/152416.963:INFO:permission_prompt.cc(288)] Implement OnShowPermissionPrompt to override default IGNORE handling of permission prompts.
+[0828/153429.847:INFO:permission_prompt.cc(288)] Implement OnShowPermissionPrompt to override default IGNORE handling of permission prompts.
+[0828/173015.678:WARNING:spdy_session.cc(2978)] Received HEADERS for invalid stream 5
+[0828/175659.620:INFO:CONSOLE(17)] "Uncaught Error: Invalid arguments; expecting a single integer", source: file:///kcefbrowser/1754899546#url=about:blank (17)
+[0828/175659.625:INFO:CONSOLE(17)] "Uncaught Error: Invalid arguments; expecting a single integer", source: file:///kcefbrowser/1754899546#url=about:blank (17)
+[0828/183536.511:INFO:CONSOLE(37)] "Uncaught TypeError: Cannot read properties of undefined (reading 'callNative')", source: file:///kcefbrowser/2047584265 (37)
+[0828/183914.935:INFO:CONSOLE(37)] "Uncaught TypeError: Cannot read properties of undefined (reading 'callNative')", source: file:///kcefbrowser/1741987818 (37)
+[0828/184036.942:INFO:CONSOLE(13)] "add callback: 0, function (data) {}", source:  (13)
+[0828/184257.576:INFO:CONSOLE(13)] "add callback: 0, function (data) {}", source:  (13)
+[0829/190717.326:INFO:CONSOLE(13)] "add callback: 0, function (data) {}", source:  (13)
+[0829/190831.095:INFO:CONSOLE(13)] "add callback: 0, function (data) {}", source:  (13)
+[0829/191253.547:INFO:CONSOLE(13)] "add callback: 0, function (data) {}", source:  (13)

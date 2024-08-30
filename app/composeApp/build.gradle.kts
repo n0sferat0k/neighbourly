@@ -25,6 +25,8 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.play.services.location)
+            implementation(libs.accompanist.permissions)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -35,7 +37,8 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            api("io.github.kevinnzou:compose-webview-multiplatform:1.9.20")
+            api(libs.compose.webview.multiplatform)
+            implementation(libs.mpfilepicker)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

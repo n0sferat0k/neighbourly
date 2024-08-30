@@ -1,32 +1,75 @@
 package com.neighbourly.app
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.multiplatform.webview.jsbridge.IJsMessageHandler
+import com.multiplatform.webview.jsbridge.JsMessage
+import com.multiplatform.webview.jsbridge.rememberWebViewJsBridge
 import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.WebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
-import com.multiplatform.webview.web.rememberWebViewStateWithHTMLFile
-import neighbourly.composeapp.generated.resources.Res
 
 
 @Composable
 fun Map(modifier: Modifier) {
-    val state = rememberWebViewStateWithHTMLData( data = html).apply {
+    val state = rememberWebViewStateWithHTMLData(data = html).apply {
         webSettings.isJavaScriptEnabled = true
     }
     val navigator = rememberWebViewNavigator()
+    val jsBridge = rememberWebViewJsBridge()
+    var firstGps by remember { mutableStateOf(true) }
+    var loadGps by remember { mutableStateOf(false) }
 
-//    LaunchedEffect(Unit) {
-//        delay(25000)
-//        navigator.evaluateJavaScript("new maplibregl.Marker().setLngLat([23.6684110, 47.6530671]).addTo(map);")
-//    }
+    LaunchedEffect(jsBridge) {
+        jsBridge.register(object : IJsMessageHandler {
+
+            override fun methodName(): String {
+                return "MapReady"
+            }
+
+            override fun handle(
+                message: JsMessage,
+                navigator: WebViewNavigator?,
+                callback: (String) -> Unit
+            ) {
+                loadGps = true
+            }
+        })
+    }
+
+    val callback: GeoLocationCallback = { lat, lng, acc ->
+        navigator.evaluateJavaScript("setDot($lat, $lng, 'current');")
+        if (firstGps) {
+            navigator.evaluateJavaScript("center($lat, $lng, 15);")
+            firstGps = false
+        }
+    }
+
+    DisposableEffect(loadGps) {
+        if (loadGps) {
+            GetLocation.addCallback(callback)
+        }
+        onDispose {
+            GetLocation.removeCallback(callback)
+        }
+    }
 
     WebView(
         state = state,
         modifier = modifier,
-        navigator = navigator
+        navigator = navigator,
+        webViewJsBridge = jsBridge,
     )
 }
+
+
 val html = """
     <!DOCTYPE html>
     <html lang="en">
@@ -54,51 +97,64 @@ val html = """
     <body>
         <div id="map"></div>
         <script>
+            var mapLoaded = false;
+            var lat = 0;
+            var lng = 0;
             const map = new maplibregl.Map({
                 container: 'map',
                 style: 'https://api.maptiler.com/maps/streets/style.json?key=VdbWJipihjTW3mb6JxNK',
                 center: [0, 0],
-                zoom: 15
+                zoom: 1
             });
-    
+        
             map.on('load', () => {
-                setDot(47.6530671, 23.6684110, 'current');
-                center(47.6530671, 23.6684110, 15);
-                window.setTimeout(function() {
-                        setDot(47.6540671, 23.6684110, 'current');
-                        center(47.6540671, 23.6684110, 15);
-                    }, 10000); 
+                window.kmpJsBridge.callNative("MapReady","{}",function (data) {});
+                mapLoaded = true;
+                if(lat != 0 && lng != 0) {
+                    setDot(lng, lat, 'current');
+                    center(lng, lat, 15);
+                }                
             });
     
-            function center(latitude, longitudem, zoom) {
-                map.flyTo({
-                    center: [longitudem, latitude],
-                    zoom: zoom
-                });
-            }
-            function setDot(latitude, longitude, id) {
-                if (map.getSource(id) !== undefined) {
-                    map.getSource(id).setData({
-                        'type': 'Point',
-                        'coordinates': [longitude, latitude]
+            function center(latitude, longitude, zoom) {
+                if(mapLoaded) {
+                    map.flyTo({
+                        center: [longitude, latitude],
+                        zoom: zoom
                     });
                 } else {
-                    map.addSource(id, {
-                        'type': 'geojson',
-                        'data': {
+                    lat = latitude;
+                    lng = longitude;
+                }
+            }
+            function setDot(latitude, longitude, id) {
+                if(mapLoaded) {
+                    if (map.getSource(id) !== undefined) {
+                        map.getSource(id).setData({
                             'type': 'Point',
                             'coordinates': [longitude, latitude]
-                        }
-                    });
-                    map.addLayer({
-                        'id': id,
-                        'source': id,
-                        'type': 'circle',
-                        'paint': {
-                            'circle-radius': 10,
-                            'circle-color': '#007cbf'
-                        }
-                    });
+                        });
+                    } else {
+                        map.addSource(id, {
+                            'type': 'geojson',
+                            'data': {
+                                'type': 'Point',
+                                'coordinates': [longitude, latitude]
+                            }
+                        });
+                        map.addLayer({
+                            'id': id,
+                            'source': id,
+                            'type': 'circle',
+                            'paint': {
+                                'circle-radius': 10,
+                                'circle-color': '#007cbf'
+                            }
+                        });
+                    }
+                } else {
+                    lat = latitude;
+                    lng = longitude;
                 }
             }
         </script>
