@@ -4,10 +4,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import com.darkrockstudios.libraries.mpfilepicker.MPFile
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.cio.CIO
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
 import javax.imageio.ImageIO
+
+class JVMPlatform : Platform {
+    override val isWide: Boolean = true
+}
+
+actual fun getPlatform(): Platform = JVMPlatform()
 
 @Composable
 actual fun RequestPermissions() {
@@ -39,3 +47,7 @@ actual fun loadImageFromFile(file: MPFile<Any>): BitmapPainter {
     val imageFile = File(file.platformFile.toString())
     return BitmapPainter(ImageIO.read(imageFile).toComposeImageBitmap())
 }
+
+actual fun getPhoneNumber(): String = ""
+
+actual val httpClientEngine: HttpClientEngine = CIO.create()

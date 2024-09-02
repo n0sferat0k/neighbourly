@@ -3,6 +3,7 @@ package com.neighbourly.app
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import com.darkrockstudios.libraries.mpfilepicker.MPFile
+import io.ktor.client.engine.HttpClientEngine
 
 interface Platform {
     val isWide: Boolean
@@ -21,3 +22,7 @@ expect object GetLocation {
 }
 
 expect fun loadImageFromFile(file: MPFile<Any>): BitmapPainter
+
+expect fun getPhoneNumber(): String
+
+expect val httpClientEngine: HttpClientEngine

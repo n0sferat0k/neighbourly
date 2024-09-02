@@ -27,6 +27,8 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.play.services.location)
             implementation(libs.accompanist.permissions)
+
+            implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -39,10 +41,18 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
             api(libs.compose.webview.multiplatform)
             implementation(libs.mpfilepicker)
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.encoding)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+
+            implementation(libs.ktor.client.cio)
         }
     }
 }

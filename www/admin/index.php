@@ -99,6 +99,9 @@ $p['ORDERDIR']="ASC";
 $p['TITLE']=true;
 $p['TITLE_modif']=true;
 
+$p['DATE']=true;
+$p['DATE_modif']=true;
+
 $p['TEXT']=true;
 $p['TEXT_modif']=true;
 
@@ -109,11 +112,75 @@ $p['APPENDABLE']=true;
 $p['LANGUAGES']=array("EN");
 $p['CURRENTLANGUAGE']=0;
 
+$p['ADD_STRINGS'] = array(		
+	array("EN" => "Username"),	
+	array("EN" => "Passhash"),
+	array("EN" => "Phone"),
+	array("EN" => "Email"),
+);
+$p['ADD_STRINGS_modif'] = array(
+	array(0 => true,1 => true),
+	array(0 => true,1 => true),
+	array(0 => true,1 => true),
+	array(0 => true,1 => true),	
+);
+
 $p['ADD_NUMERICS'] = array(
+	array("EN" => "Houoehold"),	
+);
+$p['ADD_NUMERICS_modif'] = array(
+	array(0 => true,1 => true),	
+);
+
+$p['LIST_template']="TEMPLATES/table_list.php";
+$p['SINGLE_template']="TEMPLATES/users_single.php";
+
+$users = new combinedObjectTTDI();
+$users->setParams($p);
+$classManagger->add($users);
+
+/*********************************************************************************HOUSEHOLDS*/
+
+unset($p);
+$p = $combinedObcejtTTDI_defparams;
+$p['KEY']="households";
+$p['MENULABLE']="Households";
+$p['DISPLAYMENUTAB']=true;
+
+$p['PIC']=true;
+$p['PIC_del']=true;
+$p['PICHASNAME']=false;
+$p['MULTIPIC']=false;
+$p['ORDER']="titlu_EN";
+$p['ORDERDIR']="ASC";
+
+$p['TITLE']=true;
+$p['TITLE_modif']=true;
+
+$p['TEXT']=true;
+$p['TEXT_modif']=true;
+
+$p['SINGULAR']=false;
+$p['DELETABLE']=true;
+$p['APPENDABLE']=true;
+
+$p['LANGUAGES']=array("EN");
+$p['CURRENTLANGUAGE']=0;
+
+$p['ADD_STRINGS'] = array(		
+	array("EN" => "Address"),	
+);
+$p['ADD_STRINGS_modif'] = array(
+	array(0 => true,1 => true),	
+);
+
+$p['ADD_NUMERICS'] = array(
+	array("EN" => "Head ID"),
 	array("EN" => "Latitude"),
 	array("EN" => "Longitude"),
 );
 $p['ADD_NUMERICS_modif'] = array(
+	array(0 => true,1 => true),
 	array(0 => true,1 => true),
 	array(0 => true,1 => true)
 );
@@ -124,6 +191,52 @@ $p['SINGLE_template']="TEMPLATES/single.php";
 $users = new combinedObjectTTDI();
 $users->setParams($p);
 $classManagger->add($users);
+
+/*********************************************************************************TOKENS*/
+
+unset($p);
+$p = $combinedObcejtTTDI_defparams;
+$p['KEY']="tokens";
+$p['MENULABLE']="Tokens";
+$p['DISPLAYMENUTAB']=true;
+
+$p['PIC']=false;
+$p['PIC_del']=false;
+$p['PICHASNAME']=false;
+$p['MULTIPIC']=false;
+$p['ORDER']="titlu_EN";
+$p['ORDERDIR']="ASC";
+
+$p['DATE']=true;
+$p['DATE_modif']=true;
+
+$p['TITLE']=true;
+$p['TITLE_modif']=true;
+
+$p['TEXT']=false;
+$p['TEXT_modif']=false;
+
+$p['SINGULAR']=false;
+$p['DELETABLE']=true;
+$p['APPENDABLE']=true;
+
+$p['ADD_NUMERICS'] = array(
+	array("EN" => "User ID"),	
+);
+$p['ADD_NUMERICS_modif'] = array(
+	array(0 => true,1 => true),	
+);
+
+$p['LANGUAGES']=array("EN");
+$p['CURRENTLANGUAGE']=0;
+
+$p['LIST_template']="TEMPLATES/table_list.php";
+$p['SINGLE_template']="TEMPLATES/single.php";
+
+$users = new combinedObjectTTDI();
+$users->setParams($p);
+$classManagger->add($users);
+
 
 /*********************************************************************************COORDINATES*/
 

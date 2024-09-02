@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -14,11 +15,11 @@ var db *sql.DB
 func main() {
 	//database connection
 	var err error
-	if db, err = sql.Open("mysql", "root:@tcp(localhost:3306)/neighbourly"); err != nil {
-		log.Fatal(err)
+	if db, err = sql.Open("mysql", "root:qwerty1234@tcp(localhost:3306)/neighbourly"); err != nil {
+		panic(err)
 	}
 	if err := db.Ping(); err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	defer db.Close()
 
@@ -26,5 +27,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/register", RegisterUser).Methods("POST")
 	r.HandleFunc("/login", LoginUser).Methods("POST")
+	r.HandleFunc("/upload", UploadImage).Methods("POST")
+	fmt.Println("Starting server on :8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

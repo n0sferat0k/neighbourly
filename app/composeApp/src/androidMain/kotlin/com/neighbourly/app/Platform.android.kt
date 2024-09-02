@@ -3,8 +3,15 @@ package com.neighbourly.app
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_PHONE_NUMBERS
+import android.Manifest.permission.READ_PHONE_STATE
+import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Looper
+import android.telephony.SubscriptionManager
+import android.telephony.SubscriptionManager.DEFAULT_SUBSCRIPTION_ID
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.asImageBitmap
@@ -19,7 +26,9 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.neighbourly.app.MainActivity.Companion.locationProvider
-import java.io.File
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.okhttp.OkHttp
+
 
 class AndroidPlatform : Platform {
     override val isWide: Boolean = false
@@ -37,6 +46,8 @@ actual fun RequestPermissions() {
             ACCESS_COARSE_LOCATION,
             ACCESS_FINE_LOCATION,
             READ_EXTERNAL_STORAGE,
+            READ_PHONE_STATE,
+            READ_PHONE_NUMBERS
         )
     )
 
@@ -97,3 +108,11 @@ actual fun loadImageFromFile(file: MPFile<Any>): BitmapPainter {
     val bitmap = BitmapFactory.decodeStream(stream).asImageBitmap()
     return BitmapPainter(bitmap)
 }
+
+@SuppressLint("MissingPermission")
+actual fun getPhoneNumber(): String {
+    val subscriptionManager = MainActivity.mainActivity.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+    return subscriptionManager.getPhoneNumber(DEFAULT_SUBSCRIPTION_ID)
+}
+
+actual val httpClientEngine: HttpClientEngine = OkHttp.create()
