@@ -42,9 +42,26 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		}
 		user.Password = ""
 
+		var now = time.Now()
 		// Insert the new user into the database
-		insertResult, err := db.Exec("INSERT INTO users (users_add_strings_0, users_add_strings_1, users_titlu_EN, users_add_strings_3, users_add_strings_2) VALUES (?, ?, ?, ?, ?)",
-			user.Username, hashedPassword, user.Fullname, user.Email, user.Phone)
+		insertResult, err := db.Exec(`INSERT INTO users (
+			users_add_strings_0,
+			users_add_strings_1, 
+			users_titlu_EN, 
+			users_add_strings_3, 
+			users_add_strings_2,
+			users_text_EN,
+			users_pic,
+			users_data) 
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+			user.Username,
+			hashedPassword,
+			user.Fullname,
+			user.Email,
+			user.Phone,
+			"",
+			"",
+			now.Unix())
 		if err != nil {
 			http.Error(w, "Failed to register user "+err.Error(), http.StatusInternalServerError)
 			return
