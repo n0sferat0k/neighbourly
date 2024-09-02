@@ -36,3 +36,31 @@ sudo nano 000-default.conf
 sudo systemctl restart apache2
 sudo chown -R www-data:www-data /media/neighbourly/ExtremeSSD/neighbourly/www
 sudo chmod -R 755 /media
+
+//INIT AND BUILD GO MODULE 
+
+sudo go mod init main
+sudo go get github.com/go-sql-driver/mysql
+sudo go get github.com/gorilla/mux
+sudo go get golang.org/x/crypto/bcrypt
+sudo go build -o api
+
+sudo nano /etc/systemd/system/api.service
+	[Unit]
+	Description=Neighbourly Go Api
+	After=network.target
+
+	[Service]
+	ExecStart=/media/neighbourly/ExtremeSSD/neighbourly/api/api
+	WorkingDirectory=/media/neighbourly/ExtremeSSD/neighbourly/api
+	StandardOutput=inherit
+	StandardError=inherit
+	Restart=always
+	User=neighbourly
+
+	[Install]
+	WantedBy=multi-user.target
+sudo systemctl daemon-reload
+sudo systemctl enable api.service
+sudo systemctl start api.service
+sudo systemctl status api.service

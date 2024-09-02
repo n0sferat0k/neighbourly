@@ -53,7 +53,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		// Retain the user ID
 		insertedID, err := insertResult.LastInsertId()
 		if err != nil {
-			http.Error(w, "Failed to register user", http.StatusInternalServerError)
+			http.Error(w, "Failed to register user"+err.Error(), http.StatusInternalServerError)
 			return
 		}
 		user.Userid = insertedID
@@ -71,7 +71,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		_, err = db.Exec("INSERT INTO tokens (tokens_add_numerics_0 , tokens_titlu_EN, tokens_data) VALUES (?, ?, ?)",
 			user.Userid, user.Authtoken, tokenExpiration.Unix())
 		if err != nil {
-			http.Error(w, "Failed to register user", http.StatusInternalServerError)
+			http.Error(w, "Failed to add token "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 
