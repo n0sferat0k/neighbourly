@@ -13,6 +13,9 @@ import com.google.android.gms.location.LocationServices
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        KoinProvider.initKoin()
+
         mainActivity = this
         setContent {
             App()

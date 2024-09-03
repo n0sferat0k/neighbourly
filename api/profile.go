@@ -8,29 +8,19 @@ import (
 	"path/filepath"
 )
 
-func UploadImage(w http.ResponseWriter, r *http.Request) {
+func UploadProfileImage(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
 	}
 
-	// Extract the token from the request headers
-	token := r.Header.Get("Authorization")
-	if token == "" {
-		http.Error(w, "Missing token", http.StatusUnauthorized)
-		return
-	}
-
-	// Validate the token (simple validation for demonstration purposes)
-	userID, err := validateToken(token)
-	if err != nil {
-		http.Error(w, "Invalid token", http.StatusUnauthorized)
+	var userId string = validateToken(w, r)
+	if userId == "" {
 		return
 	}
 
 	// Parse the multipart form data
-	err = r.ParseMultipartForm(10 << 20) // 10 MB
-	if err != nil {
+	if err := r.ParseMultipartForm(10 << 20); err != nil {
 		http.Error(w, "Failed to parse multipart form", http.StatusBadRequest)
 		return
 	}
@@ -44,21 +34,36 @@ func UploadImage(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 
 	// Create a Go routine to save the file
-	go func() {
+	go func(userId string) {
+
 		// Create the uploads folder if it doesn't exist
 		if _, err := os.Stat("uploads"); os.IsNotExist(err) {
 			os.Mkdir("uploads", os.ModePerm)
 		}
 
-		// Create a user-specific folder
 		wwwRelativeFolder := "usersIMGS"
-		saveFolder := "../www/usersIMGS"
+		apiRelativeFolder := "../www/"
+		saveFolder := apiRelativeFolder + wwwRelativeFolder
+
 		if _, err := os.Stat(saveFolder); os.IsNotExist(err) {
 			os.Mkdir(saveFolder, os.ModePerm)
 		}
 
+		// Delete old file
+		var oldUserImg string
+		if err = db.QueryRow("SELECT users_pic FROM users WHERE users_id = ?", userId).Scan(&oldUserImg); err == nil {
+			delFile := apiRelativeFolder + oldUserImg
+			fmt.Println("deleteing file:" + delFile)
+
+			if err := os.Remove(delFile); err != nil {
+				fmt.Println("Failed to delete file:", err)
+			}
+		} else {
+			fmt.Println("deleteing failed:" + err.Error())
+		}
+
 		// Create the destination file
-		destinationFileName := "profile_" + userID + filepath.Ext(handler.Filename)
+		destinationFileName := "profile_" + userId + filepath.Ext(handler.Filename)
 		dst, err := os.Create(filepath.Join(saveFolder, destinationFileName))
 		if err != nil {
 			fmt.Println("Failed to create file:", err)
@@ -73,24 +78,14 @@ func UploadImage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		dbFilePath := filepath.Join(wwwRelativeFolder, destinationFileName)
-		if _, err = db.Exec("UPDATE users SET users_pic = ? WHERE users_id = ?", dbFilePath, userID); err != nil {
+		if _, err = db.Exec("UPDATE users SET users_pic = ? WHERE users_id = ?", dbFilePath, userId); err != nil {
 			http.Error(w, "Failed to update user with image", http.StatusInternalServerError)
 			return
 		}
 
 		fmt.Println("File uploaded successfully:", handler.Filename)
-	}()
+	}(userId)
 
-	fmt.Fprintln(w, "File uploaded successfully")
 	w.WriteHeader(http.StatusCreated)
-}
-
-// validateToken is a placeholder function for token validation
-func validateToken(token string) (string, error) {
-	// For demonstration purposes, assume the token is the userID
-	// In a real application, you would validate the token and extract the userID
-	if token == "valid-token" {
-		return "1", nil
-	}
-	return "", fmt.Errorf("invalid token")
+	fmt.Fprintln(w, "File uploaded successfully")
 }

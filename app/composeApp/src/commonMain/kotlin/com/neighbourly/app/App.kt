@@ -1,6 +1,6 @@
 package com.neighbourly.app
 
-import com.neighbourly.app.ui.LoginOrRegister
+import com.neighbourly.app.a_device.ui.LoginOrRegister
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -19,10 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import com.neighbourly.app.ui.AppColors
-import com.neighbourly.app.ui.ContentBox
-import com.neighbourly.app.ui.HalfCircleHalo
-import com.neighbourly.app.ui.Map
+import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.ContentBox
+import com.neighbourly.app.a_device.ui.HalfCircleHalo
+import com.neighbourly.app.a_device.ui.Map
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.houses
 import org.jetbrains.compose.resources.painterResource

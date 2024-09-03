@@ -2,11 +2,49 @@ package main
 
 import (
 	"crypto/rand"
+	"database/sql"
 	"encoding/hex"
+	"fmt"
+	"net/http"
 	"regexp"
+	"strings"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
+
+// validateToken is a placeholder function for token validation
+func validateToken(w http.ResponseWriter, r *http.Request) string {
+
+	// Extract the token from the request headers
+	token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	if token == "" {
+		http.Error(w, "Missing token", http.StatusUnauthorized)
+		return ""
+	}
+
+	var existingTokenUserId string
+	var existingTokenTs int64
+
+	err := db.QueryRow("SELECT tokens_add_numerics_0, tokens_data FROM tokens WHERE tokens_titlu_EN = ? LIMIT 1", token).Scan(&existingTokenUserId, &existingTokenTs)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "Invalid token: "+token, http.StatusUnauthorized)
+			return ""
+		} else {
+			http.Error(w, "Database error "+err.Error(), http.StatusInternalServerError)
+			return ""
+		}
+	}
+	if existingTokenTs < time.Now().Unix() {
+		http.Error(w, "Expired token", http.StatusUnauthorized)
+		return ""
+	}
+
+	fmt.Println("Tokened user:" + existingTokenUserId)
+
+	return existingTokenUserId
+}
 
 func validateEmail(email string) bool {
 	const emailRegex = `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
@@ -34,7 +72,7 @@ func checkPasswordHash(password, hash string) bool {
 
 func generateAuthToken() (string, error) {
 	// Create a byte slice to hold the random bytes
-	token := make([]byte, 128)
+	token := make([]byte, 126)
 
 	// Read random bytes into the slice
 

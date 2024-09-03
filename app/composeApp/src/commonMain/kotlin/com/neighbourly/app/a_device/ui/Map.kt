@@ -1,4 +1,4 @@
-package com.neighbourly.app.ui
+package com.neighbourly.app.a_device.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect

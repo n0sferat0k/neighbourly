@@ -13,6 +13,8 @@ import java.io.File
 import kotlin.math.max
 
 fun main() = application {
+    KoinProvider.initKoin()
+
     Window(
         onCloseRequest = ::exitApplication,
         title = "Neighbourly",

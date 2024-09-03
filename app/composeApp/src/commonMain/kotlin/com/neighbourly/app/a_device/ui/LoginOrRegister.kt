@@ -1,4 +1,4 @@
-package com.neighbourly.app.ui
+package com.neighbourly.app.a_device.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -20,9 +20,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,7 +41,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.MultipleFilePicker
+import com.neighbourly.app.KoinProvider
+import com.neighbourly.app.b_adapt.vm.LoginViewModel
 import com.neighbourly.app.getPhoneNumber
 import com.neighbourly.app.loadImageFromFile
 import neighbourly.composeapp.generated.resources.Res
@@ -122,7 +127,9 @@ fun LoginOrRegister() {
 }
 
 @Composable
-fun Login() {
+fun Login(loginViewModel: LoginViewModel = viewModel { KoinProvider.KOIN.get<LoginViewModel>() }) {
+
+    val state by loginViewModel.state.collectAsState()
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -157,16 +164,39 @@ fun Login() {
 
         // Register Button
         Button(
-            onClick = { /* Handle registration */ },
+            onClick = {
+                loginViewModel.onLogin(username, password)
+            },
             modifier = Modifier
                 .wrapContentWidth()
                 .height(48.dp),
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(backgroundColor = AppColors.primary)
         ) {
+            if (state.loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(end = 8.dp),
+                    color = Color.White,
+                    strokeWidth = 2.dp
+                )
+            }
             Text(
                 stringResource(Res.string.login),
                 color = Color.White,
+                style = TextStyle(
+                    fontFamily = font(),
+                    fontSize = 18.sp,
+                    color = AppColors.primary
+                )
+            )
+        }
+
+        if(state.error.isNotEmpty()) {
+            Text(
+                text = state.error,
+                color = Color.Red,
                 style = TextStyle(
                     fontFamily = font(),
                     fontSize = 18.sp,
