@@ -44,12 +44,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.MultipleFilePicker
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.b_adapt.vm.LoginViewModel
+import com.neighbourly.app.b_adapt.viewmodel.LoginViewModel
+import com.neighbourly.app.b_adapt.viewmodel.RegisterViewModel
 import com.neighbourly.app.getPhoneNumber
 import com.neighbourly.app.loadImageFromFile
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.app_name
 import neighbourly.composeapp.generated.resources.confirmpassword
+import neighbourly.composeapp.generated.resources.email
 import neighbourly.composeapp.generated.resources.fullname
 import neighbourly.composeapp.generated.resources.houses
 import neighbourly.composeapp.generated.resources.login
@@ -61,30 +63,30 @@ import neighbourly.composeapp.generated.resources.username
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-
 @Composable
 fun LoginOrRegister() {
     var index by remember { mutableStateOf(0) }
 
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Row(modifier = Modifier.align(Alignment.TopStart).padding(start = 10.dp)) {
             Image(
                 modifier = Modifier.size(48.dp).align(Alignment.CenterVertically),
                 painter = painterResource(Res.drawable.houses),
                 colorFilter = ColorFilter.tint(AppColors.primary),
-                contentDescription = null
+                contentDescription = null,
             )
             Text(
                 modifier = Modifier.align(Alignment.Bottom).padding(start = 5.dp),
                 text = stringResource(Res.string.app_name),
-                style = TextStyle(
-                    fontFamily = font(),
-                    fontSize = 24.sp,
-                    color = AppColors.primary
-                )
+                style =
+                    TextStyle(
+                        fontFamily = font(),
+                        fontSize = 24.sp,
+                        color = AppColors.primary,
+                    ),
             )
         }
 
@@ -95,32 +97,36 @@ fun LoginOrRegister() {
 
         Row(modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = 10.dp, end = 20.dp)) {
             Text(
-                modifier = Modifier
-                    .padding(start = 5.dp)
-                    .clickable(onClick = {
-                        index = 0
-                    }),
+                modifier =
+                    Modifier
+                        .padding(start = 5.dp)
+                        .clickable(onClick = {
+                            index = 0
+                        }),
                 text = stringResource(Res.string.login),
-                style = TextStyle(
-                    fontWeight = if (index == 0) FontWeight.Bold else FontWeight.Normal,
-                    fontFamily = font(),
-                    fontSize = 20.sp,
-                    color = AppColors.primary
-                )
+                style =
+                    TextStyle(
+                        fontWeight = if (index == 0) FontWeight.Bold else FontWeight.Normal,
+                        fontFamily = font(),
+                        fontSize = 20.sp,
+                        color = AppColors.primary,
+                    ),
             )
             Text(
-                modifier = Modifier
-                    .padding(start = 15.dp)
-                    .clickable(onClick = {
-                        index = 1
-                    }),
+                modifier =
+                    Modifier
+                        .padding(start = 15.dp)
+                        .clickable(onClick = {
+                            index = 1
+                        }),
                 text = stringResource(Res.string.register),
-                style = TextStyle(
-                    fontWeight = if (index == 1) FontWeight.Bold else FontWeight.Normal,
-                    fontFamily = font(),
-                    fontSize = 20.sp,
-                    color = AppColors.primary
-                )
+                style =
+                    TextStyle(
+                        fontWeight = if (index == 1) FontWeight.Bold else FontWeight.Normal,
+                        fontFamily = font(),
+                        fontSize = 20.sp,
+                        color = AppColors.primary,
+                    ),
             )
         }
     }
@@ -128,25 +134,25 @@ fun LoginOrRegister() {
 
 @Composable
 fun Login(loginViewModel: LoginViewModel = viewModel { KoinProvider.KOIN.get<LoginViewModel>() }) {
-
     val state by loginViewModel.state.collectAsState()
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("n0sferat0k") }
+    var password by remember { mutableStateOf("caca") }
 
     Column(
-        modifier = Modifier
-            .padding(20.dp)
-            .widthIn(max = 400.dp)
-            .padding(20.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .padding(20.dp)
+                .widthIn(max = 400.dp)
+                .padding(20.dp)
+                .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         // Username Input
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
             label = { Text(stringResource(Res.string.username)) },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -157,7 +163,7 @@ fun Login(loginViewModel: LoginViewModel = viewModel { KoinProvider.KOIN.get<Log
             onValueChange = { password = it },
             label = { Text(stringResource(Res.string.password)) },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth().padding(0.dp)
+            modifier = Modifier.fillMaxWidth().padding(0.dp),
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -167,58 +173,64 @@ fun Login(loginViewModel: LoginViewModel = viewModel { KoinProvider.KOIN.get<Log
             onClick = {
                 loginViewModel.onLogin(username, password)
             },
-            modifier = Modifier
-                .wrapContentWidth()
-                .height(48.dp),
+            modifier =
+                Modifier
+                    .wrapContentWidth()
+                    .height(48.dp),
             shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = AppColors.primary)
+            colors = ButtonDefaults.buttonColors(backgroundColor = AppColors.primary),
         ) {
             if (state.loading) {
                 CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .padding(end = 8.dp),
+                    modifier =
+                        Modifier
+                            .size(24.dp)
+                            .padding(end = 8.dp),
                     color = Color.White,
-                    strokeWidth = 2.dp
+                    strokeWidth = 2.dp,
                 )
             }
             Text(
                 stringResource(Res.string.login),
                 color = Color.White,
-                style = TextStyle(
-                    fontFamily = font(),
-                    fontSize = 18.sp,
-                    color = AppColors.primary
-                )
+                style =
+                    TextStyle(
+                        fontFamily = font(),
+                        fontSize = 18.sp,
+                        color = AppColors.primary,
+                    ),
             )
         }
 
-        if(state.error.isNotEmpty()) {
+        if (state.error.isNotEmpty()) {
             Text(
                 text = state.error,
                 color = Color.Red,
-                style = TextStyle(
-                    fontFamily = font(),
-                    fontSize = 18.sp,
-                    color = AppColors.primary
-                )
+                style =
+                    TextStyle(
+                        fontFamily = font(),
+                        fontSize = 18.sp,
+                        color = AppColors.primary,
+                    ),
             )
         }
     }
 }
 
 @Composable
-fun Register() {
+fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<RegisterViewModel>() }) {
+    val state by registerViewModel.state.collectAsState()
+
     val defaultProfile = painterResource(Res.drawable.profile)
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-    var fullName by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("nosfi") }
+    var password by remember { mutableStateOf("nosfi") }
+    var confirmPassword by remember { mutableStateOf("nosfi") }
+    var fullName by remember { mutableStateOf("nos fi") }
+    var email by remember { mutableStateOf("nos@f.i") }
     var phoneNumber by remember { mutableStateOf(getPhoneNumber()) }
     var profileImage by remember { mutableStateOf<Painter?>(null) }
 
     var showFilePicker by remember { mutableStateOf(false) }
-
 
     MultipleFilePicker(show = showFilePicker, fileExtensions = listOf("jpg", "png")) { file ->
         showFilePicker = false
@@ -229,12 +241,13 @@ fun Register() {
     }
 
     Column(
-        modifier = Modifier
-            .padding(20.dp)
-            .widthIn(max = 400.dp)
-            .padding(20.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier =
+            Modifier
+                .padding(20.dp)
+                .widthIn(max = 400.dp)
+                .padding(20.dp)
+                .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         profileImage.let {
             if (it == null) {
@@ -243,24 +256,26 @@ fun Register() {
                     contentDescription = "Profile Image",
                     colorFilter = ColorFilter.tint(AppColors.primary),
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.size(80.dp).clickable {
-                        showFilePicker = true
-                    }
+                    modifier =
+                        Modifier.size(80.dp).clickable {
+                            showFilePicker = true
+                        },
                 )
             } else {
                 Box(
-                    modifier = Modifier
-                        .size(80.dp)
-                        .border(2.dp, AppColors.primary, CircleShape)
-                        .clickable {
-                            showFilePicker = true
-                        },
-                    contentAlignment = Alignment.Center
+                    modifier =
+                        Modifier
+                            .size(80.dp)
+                            .border(2.dp, AppColors.primary, CircleShape)
+                            .clickable {
+                                showFilePicker = true
+                            },
+                    contentAlignment = Alignment.Center,
                 ) {
                     Image(
                         painter = it,
                         contentDescription = "Profile Image",
-                        modifier = Modifier.size(80.dp).clip(CircleShape)
+                        modifier = Modifier.size(80.dp).clip(CircleShape),
                     )
                 }
             }
@@ -271,9 +286,13 @@ fun Register() {
         // Username Input
         OutlinedTextField(
             value = username,
-            onValueChange = { username = it },
+            onValueChange = {
+                username = it
+                registerViewModel.validateUsername(username)
+            },
             label = { Text(stringResource(Res.string.username)) },
-            modifier = Modifier.fillMaxWidth()
+            isError = state.usernameError,
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -281,10 +300,14 @@ fun Register() {
         // Password Input
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it },
+            onValueChange = {
+                password = it
+                registerViewModel.validatePassword(password, confirmPassword)
+            },
             label = { Text(stringResource(Res.string.password)) },
+            isError = state.passwordError,
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth().padding(0.dp)
+            modifier = Modifier.fillMaxWidth().padding(0.dp),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -292,10 +315,14 @@ fun Register() {
         // Password Input
         OutlinedTextField(
             value = confirmPassword,
-            onValueChange = { password = it },
+            onValueChange = {
+                confirmPassword = it
+                registerViewModel.validatePassword(password, confirmPassword)
+            },
             label = { Text(stringResource(Res.string.confirmpassword)) },
+            isError = state.passwordError,
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -303,9 +330,27 @@ fun Register() {
         // Full Name Input
         OutlinedTextField(
             value = fullName,
-            onValueChange = { fullName = it },
+            onValueChange = {
+                fullName = it
+                registerViewModel.validateFullname(fullName)
+            },
             label = { Text(stringResource(Res.string.fullname)) },
-            modifier = Modifier.fillMaxWidth()
+            isError = state.fullnameError,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Phone Number Input
+        OutlinedTextField(
+            value = email,
+            onValueChange = {
+                email = it
+                registerViewModel.validateEmail(email)
+            },
+            label = { Text(stringResource(Res.string.email)) },
+            isError = state.emailError,
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -313,30 +358,68 @@ fun Register() {
         // Phone Number Input
         OutlinedTextField(
             value = phoneNumber,
-            onValueChange = { phoneNumber = it },
+            onValueChange = {
+                phoneNumber = it
+                registerViewModel.validatePhone(phoneNumber)
+            },
             label = { Text(stringResource(Res.string.phone)) },
-            modifier = Modifier.fillMaxWidth()
+            isError = state.phoneError,
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // Register Button
         Button(
-            onClick = { /* Handle registration */ },
-            modifier = Modifier
-                .wrapContentWidth()
-                .height(48.dp),
+            onClick = {
+                registerViewModel.onRegister(
+                    username,
+                    password,
+                    confirmPassword,
+                    fullName,
+                    email,
+                    phoneNumber,
+                )
+            },
+            modifier =
+                Modifier
+                    .wrapContentWidth()
+                    .height(48.dp),
             shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = AppColors.primary)
+            colors = ButtonDefaults.buttonColors(backgroundColor = AppColors.primary),
         ) {
+            if (state.loading) {
+                CircularProgressIndicator(
+                    modifier =
+                        Modifier
+                            .size(24.dp)
+                            .padding(end = 8.dp),
+                    color = Color.White,
+                    strokeWidth = 2.dp,
+                )
+            }
             Text(
                 stringResource(Res.string.register),
                 color = Color.White,
-                style = TextStyle(
-                    fontFamily = font(),
-                    fontSize = 18.sp,
-                    color = AppColors.primary
-                )
+                style =
+                    TextStyle(
+                        fontFamily = font(),
+                        fontSize = 18.sp,
+                        color = AppColors.primary,
+                    ),
+            )
+        }
+
+        if (state.error.isNotEmpty()) {
+            Text(
+                text = state.error,
+                color = Color.Red,
+                style =
+                    TextStyle(
+                        fontFamily = font(),
+                        fontSize = 18.sp,
+                        color = AppColors.primary,
+                    ),
             )
         }
     }

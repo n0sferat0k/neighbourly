@@ -1,6 +1,5 @@
 package com.neighbourly.app
 
-import com.neighbourly.app.a_device.ui.LoginOrRegister
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -22,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.ContentBox
 import com.neighbourly.app.a_device.ui.HalfCircleHalo
+import com.neighbourly.app.a_device.ui.MainContent
 import com.neighbourly.app.a_device.ui.Map
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.houses
@@ -39,25 +39,29 @@ fun App() {
 
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
+            contentAlignment = Alignment.BottomCenter,
         ) {
             HalfCircleHalo(
-                modifier = Modifier
-                    .size(200.dp)
+                modifier =
+                    Modifier
+                        .size(200.dp),
             )
             Image(
                 painter = painterResource(Res.drawable.houses),
                 colorFilter = ColorFilter.tint(AppColors.primary),
                 contentDescription = null,
-                modifier = Modifier.width(110.dp).height(80.dp)
-                    .clickable(onClick = {
-                        tabindex = if (tabindex == 0) -1 else 0
-                    })
+                modifier =
+                    Modifier
+                        .width(110.dp)
+                        .height(80.dp)
+                        .clickable(onClick = {
+                            tabindex = if (tabindex == 0) -1 else 0
+                        }),
             )
 
             AnimatedVisibility(tabindex == 0) {
                 ContentBox {
-                    LoginOrRegister()
+                    MainContent()
                 }
             }
         }

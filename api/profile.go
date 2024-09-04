@@ -33,17 +33,17 @@ func UploadProfileImage(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	// Create a Go routine to save the file
-	go func(userId string) {
+	wwwRelativeFolder := "usersIMGS"
+	apiRelativeFolder := "../www/"
+	saveFolder := apiRelativeFolder + wwwRelativeFolder
+	destinationFileName := "profile_" + userId + filepath.Ext(handler.Filename)
+	dbFilePath := filepath.Join(wwwRelativeFolder, destinationFileName)
 
-		// Create the uploads folder if it doesn't exist
+	// Create a Go routine to save the file
+	go func() {
 		if _, err := os.Stat("uploads"); os.IsNotExist(err) {
 			os.Mkdir("uploads", os.ModePerm)
 		}
-
-		wwwRelativeFolder := "usersIMGS"
-		apiRelativeFolder := "../www/"
-		saveFolder := apiRelativeFolder + wwwRelativeFolder
 
 		if _, err := os.Stat(saveFolder); os.IsNotExist(err) {
 			os.Mkdir(saveFolder, os.ModePerm)
@@ -63,7 +63,7 @@ func UploadProfileImage(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// Create the destination file
-		destinationFileName := "profile_" + userId + filepath.Ext(handler.Filename)
+
 		dst, err := os.Create(filepath.Join(saveFolder, destinationFileName))
 		if err != nil {
 			fmt.Println("Failed to create file:", err)
@@ -77,15 +77,14 @@ func UploadProfileImage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		dbFilePath := filepath.Join(wwwRelativeFolder, destinationFileName)
 		if _, err = db.Exec("UPDATE users SET users_pic = ? WHERE users_id = ?", dbFilePath, userId); err != nil {
 			http.Error(w, "Failed to update user with image", http.StatusInternalServerError)
 			return
 		}
 
 		fmt.Println("File uploaded successfully:", handler.Filename)
-	}(userId)
+	}()
 
 	w.WriteHeader(http.StatusCreated)
-	fmt.Fprintln(w, "File uploaded successfully")
+	fmt.Fprintln(w, dbFilePath)
 }
