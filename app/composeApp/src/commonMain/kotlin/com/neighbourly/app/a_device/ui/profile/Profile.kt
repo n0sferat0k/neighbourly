@@ -43,6 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.MultipleFilePicker
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.BoxHeader
 import com.neighbourly.app.a_device.ui.CurlyText
 import com.neighbourly.app.a_device.ui.font
 import com.neighbourly.app.b_adapt.viewmodel.ProfileViewModel
@@ -81,12 +82,13 @@ fun Profile(profileViewModel: ProfileViewModel = viewModel { KoinProvider.KOIN.g
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
+        BoxHeader(Modifier.align(Alignment.TopStart))
+
         Column(
             modifier =
                 Modifier
                     .padding(20.dp)
                     .widthIn(max = 400.dp)
-                    .padding(20.dp)
                     .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {

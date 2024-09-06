@@ -1,12 +1,10 @@
 package com.neighbourly.app.a_device.ui.auth
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,19 +13,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.BoxHeader
 import com.neighbourly.app.a_device.ui.font
 import neighbourly.composeapp.generated.resources.Res
-import neighbourly.composeapp.generated.resources.app_name
-import neighbourly.composeapp.generated.resources.houses
 import neighbourly.composeapp.generated.resources.login
 import neighbourly.composeapp.generated.resources.register
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -38,24 +33,7 @@ fun LoginOrRegister() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        Row(modifier = Modifier.align(Alignment.TopStart).padding(start = 10.dp)) {
-            Image(
-                modifier = Modifier.size(48.dp).align(Alignment.CenterVertically),
-                painter = painterResource(Res.drawable.houses),
-                colorFilter = ColorFilter.tint(AppColors.primary),
-                contentDescription = null,
-            )
-            Text(
-                modifier = Modifier.align(Alignment.Bottom).padding(start = 5.dp),
-                text = stringResource(Res.string.app_name),
-                style =
-                    TextStyle(
-                        fontFamily = font(),
-                        fontSize = 24.sp,
-                        color = AppColors.primary,
-                    ),
-            )
-        }
+        BoxHeader(Modifier.align(Alignment.TopStart))
 
         when (index) {
             0 -> Login()

@@ -89,7 +89,6 @@ fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOI
             Modifier
                 .padding(20.dp)
                 .widthIn(max = 400.dp)
-                .padding(20.dp)
                 .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
