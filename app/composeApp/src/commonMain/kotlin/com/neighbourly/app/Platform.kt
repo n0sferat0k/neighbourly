@@ -2,7 +2,8 @@ package com.neighbourly.app
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import com.darkrockstudios.libraries.mpfilepicker.MPFile
+import com.neighbourly.app.d_entity.data.FileContents
+import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
 
 interface Platform {
@@ -12,17 +13,24 @@ interface Platform {
 expect fun getPlatform(): Platform
 
 @Composable
-expect fun RequestPermissions()
+expect fun requestPermissions()
 
 typealias GeoLocationCallback = (latitude: Double, longitude: Double, accuracy: Float) -> Unit
 
 expect object GetLocation {
     fun addCallback(callback: GeoLocationCallback)
+
     fun removeCallback(callback: GeoLocationCallback)
 }
 
-expect fun loadImageFromFile(file: MPFile<Any>): BitmapPainter
+expect fun loadImageFromFile(file: String): BitmapPainter
+
+expect fun loadContentsFromFile(file: String): FileContents?
 
 expect fun getPhoneNumber(): String
 
 expect val httpClientEngine: HttpClientEngine
+
+expect val keyValueRegistry: KeyValueRegistry
+
+expect val isLargeLandscape: Boolean

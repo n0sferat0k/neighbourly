@@ -13,11 +13,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func getToken(r *http.Request) string {
+	return strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+}
+
 // validateToken is a placeholder function for token validation
 func validateToken(w http.ResponseWriter, r *http.Request) string {
 
 	// Extract the token from the request headers
-	token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+	token := getToken(r)
+
 	if token == "" {
 		http.Error(w, "Missing token", http.StatusUnauthorized)
 		return ""

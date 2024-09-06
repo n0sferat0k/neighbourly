@@ -27,6 +27,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/register", RegisterUser).Methods("POST")
 	r.HandleFunc("/login", LoginUser).Methods("POST")
+	r.HandleFunc("/logout", LogoutUser).Methods("POST")
 	//r.HandleFunc("/profile/update", UpdateProfile).Methods("POST")
 	r.HandleFunc("/profile/upload", UploadProfileImage).Methods("POST")
 	fmt.Println("Starting server on :8080")

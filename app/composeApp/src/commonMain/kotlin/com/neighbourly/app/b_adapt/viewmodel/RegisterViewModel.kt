@@ -2,7 +2,9 @@ package com.neighbourly.app.b_adapt.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.c_business.usecase.ProfileUpdateUseCase
 import com.neighbourly.app.c_business.usecase.RegisterUseCase
+import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.util.isValidEmail
 import com.neighbourly.app.d_entity.util.isValidPhone
@@ -14,6 +16,7 @@ import kotlinx.coroutines.launch
 
 class RegisterViewModel(
     val registerUseCase: RegisterUseCase,
+    val profileUpdateUseCase: ProfileUpdateUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(RegisterViewState())
     val state: StateFlow<RegisterViewState> = _state.asStateFlow()
@@ -38,6 +41,7 @@ class RegisterViewModel(
         fullName: String,
         email: String,
         phoneNumber: String,
+        profileImageFileContents: FileContents?,
     ) {
         validateUsername(username)
         validatePassword(password, confirmPassword)
@@ -64,6 +68,9 @@ class RegisterViewModel(
         viewModelScope.launch {
             try {
                 registerUseCase.execute(username, password, fullName, email, phoneNumber)
+                profileImageFileContents?.let {
+                    profileUpdateUseCase.execute(profileImageFileContents)
+                }
                 _state.update { it.copy(error = "", loading = false) }
             } catch (e: OpException) {
                 _state.update { it.copy(error = e.msg, loading = false) }

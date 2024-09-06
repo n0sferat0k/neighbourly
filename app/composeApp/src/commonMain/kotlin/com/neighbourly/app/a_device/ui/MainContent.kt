@@ -5,6 +5,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
+import com.neighbourly.app.a_device.ui.auth.LoginOrRegister
+import com.neighbourly.app.a_device.ui.profile.Profile
 import com.neighbourly.app.b_adapt.viewmodel.MainViewModel
 
 @Composable

@@ -1,10 +1,10 @@
 package com.neighbourly.app.a_device.api
 
-import com.darkrockstudios.libraries.mpfilepicker.MPFile
 import com.neighbourly.app.b_adapt.gateway.ApiException
 import com.neighbourly.app.b_adapt.gateway.LoginInput
 import com.neighbourly.app.b_adapt.gateway.RegisterInput
 import com.neighbourly.app.b_adapt.gateway.UserDTO
+import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.httpClientEngine
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -15,6 +15,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.headers
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
@@ -63,6 +64,18 @@ class KtorAuthApi {
         }
     }
 
+    suspend fun logout(
+        token: String,
+        logoutAll: Boolean,
+    ) {
+        client.post("http://neighbourly.go.ro:8080/logout") {
+            parameter("logoutAll", logoutAll)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
+            }
+        }
+    }
+
     suspend fun login(loginInput: LoginInput): UserDTO {
         val response: HttpResponse =
             client.post("http://neighbourly.go.ro:8080/login") {
@@ -78,24 +91,32 @@ class KtorAuthApi {
 
     suspend fun uploadImage(
         token: String,
-        file: MPFile<Any>,
-    ): HttpResponse =
-        client.submitFormWithBinaryData(
-            url = "http://neighbourly.go.ro:8080/profile/upload",
-            formData =
-                formData {
-                    append(
-                        "image",
-                        fileContent,
-                        Headers.build {
-                            append(HttpHeaders.ContentType, "image/jpeg")
-                            append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
-                        },
-                    )
-                },
-        ) {
-            headers {
-                append(HttpHeaders.Authorization, "Bearer " + token)
+        fileContents: FileContents,
+    ): String {
+        val response: HttpResponse =
+            client.submitFormWithBinaryData(
+                url = "http://neighbourly.go.ro:8080/profile/upload",
+                formData =
+                    formData {
+                        append(
+                            "image",
+                            fileContents.content,
+                            Headers.build {
+                                append(HttpHeaders.ContentType, fileContents.type)
+                                append(HttpHeaders.ContentDisposition, "filename=\"${fileContents.name}\"")
+                            },
+                        )
+                    },
+            ) {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
             }
+
+        if (response.status.value == 201) {
+            return response.bodyAsText()
+        } else {
+            throw ApiException(response.bodyAsText())
         }
+    }
 }

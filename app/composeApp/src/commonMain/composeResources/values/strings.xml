@@ -8,5 +8,10 @@
     <string name="phone">Phone Number</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="save">Save</string>
+    <string name="here">Here</string>
+    <string name="everywhere">Everywhere</string>
+
     <string name="err_password_mismatch">The two passwords must match</string>
 </resources>

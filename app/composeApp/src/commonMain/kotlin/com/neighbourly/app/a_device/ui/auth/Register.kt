@@ -1,13 +1,11 @@
-package com.neighbourly.app.a_device.ui
+package com.neighbourly.app.a_device.ui.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,24 +35,23 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.MultipleFilePicker
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.b_adapt.viewmodel.LoginViewModel
+import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.font
 import com.neighbourly.app.b_adapt.viewmodel.RegisterViewModel
+import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.getPhoneNumber
+import com.neighbourly.app.loadContentsFromFile
 import com.neighbourly.app.loadImageFromFile
 import neighbourly.composeapp.generated.resources.Res
-import neighbourly.composeapp.generated.resources.app_name
 import neighbourly.composeapp.generated.resources.confirmpassword
 import neighbourly.composeapp.generated.resources.email
 import neighbourly.composeapp.generated.resources.fullname
-import neighbourly.composeapp.generated.resources.houses
-import neighbourly.composeapp.generated.resources.login
 import neighbourly.composeapp.generated.resources.password
 import neighbourly.composeapp.generated.resources.phone
 import neighbourly.composeapp.generated.resources.profile
@@ -62,160 +59,6 @@ import neighbourly.composeapp.generated.resources.register
 import neighbourly.composeapp.generated.resources.username
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-
-@Composable
-fun LoginOrRegister() {
-    var index by remember { mutableStateOf(0) }
-
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Row(modifier = Modifier.align(Alignment.TopStart).padding(start = 10.dp)) {
-            Image(
-                modifier = Modifier.size(48.dp).align(Alignment.CenterVertically),
-                painter = painterResource(Res.drawable.houses),
-                colorFilter = ColorFilter.tint(AppColors.primary),
-                contentDescription = null,
-            )
-            Text(
-                modifier = Modifier.align(Alignment.Bottom).padding(start = 5.dp),
-                text = stringResource(Res.string.app_name),
-                style =
-                    TextStyle(
-                        fontFamily = font(),
-                        fontSize = 24.sp,
-                        color = AppColors.primary,
-                    ),
-            )
-        }
-
-        when (index) {
-            0 -> Login()
-            1 -> Register()
-        }
-
-        Row(modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = 10.dp, end = 20.dp)) {
-            Text(
-                modifier =
-                    Modifier
-                        .padding(start = 5.dp)
-                        .clickable(onClick = {
-                            index = 0
-                        }),
-                text = stringResource(Res.string.login),
-                style =
-                    TextStyle(
-                        fontWeight = if (index == 0) FontWeight.Bold else FontWeight.Normal,
-                        fontFamily = font(),
-                        fontSize = 20.sp,
-                        color = AppColors.primary,
-                    ),
-            )
-            Text(
-                modifier =
-                    Modifier
-                        .padding(start = 15.dp)
-                        .clickable(onClick = {
-                            index = 1
-                        }),
-                text = stringResource(Res.string.register),
-                style =
-                    TextStyle(
-                        fontWeight = if (index == 1) FontWeight.Bold else FontWeight.Normal,
-                        fontFamily = font(),
-                        fontSize = 20.sp,
-                        color = AppColors.primary,
-                    ),
-            )
-        }
-    }
-}
-
-@Composable
-fun Login(loginViewModel: LoginViewModel = viewModel { KoinProvider.KOIN.get<LoginViewModel>() }) {
-    val state by loginViewModel.state.collectAsState()
-    var username by remember { mutableStateOf("n0sferat0k") }
-    var password by remember { mutableStateOf("caca") }
-
-    Column(
-        modifier =
-            Modifier
-                .padding(20.dp)
-                .widthIn(max = 400.dp)
-                .padding(20.dp)
-                .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        // Username Input
-        OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
-            label = { Text(stringResource(Res.string.username)) },
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Password Input
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text(stringResource(Res.string.password)) },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth().padding(0.dp),
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Register Button
-        Button(
-            onClick = {
-                loginViewModel.onLogin(username, password)
-            },
-            modifier =
-                Modifier
-                    .wrapContentWidth()
-                    .height(48.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = AppColors.primary),
-        ) {
-            if (state.loading) {
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier
-                            .size(24.dp)
-                            .padding(end = 8.dp),
-                    color = Color.White,
-                    strokeWidth = 2.dp,
-                )
-            }
-            Text(
-                stringResource(Res.string.login),
-                color = Color.White,
-                style =
-                    TextStyle(
-                        fontFamily = font(),
-                        fontSize = 18.sp,
-                        color = AppColors.primary,
-                    ),
-            )
-        }
-
-        if (state.error.isNotEmpty()) {
-            Text(
-                text = state.error,
-                color = Color.Red,
-                style =
-                    TextStyle(
-                        fontFamily = font(),
-                        fontSize = 18.sp,
-                        color = AppColors.primary,
-                    ),
-            )
-        }
-    }
-}
 
 @Composable
 fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<RegisterViewModel>() }) {
@@ -226,17 +69,18 @@ fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOI
     var password by remember { mutableStateOf("nosfi") }
     var confirmPassword by remember { mutableStateOf("nosfi") }
     var fullName by remember { mutableStateOf("nos fi") }
-    var email by remember { mutableStateOf("nos@f.i") }
+    var email by remember { mutableStateOf("nos@fi.com") }
     var phoneNumber by remember { mutableStateOf(getPhoneNumber()) }
     var profileImage by remember { mutableStateOf<Painter?>(null) }
-
+    var profileFile by remember { mutableStateOf<FileContents?>(null) }
     var showFilePicker by remember { mutableStateOf(false) }
 
     MultipleFilePicker(show = showFilePicker, fileExtensions = listOf("jpg", "png")) { file ->
         showFilePicker = false
 
-        file?.get(0)?.let {
+        file?.get(0)?.platformFile.toString().let {
             profileImage = loadImageFromFile(it)
+            profileFile = loadContentsFromFile(it)
         }
     }
 
@@ -255,7 +99,6 @@ fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOI
                     painter = defaultProfile,
                     contentDescription = "Profile Image",
                     colorFilter = ColorFilter.tint(AppColors.primary),
-                    contentScale = ContentScale.Crop,
                     modifier =
                         Modifier.size(80.dp).clickable {
                             showFilePicker = true
@@ -275,6 +118,7 @@ fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOI
                     Image(
                         painter = it,
                         contentDescription = "Profile Image",
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier.size(80.dp).clip(CircleShape),
                     )
                 }
@@ -341,7 +185,7 @@ fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOI
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Phone Number Input
+        // Email Input
         OutlinedTextField(
             value = email,
             onValueChange = {
@@ -379,6 +223,7 @@ fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOI
                     fullName,
                     email,
                     phoneNumber,
+                    profileFile,
                 )
             },
             modifier =

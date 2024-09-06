@@ -1,6 +1,6 @@
 package com.neighbourly.app.d_entity.interf
 
-import com.darkrockstudios.libraries.mpfilepicker.MPFile
+import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.User
 
 interface AuthApi {
@@ -19,6 +19,11 @@ interface AuthApi {
 
     suspend fun updateProfileImage(
         token: String,
-        file: MPFile<Any>,
+        profileImageFileContents: FileContents,
+    )
+
+    suspend fun logout(
+        token: String,
+        logoutAll: Boolean,
     )
 }

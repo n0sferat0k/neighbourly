@@ -7,6 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.css' />
     <script src='https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.js'></script>
+
+    <script src="https://www.unpkg.com/turf@3.0.14/turf.min.js"></script>
+    <script src="https://www.unpkg.com/@mapbox/mapbox-gl-draw@1.4.3/dist/mapbox-gl-draw.js"></script>
+    <link rel="stylesheet" href="https://www.unpkg.com/@mapbox/mapbox-gl-draw@1.4.3/dist/mapbox-gl-draw.css" />
+
     <style>
         body {
             margin: 0;
@@ -27,6 +32,11 @@
         var mapLoaded = false;
         var lat = 0;
         var lng = 0;
+
+        MapboxDraw.constants.classes.CONTROL_BASE = 'maplibregl-ctrl';
+        MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
+        MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group';
+
         const map = new maplibregl.Map({
             container: 'map',
             style: 'https://api.maptiler.com/maps/streets/style.json?key=VdbWJipihjTW3mb6JxNK',
@@ -34,13 +44,36 @@
             zoom: 1
         });
 
-        map.on('load', () => {
+        map.on('load', () => {            
+            window.kmpJsBridge.callNative("MapFeedback", "{\"mapReady\":true}", function (data) { });
             mapLoaded = true;
             if (lat != 0 && lng != 0) {
                 setDot(lng, lat, 'current');
                 center(lng, lat, 15);
             }
         });
+
+        function enableDraw() {
+            const draw = new MapboxDraw({
+                displayControlsDefault: false,
+                controls: {
+                    polygon: true,
+                    trash: true
+                }
+            });
+            map.addControl(draw);
+
+            updateArea = function() {
+                const data = draw.getAll().features[0].geometry.coordinates[0].map(function (point) {
+                    return [point[0], point[1]];
+                });                
+                window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ drawData: data }), function (data) { });
+            }
+
+            map.on('draw.create', updateArea);
+            map.on('draw.delete', updateArea);
+            map.on('draw.update', updateArea);
+        }
 
         function center(latitude, longitude, zoom) {
             if (mapLoaded) {

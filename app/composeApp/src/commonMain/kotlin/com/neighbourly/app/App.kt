@@ -34,7 +34,7 @@ fun App() {
     var tabindex by remember { mutableStateOf(-1) }
 
     MaterialTheme {
-        RequestPermissions()
+        requestPermissions()
         Map(modifier = Modifier.fillMaxSize())
 
         Box(

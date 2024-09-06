@@ -1,7 +1,7 @@
 package com.neighbourly.app.b_adapt.gateway
 
-import com.darkrockstudios.libraries.mpfilepicker.MPFile
 import com.neighbourly.app.a_device.api.KtorAuthApi
+import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.data.User
 import com.neighbourly.app.d_entity.interf.AuthApi
@@ -12,13 +12,26 @@ import kotlinx.serialization.Serializable
 class AuthApiGw(
     val api: KtorAuthApi,
 ) : AuthApi {
-    override suspend fun updateProfileImage(
+    override suspend fun logout(
         token: String,
-        file: MPFile<Any>,
+        logoutAll: Boolean,
     ) {
         try {
             return withContext(Dispatchers.IO) {
-                api.uploadImage(token, file)
+                api.logout(token, logoutAll)
+            }
+        } catch (e: ApiException) {
+            throw OpException(e.msg)
+        }
+    }
+
+    override suspend fun updateProfileImage(
+        token: String,
+        profileImageFileContents: FileContents,
+    ) {
+        try {
+            return withContext(Dispatchers.IO) {
+                api.uploadImage(token, profileImageFileContents)
             }
         } catch (e: ApiException) {
             throw OpException(e.msg)

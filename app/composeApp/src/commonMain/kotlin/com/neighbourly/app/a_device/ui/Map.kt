@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.multiplatform.webview.jsbridge.IJsMessageHandler
 import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.jsbridge.rememberWebViewJsBridge
@@ -17,33 +18,46 @@ import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
 import com.neighbourly.app.GeoLocationCallback
 import com.neighbourly.app.GetLocation
-
+import com.neighbourly.app.KoinProvider
+import com.neighbourly.app.b_adapt.viewmodel.MapViewModel
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 @Composable
-fun Map(modifier: Modifier) {
-    val state = rememberWebViewStateWithHTMLData(data = html).apply {
-        webSettings.isJavaScriptEnabled = true
-    }
+fun Map(
+    mapViewModel: MapViewModel = viewModel { KoinProvider.KOIN.get<MapViewModel>() },
+    modifier: Modifier,
+) {
+    val state =
+        rememberWebViewStateWithHTMLData(data = html).apply {
+            webSettings.isJavaScriptEnabled = true
+        }
     val navigator = rememberWebViewNavigator()
     val jsBridge = rememberWebViewJsBridge()
     var firstGps by remember { mutableStateOf(true) }
-    var loadGps by remember { mutableStateOf(false) }
+    var mapReady by remember { mutableStateOf(false) }
 
     LaunchedEffect(jsBridge) {
-        jsBridge.register(object : IJsMessageHandler {
+        jsBridge.register(
+            object : IJsMessageHandler {
+                override fun methodName(): String = "MapFeedback"
 
-            override fun methodName(): String {
-                return "MapReady"
-            }
+                override fun handle(
+                    message: JsMessage,
+                    navigator: WebViewNavigator?,
+                    callback: (String) -> Unit,
+                ) {
+                    val params = Json.decodeFromString<MapFeedbackModel>(message.params)
 
-            override fun handle(
-                message: JsMessage,
-                navigator: WebViewNavigator?,
-                callback: (String) -> Unit
-            ) {
-                loadGps = true
-            }
-        })
+                    if (params.mapReady == true) {
+                        mapReady = true
+                    }
+                    if (params.drawData != null) {
+                        mapViewModel.onDrawn(params.drawData)
+                    }
+                }
+            },
+        )
     }
 
     val callback: GeoLocationCallback = { lat, lng, acc ->
@@ -54,9 +68,10 @@ fun Map(modifier: Modifier) {
         }
     }
 
-    DisposableEffect(loadGps) {
-        if (loadGps) {
+    DisposableEffect(mapReady) {
+        if (mapReady) {
             GetLocation.addCallback(callback)
+            // navigator.evaluateJavaScript("setDot($lat, $lng, 'current');")
         }
         onDispose {
             GetLocation.removeCallback(callback)
@@ -71,8 +86,14 @@ fun Map(modifier: Modifier) {
     )
 }
 
+@Serializable
+data class MapFeedbackModel(
+    val mapReady: Boolean? = null,
+    val drawData: List<List<Double>>? = null,
+)
 
-val html = """
+val html =
+    """
     <!DOCTYPE html>
     <html lang="en">
     
@@ -82,6 +103,11 @@ val html = """
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.css' />
         <script src='https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.js'></script>
+    
+        <script src="https://www.unpkg.com/turf@3.0.14/turf.min.js"></script>
+        <script src="https://www.unpkg.com/@mapbox/mapbox-gl-draw@1.4.3/dist/mapbox-gl-draw.js"></script>
+        <link rel="stylesheet" href="https://www.unpkg.com/@mapbox/mapbox-gl-draw@1.4.3/dist/mapbox-gl-draw.css" />
+    
         <style>
             body {
                 margin: 0;
@@ -102,24 +128,53 @@ val html = """
             var mapLoaded = false;
             var lat = 0;
             var lng = 0;
+    
+            MapboxDraw.constants.classes.CONTROL_BASE = 'maplibregl-ctrl';
+            MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
+            MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group';
+    
             const map = new maplibregl.Map({
                 container: 'map',
                 style: 'https://api.maptiler.com/maps/streets/style.json?key=VdbWJipihjTW3mb6JxNK',
                 center: [0, 0],
                 zoom: 1
             });
-        
-            map.on('load', () => {
-                window.kmpJsBridge.callNative("MapReady","{}",function (data) {});
+    
+            map.on('load', () => {                
+                window.kmpJsBridge.callNative("MapFeedback", "{\"mapReady\":true}", function (data) { });
                 mapLoaded = true;
-                if(lat != 0 && lng != 0) {
+                if (lat != 0 && lng != 0) {
                     setDot(lng, lat, 'current');
                     center(lng, lat, 15);
-                }                
+                }
             });
     
+            function enableDraw() {
+                const draw = new MapboxDraw({
+                    displayControlsDefault: false,
+                    controls: {
+                        polygon: true,
+                        trash: true
+                    }
+                });
+                map.addControl(draw);
+    
+                updateArea = function(e) {                    
+                    if (draw.getAll().features.length > 0) {
+                        const data = draw.getAll().features[0].geometry.coordinates[0].map(function (point) {
+                            return [point[0], point[1]];
+                        });                
+                        window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ drawData: data }), function (data) { });
+                    }
+                }
+    
+                map.on('draw.create', updateArea);
+                map.on('draw.delete', updateArea);
+                map.on('draw.update', updateArea);
+            }
+    
             function center(latitude, longitude, zoom) {
-                if(mapLoaded) {
+                if (mapLoaded) {
                     map.flyTo({
                         center: [longitude, latitude],
                         zoom: zoom
@@ -130,7 +185,7 @@ val html = """
                 }
             }
             function setDot(latitude, longitude, id) {
-                if(mapLoaded) {
+                if (mapLoaded) {
                     if (map.getSource(id) !== undefined) {
                         map.getSource(id).setData({
                             'type': 'Point',
@@ -163,4 +218,4 @@ val html = """
     </body>
     
     </html>
-""".trimIndent()
+    """.trimIndent()
