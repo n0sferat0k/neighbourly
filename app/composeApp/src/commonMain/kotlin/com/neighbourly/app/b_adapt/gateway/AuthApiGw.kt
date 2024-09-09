@@ -18,7 +18,7 @@ class AuthApiGw(
     ) {
         try {
             return withContext(Dispatchers.IO) {
-                api.logout(token, logoutAll)
+                api.logout(API_BASE_URL, token, logoutAll)
             }
         } catch (e: ApiException) {
             throw OpException(e.msg)
@@ -28,10 +28,20 @@ class AuthApiGw(
     override suspend fun updateProfileImage(
         token: String,
         profileImageFileContents: FileContents,
-    ) {
+    ): String {
         try {
             return withContext(Dispatchers.IO) {
-                api.uploadImage(token, profileImageFileContents)
+                api.uploadImage(API_BASE_URL, token, profileImageFileContents)
+            }
+        } catch (e: ApiException) {
+            throw OpException(e.msg)
+        }
+    }
+
+    override suspend fun refreshProfile(token: String): User {
+        try {
+            return withContext(Dispatchers.IO) {
+                api.refreshProfile(API_BASE_URL, token).toUser()
             }
         } catch (e: ApiException) {
             throw OpException(e.msg)
@@ -47,17 +57,17 @@ class AuthApiGw(
     ): User {
         try {
             return withContext(Dispatchers.IO) {
-                api.register(
-                    RegisterInput(
-                        username = username,
-                        password = password,
-                        fullname = fullName,
-                        phone = phoneNumber,
-                        email = email,
-                    ),
-                )
-            }.let {
-                it.toUser()
+                api
+                    .register(
+                        API_BASE_URL,
+                        RegisterInput(
+                            username = username,
+                            password = password,
+                            fullname = fullName,
+                            phone = phoneNumber,
+                            email = email,
+                        ),
+                    ).toUser()
             }
         } catch (e: ApiException) {
             throw OpException(e.msg)
@@ -70,13 +80,15 @@ class AuthApiGw(
     ): User {
         try {
             return withContext(Dispatchers.IO) {
-                api.login(LoginInput(username, password))
-            }.let {
-                it.toUser()
+                api.login(API_BASE_URL, LoginInput(username, password)).toUser()
             }
         } catch (e: ApiException) {
             throw OpException(e.msg)
         }
+    }
+
+    companion object {
+        const val API_BASE_URL = "http://neighbourly.go.ro:8080/"
     }
 }
 
@@ -109,7 +121,7 @@ data class UserDTO(
     val email: String,
     val phone: String,
     val imageurl: String? = null,
-    val authtoken: String,
+    val authtoken: String? = null,
     val household: HouseholdDTO? = null,
     val neighbourhoods: List<NeighbourhoodDTO> = emptyList(),
 )
@@ -132,4 +144,5 @@ data class NeighbourhoodDTO(
     val name: String,
     val geofence: String,
     val access: Int,
+    val parent: UserDTO,
 )

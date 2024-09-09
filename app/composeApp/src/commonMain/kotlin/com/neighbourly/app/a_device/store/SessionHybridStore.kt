@@ -34,6 +34,11 @@ class SessionHybridStore(
         saveToStore()
     }
 
+    override suspend fun update(updater: (User?) -> User?) {
+        state.emit(updater(state.value))
+        saveToStore()
+    }
+
     override suspend fun clear() {
         state.emit(null)
         saveToStore()

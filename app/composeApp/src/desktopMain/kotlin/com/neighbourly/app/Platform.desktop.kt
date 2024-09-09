@@ -48,6 +48,9 @@ actual object GetLocation {
 
 actual fun loadImageFromFile(file: String): BitmapPainter = BitmapPainter(ImageIO.read(File(file)).toComposeImageBitmap())
 
+actual fun loadImageFromFileContents(content: ByteArray): BitmapPainter =
+    BitmapPainter(ImageIO.read(content.inputStream()).toComposeImageBitmap())
+
 actual fun loadContentsFromFile(file: String): FileContents? {
     val path: Path = Paths.get(file)
 

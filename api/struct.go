@@ -28,7 +28,7 @@ type User struct {
 	Email          *string         `json:"email"`
 	Phone          *string         `json:"phone"`
 	ImageURL       *string         `json:"imageurl,omitempty"`
-	Authtoken      *string         `json:"authtoken"`
+	Authtoken      *string         `json:"authtoken,omitempty"`
 	Household      *Household      `json:"household,omitempty"`
 	Neighbourhoods []Neighbourhood `json:"neighbourhoods,omitempty"`
 }

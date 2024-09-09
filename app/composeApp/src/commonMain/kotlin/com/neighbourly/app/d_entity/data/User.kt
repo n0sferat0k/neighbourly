@@ -8,6 +8,7 @@ data class User(
     val email: String,
     val phone: String,
     val imageurl: String?,
-    val authtoken: String,
+    val authtoken: String? = null,
     val household: Household?,
+    val neighbourhoods: List<Neighbourhood> = emptyList(),
 )

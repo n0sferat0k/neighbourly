@@ -2,7 +2,7 @@ package com.neighbourly.app.b_adapt.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.neighbourly.app.c_business.usecase.ProfileUpdateUseCase
+import com.neighbourly.app.c_business.usecase.ProfileImageUpdateUseCase
 import com.neighbourly.app.c_business.usecase.RegisterUseCase
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.OpException
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 
 class RegisterViewModel(
     val registerUseCase: RegisterUseCase,
-    val profileUpdateUseCase: ProfileUpdateUseCase,
+    val profileUpdateUseCase: ProfileImageUpdateUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(RegisterViewState())
     val state: StateFlow<RegisterViewState> = _state.asStateFlow()

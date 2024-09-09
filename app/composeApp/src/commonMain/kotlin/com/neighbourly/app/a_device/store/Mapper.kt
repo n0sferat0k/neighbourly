@@ -1,6 +1,7 @@
 package com.neighbourly.app.a_device.store
 
 import com.neighbourly.app.d_entity.data.Household
+import com.neighbourly.app.d_entity.data.Neighbourhood
 import com.neighbourly.app.d_entity.data.User
 import kotlinx.serialization.Serializable
 
@@ -15,9 +16,10 @@ fun StoreUser.toUser() =
         imageurl = this.imageurl,
         authtoken = this.authtoken,
         household = this.household?.toHousehold(),
+        neighbourhoods = this.neighbourhoods.map { it.toStoreNeighbourhood() },
     )
 
-fun User.toStoreUser() =
+fun User.toStoreUser(): StoreUser =
     StoreUser(
         id = this.id,
         username = this.username,
@@ -28,9 +30,10 @@ fun User.toStoreUser() =
         imageurl = this.imageurl,
         authtoken = this.authtoken,
         household = this.household?.toStoreHousehold(),
+        neighbourhoods = this.neighbourhoods.map { it.toStoreNeighbourhood() },
     )
 
-fun StoreHousehold.toHousehold() =
+fun StoreHousehold.toHousehold(): Household =
     Household(
         householdid = this.householdid,
         name = this.name,
@@ -42,7 +45,7 @@ fun StoreHousehold.toHousehold() =
         address = this.address,
     )
 
-fun Household.toStoreHousehold() =
+fun Household.toStoreHousehold(): StoreHousehold =
     StoreHousehold(
         householdid = this.householdid,
         name = this.name,
@@ -54,6 +57,24 @@ fun Household.toStoreHousehold() =
         address = this.address,
     )
 
+fun Neighbourhood.toStoreNeighbourhood(): StoreNeighbourhood =
+    StoreNeighbourhood(
+        neighbourhoodid = this.neighbourhoodid,
+        name = this.name,
+        geofence = this.geofence,
+        access = this.access,
+        parent = this.parent?.toStoreUser(),
+    )
+
+fun StoreNeighbourhood.toStoreNeighbourhood(): Neighbourhood =
+    Neighbourhood(
+        neighbourhoodid = this.neighbourhoodid,
+        name = this.name,
+        geofence = this.geofence,
+        access = this.access,
+        parent = this.parent?.toUser(),
+    )
+
 @Serializable
 data class StoreUser(
     val id: Int,
@@ -62,9 +83,10 @@ data class StoreUser(
     val fullname: String,
     val email: String,
     val phone: String,
-    val imageurl: String?,
-    val authtoken: String,
-    val household: StoreHousehold?,
+    val imageurl: String? = null,
+    val authtoken: String? = null,
+    val household: StoreHousehold? = null,
+    val neighbourhoods: List<StoreNeighbourhood> = emptyList(),
 )
 
 @Serializable
@@ -77,4 +99,13 @@ data class StoreHousehold(
     val latitude: Double,
     val longitude: Double,
     val address: String,
+)
+
+@Serializable
+data class StoreNeighbourhood(
+    val neighbourhoodid: Int,
+    val name: String,
+    val geofence: String,
+    val access: Int,
+    val parent: StoreUser? = null,
 )

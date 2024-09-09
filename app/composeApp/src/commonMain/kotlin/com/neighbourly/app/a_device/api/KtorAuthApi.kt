@@ -51,9 +51,12 @@ class KtorAuthApi {
             }
         }
 
-    suspend fun register(registerInput: RegisterInput): UserDTO {
+    suspend fun register(
+        baseUrl: String,
+        registerInput: RegisterInput,
+    ): UserDTO {
         val response: HttpResponse =
-            client.post("http://neighbourly.go.ro:8080/register") {
+            client.post(baseUrl + "register") {
                 contentType(ContentType.Application.Json)
                 setBody(registerInput)
             }
@@ -65,10 +68,11 @@ class KtorAuthApi {
     }
 
     suspend fun logout(
+        baseUrl: String,
         token: String,
         logoutAll: Boolean,
     ) {
-        client.post("http://neighbourly.go.ro:8080/logout") {
+        client.post(baseUrl + "logout") {
             parameter("logoutAll", logoutAll)
             headers {
                 append(HttpHeaders.Authorization, "Bearer " + token)
@@ -76,9 +80,12 @@ class KtorAuthApi {
         }
     }
 
-    suspend fun login(loginInput: LoginInput): UserDTO {
+    suspend fun login(
+        baseUrl: String,
+        loginInput: LoginInput,
+    ): UserDTO {
         val response: HttpResponse =
-            client.post("http://neighbourly.go.ro:8080/login") {
+            client.post(baseUrl + "login") {
                 contentType(ContentType.Application.Json)
                 setBody(loginInput)
             }
@@ -89,13 +96,31 @@ class KtorAuthApi {
         }
     }
 
+    suspend fun refreshProfile(
+        baseUrl: String,
+        token: String,
+    ): UserDTO {
+        val response: HttpResponse =
+            client.post(baseUrl + "profile/refresh") {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
+            }
+        if (response.status.value == 200) {
+            return response.body<UserDTO>()
+        } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
     suspend fun uploadImage(
+        baseUrl: String,
         token: String,
         fileContents: FileContents,
     ): String {
         val response: HttpResponse =
             client.submitFormWithBinaryData(
-                url = "http://neighbourly.go.ro:8080/profile/upload",
+                url = baseUrl + "profile/upload",
                 formData =
                     formData {
                         append(
@@ -103,7 +128,10 @@ class KtorAuthApi {
                             fileContents.content,
                             Headers.build {
                                 append(HttpHeaders.ContentType, fileContents.type)
-                                append(HttpHeaders.ContentDisposition, "filename=\"${fileContents.name}\"")
+                                append(
+                                    HttpHeaders.ContentDisposition,
+                                    "filename=\"${fileContents.name}\"",
+                                )
                             },
                         )
                     },

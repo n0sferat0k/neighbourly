@@ -114,6 +114,11 @@ actual fun loadImageFromFile(file: String): BitmapPainter =
             ).asImageBitmap(),
     )
 
+actual fun loadImageFromFileContents(content: ByteArray): BitmapPainter =
+    BitmapPainter(
+        BitmapFactory.decodeByteArray(content, 0, content.size).asImageBitmap(),
+    )
+
 actual fun loadContentsFromFile(file: String): FileContents? {
     val fileUri = file.toUri()
     MainActivity.mainActivity.contentResolver.let { contentResolver ->

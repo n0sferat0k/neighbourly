@@ -20,7 +20,9 @@ interface AuthApi {
     suspend fun updateProfileImage(
         token: String,
         profileImageFileContents: FileContents,
-    )
+    ): String
+
+    suspend fun refreshProfile(token: String): User
 
     suspend fun logout(
         token: String,

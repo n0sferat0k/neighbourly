@@ -8,6 +8,8 @@ interface SessionStore {
 
     suspend fun clear()
 
+    suspend fun update(updater: (User?) -> User?)
+
     val user: Flow<User?>
     val isLoggedIn: Flow<Boolean>
     val token: String?

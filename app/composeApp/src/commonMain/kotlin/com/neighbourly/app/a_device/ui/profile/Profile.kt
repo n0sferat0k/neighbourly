@@ -49,6 +49,7 @@ import com.neighbourly.app.a_device.ui.font
 import com.neighbourly.app.b_adapt.viewmodel.ProfileViewModel
 import com.neighbourly.app.loadContentsFromFile
 import com.neighbourly.app.loadImageFromFile
+import com.neighbourly.app.loadImageFromFileContents
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.email
 import neighbourly.composeapp.generated.resources.everywhere
@@ -69,6 +70,10 @@ fun Profile(profileViewModel: ProfileViewModel = viewModel { KoinProvider.KOIN.g
     val defaultProfile = painterResource(Res.drawable.profile)
     var profileImage by remember { mutableStateOf<Painter?>(null) }
     var showFilePicker by remember { mutableStateOf(false) }
+
+    state.imageBytes?.let {
+        profileImage = loadImageFromFileContents(it)
+    }
 
     MultipleFilePicker(show = showFilePicker, fileExtensions = listOf("jpg", "png")) { file ->
         showFilePicker = false
