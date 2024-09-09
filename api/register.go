@@ -20,12 +20,12 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//********************************************************VALIDATION - phone number format
-	if !validatePhoneNumber(user.Phone) {
+	if !validatePhoneNumber(*user.Phone) {
 		http.Error(w, "Invalid phone number", http.StatusBadRequest)
 		return
 	}
 	//********************************************************VALIDATION - email format
-	if !validateEmail(user.Email) {
+	if !validateEmail(*user.Email) {
 		http.Error(w, "Invalid email", http.StatusBadRequest)
 		return
 	}
@@ -35,12 +35,12 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	err := db.QueryRow("SELECT users_id FROM users WHERE users_add_strings_0 = ? LIMIT 1", user.Username).Scan(&existingUserId)
 	if err == sql.ErrNoRows {
 		// Hash the password
-		hashedPassword, err := hashPassword(user.Password)
+		hashedPassword, err := hashPassword(*user.Password)
 		if err != nil {
 			http.Error(w, "Failed to hash password", http.StatusInternalServerError)
 			return
 		}
-		user.Password = ""
+		*user.Password = ""
 
 		var now = time.Now()
 		// Insert the new user into the database
@@ -73,7 +73,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Failed to register user"+err.Error(), http.StatusInternalServerError)
 			return
 		}
-		user.Userid = insertedID
+		user.Userid = &insertedID
 
 		//create an auth token
 		authToken, err := generateAuthToken()
@@ -81,18 +81,19 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Failed to generate token", http.StatusInternalServerError)
 			return
 		}
-		user.Authtoken = authToken
+		user.Authtoken = &authToken
 		var tokenExpiration = time.Now().Add(time.Hour * 24 * 7) // 1 week
 
 		// Insert the new token into the database
 		_, err = db.Exec("INSERT INTO tokens (tokens_add_numerics_0 , tokens_titlu_EN, tokens_data) VALUES (?, ?, ?)",
 			user.Userid, user.Authtoken, tokenExpiration.Unix())
 		if err != nil {
-			http.Error(w, "Failed to add token "+user.Authtoken+" -- "+err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Failed to add token "+*user.Authtoken+" -- "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 
 		user.Household = nil
+		user.Neighbourhoods = nil
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(user)

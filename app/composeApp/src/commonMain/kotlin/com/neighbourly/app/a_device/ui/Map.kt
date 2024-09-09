@@ -172,6 +172,41 @@ val html =
                 map.on('draw.delete', updateArea);
                 map.on('draw.update', updateArea);
             }
+
+            function addGeofence(id, data) {
+                if (mapLoaded) {
+                    if (map.getSource(id) !== undefined) {
+                        map.getSource(id).setData({
+                            'type': 'Feature',
+                            'geometry': {
+                                'type': 'Polygon',
+                                'coordinates': [data]
+                            }
+                        });
+                    } else {
+                        map.addSource(id, {
+                            'type': 'geojson',
+                            'data': {
+                                'type': 'Feature',
+                                'geometry': {
+                                    'type': 'Polygon',
+                                    'coordinates': [data]
+                                }
+                            }
+                        });
+                        map.addLayer({
+                            'id': id,
+                            'type': 'fill',
+                            'source': id,
+                            'layout': {},
+                            'paint': {
+                                'fill-color': '#ae605b',
+                                'fill-opacity': 0.4
+                            }
+                        });
+                    }
+                }
+            }    
     
             function center(latitude, longitude, zoom) {
                 if (mapLoaded) {
@@ -204,8 +239,8 @@ val html =
                             'source': id,
                             'type': 'circle',
                             'paint': {
-                                'circle-radius': 10,
-                                'circle-color': '#007cbf'
+                                'circle-radius': 8,
+                                'circle-color': '#5BA9AE'
                             }
                         });
                     }

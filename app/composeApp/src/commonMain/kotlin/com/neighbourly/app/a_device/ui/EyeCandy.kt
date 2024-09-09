@@ -37,6 +37,7 @@ import org.jetbrains.compose.resources.stringResource
 
 data object AppColors {
     val primary: Color = Color(0xFF5BA9AE)
+    val complementary: Color = Color(0xffae605b)
 }
 
 @Composable

@@ -1,12 +1,165 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
 )
+
+func RetreiveSessionUserData(userId string) (*User, error) {
+	var existingUser User
+	var existingHousehold Household
+
+	err := db.QueryRow(`SELECT 	U.users_id,
+		U.users_text_EN,
+		U.users_titlu_EN,
+		U.users_pic,
+		U.users_add_strings_0,		
+		U.users_add_strings_2,
+		U.users_add_strings_3,
+
+		H.households_id,
+		H.households_titlu_EN,
+		H.households_text_EN AS Householdabout,
+		H.households_pic AS HouseholdImageURL,
+		H.households_add_numerics_0 AS HeadID,
+		H.households_add_numerics_1 / 10000000 AS Latitude,
+		H.households_add_numerics_2 / 10000000 AS Longitude,
+		H.households_add_strings_0 AS Address
+
+		FROM 
+			users U 
+		LEFT JOIN 
+			households H 
+		ON 
+			users_add_numerics_0 = households_id
+		WHERE 
+			U.users_id = ?
+		LIMIT 1`,
+		userId,
+	).Scan(
+		&existingUser.Userid,
+		&existingUser.Userabout,
+		&existingUser.Fullname,
+		&existingUser.ImageURL,
+		&existingUser.Username,
+		&existingUser.Phone,
+		&existingUser.Email,
+
+		&existingHousehold.Householdid,
+		&existingHousehold.Name,
+		&existingHousehold.About,
+		&existingHousehold.ImageURL,
+		&existingHousehold.HeadID,
+		&existingHousehold.Latitude,
+		&existingHousehold.Longitude,
+		&existingHousehold.Address,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	if existingHousehold.Householdid != nil {
+		existingUser.Household = &existingHousehold
+	}
+
+	rows, err := db.Query(`SELECT 
+		N.neighbourhoods_id AS id,
+		N.neighbourhoods_titlu_EN AS name,
+		N.neighbourhoods_text_EN AS geofence,
+		NHU.neighbourhood_household_users_add_numerics_3 AS access,
+		
+		P.users_id AS parentId,
+		P.users_text_EN AS parentAbout,
+		P.users_titlu_EN AS parentFullname,
+		P.users_pic AS parentImageURL,		
+		P.users_add_strings_2 AS parentPhone,
+		P.users_add_strings_3 AS parentEmail
+
+		FROM
+			neighbourhood_household_users NHU
+		LEFT JOIN 
+			neighbourhoods N
+		ON 
+			N.neighbourhoods_id = NHU.neighbourhood_household_users_add_numerics_0 
+		LEFT JOIN 
+			households H
+		ON
+			H.households_id = NHU.neighbourhood_household_users_add_numerics_1
+		LEFT JOIN 
+			users U
+		ON
+			U.users_id = NHU.neighbourhood_household_users_add_numerics_2			
+		LEFT JOIN 
+			users P
+		ON
+			P.users_id = NHU.neighbourhood_household_users_add_numerics_4
+		WHERE 
+			U.users_id = ?`,
+		userId,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var neighbourhoods []Neighbourhood
+	for rows.Next() {
+		var neighbourhood Neighbourhood
+		var parent User
+		err := rows.Scan(
+			&neighbourhood.Neighbourhoodid,
+			&neighbourhood.Name,
+			&neighbourhood.Geofence,
+			&neighbourhood.Access,
+
+			&parent.Userid,
+			&parent.Userabout,
+			&parent.Fullname,
+			&parent.ImageURL,
+			&parent.Phone,
+			&parent.Email,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		if parent.Userid != nil {
+			neighbourhood.Parent = &parent
+		}
+
+		neighbourhoods = append(neighbourhoods, neighbourhood)
+	}
+
+	existingUser.Neighbourhoods = neighbourhoods
+	return &existingUser, nil
+}
+
+func RefreshProfile(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var userId string = validateToken(w, r)
+	if userId == "" {
+		return
+	}
+
+	existingUser, err := RetreiveSessionUserData(userId)
+	if err != nil {
+		http.Error(w, "Failed to get user info "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(existingUser)
+}
 
 func UploadProfileImage(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {

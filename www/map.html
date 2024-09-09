@@ -30,8 +30,8 @@
     <div id="map"></div>
     <script>
         var mapLoaded = false;
-        var lat = 0;
-        var lng = 0;
+        var lat = 23.6684110;
+        var lng = 47.6530671;
 
         MapboxDraw.constants.classes.CONTROL_BASE = 'maplibregl-ctrl';
         MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
@@ -44,9 +44,18 @@
             zoom: 1
         });
 
-        map.on('load', () => {            
-            window.kmpJsBridge.callNative("MapFeedback", "{\"mapReady\":true}", function (data) { });
+        map.on('load', () => {
+            //window.kmpJsBridge.callNative("MapFeedback", "{\"mapReady\":true}", function (data) { });
             mapLoaded = true;
+            addGeofence("geofence_1", [
+                [23.664421990469435, 47.65655129393659],
+                [23.665995201870714, 47.64961446944116],
+                [23.670235774323487, 47.64969293384053],
+                [23.668970442219916, 47.653967631296325],
+                [23.67055763940516, 47.656120831152805],
+                [23.6676487837274, 47.65622253206254],
+                [23.664421990469435, 47.65655129393659]
+            ]);
             if (lat != 0 && lng != 0) {
                 setDot(lng, lat, 'current');
                 center(lng, lat, 15);
@@ -63,16 +72,51 @@
             });
             map.addControl(draw);
 
-            updateArea = function() {
+            updateArea = function () {
                 const data = draw.getAll().features[0].geometry.coordinates[0].map(function (point) {
                     return [point[0], point[1]];
-                });                
+                });
                 window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ drawData: data }), function (data) { });
             }
 
             map.on('draw.create', updateArea);
             map.on('draw.delete', updateArea);
             map.on('draw.update', updateArea);
+        }
+
+        function addGeofence(id, data) {
+            if (mapLoaded) {
+                if (map.getSource(id) !== undefined) {
+                    map.getSource(id).setData({
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Polygon',
+                            'coordinates': [data]
+                        }
+                    });
+                } else {
+                    map.addSource(id, {
+                        'type': 'geojson',
+                        'data': {
+                            'type': 'Feature',
+                            'geometry': {
+                                'type': 'Polygon',
+                                'coordinates': [data]
+                            }
+                        }
+                    });
+                    map.addLayer({
+                        'id': id,
+                        'type': 'fill',
+                        'source': id,
+                        'layout': {},
+                        'paint': {
+                            'fill-color': '#ae605b',
+                            'fill-opacity': 0.4
+                        }
+                    });
+                }
+            }
         }
 
         function center(latitude, longitude, zoom) {
@@ -106,8 +150,8 @@
                         'source': id,
                         'type': 'circle',
                         'paint': {
-                            'circle-radius': 10,
-                            'circle-color': '#007cbf'
+                            'circle-radius': 8,
+                            'circle-color': '#5BA9AE'
                         }
                     });
                 }

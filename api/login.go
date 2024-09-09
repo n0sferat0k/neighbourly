@@ -57,54 +57,20 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var existingUser User
-	var existingHousehold Household
-	err = db.QueryRow(`SELECT 	U.users_id,
-								U.users_text_EN,
-								U.users_titlu_EN,
-								U.users_pic,
-								U.users_add_strings_0,
-								U.users_add_strings_1,
-								U.users_add_strings_2,
-								U.users_add_strings_3,
+	var userId string
+	var passHash string
 
-								H.households_id,
-								H.households_titlu_EN,
-								H.households_text_EN AS Householdabout,
-								H.households_pic AS HouseholdImageURL,
-								H.households_add_numerics_0 AS HeadID,
-								H.households_add_numerics_1 / 10000000 AS Latitude,
-								H.households_add_numerics_2 / 10000000 AS Longitude,
-								H.households_add_strings_0 AS Address
-
+	err = db.QueryRow(`SELECT 	U.users_id,								
+								U.users_add_strings_1								
 								FROM 
-									users U 
-								LEFT JOIN 
-									households H 
-								ON 
-									users_add_numerics_0 = households_id
+									users U 								
 								WHERE 
 									U.users_add_strings_0 = ?
 								LIMIT 1`,
 		user.Username,
 	).Scan(
-		&existingUser.Userid,
-		&existingUser.Userabout,
-		&existingUser.Fullname,
-		&existingUser.ImageURL,
-		&existingUser.Username,
-		&existingUser.Password,
-		&existingUser.Phone,
-		&existingUser.Email,
-
-		&existingHousehold.Householdid,
-		&existingHousehold.Name,
-		&existingHousehold.About,
-		&existingHousehold.ImageURL,
-		&existingHousehold.HeadID,
-		&existingHousehold.Latitude,
-		&existingHousehold.Longitude,
-		&existingHousehold.Address,
+		&userId,
+		&passHash,
 	)
 
 	if err != nil {
@@ -117,13 +83,9 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if !checkPasswordHash(user.Password, existingUser.Password) {
+	if !checkPasswordHash(*user.Password, passHash) {
 		http.Error(w, "Username or Password incorrect", http.StatusUnauthorized)
 		return
-	}
-
-	if existingHousehold.Householdid != nil {
-		existingUser.Household = &existingHousehold
 	}
 
 	//create an auth token
@@ -132,16 +94,23 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to generate token", http.StatusInternalServerError)
 		return
 	}
-	existingUser.Authtoken = authToken
+
 	var tokenExpiration = time.Now().Add(time.Hour * 24 * 7) // 1 week
 
 	// Insert the new token into the database
 	_, err = db.Exec("INSERT INTO tokens (tokens_add_numerics_0 , tokens_titlu_EN, tokens_data) VALUES (?, ?, ?)",
-		existingUser.Userid, existingUser.Authtoken, tokenExpiration.Unix())
+		userId, authToken, tokenExpiration.Unix())
 	if err != nil {
 		http.Error(w, "Failed to add token "+err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	existingUser, err := RetreiveSessionUserData(userId)
+	if err != nil {
+		http.Error(w, "Failed to get user info "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	existingUser.Authtoken = &authToken
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(existingUser)

@@ -111,6 +111,7 @@ data class UserDTO(
     val imageurl: String? = null,
     val authtoken: String,
     val household: HouseholdDTO? = null,
+    val neighbourhoods: List<NeighbourhoodDTO> = emptyList(),
 )
 
 @Serializable
@@ -123,4 +124,12 @@ data class HouseholdDTO(
     val latitude: Double,
     val longitude: Double,
     val address: String,
+)
+
+@Serializable
+data class NeighbourhoodDTO(
+    val neighbourhoodid: Int,
+    val name: String,
+    val geofence: String,
+    val access: Int,
 )
