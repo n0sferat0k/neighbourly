@@ -104,7 +104,7 @@ actual object GetLocation {
     }
 }
 
-actual fun loadImageFromFile(file: String): BitmapPainter =
+actual fun loadImageFromFile(file: String): BitmapPainter? =
     BitmapPainter(
         BitmapFactory
             .decodeStream(
@@ -114,7 +114,7 @@ actual fun loadImageFromFile(file: String): BitmapPainter =
             ).asImageBitmap(),
     )
 
-actual fun loadImageFromFileContents(content: ByteArray): BitmapPainter =
+actual fun loadImageFromByteAray(content: ByteArray): BitmapPainter? =
     BitmapPainter(
         BitmapFactory.decodeByteArray(content, 0, content.size).asImageBitmap(),
     )

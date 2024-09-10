@@ -12,10 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
@@ -87,9 +85,7 @@ fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOI
     Column(
         modifier =
             Modifier
-                .padding(20.dp)
-                .widthIn(max = 400.dp)
-                .verticalScroll(rememberScrollState()),
+                .widthIn(max = 400.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         profileImage.let {

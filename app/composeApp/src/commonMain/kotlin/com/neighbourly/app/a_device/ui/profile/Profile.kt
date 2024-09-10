@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
@@ -34,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -48,15 +49,18 @@ import com.neighbourly.app.a_device.ui.CurlyText
 import com.neighbourly.app.a_device.ui.font
 import com.neighbourly.app.b_adapt.viewmodel.ProfileViewModel
 import com.neighbourly.app.loadContentsFromFile
-import com.neighbourly.app.loadImageFromFile
-import com.neighbourly.app.loadImageFromFileContents
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.email
 import neighbourly.composeapp.generated.resources.everywhere
 import neighbourly.composeapp.generated.resources.fullname
 import neighbourly.composeapp.generated.resources.here
+import neighbourly.composeapp.generated.resources.home
 import neighbourly.composeapp.generated.resources.logout
+import neighbourly.composeapp.generated.resources.map
 import neighbourly.composeapp.generated.resources.phone
+import neighbourly.composeapp.generated.resources.polygon
 import neighbourly.composeapp.generated.resources.profile
 import neighbourly.composeapp.generated.resources.save
 import neighbourly.composeapp.generated.resources.username
@@ -66,20 +70,13 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun Profile(profileViewModel: ProfileViewModel = viewModel { KoinProvider.KOIN.get<ProfileViewModel>() }) {
     val state by profileViewModel.state.collectAsState()
-
     val defaultProfile = painterResource(Res.drawable.profile)
-    var profileImage by remember { mutableStateOf<Painter?>(null) }
     var showFilePicker by remember { mutableStateOf(false) }
-
-    state.imageBytes?.let {
-        profileImage = loadImageFromFileContents(it)
-    }
 
     MultipleFilePicker(show = showFilePicker, fileExtensions = listOf("jpg", "png")) { file ->
         showFilePicker = false
 
         file?.get(0)?.platformFile.toString().let {
-            profileImage = loadImageFromFile(it)
             profileViewModel.onProfileImageUpdate(loadContentsFromFile(it))
         }
     }
@@ -97,43 +94,95 @@ fun Profile(profileViewModel: ProfileViewModel = viewModel { KoinProvider.KOIN.g
                     .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            profileImage.let {
-                if (it == null) {
-                    Image(
-                        painter = defaultProfile,
-                        contentDescription = "Profile Image",
-                        colorFilter = ColorFilter.tint(AppColors.primary),
-                        modifier =
-                            Modifier.size(80.dp).clickable {
-                                showFilePicker = true
-                            },
-                    )
-                } else {
-                    Box(
-                        modifier =
-                            Modifier
-                                .size(80.dp)
-                                .border(2.dp, AppColors.primary, CircleShape)
-                                .clickable {
-                                    showFilePicker = true
+            Row(modifier = Modifier.fillMaxWidth()) {
+                state.user.imageurl.let {
+                    if (!it.isNullOrBlank()) {
+                        Box(
+                            modifier =
+                                Modifier
+                                    .size(80.dp)
+                                    .border(2.dp, AppColors.primary, CircleShape)
+                                    .clickable {
+                                        showFilePicker = true
+                                    },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            KamelImage(
+                                modifier = Modifier.size(80.dp).clip(CircleShape),
+                                resource = asyncPainterResource(data = it),
+                                contentDescription = "Profile Image",
+                                contentScale = ContentScale.Crop,
+                                onLoading = { progress ->
+                                    CircularProgressIndicator(
+                                        progress = progress,
+                                        color = AppColors.primary,
+                                    )
                                 },
-                        contentAlignment = Alignment.Center,
-                    ) {
+                            )
+                        }
+                    } else {
                         Image(
-                            painter = it,
+                            modifier = Modifier.size(80.dp),
+                            painter = defaultProfile,
                             contentDescription = "Profile Image",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.size(80.dp).clip(CircleShape),
+                            colorFilter = ColorFilter.tint(AppColors.primary),
                         )
                     }
                 }
+
+                Spacer(Modifier.weight(1f).fillMaxHeight())
+
+                Image(
+                    painter = painterResource(Res.drawable.home),
+                    contentDescription = "Home",
+                    contentScale = ContentScale.FillBounds,
+                    colorFilter =
+                        if (state.user.household == null) {
+                            ColorFilter.tint(AppColors.complementary)
+                        } else {
+                            ColorFilter.tint(AppColors.primary)
+                        },
+                    modifier =
+                        Modifier.size(48.dp).clickable {
+                        },
+                )
+                Spacer(Modifier.width(14.dp).fillMaxHeight())
+                Image(
+                    painter = painterResource(Res.drawable.map),
+                    contentDescription = "Map",
+                    contentScale = ContentScale.FillBounds,
+                    colorFilter =
+                        if (state.user.household?.isLocalized == true) {
+                            ColorFilter.tint(AppColors.primary)
+                        } else {
+                            ColorFilter.tint(AppColors.complementary)
+                        },
+                    modifier =
+                        Modifier.size(48.dp).clickable {
+                        },
+                )
+                Spacer(Modifier.width(14.dp).fillMaxHeight())
+                Image(
+                    painter = painterResource(Res.drawable.polygon),
+                    contentDescription = "Map",
+                    contentScale = ContentScale.FillBounds,
+                    colorFilter =
+                        if (state.user.neighbourhoods.isEmpty()) {
+                            ColorFilter.tint(AppColors.complementary)
+                        } else {
+                            ColorFilter.tint(AppColors.primary)
+                        },
+                    modifier =
+                        Modifier.size(48.dp).clickable {
+                        },
+                )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
             // Username Input
             OutlinedTextField(
-                value = state.username,
+                value = state.user.username,
                 onValueChange = { },
                 enabled = false,
                 label = { Text(stringResource(Res.string.username)) },
@@ -144,7 +193,7 @@ fun Profile(profileViewModel: ProfileViewModel = viewModel { KoinProvider.KOIN.g
 
             // Full Name Input
             OutlinedTextField(
-                value = state.fullName,
+                value = state.fullnameOverride ?: state.user.fullname,
                 onValueChange = {
                     profileViewModel.updateFullname(it)
                 },
@@ -157,7 +206,7 @@ fun Profile(profileViewModel: ProfileViewModel = viewModel { KoinProvider.KOIN.g
 
             // Email Input
             OutlinedTextField(
-                value = state.email,
+                value = state.emailOverride ?: state.user.email,
                 onValueChange = {
                     profileViewModel.updateEmail(it)
                 },
@@ -170,7 +219,7 @@ fun Profile(profileViewModel: ProfileViewModel = viewModel { KoinProvider.KOIN.g
 
             // Phone Number Input
             OutlinedTextField(
-                value = state.phone,
+                value = state.phoneOverride ?: state.user.phone,
                 onValueChange = {
                     profileViewModel.updatePhone(it)
                 },
@@ -181,7 +230,7 @@ fun Profile(profileViewModel: ProfileViewModel = viewModel { KoinProvider.KOIN.g
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Register Button
+            // Save Button
             Button(
                 onClick = {
                     profileViewModel.onSaveProfile()

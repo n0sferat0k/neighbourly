@@ -1,7 +1,6 @@
 package com.neighbourly.app
 
 import com.neighbourly.app.a_device.api.KtorAuthApi
-import com.neighbourly.app.a_device.api.KtorHttpImageLoader
 import com.neighbourly.app.a_device.store.SessionHybridStore
 import com.neighbourly.app.b_adapt.gateway.AuthApiGw
 import com.neighbourly.app.b_adapt.viewmodel.LoginViewModel
@@ -13,9 +12,9 @@ import com.neighbourly.app.c_business.usecase.LoginUseCase
 import com.neighbourly.app.c_business.usecase.LogoutUseCase
 import com.neighbourly.app.c_business.usecase.ProfileImageUpdateUseCase
 import com.neighbourly.app.c_business.usecase.ProfileRefreshUseCase
+import com.neighbourly.app.c_business.usecase.ProfileUpdateUseCase
 import com.neighbourly.app.c_business.usecase.RegisterUseCase
 import com.neighbourly.app.d_entity.interf.AuthApi
-import com.neighbourly.app.d_entity.interf.HttpImageLoader
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import com.neighbourly.app.d_entity.interf.SessionStore
 import org.koin.core.Koin
@@ -49,9 +48,6 @@ val deviceModule =
         }
         single<KeyValueRegistry> {
             keyValueRegistry
-        }
-        single<HttpImageLoader> {
-            KtorHttpImageLoader
         }
     }
 val adapterModule =
@@ -95,5 +91,8 @@ val useCaseModule =
         }
         single {
             ProfileRefreshUseCase(get(), get())
+        }
+        single {
+            ProfileUpdateUseCase(get(), get())
         }
     }

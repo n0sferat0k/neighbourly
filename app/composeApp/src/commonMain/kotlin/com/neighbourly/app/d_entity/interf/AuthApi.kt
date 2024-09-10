@@ -12,9 +12,9 @@ interface AuthApi {
     suspend fun register(
         username: String,
         password: String,
-        fullName: String,
+        fullname: String,
         email: String,
-        phoneNumber: String,
+        phone: String,
     ): User
 
     suspend fun updateProfileImage(
@@ -28,4 +28,12 @@ interface AuthApi {
         token: String,
         logoutAll: Boolean,
     )
+
+    suspend fun updateProfile(
+        token: String,
+        fullname: String,
+        email: String,
+        phone: String,
+        about: String,
+    ): User
 }

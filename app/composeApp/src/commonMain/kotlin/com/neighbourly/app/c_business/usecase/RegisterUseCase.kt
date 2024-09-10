@@ -10,11 +10,11 @@ class RegisterUseCase(
     suspend fun execute(
         username: String,
         password: String,
-        fullName: String,
+        fullname: String,
         email: String,
-        phoneNumber: String,
+        phone: String,
     ) {
-        val user = apiGw.register(username, password, fullName, email, phoneNumber)
+        val user = apiGw.register(username, password, fullname, email, phone)
         sessionStore.store(user)
     }
 }

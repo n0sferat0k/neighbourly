@@ -38,6 +38,32 @@ class AuthApiGw(
         }
     }
 
+    override suspend fun updateProfile(
+        token: String,
+        fullname: String,
+        email: String,
+        phone: String,
+        about: String,
+    ): User {
+        try {
+            return withContext(Dispatchers.IO) {
+                api
+                    .updateProfile(
+                        API_BASE_URL,
+                        token,
+                        UpdateProfileInput(
+                            fullname = fullname,
+                            phone = phone,
+                            email = email,
+                            about = about,
+                        ),
+                    ).toUser()
+            }
+        } catch (e: ApiException) {
+            throw OpException(e.msg)
+        }
+    }
+
     override suspend fun refreshProfile(token: String): User {
         try {
             return withContext(Dispatchers.IO) {
@@ -51,9 +77,9 @@ class AuthApiGw(
     override suspend fun register(
         username: String,
         password: String,
-        fullName: String,
+        fullname: String,
         email: String,
-        phoneNumber: String,
+        phone: String,
     ): User {
         try {
             return withContext(Dispatchers.IO) {
@@ -63,8 +89,8 @@ class AuthApiGw(
                         RegisterInput(
                             username = username,
                             password = password,
-                            fullname = fullName,
-                            phone = phoneNumber,
+                            fullname = fullname,
+                            phone = phone,
                             email = email,
                         ),
                     ).toUser()
@@ -112,10 +138,18 @@ data class RegisterInput(
 )
 
 @Serializable
+data class UpdateProfileInput(
+    val fullname: String,
+    val phone: String,
+    val email: String,
+    val about: String,
+)
+
+@Serializable
 data class UserDTO(
     val id: Int,
     val username: String,
-    val about: String,
+    val about: String? = null,
     val password: String? = null,
     val fullname: String,
     val email: String,
@@ -133,8 +167,8 @@ data class HouseholdDTO(
     val about: String,
     val imageurl: String,
     val headid: Int,
-    val latitude: Double,
-    val longitude: Double,
+    val latitude: Double? = null,
+    val longitude: Double? = null,
     val address: String,
 )
 
@@ -144,5 +178,5 @@ data class NeighbourhoodDTO(
     val name: String,
     val geofence: String,
     val access: Int,
-    val parent: UserDTO,
+    val parent: UserDTO? = null,
 )

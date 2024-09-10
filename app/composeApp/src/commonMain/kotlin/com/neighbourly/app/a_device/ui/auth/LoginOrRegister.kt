@@ -1,7 +1,7 @@
 package com.neighbourly.app.a_device.ui.auth
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.BoxContent
 import com.neighbourly.app.a_device.ui.BoxHeader
 import com.neighbourly.app.a_device.ui.font
 import neighbourly.composeapp.generated.resources.Res
@@ -29,18 +30,19 @@ import org.jetbrains.compose.resources.stringResource
 fun LoginOrRegister() {
     var index by remember { mutableStateOf(0) }
 
-    Box(
+    Column(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
     ) {
-        BoxHeader(Modifier.align(Alignment.TopStart))
+        BoxHeader(Modifier.align(Alignment.Start))
 
-        when (index) {
-            0 -> Login()
-            1 -> Register()
+        BoxContent(modifier = Modifier.weight(1f)) {
+            when (index) {
+                0 -> Login()
+                1 -> Register()
+            }
         }
 
-        Row(modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = 10.dp, end = 20.dp)) {
+        Row(modifier = Modifier.align(Alignment.End).padding(bottom = 10.dp, end = 20.dp)) {
             Text(
                 modifier =
                     Modifier

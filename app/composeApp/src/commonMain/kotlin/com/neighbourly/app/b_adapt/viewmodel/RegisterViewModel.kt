@@ -38,16 +38,16 @@ class RegisterViewModel(
         username: String,
         password: String,
         confirmPassword: String,
-        fullName: String,
+        fullname: String,
         email: String,
-        phoneNumber: String,
+        phone: String,
         profileImageFileContents: FileContents?,
     ) {
         validateUsername(username)
         validatePassword(password, confirmPassword)
-        validateFullname(fullName)
+        validateFullname(fullname)
         validateEmail(email)
-        validatePhone(phoneNumber)
+        validatePhone(phone)
 
         _state.value.let {
             if (it.usernameError || it.passwordError || it.fullnameError || it.emailError || it.phoneError) {
@@ -67,7 +67,7 @@ class RegisterViewModel(
         }
         viewModelScope.launch {
             try {
-                registerUseCase.execute(username, password, fullName, email, phoneNumber)
+                registerUseCase.execute(username, password, fullname, email, phone)
                 profileImageFileContents?.let {
                     profileUpdateUseCase.execute(profileImageFileContents)
                 }

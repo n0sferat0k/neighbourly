@@ -5,11 +5,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -57,6 +61,36 @@ fun BoxHeader(modifier: Modifier = Modifier) {
                     fontFamily = font(),
                     fontSize = 24.sp,
                     color = AppColors.primary,
+                ),
+        )
+    }
+}
+
+@Composable
+fun BoxContent(
+    modifier: Modifier = Modifier,
+    content: @Composable BoxScope.() -> Unit,
+) {
+    Box(modifier.fillMaxWidth()) {
+        Box(modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+            Box(
+                modifier = modifier.fillMaxSize().padding(20.dp),
+                content = content,
+            )
+        }
+        Box(
+            modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colorStops =
+                            arrayOf(
+                                0.0f to Color.White,
+                                0.05f to Color.Transparent,
+                                0.95f to Color.Transparent,
+                                1f to Color.White,
+                            ),
+                    ),
                 ),
         )
     }

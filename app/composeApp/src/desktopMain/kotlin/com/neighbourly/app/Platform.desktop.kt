@@ -46,9 +46,9 @@ actual object GetLocation {
     }
 }
 
-actual fun loadImageFromFile(file: String): BitmapPainter = BitmapPainter(ImageIO.read(File(file)).toComposeImageBitmap())
+actual fun loadImageFromFile(file: String): BitmapPainter? = BitmapPainter(ImageIO.read(File(file)).toComposeImageBitmap())
 
-actual fun loadImageFromFileContents(content: ByteArray): BitmapPainter =
+actual fun loadImageFromByteAray(content: ByteArray): BitmapPainter? =
     BitmapPainter(ImageIO.read(content.inputStream()).toComposeImageBitmap())
 
 actual fun loadContentsFromFile(file: String): FileContents? {

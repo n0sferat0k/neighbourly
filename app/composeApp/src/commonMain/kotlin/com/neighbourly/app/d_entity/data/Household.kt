@@ -6,7 +6,6 @@ data class Household(
     val about: String,
     val imageurl: String,
     val headid: Int,
-    val latitude: Double,
-    val longitude: Double,
-    val address: String
+    val location: Pair<Double, Double>? = null,
+    val address: String,
 )

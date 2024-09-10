@@ -23,9 +23,9 @@ expect object GetLocation {
     fun removeCallback(callback: GeoLocationCallback)
 }
 
-expect fun loadImageFromFile(file: String): BitmapPainter
+expect fun loadImageFromFile(file: String): BitmapPainter?
 
-expect fun loadImageFromFileContents(content: ByteArray): BitmapPainter
+expect fun loadImageFromByteAray(content: ByteArray): BitmapPainter?
 
 expect fun loadContentsFromFile(file: String): FileContents?
 

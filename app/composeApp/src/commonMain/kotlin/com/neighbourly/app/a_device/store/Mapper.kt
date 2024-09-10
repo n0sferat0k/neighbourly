@@ -40,8 +40,7 @@ fun StoreHousehold.toHousehold(): Household =
         about = this.about,
         imageurl = this.imageurl,
         headid = this.headid,
-        latitude = this.latitude,
-        longitude = this.longitude,
+        location = if (latitude != null && longitude != null) Pair(latitude, longitude) else null,
         address = this.address,
     )
 
@@ -52,8 +51,8 @@ fun Household.toStoreHousehold(): StoreHousehold =
         about = this.about,
         imageurl = this.imageurl,
         headid = this.headid,
-        latitude = this.latitude,
-        longitude = this.longitude,
+        latitude = location?.first,
+        longitude = location?.second,
         address = this.address,
     )
 
@@ -79,7 +78,7 @@ fun StoreNeighbourhood.toStoreNeighbourhood(): Neighbourhood =
 data class StoreUser(
     val id: Int,
     val username: String,
-    val about: String,
+    val about: String? = null,
     val fullname: String,
     val email: String,
     val phone: String,
@@ -96,8 +95,8 @@ data class StoreHousehold(
     val about: String,
     val imageurl: String,
     val headid: Int,
-    val latitude: Double,
-    val longitude: Double,
+    val latitude: Double? = null,
+    val longitude: Double? = null,
     val address: String,
 )
 

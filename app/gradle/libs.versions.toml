@@ -15,6 +15,7 @@ androidx-test-junit = "1.2.1"
 compose-plugin = "1.6.11"
 composeWebviewMultiplatform = "1.9.20"
 junit = "4.13.2"
+kamelImage = "0.9.5"
 koinCore = "4.0.0-RC2"
 kotlin = "2.0.10"
 kotlinSerialization = "2.0.20"
@@ -26,6 +27,7 @@ playServicesLocation = "21.3.0"
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 compose-webview-multiplatform = { module = "io.github.kevinnzou:compose-webview-multiplatform", version.ref = "composeWebviewMultiplatform" }
+kamel-image = { module = "media.kamel:kamel-image", version.ref = "kamelImage" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }

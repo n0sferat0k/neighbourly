@@ -3,6 +3,7 @@ package com.neighbourly.app.a_device.api
 import com.neighbourly.app.b_adapt.gateway.ApiException
 import com.neighbourly.app.b_adapt.gateway.LoginInput
 import com.neighbourly.app.b_adapt.gateway.RegisterInput
+import com.neighbourly.app.b_adapt.gateway.UpdateProfileInput
 import com.neighbourly.app.b_adapt.gateway.UserDTO
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.httpClientEngine
@@ -88,6 +89,26 @@ class KtorAuthApi {
             client.post(baseUrl + "login") {
                 contentType(ContentType.Application.Json)
                 setBody(loginInput)
+            }
+        if (response.status.value == 200) {
+            return response.body<UserDTO>()
+        } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun updateProfile(
+        baseUrl: String,
+        token: String,
+        updateProfileInput: UpdateProfileInput,
+    ): UserDTO {
+        val response: HttpResponse =
+            client.post(baseUrl + "profile/refresh") {
+                contentType(ContentType.Application.Json)
+                setBody(updateProfileInput)
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
             }
         if (response.status.value == 200) {
             return response.body<UserDTO>()
