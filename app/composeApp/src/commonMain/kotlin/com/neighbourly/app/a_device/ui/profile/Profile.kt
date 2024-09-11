@@ -24,6 +24,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,6 +73,10 @@ fun Profile(profileViewModel: ProfileViewModel = viewModel { KoinProvider.KOIN.g
     val defaultProfile = painterResource(Res.drawable.profile)
     var showFilePicker by remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        profileViewModel.refresh()
+    }
+
     MultipleFilePicker(show = showFilePicker, fileExtensions = listOf("jpg", "png")) { file ->
         showFilePicker = false
 
@@ -82,7 +87,7 @@ fun Profile(profileViewModel: ProfileViewModel = viewModel { KoinProvider.KOIN.g
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        BoxHeader(Modifier.align(Alignment.Start))
+        BoxHeader(Modifier.align(Alignment.Start), busy = state.loading)
 
         BoxContent(modifier = Modifier.weight(1f)) {
             Column(

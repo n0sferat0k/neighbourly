@@ -31,7 +31,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 @Preview
 fun App(includeMap: Boolean = true) {
-    var tabindex by remember { mutableStateOf(-1) }
+    var tabindex by remember { mutableStateOf(if (includeMap) -1 else 0) }
 
     MaterialTheme {
         requestPermissions()

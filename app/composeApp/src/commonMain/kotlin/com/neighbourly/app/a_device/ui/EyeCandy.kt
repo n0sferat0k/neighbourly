@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -47,7 +48,10 @@ data object AppColors {
 }
 
 @Composable
-fun BoxHeader(modifier: Modifier = Modifier) {
+fun BoxHeader(
+    modifier: Modifier = Modifier,
+    busy: Boolean = false,
+) {
     Row(modifier = modifier.padding(start = 10.dp)) {
         Image(
             modifier = Modifier.size(48.dp).align(Alignment.CenterVertically),
@@ -65,6 +69,9 @@ fun BoxHeader(modifier: Modifier = Modifier) {
                     color = AppColors.primary,
                 ),
         )
+        if (busy) {
+            CircularProgressIndicator(color = AppColors.primary)
+        }
     }
 }
 

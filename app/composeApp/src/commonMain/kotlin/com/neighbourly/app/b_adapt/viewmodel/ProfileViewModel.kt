@@ -8,12 +8,14 @@ import com.neighbourly.app.c_business.usecase.ProfileRefreshUseCase
 import com.neighbourly.app.c_business.usecase.ProfileUpdateUseCase
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.OpException
+import com.neighbourly.app.d_entity.data.User
 import com.neighbourly.app.d_entity.interf.SessionStore
 import com.neighbourly.app.d_entity.util.isValidEmail
 import com.neighbourly.app.d_entity.util.isValidPhone
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -30,47 +32,25 @@ class ProfileViewModel(
     val state: StateFlow<ProfileViewState> = _state.asStateFlow()
 
     init {
+        sessionStore.user
+            .filterNotNull()
+            .onEach { user ->
+                _state.update {
+                    it.copy(
+                        user = user.toUserVS(),
+                    )
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    fun refresh() {
+        _state.update { it.copy(loading = true) }
         viewModelScope.launch {
-            _state.update { it.copy(loading = true) }
             runCatching {
                 profileRefreshUseCase.execute()
             }
             _state.update { it.copy(loading = false) }
         }
-
-        sessionStore.user
-            .onEach { user ->
-                println("AAAAAAAAAAAAAAA got user update with imageUrl: " + user?.imageurl)
-                user?.let {
-                    _state.update {
-                        it.copy(
-                            user =
-                                UserVS(
-                                    username = user.username,
-                                    fullname = user.fullname,
-                                    phone = user.phone,
-                                    email = user.email,
-                                    imageurl = user.imageurl,
-                                    about = user.about.orEmpty(),
-                                    household =
-                                        user.household?.let {
-                                            HouseholdVS(
-                                                name = it.name,
-                                                address = it.address,
-                                                isLocalized = it.location != null,
-                                            )
-                                        },
-                                    neighbourhoods =
-                                        user.neighbourhoods.map {
-                                            NeighbourhoodVS(
-                                                name = it.name,
-                                            )
-                                        },
-                                ),
-                        )
-                    }
-                }
-            }.launchIn(viewModelScope)
     }
 
     fun onProfileImageUpdate(fileContents: FileContents?) {
@@ -180,4 +160,28 @@ class ProfileViewModel(
     data class NeighbourhoodVS(
         val name: String,
     )
+
+    fun User.toUserVS() =
+        UserVS(
+            username = username,
+            fullname = fullname,
+            phone = phone,
+            email = email,
+            imageurl = imageurl,
+            about = about.orEmpty(),
+            household =
+                household?.let {
+                    HouseholdVS(
+                        name = it.name,
+                        address = it.address,
+                        isLocalized = it.location != null,
+                    )
+                },
+            neighbourhoods =
+                neighbourhoods.map {
+                    NeighbourhoodVS(
+                        name = it.name,
+                    )
+                },
+        )
 }
