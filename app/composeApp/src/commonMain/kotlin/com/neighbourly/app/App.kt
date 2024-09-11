@@ -30,12 +30,14 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun App() {
+fun App(includeMap: Boolean = true) {
     var tabindex by remember { mutableStateOf(-1) }
 
     MaterialTheme {
         requestPermissions()
-        Map(modifier = Modifier.fillMaxSize())
+        if (includeMap) {
+            Map(modifier = Modifier.fillMaxSize())
+        }
 
         Box(
             modifier = Modifier.fillMaxSize(),

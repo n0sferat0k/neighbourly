@@ -31,11 +31,16 @@ class ProfileViewModel(
 
     init {
         viewModelScope.launch {
-            profileRefreshUseCase.execute()
+            _state.update { it.copy(loading = true) }
+            runCatching {
+                profileRefreshUseCase.execute()
+            }
+            _state.update { it.copy(loading = false) }
         }
 
         sessionStore.user
             .onEach { user ->
+                println("AAAAAAAAAAAAAAA got user update with imageUrl: " + user?.imageurl)
                 user?.let {
                     _state.update {
                         it.copy(
@@ -72,14 +77,14 @@ class ProfileViewModel(
         viewModelScope.launch {
             try {
                 fileContents?.let {
-                    _state.update { it.copy(error = "", loading = true) }
+                    _state.update { it.copy(error = "", imageUpdating = true) }
                     profileImageUpdateUseCase.execute(it)
-                    _state.update { it.copy(error = "", loading = false) }
+                    _state.update { it.copy(error = "", imageUpdating = false) }
                 } ?: run {
-                    _state.update { it.copy(error = "Unable to read file", loading = false) }
+                    _state.update { it.copy(error = "Unable to read file", saving = false) }
                 }
             } catch (e: OpException) {
-                _state.update { it.copy(error = e.msg, loading = false) }
+                _state.update { it.copy(error = e.msg, saving = false) }
             }
         }
     }
@@ -125,16 +130,16 @@ class ProfileViewModel(
 
             viewModelScope.launch {
                 try {
-                    _state.update { it.copy(error = "", loading = true) }
+                    _state.update { it.copy(error = "", saving = true) }
                     profileUpdateUseCase.execute(
                         it.fullnameOverride ?: it.user.fullname,
                         it.emailOverride ?: it.user.email,
                         it.phoneOverride ?: it.user.phone,
                         it.aboutOverride ?: it.user.about,
                     )
-                    _state.update { it.copy(error = "", loading = false) }
+                    _state.update { it.copy(error = "", saving = false) }
                 } catch (e: OpException) {
-                    _state.update { it.copy(error = e.msg, loading = false) }
+                    _state.update { it.copy(error = e.msg, saving = false) }
                 }
             }
         }
@@ -143,6 +148,8 @@ class ProfileViewModel(
     data class ProfileViewState(
         val error: String = "",
         val loading: Boolean = false,
+        val imageUpdating: Boolean = false,
+        val saving: Boolean = false,
         val fullnameOverride: String? = null,
         val emailOverride: String? = null,
         val phoneOverride: String? = null,

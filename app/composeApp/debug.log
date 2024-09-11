@@ -194,3 +194,30 @@ ERROR: No matching issuer found
 [0830/185358.957:ERROR:shared_image_manager.cc(221)] SharedImageManager::ProduceSkia: Trying to Produce a Skia representation from a non-existent mailbox.
 [0830/185359.152:ERROR:shared_image_manager.cc(221)] SharedImageManager::ProduceSkia: Trying to Produce a Skia representation from a non-existent mailbox.
 [0830/185405.185:INFO:CONSOLE(13)] "add callback: 0, function (data) {}", source:  (13)
+[0911/105008.166:INFO:child_thread_impl.cc(957)] ChildThreadImpl::EnsureConnected()
+[0911/105008.166:INFO:child_thread_impl.cc(957)] ChildThreadImpl::EnsureConnected()
+[0911/105011.869:ERROR:network_service_instance_impl.cc(599)] Network service crashed, restarting service.
+[0911/122225.468:INFO:child_thread_impl.cc(957)] ChildThreadImpl::EnsureConnected()
+[0911/122226.224:INFO:child_thread_impl.cc(957)] ChildThreadImpl::EnsureConnected()
+[0911/122235.353:ERROR:network_service_instance_impl.cc(599)] Network service crashed, restarting service.
+[0911/123139.639:INFO:child_thread_impl.cc(957)] ChildThreadImpl::EnsureConnected()
+[0911/123143.013:INFO:child_thread_impl.cc(957)] ChildThreadImpl::EnsureConnected()
+[0911/123200.277:ERROR:network_service_instance_impl.cc(599)] Network service crashed, restarting service.
+[0911/140509.957:INFO:CONSOLE(1)] "The Cross-Origin-Opener-Policy header has been ignored, because the URL's origin was untrustworthy. It was defined either in the final response or a redirect. Please deliver the response using the HTTPS protocol. You can also use the 'localhost' origin instead. See https://www.w3.org/TR/powerful-features/#potentially-trustworthy-origin and https://html.spec.whatwg.org/#the-cross-origin-opener-policy-header.", source: https://www.google.com/?gws_rd=ssl (1)
+[0911/140509.986:INFO:CONSOLE(1)] "The Cross-Origin-Opener-Policy header has been ignored, because the URL's origin was untrustworthy. It was defined either in the final response or a redirect. Please deliver the response using the HTTPS protocol. You can also use the 'localhost' origin instead. See https://www.w3.org/TR/powerful-features/#potentially-trustworthy-origin and https://html.spec.whatwg.org/#the-cross-origin-opener-policy-header.", source: https://www.google.com/?gws_rd=ssl (1)
+[0911/140511.789:INFO:CONSOLE(88)] "Autofocus processing was blocked because a document already has a focused element.", source: https://www.google.com/?gws_rd=ssl (88)
+[0911/140832.422:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
+[0911/142542.013:WARNING:spdy_session.cc(2978)] Received HEADERS for invalid stream 5
+[0911/142630.373:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
+[0911/153251.755:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
+[0911/153314.924:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
+[0911/153411.138:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
+[0911/160823.756:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
+[0911/160930.987:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
+[0911/161509.588:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
+[0911/161732.044:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
+[0911/161920.945:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
+[0911/162639.169:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
+[0911/162759.709:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
+[0911/162928.956:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
+[0911/163228.455:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)

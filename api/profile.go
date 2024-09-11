@@ -189,7 +189,11 @@ func UploadProfileImage(w http.ResponseWriter, r *http.Request) {
 	wwwRelativeFolder := "usersIMGS"
 	apiRelativeFolder := "../www/"
 	saveFolder := apiRelativeFolder + wwwRelativeFolder
-	destinationFileName := "profile_" + userId + filepath.Ext(handler.Filename)
+	var randomString string
+	if randomString, err = generageRandomToken(16); err != nil {
+		randomString = ""
+	}
+	destinationFileName := "profile_" + userId + "_" + randomString + filepath.Ext(handler.Filename)
 	dbFilePath := filepath.Join(wwwRelativeFolder, destinationFileName)
 
 	// Create a Go routine to save the file

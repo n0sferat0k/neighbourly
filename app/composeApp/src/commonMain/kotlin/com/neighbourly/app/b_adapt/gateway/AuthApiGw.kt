@@ -31,7 +31,7 @@ class AuthApiGw(
     ): String {
         try {
             return withContext(Dispatchers.IO) {
-                api.uploadImage(API_BASE_URL, token, profileImageFileContents)
+                api.uploadImage(API_BASE_URL, token, profileImageFileContents).prependResourceUrlBase()
             }
         } catch (e: ApiException) {
             throw OpException(e.msg)

@@ -12,7 +12,7 @@ fun UserDTO.toUser(): User =
         fullname = fullname,
         email = email,
         phone = phone,
-        imageurl = imageurl.prependUrlBase(CONTENT_BASE_URL),
+        imageurl = imageurl?.prependResourceUrlBase(),
         authtoken = authtoken,
         household = household?.toHousehold(),
         neighbourhoods = neighbourhoods.map { it.toNeighbourhood() },
@@ -38,6 +38,6 @@ fun NeighbourhoodDTO.toNeighbourhood(): Neighbourhood =
         parent = parent?.toUser(),
     )
 
-fun String?.prependUrlBase(base: String) = this.takeIf { !it.isNullOrBlank() }?.let { base + it } ?: this
+fun String.prependResourceUrlBase() = this.takeIf { !it.isNullOrBlank() }?.let { CONTENT_BASE_URL + it } ?: this
 
 const val CONTENT_BASE_URL = "http://neighbourly.go.ro/"

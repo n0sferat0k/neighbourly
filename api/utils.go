@@ -76,13 +76,11 @@ func checkPasswordHash(password, hash string) bool {
 }
 
 func generateAuthToken() (string, error) {
-	// Create a byte slice to hold the random bytes
-	token := make([]byte, 126)
+	return generageRandomToken(126)
+}
 
-	// Read random bytes into the slice
-
+func generageRandomToken(length int64) (string, error) {
+	token := make([]byte, length)
 	_, err := rand.Reader.Read(token)
-
-	// Encode the byte slice to a hexadecimal string
 	return hex.EncodeToString(token), err
 }
