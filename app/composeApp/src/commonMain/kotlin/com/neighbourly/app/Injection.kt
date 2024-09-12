@@ -71,7 +71,7 @@ val adapterModule =
             LoginViewModel(get())
         }
         single {
-            MapViewModel()
+            MapViewModel(get())
         }
     }
 

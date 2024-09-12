@@ -93,7 +93,7 @@ data class StoreHousehold(
     val householdid: Int,
     val name: String,
     val about: String,
-    val imageurl: String,
+    val imageurl: String? = null,
     val headid: Int,
     val latitude: Double? = null,
     val longitude: Double? = null,

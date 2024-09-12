@@ -3,6 +3,7 @@ package com.neighbourly.app.a_device.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,7 +29,9 @@ fun Map(
     mapViewModel: MapViewModel = viewModel { KoinProvider.KOIN.get<MapViewModel>() },
     modifier: Modifier,
 ) {
-    val state =
+    val state by mapViewModel.state.collectAsState()
+
+    val webViewState =
         rememberWebViewStateWithHTMLData(data = html).apply {
             webSettings.isJavaScriptEnabled = true
         }
@@ -48,7 +51,9 @@ fun Map(
                     callback: (String) -> Unit,
                 ) {
                     val params = Json.decodeFromString<MapFeedbackModel>(message.params)
-
+                    params.householdid?.let {
+                        mapViewModel.onHouseholSelected(it)
+                    }
                     if (params.mapReady == true) {
                         mapReady = true
                     }
@@ -71,15 +76,31 @@ fun Map(
     DisposableEffect(mapReady) {
         if (mapReady) {
             GetLocation.addCallback(callback)
-            // navigator.evaluateJavaScript("setDot($lat, $lng, 'current');")
         }
         onDispose {
             GetLocation.removeCallback(callback)
         }
     }
 
+    LaunchedEffect(mapReady, state.household) {
+        if (mapReady) {
+            state.household?.let {
+                val image = it.imageurl ?: "http://neighbourly.go.ro/graphics/houses.png"
+                navigator.evaluateJavaScript("addHousehold(${it.latitude}, ${it.longitude}, ${it.id}, '${it.name}', '$image')")
+            }
+        }
+    }
+
+    LaunchedEffect(mapReady, state.neighbourhoods) {
+        if (mapReady) {
+            state.neighbourhoods.forEach {
+                navigator.evaluateJavaScript("addGeofence('neighbourhood_'+ ${it.id}, ${it.geofence})")
+            }
+        }
+    }
+
     WebView(
-        state = state,
+        state = webViewState,
         modifier = modifier,
         navigator = navigator,
         webViewJsBridge = jsBridge,
@@ -90,6 +111,7 @@ fun Map(
 data class MapFeedbackModel(
     val mapReady: Boolean? = null,
     val drawData: List<List<Double>>? = null,
+    val householdid: Int? = null,
 )
 
 val html =
@@ -219,6 +241,32 @@ val html =
                     lng = longitude;
                 }
             }
+            
+            function addHousehold(latitude, longitude, id, name, imageurl) {
+                // create a DOM element for the marker
+    
+                var el = document.getElementById("household_" + id);
+                if(el == null) {
+                    el = document.createElement('div');
+                }
+                el.id = "household_" + id;            
+                el.className = 'marker';
+                el.innerHTML = `<div style="display: flex; flex-direction: column; align-items: center;">
+                                    <span style="background:white;padding:4px;border: 2px solid #5BA9AE;border-radius:10px;">` +  name + `</span>
+                                    <div style="background:url(`+ imageurl + `);background-size:50px;width:50px;height:50px;border: 2px solid #5BA9AE;border-radius:50%;"></div>                                
+                                </div>`;
+                el.style = ``;
+                
+                el.onclick = function() {
+                    window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ householdid: id }), function (data) { });
+                } 
+    
+                // add marker to map
+                new maplibregl.Marker({ element: el })
+                    .setLngLat([longitude, latitude])
+                    .addTo(map);
+            }
+                
             function setDot(latitude, longitude, id) {
                 if (mapLoaded) {
                     if (map.getSource(id) !== undefined) {

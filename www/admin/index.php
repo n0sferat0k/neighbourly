@@ -186,7 +186,7 @@ $p['ADD_NUMERICS_modif'] = array(
 );
 
 $p['LIST_template']="TEMPLATES/table_list.php";
-$p['SINGLE_template']="TEMPLATES/single.php";
+$p['SINGLE_template']="TEMPLATES/single_household.php";
 
 $users = new combinedObjectTTDI();
 $users->setParams($p);
@@ -218,7 +218,7 @@ $p['LANGUAGES']=array("EN");
 $p['CURRENTLANGUAGE']=0;
 
 $p['LIST_template']="TEMPLATES/table_list.php";
-$p['SINGLE_template']="TEMPLATES/single.php";
+$p['SINGLE_template']="TEMPLATES/single_neighbourhood.php";
 
 $users = new combinedObjectTTDI();
 $users->setParams($p);

@@ -23,7 +23,7 @@ fun HouseholdDTO.toHousehold(): Household =
         householdid = householdid,
         name = name,
         about = about,
-        imageurl = imageurl,
+        imageurl = imageurl?.prependResourceUrlBase(),
         headid = headid,
         location = if (latitude != null && longitude != null) Pair(latitude, longitude) else null,
         address = address,
