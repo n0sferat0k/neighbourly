@@ -6,7 +6,6 @@ import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -19,12 +18,12 @@ class MapViewModel(
 
     init {
         sessionStore.user
-            .filterNotNull()
             .onEach { user ->
+
                 _state.update {
                     it.copy(
                         household =
-                            user.household?.location?.let {
+                            user?.household?.location?.let {
                                 HouseholdVS(
                                     id = user.household.householdid,
                                     latitude = it.first,
@@ -34,13 +33,13 @@ class MapViewModel(
                                 )
                             },
                         neighbourhoods =
-                            user.neighbourhoods.map {
+                            user?.neighbourhoods?.map {
                                 NeighbourhoodVS(
                                     id = it.neighbourhoodid,
                                     name = it.name,
                                     geofence = it.geofence,
                                 )
-                            },
+                            } ?: emptyList(),
                     )
                 }
             }.launchIn(viewModelScope)

@@ -1,200 +1,225 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <title>Neighbourly Map</title>
-    <meta charset='utf-8'>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.css' />
-    <script src='https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.js'></script>
-
-    <script src="https://www.unpkg.com/turf@3.0.14/turf.min.js"></script>
-    <script src="https://www.unpkg.com/@mapbox/mapbox-gl-draw@1.4.3/dist/mapbox-gl-draw.js"></script>
-    <link rel="stylesheet" href="https://www.unpkg.com/@mapbox/mapbox-gl-draw@1.4.3/dist/mapbox-gl-draw.css" />
-
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-        }
-
-        html,
-        body,
-        #map {
-            height: 100%;
-        }
-    </style>
-</head>
-
-<body>
-    <div id="map"></div>
-    <script>
-        var mapLoaded = false;
-        var lat = 23.6684110;
-        var lng = 47.6530671;
-
-        MapboxDraw.constants.classes.CONTROL_BASE = 'maplibregl-ctrl';
-        MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
-        MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group';
-
-        const map = new maplibregl.Map({
-            container: 'map',
-            style: 'https://api.maptiler.com/maps/streets/style.json?key=VdbWJipihjTW3mb6JxNK',
-            center: [0, 0],
-            zoom: 1
-        });
-
-        map.on('load', () => {
-            //window.kmpJsBridge.callNative("MapFeedback", "{\"mapReady\":true}", function (data) { });
-            mapLoaded = true;
-            
-            addHousehold(47.6531, 23.6684, 1, "Krucz House", 'http://neighbourly.go.ro/householdsIMGS/boiling-frog.png');            
-            addGeofence("1", [[23.664421990469435,47.65655129393659],[23.665995201870714,47.64961446944116],[23.670235774323487,47.64969293384053],[23.668970442219916,47.653967631296325],[23.67055763940516,47.656120831152805],[23.6676487837274,47.65622253206254],[23.664421990469435,47.65655129393659]]);
-            // addHousehold(47.6530671, 23.6684110, "household_1", "http://neighbourly.go.ro/householdsIMGS/boiling-frog.png");
-
-            // addGeofence("geofence_1", [
-            //     [23.664421990469435, 47.65655129393659],
-            //     [23.665995201870714, 47.64961446944116],
-            //     [23.670235774323487, 47.64969293384053],
-            //     [23.668970442219916, 47.653967631296325],
-            //     [23.67055763940516, 47.656120831152805],
-            //     [23.6676487837274, 47.65622253206254],
-            //     [23.664421990469435, 47.65655129393659]
-            // ]);
-            
-            
-
-            if (lat != 0 && lng != 0) {
-                setDot(lng, lat, 'current');
-                center(lng, lat, 15);
+    <html lang="en">
+    
+    <head>
+        <title>Neighbourly Map</title>
+        <meta charset='utf-8'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.css' />
+        <script src='https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.js'></script>
+    
+        <script src="https://www.unpkg.com/turf@3.0.14/turf.min.js"></script>
+        <script src="https://www.unpkg.com/@mapbox/mapbox-gl-draw@1.4.3/dist/mapbox-gl-draw.js"></script>
+        <link rel="stylesheet" href="https://www.unpkg.com/@mapbox/mapbox-gl-draw@1.4.3/dist/mapbox-gl-draw.css" />
+    
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
             }
-        });
+    
+            html,
+            body,
+            #map {
+                height: 100%;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div id="map"></div>
+        <script>
+            var mapLoaded = false;
+            var lat = 0;
+            var lng = 0;
+            var households = [];
+            var neighbourhoods = [];
+    
+            MapboxDraw.constants.classes.CONTROL_BASE = 'maplibregl-ctrl';
+            MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
+            MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group';
+    
+            const map = new maplibregl.Map({
+                container: 'map',
+                style: 'https://api.maptiler.com/maps/streets/style.json?key=VdbWJipihjTW3mb6JxNK',
+                center: [0, 0],
+                zoom: 1
+            });
+    
+            map.on('load', () => {                
+                mapLoaded = true;
 
-        function enableDraw() {
-            const draw = new MapboxDraw({
-                displayControlsDefault: false,
-                controls: {
-                    polygon: true,
-                    trash: true
+                //window.kmpJsBridge.callNative("MapFeedback", "{\"mapReady\":true}", function (data) { });
+                addHousehold(23.6684, 47.6531, 1, "Krucz House", 'http://neighbourly.go.ro/householdsIMGS/boiling-frog.png');
+                
+                addNeighbourhood("1", [[23.664421990469435,47.65655129393659],[23.665995201870714,47.64961446944116],[23.670235774323487,47.64969293384053],[23.668970442219916,47.653967631296325],[23.67055763940516,47.656120831152805],[23.6676487837274,47.65622253206254],[23.664421990469435,47.65655129393659]]);
+                setDot(23.6684, 47.6531, 'current');
+                center(23.6684, 47.6531, 15)
+                
+                window.setTimeout(function() {
+                    addHousehold(23.6784, 47.6531, 1, "Krucz House Moved", 'http://neighbourly.go.ro/householdsIMGS/boiling-frog.png');                    
+                }, 10000);
+
+                window.setTimeout(function() {
+                    addHousehold(23.6884, 47.6531, 2, "Not Krucz House", 'http://neighbourly.go.ro/householdsIMGS/boiling-frog.png');                    
+                }, 15000);
+                
+                window.setTimeout(function() {                    
+                    clearHouseholds();
+                    clearNeighbourhoods();
+                }, 20000);
+                if (lat != 0 && lng != 0) {
+                    setDot(lng, lat, 'current');
+                    center(lng, lat, 15);
                 }
             });
-            map.addControl(draw);
-
-            updateArea = function () {
-                const data = draw.getAll().features[0].geometry.coordinates[0].map(function (point) {
-                    return [point[0], point[1]];
+    
+            function enableDraw() {
+                const draw = new MapboxDraw({
+                    displayControlsDefault: false,
+                    controls: {
+                        polygon: true,
+                        trash: true
+                    }
                 });
-                window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ drawData: data }), function (data) { });
+                map.addControl(draw);
+    
+                updateArea = function(e) {                    
+                    if (draw.getAll().features.length > 0) {
+                        const data = draw.getAll().features[0].geometry.coordinates[0].map(function (point) {
+                            return [point[0], point[1]];
+                        });                
+                        window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ drawData: data }), function (data) { });
+                    }
+                }
+    
+                map.on('draw.create', updateArea);
+                map.on('draw.delete', updateArea);
+                map.on('draw.update', updateArea);
             }
 
-            map.on('draw.create', updateArea);
-            map.on('draw.delete', updateArea);
-            map.on('draw.update', updateArea);
-        }
+            function clearNeighbourhoods() {
+                for (var key in neighbourhoods) {
+                    map.removeLayer(neighbourhoods[key]);
+                    map.removeSource(neighbourhoods[key]);
+                }               
+                neighbourhoods = [];                
+            }
 
-        function addGeofence(id, data) {
-            if (mapLoaded) {
-                if (map.getSource(id) !== undefined) {
-                    map.getSource(id).setData({
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'Polygon',
-                            'coordinates': [data]
-                        }
-                    });
-                } else {
-                    map.addSource(id, {
-                        'type': 'geojson',
-                        'data': {
+            function addNeighbourhood(id, data) {
+                addGeofence("neighbourhood_" + id, data);
+                neighbourhoods.push("neighbourhood_" + id);
+            }
+
+            function addGeofence(id, data) {
+                if (mapLoaded) {
+                    if (map.getSource(id) !== undefined) {
+                        map.getSource(id).setData({
                             'type': 'Feature',
                             'geometry': {
                                 'type': 'Polygon',
                                 'coordinates': [data]
                             }
-                        }
-                    });
-                    map.addLayer({
-                        'id': id,
-                        'type': 'fill',
-                        'source': id,
-                        'layout': {},
-                        'paint': {
-                            'fill-color': '#ae605b',
-                            'fill-opacity': 0.4
-                        }
-                    });
+                        });
+                    } else {
+                        map.addSource(id, {
+                            'type': 'geojson',
+                            'data': {
+                                'type': 'Feature',
+                                'geometry': {
+                                    'type': 'Polygon',
+                                    'coordinates': [data]
+                                }
+                            }
+                        });
+                        map.addLayer({
+                            'id': id,
+                            'type': 'fill',
+                            'source': id,
+                            'layout': {},
+                            'paint': {
+                                'fill-color': '#ae605b',
+                                'fill-opacity': 0.4
+                            }
+                        });
+                    }
                 }
-            }
-        }
-
-        function center(latitude, longitude, zoom) {
-            if (mapLoaded) {
-                map.flyTo({
-                    center: [longitude, latitude],
-                    zoom: zoom
-                });
-            } else {
-                lat = latitude;
-                lng = longitude;
-            }
-        }
-
-        function addHousehold(latitude, longitude, id, name, imageurl) {
-            // create a DOM element for the marker
-
-            var el = document.getElementById("household_" + id);
-            if(el == null) {
-                el = document.createElement('div');
-            }
-            el.id = "household_" + id;            
-            el.className = 'marker';
-            el.innerHTML = `<div style="display: flex; flex-direction: column; align-items: center;">
-                                <span style="background:white;padding:4px;border: 2px solid #5BA9AE;border-radius:10px;">` +  name + `</span>
-                                <div style="background:url(`+ imageurl + `);background-size:50px;width:50px;height:50px;border: 2px solid #5BA9AE;border-radius:50%;"></div>                                
-                            </div>`;
-            el.style = ``;
-            
-            el.onclick = function() {
-                window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ householdid: id }), function (data) { });
-            } 
-
-            // add marker to map
-            new maplibregl.Marker({ element: el })
-                .setLngLat([longitude, latitude])
-                .addTo(map);
-        }
-
-        function setDot(latitude, longitude, id) {
-            if (mapLoaded) {
-                if (map.getSource(id) !== undefined) {
-                    map.getSource(id).setData({
-                        'type': 'Point',
-                        'coordinates': [longitude, latitude]
+            }    
+    
+            function center(longitude, latitude, zoom) {
+                if (mapLoaded) {
+                    map.flyTo({
+                        center: [longitude, latitude],
+                        zoom: zoom
                     });
                 } else {
-                    map.addSource(id, {
-                        'type': 'geojson',
-                        'data': {
+                    lng = longitude;
+                    lat = latitude;                    
+                }
+            }
+
+            function clearHouseholds() {
+                for (var key in households) {
+                    households[key].remove();
+                }
+                households = [];
+            }
+
+            function addHousehold(longitude, latitude, id, name, imageurl) {
+                if (mapLoaded) {    
+                    var el = document.getElementById("household_" + id);
+                    if(el == null) {
+                        el = document.createElement('div');
+                        el.id = "household_" + id;
+                        el.className = 'marker';
+
+                        households[id] = new maplibregl.Marker({ element: el }).setLngLat([longitude, latitude])                                        
+                        households[id].addTo(map);
+                    } else {
+                        households[id].setLngLat([longitude, latitude]);
+                    }
+                    
+                    el.innerHTML = `<div style="display: flex; flex-direction: column; align-items: center;">
+                                        <span style="background:white;padding:4px;border: 2px solid #5BA9AE;border-radius:10px;">` +  name + `</span>
+                                        <div style="background:url(`+ imageurl + `);background-size:50px;width:50px;height:50px;border: 2px solid #5BA9AE;border-radius:50%;"></div>                                
+                                    </div>`;
+                                    
+                    el.onclick = function() {
+                        window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ householdid: id }), function (data) { });
+                    } 
+                }
+            }
+                
+            function setDot(longitude, latitude, id) {
+                if (mapLoaded) {
+                    if (map.getSource(id) !== undefined) {
+                        map.getSource(id).setData({
                             'type': 'Point',
                             'coordinates': [longitude, latitude]
-                        }
-                    });
-                    map.addLayer({
-                        'id': id,
-                        'source': id,
-                        'type': 'circle',
-                        'paint': {
-                            'circle-radius': 8,
-                            'circle-color': '#5BA9AE'
-                        }
-                    });
+                        });
+                    } else {
+                        map.addSource(id, {
+                            'type': 'geojson',
+                            'data': {
+                                'type': 'Point',
+                                'coordinates': [longitude, latitude]
+                            }
+                        });
+                        map.addLayer({
+                            'id': id,
+                            'source': id,
+                            'type': 'circle',
+                            'paint': {
+                                'circle-radius': 8,
+                                'circle-color': '#5BA9AE'
+                            }
+                        });
+                    }
+                } else {
+                    lng = longitude;
+                    lat = latitude;                    
                 }
-            } else {
-                lat = latitude;
-                lng = longitude;
             }
-        }
-    </script>
-</body>
-
+        </script>
+    </body>
 </html>

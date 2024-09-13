@@ -40,8 +40,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.MultipleFilePicker
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.ErrorText
 import com.neighbourly.app.a_device.ui.font
-import com.neighbourly.app.b_adapt.viewmodel.RegisterViewModel
+import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.getPhoneNumber
 import com.neighbourly.app.loadContentsFromFile
@@ -251,16 +252,7 @@ fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOI
         }
 
         if (state.error.isNotEmpty()) {
-            Text(
-                text = state.error,
-                color = Color.Red,
-                style =
-                    TextStyle(
-                        fontFamily = font(),
-                        fontSize = 18.sp,
-                        color = AppColors.primary,
-                    ),
-            )
+            ErrorText(state.error)
         }
     }
 }

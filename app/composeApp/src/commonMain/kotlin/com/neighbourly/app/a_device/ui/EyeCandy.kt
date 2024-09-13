@@ -70,7 +70,10 @@ fun BoxHeader(
                 ),
         )
         if (busy) {
-            CircularProgressIndicator(color = AppColors.primary)
+            CircularProgressIndicator(
+                modifier = Modifier.size(36.dp).align(Alignment.Bottom).padding(start = 5.dp),
+                color = AppColors.primary,
+            )
         }
     }
 }
@@ -106,6 +109,17 @@ fun BoxContent(
 }
 
 @Composable
+fun BoxFooter(
+    modifier: Modifier = Modifier,
+    content: @Composable BoxScope.() -> Unit,
+) {
+    Box(
+        modifier = modifier.padding(bottom = 10.dp, end = 20.dp),
+        content = content,
+    )
+}
+
+@Composable
 fun font() =
     FontFamily(
         Font(
@@ -130,6 +144,19 @@ fun CurlyText(
                 fontFamily = font(),
                 fontSize = 20.sp,
                 color = AppColors.primary,
+            ),
+    )
+}
+
+@Composable
+fun ErrorText(errMsg: String) {
+    Text(
+        text = errMsg,
+        color = Color.Red,
+        style =
+            TextStyle(
+                fontFamily = font(),
+                fontSize = 18.sp,
             ),
     )
 }

@@ -30,8 +30,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.ErrorText
 import com.neighbourly.app.a_device.ui.font
-import com.neighbourly.app.b_adapt.viewmodel.LoginViewModel
+import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.login
 import neighbourly.composeapp.generated.resources.password
@@ -106,16 +107,7 @@ fun Login(loginViewModel: LoginViewModel = viewModel { KoinProvider.KOIN.get<Log
         }
 
         if (state.error.isNotEmpty()) {
-            Text(
-                text = state.error,
-                color = Color.Red,
-                style =
-                    TextStyle(
-                        fontFamily = font(),
-                        fontSize = 18.sp,
-                        color = AppColors.primary,
-                    ),
-            )
+            ErrorText(state.error)
         }
     }
 }

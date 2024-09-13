@@ -1,4 +1,4 @@
-package com.neighbourly.app.b_adapt.viewmodel
+package com.neighbourly.app.b_adapt.viewmodel.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

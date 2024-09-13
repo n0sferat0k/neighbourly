@@ -3,11 +3,14 @@ package com.neighbourly.app
 import com.neighbourly.app.a_device.api.KtorAuthApi
 import com.neighbourly.app.a_device.store.SessionHybridStore
 import com.neighbourly.app.b_adapt.gateway.AuthApiGw
-import com.neighbourly.app.b_adapt.viewmodel.LoginViewModel
 import com.neighbourly.app.b_adapt.viewmodel.MainViewModel
 import com.neighbourly.app.b_adapt.viewmodel.MapViewModel
-import com.neighbourly.app.b_adapt.viewmodel.ProfileViewModel
-import com.neighbourly.app.b_adapt.viewmodel.RegisterViewModel
+import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
+import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
+import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileFooterViewModel
+import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileInfoEditViewModel
+import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileMenuViewModel
+import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileViewModel
 import com.neighbourly.app.c_business.usecase.LoginUseCase
 import com.neighbourly.app.c_business.usecase.LogoutUseCase
 import com.neighbourly.app.c_business.usecase.ProfileImageUpdateUseCase
@@ -65,12 +68,21 @@ val adapterModule =
             RegisterViewModel(get(), get())
         }
         factory {
-            ProfileViewModel(get(), get(), get(), get(), get())
+            ProfileViewModel(get(), get(), get())
         }
-        single {
+        factory {
+            ProfileMenuViewModel(get())
+        }
+        factory {
+            ProfileInfoEditViewModel(get(), get())
+        }
+        factory {
+            ProfileFooterViewModel(get())
+        }
+        factory {
             LoginViewModel(get())
         }
-        single {
+        factory {
             MapViewModel(get())
         }
     }

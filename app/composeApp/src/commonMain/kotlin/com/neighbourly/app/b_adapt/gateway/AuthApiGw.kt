@@ -8,6 +8,7 @@ import com.neighbourly.app.d_entity.interf.AuthApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
+import java.io.IOException
 
 class AuthApiGw(
     val api: KtorAuthApi,
@@ -15,28 +16,19 @@ class AuthApiGw(
     override suspend fun logout(
         token: String,
         logoutAll: Boolean,
-    ) {
-        try {
-            return withContext(Dispatchers.IO) {
-                api.logout(API_BASE_URL, token, logoutAll)
-            }
-        } catch (e: ApiException) {
-            throw OpException(e.msg)
-        }
+    ) = runContextCatchTranslateThrow {
+        api.logout(API_BASE_URL, token, logoutAll)
     }
 
     override suspend fun updateProfileImage(
         token: String,
         profileImageFileContents: FileContents,
-    ): String {
-        try {
-            return withContext(Dispatchers.IO) {
-                api.uploadImage(API_BASE_URL, token, profileImageFileContents).prependResourceUrlBase()
-            }
-        } catch (e: ApiException) {
-            throw OpException(e.msg)
+    ): String =
+        runContextCatchTranslateThrow {
+            api
+                .uploadImage(API_BASE_URL, token, profileImageFileContents)
+                .prependResourceUrlBase()
         }
-    }
 
     override suspend fun updateProfile(
         token: String,
@@ -44,35 +36,25 @@ class AuthApiGw(
         email: String,
         phone: String,
         about: String,
-    ): User {
-        try {
-            return withContext(Dispatchers.IO) {
-                api
-                    .updateProfile(
-                        API_BASE_URL,
-                        token,
-                        UpdateProfileInput(
-                            fullname = fullname,
-                            phone = phone,
-                            email = email,
-                            about = about,
-                        ),
-                    ).toUser()
-            }
-        } catch (e: ApiException) {
-            throw OpException(e.msg)
+    ): User =
+        runContextCatchTranslateThrow {
+            api
+                .updateProfile(
+                    API_BASE_URL,
+                    token,
+                    UpdateProfileInput(
+                        fullname = fullname,
+                        phone = phone,
+                        email = email,
+                        about = about,
+                    ),
+                ).toUser()
         }
-    }
 
-    override suspend fun refreshProfile(token: String): User {
-        try {
-            return withContext(Dispatchers.IO) {
-                api.refreshProfile(API_BASE_URL, token).toUser()
-            }
-        } catch (e: ApiException) {
-            throw OpException(e.msg)
+    override suspend fun refreshProfile(token: String): User =
+        runContextCatchTranslateThrow {
+            api.refreshProfile(API_BASE_URL, token).toUser()
         }
-    }
 
     override suspend fun register(
         username: String,
@@ -80,42 +62,53 @@ class AuthApiGw(
         fullname: String,
         email: String,
         phone: String,
-    ): User {
-        try {
-            return withContext(Dispatchers.IO) {
-                api
-                    .register(
-                        API_BASE_URL,
-                        RegisterInput(
-                            username = username,
-                            password = password,
-                            fullname = fullname,
-                            phone = phone,
-                            email = email,
-                        ),
-                    ).toUser()
-            }
-        } catch (e: ApiException) {
-            throw OpException(e.msg)
+    ): User =
+        runContextCatchTranslateThrow {
+            api
+                .register(
+                    API_BASE_URL,
+                    RegisterInput(
+                        username = username,
+                        password = password,
+                        fullname = fullname,
+                        phone = phone,
+                        email = email,
+                    ),
+                ).toUser()
         }
-    }
 
     override suspend fun login(
         username: String,
         password: String,
-    ): User {
-        try {
-            return withContext(Dispatchers.IO) {
-                api.login(API_BASE_URL, LoginInput(username, password)).toUser()
-            }
-        } catch (e: ApiException) {
-            throw OpException(e.msg)
+    ): User =
+        runContextCatchTranslateThrow {
+            api.login(API_BASE_URL, LoginInput(username, password)).toUser()
         }
-    }
 
     companion object {
         const val API_BASE_URL = "http://neighbourly.go.ro:8080/"
     }
+
+    suspend inline fun <R> runContextCatchTranslateThrow(crossinline block: suspend () -> R): R =
+        runCatching {
+            withContext(Dispatchers.IO) {
+                block.invoke()
+            }
+        }.let {
+            when {
+                it.isSuccess -> it.getOrElse { throw OpException("Unknown Error") }
+                it.isFailure ->
+                    it.exceptionOrNull().let {
+                        when (it) {
+                            is ApiException -> throw OpException(it.msg)
+                            is IOException -> throw OpException(it.message ?: it.toString())
+                            else -> throw OpException("Unknown Error")
+                        }
+                    }
+
+                else -> throw OpException("Unknown Error")
+            }
+        }
 }
 
 class ApiException(

@@ -10,11 +10,10 @@ class LogoutUseCase(
     suspend fun execute(logoutAll: Boolean) {
         val token = sessionStore.token
         token?.let {
-            try {
+            kotlin.runCatching {
                 apiGw.logout(token, logoutAll)
-            } finally {
-                sessionStore.clear()
             }
+            sessionStore.clear()
         }
     }
 }
