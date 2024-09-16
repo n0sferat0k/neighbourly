@@ -306,8 +306,10 @@ $p['ADD_NUMERICS'] = array(
 	array("EN" => "User ID"),
 	array("EN" => "Latitude"),
 	array("EN" => "Longitude"),
+	array("EN" => "Timezone"),
 );
 $p['ADD_NUMERICS_modif'] = array(
+	array(0 => true,1 => true),
 	array(0 => true,1 => true),
 	array(0 => true,1 => true),
 	array(0 => true,1 => true)

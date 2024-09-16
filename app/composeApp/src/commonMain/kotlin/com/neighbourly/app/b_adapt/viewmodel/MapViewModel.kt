@@ -2,6 +2,7 @@ package com.neighbourly.app.b_adapt.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
 import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,14 +13,33 @@ import kotlinx.coroutines.flow.update
 
 class MapViewModel(
     val sessionStore: SessionStore,
+    val householdLocalizeUseCase: HouseholdLocalizeUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MapViewState())
     val state: StateFlow<MapViewState> = _state.asStateFlow()
 
     init {
+        sessionStore.heatmap
+            .onEach { heatmap ->
+                _state.update {
+                    it.copy(
+                        heatmap =
+                            heatmap?.map {
+                                HeatmapItemVS(
+                                    latitude = it.latitude,
+                                    longitude = it.longitude,
+                                    frequency = it.frequency,
+                                )
+                            },
+                    )
+                }
+            }.launchIn(viewModelScope)
+
         sessionStore.user
             .onEach { user ->
-
+                if (user?.localizing == true) {
+                    householdLocalizeUseCase.fetchGpsLogs()
+                }
                 _state.update {
                     it.copy(
                         household =
@@ -54,12 +74,13 @@ class MapViewModel(
     data class MapViewState(
         val household: HouseholdVS? = null,
         val neighbourhoods: List<NeighbourhoodVS> = emptyList(),
+        val heatmap: List<HeatmapItemVS>? = null,
     )
 
     data class HouseholdVS(
         val id: Int,
-        val latitude: Double,
-        val longitude: Double,
+        val latitude: Float,
+        val longitude: Float,
         val name: String,
         val imageurl: String? = null,
     )
@@ -68,5 +89,11 @@ class MapViewModel(
         val id: Int,
         val name: String,
         val geofence: String,
+    )
+
+    data class HeatmapItemVS(
+        val latitude: Float,
+        val longitude: Float,
+        val frequency: Int,
     )
 }

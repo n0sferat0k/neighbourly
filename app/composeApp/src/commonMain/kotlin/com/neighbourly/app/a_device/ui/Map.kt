@@ -88,6 +88,7 @@ fun Map(
                 when (it) {
                     null ->
                         navigator.evaluateJavaScript("clearHouseholds()")
+
                     else -> {
                         val image = it.imageurl ?: "http://neighbourly.go.ro/graphics/houses.png"
                         navigator.evaluateJavaScript("addHousehold(${it.longitude}, ${it.latitude}, ${it.id}, '${it.name}', '$image')")
@@ -106,6 +107,22 @@ fun Map(
                 state.neighbourhoods.forEach {
                     navigator.evaluateJavaScript("addNeighbourhood('${it.id}', ${it.geofence})")
                 }
+            }
+        }
+    }
+
+    LaunchedEffect(mapReady, state.heatmap) {
+        if (mapReady) {
+            state.heatmap.takeIf { !it.isNullOrEmpty() }?.let {
+                var data = "["
+                it.forEach { heatmapItem ->
+                    data +=
+                        "{'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [${heatmapItem.longitude}, ${heatmapItem.latitude}]},'properties': {'frequency': ${heatmapItem.frequency} }},"
+                }
+                data.removeSuffix(",")
+                data += "]"
+
+                navigator.evaluateJavaScript("addLocationHeatMap('heatmap', " + data + ")")
             }
         }
     }
@@ -179,24 +196,23 @@ val html =
                     mapLoaded = true;
     
                     window.kmpJsBridge.callNative("MapFeedback", "{\"mapReady\":true}", function (data) { });
-//                    addHousehold(23.6684, 47.6531, 1, "Krucz House", 'http://neighbourly.go.ro/householdsIMGS/boiling-frog.png');
-//                    
-//                    addNeighbourhood("1", [[23.664421990469435,47.65655129393659],[23.665995201870714,47.64961446944116],[23.670235774323487,47.64969293384053],[23.668970442219916,47.653967631296325],[23.67055763940516,47.656120831152805],[23.6676487837274,47.65622253206254],[23.664421990469435,47.65655129393659]]);
-//                    setDot(23.6684, 47.6531, 'current');
-//                    center(23.6684, 47.6531, 15)
-//                    
-//                    window.setTimeout(function() {
-//                        addHousehold(23.6784, 47.6531, 1, "Krucz House Moved", 'http://neighbourly.go.ro/householdsIMGS/boiling-frog.png');                    
-//                    }, 10000);
-//    
-//                    window.setTimeout(function() {
-//                        addHousehold(23.6884, 47.6531, 2, "Not Krucz House", 'http://neighbourly.go.ro/householdsIMGS/boiling-frog.png');                    
-//                    }, 15000);
-//                    
-//                    window.setTimeout(function() {                    
-//                        clearHouseholds();
-//                        clearNeighbourhoods();
-//                    }, 20000);
+
+                    //center(23.6684, 47.6531, 15)
+                    // addHousehold(23.6684, 47.6531, 1, "Krucz House", 'http://neighbourly.go.ro/householdsIMGS/boiling-frog.png');
+                    //clearHouseholds();
+                    //addNeighbourhood("1", [[23.664421990469435,47.65655129393659],[23.665995201870714,47.64961446944116],[23.670235774323487,47.64969293384053],[23.668970442219916,47.653967631296325],[23.67055763940516,47.656120831152805],[23.6676487837274,47.65622253206254],[23.664421990469435,47.65655129393659]]);
+                    //clearNeighbourhoods()
+                                    
+                    //addLocationHeatMap("heatmap_1", [
+                    //    {'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [23.6684, 47.6531]},'properties': {'frequency': 1 }},
+                    //    {'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [23.6685, 47.6531]},'properties': {'frequency': 4 }},
+                    //    {'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [23.6694, 47.6531]},'properties': {'frequency': 3 }},
+                    //    {'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [23.6684, 47.6541]},'properties': {'frequency': 10 }}                    
+                    //    // Add more features as needed
+                    //]);
+    
+                    //setDot(23.6684, 47.6531, 'current');
+                    
                     if (lat != 0 && lng != 0) {
                         setDot(lng, lat, 'current');
                         center(lng, lat, 15);
@@ -238,6 +254,73 @@ val html =
                 function addNeighbourhood(id, data) {
                     addGeofence("neighbourhood_" + id, data);
                     neighbourhoods.push("neighbourhood_" + id);
+                }
+                
+                function addLocationHeatMap(id, data) {
+                    if (mapLoaded) {
+                        if (map.getSource(id) !== undefined) {
+                            map.getSource(id).setData({
+                                'type': 'FeatureCollection',
+                                'features': data
+                            });
+                        } else {
+                            map.addSource(id, {
+                                'type': 'geojson',
+                                'data': {
+                                    'type': 'FeatureCollection',
+                                    'features': data
+                                }
+                            });
+                            map.addLayer({
+                                'id': id,
+                                'type': 'heatmap',
+                                'source': id,
+                                'maxzoom': 20,
+                                'paint': {
+                                    'heatmap-weight': {
+                                        'property': 'frequency', // Replace with the property that reflects frequency
+                                        'type': 'exponential',
+                                        'stops': [
+                                            [0, 0],
+                                            [1, 1]
+                                        ]
+                                    },
+                                    'heatmap-intensity': {
+                                        'stops': [
+                                            [0, 0],
+                                            [1, 1]
+                                        ]
+                                    },
+                                    'heatmap-color': [
+                                        'interpolate',
+                                        ['linear'],
+                                        ['heatmap-density'],
+                                        0, 'rgba(33,102,172,0)',
+                                        0.2, 'rgb(103,169,207)',
+                                        0.4, 'rgb(209,229,240)',
+                                        0.6, 'rgb(253,219,199)',
+                                        0.8, 'rgb(239,138,98)',
+                                        1, 'rgb(178,24,43)'
+                                    ],
+                                    'heatmap-radius': {
+                                        'stops': [
+                                            [0, 2],
+                                            [10, 10],
+                                            [20, 20]
+                                        ]
+                                    },
+                                    'heatmap-opacity': {
+                                        'default': 1,
+                                        'stops': [
+                                            [14, 1],
+                                            [15, 1],
+                                            [20, 0.4]
+                                        ]
+                                    }
+                                }
+                            });
+                        }
+                    }
                 }
     
                 function addGeofence(id, data) {

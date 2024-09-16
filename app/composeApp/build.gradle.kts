@@ -107,6 +107,10 @@ android {
         debugImplementation(compose.uiTooling)
     }
 }
+dependencies {
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.lifecycle.service)
+}
 
 compose.desktop {
     application {

@@ -1,4 +1,4 @@
-package com.neighbourly.app.c_business.usecase
+package com.neighbourly.app.c_business.usecase.profile
 
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.interf.AuthApi

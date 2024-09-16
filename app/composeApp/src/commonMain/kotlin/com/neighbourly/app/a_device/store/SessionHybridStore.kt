@@ -1,5 +1,6 @@
 package com.neighbourly.app.a_device.store
 
+import com.neighbourly.app.d_entity.data.HeatmapItem
 import com.neighbourly.app.d_entity.data.User
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import com.neighbourly.app.d_entity.interf.SessionStore
@@ -8,6 +9,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
@@ -16,9 +18,12 @@ import kotlinx.serialization.json.Json
 class SessionHybridStore(
     val keyValueRegistry: KeyValueRegistry,
 ) : SessionStore {
-    private var state = MutableStateFlow<User?>(null)
+    private var userState = MutableStateFlow<User?>(null)
+    private var heatmapState = MutableStateFlow<List<HeatmapItem>?>(null)
 
-    override val user = state.asSharedFlow()
+    override val user = userState.asSharedFlow()
+    override val heatmap = heatmapState.asSharedFlow()
+
     override val isLoggedIn = user.map { it != null }
 
     init {
@@ -29,35 +34,39 @@ class SessionHybridStore(
         }
     }
 
-    override suspend fun store(user: User) {
-        state.emit(user)
+    override suspend fun storeUser(user: User) {
+        userState.emit(user)
         saveToStore()
     }
 
+    override suspend fun storeHeatmap(heatmap: List<HeatmapItem>?) {
+        heatmapState.update { heatmap }
+    }
+
     override suspend fun update(updater: (User?) -> User?) {
-        state.emit(updater(state.value))
+        userState.emit(updater(userState.value))
         saveToStore()
     }
 
     override suspend fun clear() {
-        state.emit(null)
+        userState.emit(null)
         saveToStore()
     }
 
     override val token: String?
-        get() = state.value?.authtoken
+        get() = userState.value?.authtoken
 
     private suspend fun loadFromStore() {
         withContext(Dispatchers.IO) {
             keyValueRegistry.getString(KEY_USER)?.let {
-                state.emit(Json.decodeFromString<StoreUser>(it).toUser())
+                userState.emit(Json.decodeFromString<StoreUser>(it).toUser())
             }
         }
     }
 
     private suspend fun saveToStore() {
         keyValueRegistry.putString(KEY_STORE_VERSION, STORE_VERSION)
-        state.value?.let {
+        userState.value?.let {
             keyValueRegistry.putString(KEY_USER, Json.encodeToString(it.toStoreUser()))
         } ?: run {
             keyValueRegistry.remove(KEY_USER)

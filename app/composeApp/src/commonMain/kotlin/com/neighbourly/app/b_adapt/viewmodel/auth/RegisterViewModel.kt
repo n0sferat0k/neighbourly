@@ -2,8 +2,8 @@ package com.neighbourly.app.b_adapt.viewmodel.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.neighbourly.app.c_business.usecase.ProfileImageUpdateUseCase
-import com.neighbourly.app.c_business.usecase.RegisterUseCase
+import com.neighbourly.app.c_business.usecase.auth.RegisterUseCase
+import com.neighbourly.app.c_business.usecase.profile.ProfileImageUpdateUseCase
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.util.isValidEmail

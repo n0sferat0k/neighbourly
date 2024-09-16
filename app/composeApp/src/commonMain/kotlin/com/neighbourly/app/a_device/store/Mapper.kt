@@ -17,6 +17,7 @@ fun StoreUser.toUser() =
         authtoken = this.authtoken,
         household = this.household?.toHousehold(),
         neighbourhoods = this.neighbourhoods.map { it.toStoreNeighbourhood() },
+        localizing = this.localizing,
     )
 
 fun User.toStoreUser(): StoreUser =
@@ -31,6 +32,7 @@ fun User.toStoreUser(): StoreUser =
         authtoken = this.authtoken,
         household = this.household?.toStoreHousehold(),
         neighbourhoods = this.neighbourhoods.map { it.toStoreNeighbourhood() },
+        localizing = this.localizing,
     )
 
 fun StoreHousehold.toHousehold(): Household =
@@ -40,7 +42,12 @@ fun StoreHousehold.toHousehold(): Household =
         about = this.about,
         imageurl = this.imageurl,
         headid = this.headid,
-        location = if (latitude != null && longitude != null) Pair(latitude, longitude) else null,
+        location =
+            if (latitude != null && longitude != null && latitude != 0f && longitude != 0f) {
+                Pair(latitude, longitude)
+            } else {
+                null
+            },
         address = this.address,
     )
 
@@ -86,6 +93,7 @@ data class StoreUser(
     val authtoken: String? = null,
     val household: StoreHousehold? = null,
     val neighbourhoods: List<StoreNeighbourhood> = emptyList(),
+    val localizing: Boolean = false,
 )
 
 @Serializable
@@ -95,9 +103,10 @@ data class StoreHousehold(
     val about: String,
     val imageurl: String? = null,
     val headid: Int,
-    val latitude: Double? = null,
-    val longitude: Double? = null,
+    val latitude: Float? = null,
+    val longitude: Float? = null,
     val address: String,
+    val gpsprogress: Float? = null,
 )
 
 @Serializable

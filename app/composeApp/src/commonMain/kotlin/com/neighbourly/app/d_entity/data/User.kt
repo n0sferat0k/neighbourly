@@ -11,4 +11,5 @@ data class User(
     val authtoken: String? = null,
     val household: Household?,
     val neighbourhoods: List<Neighbourhood> = emptyList(),
+    val localizing: Boolean = false,
 )

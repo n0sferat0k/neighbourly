@@ -1,6 +1,8 @@
 package com.neighbourly.app.a_device.api
 
 import com.neighbourly.app.b_adapt.gateway.ApiException
+import com.neighbourly.app.b_adapt.gateway.GpsLogInput
+import com.neighbourly.app.b_adapt.gateway.HeatmapItemDTO
 import com.neighbourly.app.b_adapt.gateway.LoginInput
 import com.neighbourly.app.b_adapt.gateway.RegisterInput
 import com.neighbourly.app.b_adapt.gateway.UpdateProfileInput
@@ -15,6 +17,7 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
+import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
@@ -164,6 +167,38 @@ class KtorAuthApi {
 
         if (response.status.value == 201) {
             return response.bodyAsText()
+        } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun gpsLog(
+        baseUrl: String,
+        token: String,
+        gpsLogInput: GpsLogInput,
+    ) {
+        client.post(baseUrl + "gps/log") {
+            contentType(ContentType.Application.Json)
+            setBody(gpsLogInput)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
+            }
+        }
+    }
+
+    suspend fun getGpsHeatmap(
+        baseUrl: String,
+        token: String,
+    ): List<HeatmapItemDTO>? {
+        val response =
+            client.get(baseUrl + "gps/heatmap") {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
+            }
+
+        if (response.status.value == 200) {
+            return response.body<List<HeatmapItemDTO>?>()
         } else {
             throw ApiException(response.bodyAsText())
         }

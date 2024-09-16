@@ -1,23 +1,27 @@
 package com.neighbourly.app
 
 import com.neighbourly.app.a_device.api.KtorAuthApi
+import com.neighbourly.app.a_device.service.GpsTrackerImpl
 import com.neighbourly.app.a_device.store.SessionHybridStore
 import com.neighbourly.app.b_adapt.gateway.AuthApiGw
 import com.neighbourly.app.b_adapt.viewmodel.MainViewModel
 import com.neighbourly.app.b_adapt.viewmodel.MapViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
+import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdLocalizeViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileFooterViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileInfoEditViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileMenuViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileViewModel
-import com.neighbourly.app.c_business.usecase.LoginUseCase
-import com.neighbourly.app.c_business.usecase.LogoutUseCase
-import com.neighbourly.app.c_business.usecase.ProfileImageUpdateUseCase
-import com.neighbourly.app.c_business.usecase.ProfileRefreshUseCase
-import com.neighbourly.app.c_business.usecase.ProfileUpdateUseCase
-import com.neighbourly.app.c_business.usecase.RegisterUseCase
+import com.neighbourly.app.c_business.usecase.auth.LoginUseCase
+import com.neighbourly.app.c_business.usecase.auth.LogoutUseCase
+import com.neighbourly.app.c_business.usecase.auth.RegisterUseCase
+import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
+import com.neighbourly.app.c_business.usecase.profile.ProfileImageUpdateUseCase
+import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
+import com.neighbourly.app.c_business.usecase.profile.ProfileUpdateUseCase
 import com.neighbourly.app.d_entity.interf.AuthApi
+import com.neighbourly.app.d_entity.interf.GpsTracker
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import com.neighbourly.app.d_entity.interf.SessionStore
 import org.koin.core.Koin
@@ -52,6 +56,9 @@ val deviceModule =
         single<KeyValueRegistry> {
             keyValueRegistry
         }
+        single<GpsTracker> {
+            GpsTrackerImpl
+        }
     }
 val adapterModule =
     module {
@@ -83,7 +90,10 @@ val adapterModule =
             LoginViewModel(get())
         }
         factory {
-            MapViewModel(get())
+            MapViewModel(get(), get())
+        }
+        factory {
+            HouseholdLocalizeViewModel(get(), get())
         }
     }
 
@@ -93,7 +103,7 @@ val useCaseModule =
             LoginUseCase(get(), get())
         }
         single {
-            LogoutUseCase(get(), get())
+            LogoutUseCase(get(), get(), get())
         }
         single {
             RegisterUseCase(get(), get())
@@ -106,5 +116,8 @@ val useCaseModule =
         }
         single {
             ProfileUpdateUseCase(get(), get())
+        }
+        single {
+            HouseholdLocalizeUseCase(get(), get(), get())
         }
     }

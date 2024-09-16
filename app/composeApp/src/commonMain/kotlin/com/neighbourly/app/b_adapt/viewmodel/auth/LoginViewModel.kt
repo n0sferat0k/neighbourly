@@ -2,7 +2,7 @@ package com.neighbourly.app.b_adapt.viewmodel.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.neighbourly.app.c_business.usecase.LoginUseCase
+import com.neighbourly.app.c_business.usecase.auth.LoginUseCase
 import com.neighbourly.app.d_entity.data.OpException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

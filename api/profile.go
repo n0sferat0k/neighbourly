@@ -35,9 +35,9 @@ func RetreiveSessionUserData(userId string) (*User, error) {
 		LEFT JOIN 
 			households H 
 		ON 
-			users_add_numerics_0 = households_id
+			users_add_numerics_0 = households_id		
 		WHERE 
-			U.users_id = ?
+			U.users_id = ?			
 		LIMIT 1`,
 		userId,
 	).Scan(
@@ -58,11 +58,34 @@ func RetreiveSessionUserData(userId string) (*User, error) {
 		&existingHousehold.Longitude,
 		&existingHousehold.Address,
 	)
+
 	if err != nil {
 		return nil, err
 	}
 
 	if existingHousehold.Householdid != nil {
+		err := db.QueryRow(`SELECT 
+				COUNT(DISTINCT coordinates_add_numerics_1, coordinates_add_numerics_2) % ? / ? AS gpsCnt
+			FROM				
+				coordinates
+			WHERE 
+				coordinates_add_numerics_0 = ?	
+			AND
+				(
+					TIME(ADDTIME(FROM_UNIXTIME(coordinates_data), SEC_TO_TIME(coordinates_add_numerics_3 * 3600))) BETWEEN '`+nightStart+`' AND '23:59:59'
+				OR 
+					TIME(ADDTIME(FROM_UNIXTIME(coordinates_data), SEC_TO_TIME(coordinates_add_numerics_3 * 3600))) BETWEEN '00:00:00' AND '`+nightEnd+`'
+				)
+			LIMIT 1`,
+			gpsSampleTarget, gpsSampleTarget, userId,
+		).Scan(
+			&existingHousehold.GpsProgress,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
 		existingUser.Household = &existingHousehold
 	}
 

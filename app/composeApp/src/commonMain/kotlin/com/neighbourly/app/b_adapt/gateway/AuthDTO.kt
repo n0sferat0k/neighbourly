@@ -1,43 +1,77 @@
 package com.neighbourly.app.b_adapt.gateway
 
-import com.neighbourly.app.d_entity.data.Household
-import com.neighbourly.app.d_entity.data.Neighbourhood
-import com.neighbourly.app.d_entity.data.User
+import kotlinx.serialization.Serializable
 
-fun UserDTO.toUser(): User =
-    User(
-        id = id,
-        username = username,
-        about = about,
-        fullname = fullname,
-        email = email,
-        phone = phone,
-        imageurl = imageurl?.prependResourceUrlBase(),
-        authtoken = authtoken,
-        household = household?.toHousehold(),
-        neighbourhoods = neighbourhoods.map { it.toNeighbourhood() },
-    )
+@Serializable
+data class LoginInput(
+    val username: String,
+    val password: String,
+)
 
-fun HouseholdDTO.toHousehold(): Household =
-    Household(
-        householdid = householdid,
-        name = name,
-        about = about,
-        imageurl = imageurl?.prependResourceUrlBase(),
-        headid = headid,
-        location = if (latitude != null && longitude != null) Pair(latitude, longitude) else null,
-        address = address,
-    )
+@Serializable
+data class RegisterInput(
+    val username: String,
+    val password: String,
+    val fullname: String,
+    val phone: String,
+    val email: String,
+)
 
-fun NeighbourhoodDTO.toNeighbourhood(): Neighbourhood =
-    Neighbourhood(
-        neighbourhoodid = neighbourhoodid,
-        name = name,
-        geofence = geofence,
-        access = access,
-        parent = parent?.toUser(),
-    )
+@Serializable
+data class UpdateProfileInput(
+    val fullname: String,
+    val phone: String,
+    val email: String,
+    val about: String,
+)
 
-fun String.prependResourceUrlBase() = this.takeIf { !it.isNullOrBlank() }?.let { CONTENT_BASE_URL + it } ?: this
+@Serializable
+data class GpsLogInput(
+    val timezone: Int,
+    val latitude: Float,
+    val longitude: Float,
+)
 
-const val CONTENT_BASE_URL = "http://neighbourly.go.ro/"
+@Serializable
+data class UserDTO(
+    val id: Int,
+    val username: String,
+    val about: String? = null,
+    val password: String? = null,
+    val fullname: String,
+    val email: String,
+    val phone: String,
+    val imageurl: String? = null,
+    val authtoken: String? = null,
+    val household: HouseholdDTO? = null,
+    val neighbourhoods: List<NeighbourhoodDTO> = emptyList(),
+)
+
+@Serializable
+data class HeatmapItemDTO(
+    val latitude: Float,
+    val longitude: Float,
+    val frequency: Int,
+)
+
+@Serializable
+data class HouseholdDTO(
+    val householdid: Int,
+    val name: String,
+    val about: String,
+    val imageurl: String? = null,
+    val headid: Int,
+    val latitude: Float? = null,
+    val longitude: Float? = null,
+    val address: String,
+    val gpsprogress: Float? = null,
+)
+
+@Serializable
+data class NeighbourhoodDTO(
+    val neighbourhoodid: Int,
+    val name: String,
+    val geofence: String,
+    val access: Int,
+    val parent: UserDTO? = null,
+)

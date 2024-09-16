@@ -2,12 +2,12 @@ package com.neighbourly.app.b_adapt.gateway
 
 import com.neighbourly.app.a_device.api.KtorAuthApi
 import com.neighbourly.app.d_entity.data.FileContents
+import com.neighbourly.app.d_entity.data.HeatmapItem
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.data.User
 import com.neighbourly.app.d_entity.interf.AuthApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.Serializable
 import java.io.IOException
 
 class AuthApiGw(
@@ -85,6 +85,24 @@ class AuthApiGw(
             api.login(API_BASE_URL, LoginInput(username, password)).toUser()
         }
 
+    override suspend fun gpsLog(
+        token: String,
+        timezone: Int,
+        latitude: Float,
+        longitude: Float,
+    ) = runContextCatchTranslateThrow {
+        api.gpsLog(
+            API_BASE_URL,
+            token,
+            GpsLogInput(timezone = timezone, latitude = latitude, longitude = longitude),
+        )
+    }
+
+    override suspend fun getGpsHeatmap(token: String): List<HeatmapItem>? =
+        runContextCatchTranslateThrow {
+            api.getGpsHeatmap(API_BASE_URL, token)?.map { it.toHeatmapItem() }
+        }
+
     companion object {
         const val API_BASE_URL = "http://neighbourly.go.ro:8080/"
     }
@@ -114,62 +132,3 @@ class AuthApiGw(
 class ApiException(
     val msg: String,
 ) : RuntimeException(msg)
-
-@Serializable
-data class LoginInput(
-    val username: String,
-    val password: String,
-)
-
-@Serializable
-data class RegisterInput(
-    val username: String,
-    val password: String,
-    val fullname: String,
-    val phone: String,
-    val email: String,
-)
-
-@Serializable
-data class UpdateProfileInput(
-    val fullname: String,
-    val phone: String,
-    val email: String,
-    val about: String,
-)
-
-@Serializable
-data class UserDTO(
-    val id: Int,
-    val username: String,
-    val about: String? = null,
-    val password: String? = null,
-    val fullname: String,
-    val email: String,
-    val phone: String,
-    val imageurl: String? = null,
-    val authtoken: String? = null,
-    val household: HouseholdDTO? = null,
-    val neighbourhoods: List<NeighbourhoodDTO> = emptyList(),
-)
-
-@Serializable
-data class HouseholdDTO(
-    val householdid: Int,
-    val name: String,
-    val about: String,
-    val imageurl: String? = null,
-    val headid: Int,
-    val latitude: Double? = null,
-    val longitude: Double? = null,
-    val address: String,
-)
-
-@Serializable
-data class NeighbourhoodDTO(
-    val neighbourhoodid: Int,
-    val name: String,
-    val geofence: String,
-    val access: Int,
-    val parent: UserDTO? = null,
-)

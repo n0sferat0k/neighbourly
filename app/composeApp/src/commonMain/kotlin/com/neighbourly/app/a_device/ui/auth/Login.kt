@@ -40,8 +40,8 @@ import neighbourly.composeapp.generated.resources.username
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun Login(loginViewModel: LoginViewModel = viewModel { KoinProvider.KOIN.get<LoginViewModel>() }) {
-    val state by loginViewModel.state.collectAsState()
+fun Login(viewModel: LoginViewModel = viewModel { KoinProvider.KOIN.get<LoginViewModel>() }) {
+    val state by viewModel.state.collectAsState()
     var username by remember { mutableStateOf("n0sferat0k") }
     var password by remember { mutableStateOf("caca") }
 
@@ -75,7 +75,7 @@ fun Login(loginViewModel: LoginViewModel = viewModel { KoinProvider.KOIN.get<Log
         // Register Button
         Button(
             onClick = {
-                loginViewModel.onLogin(username, password)
+                viewModel.onLogin(username, password)
             },
             modifier =
                 Modifier

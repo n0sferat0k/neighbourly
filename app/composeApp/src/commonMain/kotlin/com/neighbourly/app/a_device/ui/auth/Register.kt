@@ -60,8 +60,8 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<RegisterViewModel>() }) {
-    val state by registerViewModel.state.collectAsState()
+fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<RegisterViewModel>() }) {
+    val state by viewModel.state.collectAsState()
 
     val defaultProfile = painterResource(Res.drawable.profile)
     var username by remember { mutableStateOf("nosfi") }
@@ -128,7 +128,7 @@ fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOI
             value = username,
             onValueChange = {
                 username = it
-                registerViewModel.validateUsername(username)
+                viewModel.validateUsername(username)
             },
             label = { Text(stringResource(Res.string.username)) },
             isError = state.usernameError,
@@ -142,7 +142,7 @@ fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOI
             value = password,
             onValueChange = {
                 password = it
-                registerViewModel.validatePassword(password, confirmPassword)
+                viewModel.validatePassword(password, confirmPassword)
             },
             label = { Text(stringResource(Res.string.password)) },
             isError = state.passwordError,
@@ -157,7 +157,7 @@ fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOI
             value = confirmPassword,
             onValueChange = {
                 confirmPassword = it
-                registerViewModel.validatePassword(password, confirmPassword)
+                viewModel.validatePassword(password, confirmPassword)
             },
             label = { Text(stringResource(Res.string.confirmpassword)) },
             isError = state.passwordError,
@@ -172,7 +172,7 @@ fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOI
             value = fullName,
             onValueChange = {
                 fullName = it
-                registerViewModel.validateFullname(fullName)
+                viewModel.validateFullname(fullName)
             },
             label = { Text(stringResource(Res.string.fullname)) },
             isError = state.fullnameError,
@@ -186,7 +186,7 @@ fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOI
             value = email,
             onValueChange = {
                 email = it
-                registerViewModel.validateEmail(email)
+                viewModel.validateEmail(email)
             },
             label = { Text(stringResource(Res.string.email)) },
             isError = state.emailError,
@@ -200,7 +200,7 @@ fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOI
             value = phoneNumber,
             onValueChange = {
                 phoneNumber = it
-                registerViewModel.validatePhone(phoneNumber)
+                viewModel.validatePhone(phoneNumber)
             },
             label = { Text(stringResource(Res.string.phone)) },
             isError = state.phoneError,
@@ -212,7 +212,7 @@ fun Register(registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOI
         // Register Button
         Button(
             onClick = {
-                registerViewModel.onRegister(
+                viewModel.onRegister(
                     username,
                     password,
                     confirmPassword,

@@ -1,20 +1,17 @@
-package com.neighbourly.app.c_business.usecase
+package com.neighbourly.app.c_business.usecase.auth
 
 import com.neighbourly.app.d_entity.interf.AuthApi
 import com.neighbourly.app.d_entity.interf.SessionStore
 
-class RegisterUseCase(
+class LoginUseCase(
     val apiGw: AuthApi,
     val sessionStore: SessionStore,
 ) {
     suspend fun execute(
         username: String,
         password: String,
-        fullname: String,
-        email: String,
-        phone: String,
     ) {
-        val user = apiGw.register(username, password, fullname, email, phone)
-        sessionStore.store(user)
+        val user = apiGw.login(username, password)
+        sessionStore.storeUser(user)
     }
 }

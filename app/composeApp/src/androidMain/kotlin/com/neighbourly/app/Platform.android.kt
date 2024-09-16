@@ -25,7 +25,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
-import com.neighbourly.app.MainActivity.Companion.locationProvider
+import com.neighbourly.app.NeighbourlyApp.Companion.locationProvider
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
@@ -108,7 +108,7 @@ actual fun loadImageFromFile(file: String): BitmapPainter? =
     BitmapPainter(
         BitmapFactory
             .decodeStream(
-                MainActivity.mainActivity.contentResolver.openInputStream(
+                NeighbourlyApp.appContext.contentResolver.openInputStream(
                     file.toUri(),
                 ),
             ).asImageBitmap(),
@@ -121,7 +121,7 @@ actual fun loadImageFromByteAray(content: ByteArray): BitmapPainter? =
 
 actual fun loadContentsFromFile(file: String): FileContents? {
     val fileUri = file.toUri()
-    MainActivity.mainActivity.contentResolver.let { contentResolver ->
+    NeighbourlyApp.appContext.contentResolver.let { contentResolver ->
 
         var fileName = Paths.get(file).fileName.toString()
 
@@ -149,14 +149,14 @@ actual fun loadContentsFromFile(file: String): FileContents? {
 @SuppressLint("MissingPermission")
 actual fun getPhoneNumber(): String {
     val subscriptionManager =
-        MainActivity.mainActivity.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+        NeighbourlyApp.appContext.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
     return subscriptionManager.getPhoneNumber(DEFAULT_SUBSCRIPTION_ID)
 }
 
 actual val httpClientEngine: HttpClientEngine = OkHttp.create()
 actual val keyValueRegistry: KeyValueRegistry =
     SharedPrefsBasedRegistry(
-        MainActivity.mainActivity.getSharedPreferences(
+        NeighbourlyApp.appContext.getSharedPreferences(
             "default",
             Application.MODE_PRIVATE,
         ),
