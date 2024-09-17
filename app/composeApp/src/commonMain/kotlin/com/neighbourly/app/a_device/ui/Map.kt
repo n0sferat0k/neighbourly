@@ -304,9 +304,9 @@ val html =
                                     ],
                                     'heatmap-radius': {
                                         'stops': [
-                                            [0, 2],
-                                            [10, 10],
-                                            [20, 20]
+                                            [0, 3],
+                                            [10, 15],
+                                            [20, 25]
                                         ]
                                     },
                                     'heatmap-opacity': {

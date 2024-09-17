@@ -16,5 +16,5 @@
     <string name="err_password_mismatch">The two passwords must match</string>
     <string name="need_to_localize">Your home does not have an established geo location ! \n\n In order for you to be able to create or join neighbourhoods you will need to establish your home base by allowing the app to track your gps location for a while !</string>
     <string name="track_me">Track Me!</string>
-    <string name="localize_progress">Your location is being tracked to establish your home base !</string>
+    <string name="localize_progress">Your location is being tracked to establish your home base ! \n\n This might take a while, be patient and keep your GPS turned on until the below progress reaches 100% !</string>
 </resources>

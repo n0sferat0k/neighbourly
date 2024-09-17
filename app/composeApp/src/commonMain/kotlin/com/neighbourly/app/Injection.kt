@@ -1,7 +1,6 @@
 package com.neighbourly.app
 
 import com.neighbourly.app.a_device.api.KtorAuthApi
-import com.neighbourly.app.a_device.service.GpsTrackerImpl
 import com.neighbourly.app.a_device.store.SessionHybridStore
 import com.neighbourly.app.b_adapt.gateway.AuthApiGw
 import com.neighbourly.app.b_adapt.viewmodel.MainViewModel
@@ -21,7 +20,6 @@ import com.neighbourly.app.c_business.usecase.profile.ProfileImageUpdateUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileUpdateUseCase
 import com.neighbourly.app.d_entity.interf.AuthApi
-import com.neighbourly.app.d_entity.interf.GpsTracker
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import com.neighbourly.app.d_entity.interf.SessionStore
 import org.koin.core.Koin
@@ -55,9 +53,6 @@ val deviceModule =
         }
         single<KeyValueRegistry> {
             keyValueRegistry
-        }
-        single<GpsTracker> {
-            GpsTrackerImpl
         }
     }
 val adapterModule =
@@ -103,7 +98,7 @@ val useCaseModule =
             LoginUseCase(get(), get())
         }
         single {
-            LogoutUseCase(get(), get(), get())
+            LogoutUseCase(get(), get())
         }
         single {
             RegisterUseCase(get(), get())
@@ -118,6 +113,6 @@ val useCaseModule =
             ProfileUpdateUseCase(get(), get())
         }
         single {
-            HouseholdLocalizeUseCase(get(), get(), get())
+            HouseholdLocalizeUseCase(get(), get())
         }
     }

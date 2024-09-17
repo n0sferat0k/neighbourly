@@ -26,17 +26,38 @@ import com.neighbourly.app.MainActivity
 import com.neighbourly.app.NeighbourlyApp.Companion.appContext
 import com.neighbourly.app.R
 import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
-import com.neighbourly.app.d_entity.interf.GpsTracker
+import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-actual object GpsTrackerImpl : GpsTracker {
-    override fun startTracking() {
+object GpsTracker {
+    var isTracking = false
+
+    fun initialize() {
+        KoinProvider.KOIN
+            .get<SessionStore>()
+            .user
+            .onEach { user ->
+                (user?.localizing ?: false).let {
+                    if (it != isTracking) {
+                        isTracking = it
+                        when (isTracking) {
+                            true -> startTracking()
+                            false -> stopTracking()
+                        }
+                    }
+                }
+            }.launchIn(MainScope())
+    }
+
+    fun startTracking() {
         val intent = Intent(appContext, GpsTrackingService::class.java)
         ContextCompat.startForegroundService(appContext, intent)
     }
 
-    override fun stopTracking() {
+    fun stopTracking() {
         val intent = Intent(appContext, GpsTrackingService::class.java)
         appContext.stopService(intent)
     }

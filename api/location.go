@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -35,6 +36,34 @@ func LogGpsLocation(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func GetGpsCandidate(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "Invalid request method "+r.Method, http.StatusMethodNotAllowed)
+		return
+	}
+
+	var userId string = validateToken(w, r)
+	if userId == "" {
+		return
+	}
+
+	gpsPayloads, err := RetrieveHeatmap(userId, true)
+
+	if err != nil {
+		http.Error(w, "Failed to get heatmap data "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	candidate, err := CalculateCandidateHouseholdLocation(gpsPayloads)
+	if err != nil {
+		http.Error(w, "Failed to get household candidate "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(candidate)
+}
+
 func GetGpsHeatmap(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.Error(w, "Invalid request method "+r.Method, http.StatusMethodNotAllowed)
@@ -46,21 +75,40 @@ func GetGpsHeatmap(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rows, err := db.Query(`SELECT coordinates_add_numerics_1 / 10000, coordinates_add_numerics_2 / 10000, COUNT(*) FROM coordinates
-				WHERE coordinates_add_numerics_0 = ?
-			AND (
-					TIME(ADDTIME(FROM_UNIXTIME(coordinates_data), SEC_TO_TIME(coordinates_add_numerics_3 * 3600))) BETWEEN '`+nightStart+`' AND '23:59:59'
-					OR TIME(ADDTIME(FROM_UNIXTIME(coordinates_data), SEC_TO_TIME(coordinates_add_numerics_3 * 3600))) BETWEEN '00:00:00' AND '`+nightEnd+`'
-				)
-			GROUP BY
-				coordinates_add_numerics_1, coordinates_add_numerics_2`,
-		userId)
+	onlyNightParam := r.URL.Query().Get("onlyNight")
+	onlyNight, err := strconv.ParseBool(onlyNightParam)
+	if err != nil {
+		onlyNight = false
+	}
+
+	gpsPayloads, err := RetrieveHeatmap(userId, onlyNight)
 
 	if err != nil {
 		http.Error(w, "Failed to get heatmap data "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(gpsPayloads)
+}
+
+func RetrieveHeatmap(userId string, onlyNight bool) ([]GpsPayload, error) {
+	query := `SELECT coordinates_add_numerics_1 / 10000, coordinates_add_numerics_2 / 10000, COUNT(*) FROM coordinates
+				WHERE coordinates_add_numerics_0 = ?`
+
+	if onlyNight {
+		query += ` AND (
+						TIME(ADDTIME(FROM_UNIXTIME(coordinates_data), SEC_TO_TIME(coordinates_add_numerics_3 * 3600))) BETWEEN '` + nightStart + `' AND '23:59:59'
+						OR TIME(ADDTIME(FROM_UNIXTIME(coordinates_data), SEC_TO_TIME(coordinates_add_numerics_3 * 3600))) BETWEEN '00:00:00' AND '` + nightEnd + `'
+					)`
+	}
+
+	query += ` GROUP BY coordinates_add_numerics_1, coordinates_add_numerics_2`
+
+	rows, err := db.Query(query, userId)
+	if err != nil {
+		return nil, err
+	}
 	defer rows.Close()
 
 	var gpsPayloads []GpsPayload
@@ -73,13 +121,11 @@ func GetGpsHeatmap(w http.ResponseWriter, r *http.Request) {
 		)
 
 		if err != nil {
-			http.Error(w, "Failed to get heatmap data "+err.Error(), http.StatusInternalServerError)
-			return
+			return nil, err
 		}
 
 		gpsPayloads = append(gpsPayloads, gpsPayload)
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(gpsPayloads)
+	return gpsPayloads, nil
 }

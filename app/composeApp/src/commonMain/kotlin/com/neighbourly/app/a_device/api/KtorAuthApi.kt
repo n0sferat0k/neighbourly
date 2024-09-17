@@ -191,7 +191,7 @@ class KtorAuthApi {
         token: String,
     ): List<HeatmapItemDTO>? {
         val response =
-            client.get(baseUrl + "gps/heatmap") {
+            client.get(baseUrl + "gps/heatmap?onlyNight=false") {
                 headers {
                     append(HttpHeaders.Authorization, "Bearer " + token)
                 }

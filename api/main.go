@@ -33,6 +33,7 @@ func main() {
 	r.HandleFunc("/profile/upload", UploadProfileImage).Methods("POST")
 	r.HandleFunc("/gps/log", LogGpsLocation).Methods("POST")
 	r.HandleFunc("/gps/heatmap", GetGpsHeatmap).Methods("GET")
+	r.HandleFunc("/gps/candidate", GetGpsCandidate).Methods("GET")
 	fmt.Println("Starting server on :8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
