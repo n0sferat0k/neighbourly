@@ -82,17 +82,24 @@ fun Map(
         }
     }
 
-    LaunchedEffect(mapReady, state.household) {
+    LaunchedEffect(mapReady, state.household, state.candidate) {
         if (mapReady) {
-            state.household.let {
-                when (it) {
+            state.household.let { household ->
+                when (household) {
                     null ->
                         navigator.evaluateJavaScript("clearHouseholds()")
 
                     else -> {
-                        val image = it.imageurl ?: "http://neighbourly.go.ro/graphics/houses.png"
-                        navigator.evaluateJavaScript("addHousehold(${it.longitude}, ${it.latitude}, ${it.id}, '${it.name}', '$image')")
-                        navigator.evaluateJavaScript("center(${it.longitude}, ${it.latitude}, 15);")
+                        val image = household.imageurl ?: "http://neighbourly.go.ro/graphics/houses.png"
+                        val location = household.location ?: state.candidate
+                        val isCandidate = household.location == null
+
+                        location?.let {
+                            navigator.evaluateJavaScript(
+                                "addHousehold(${it.longitude}, ${it.latitude}, ${household.id}, '${if (isCandidate) household.name + "<br />[CANDIDATE]" else household.name}', '$image')",
+                            )
+                            navigator.evaluateJavaScript("center(${it.longitude}, ${it.latitude}, 15);")
+                        }
                     }
                 }
             }
@@ -391,9 +398,9 @@ val html =
                             households[id].setLngLat([longitude, latitude]);
                         }
                         
-                        el.innerHTML = `<div style="display: flex; flex-direction: column; align-items: center;">
-                                            <span style="background:white;padding:4px;border: 2px solid #5BA9AE;border-radius:10px;">` +  name + `</span>
-                                            <div style="background:url(`+ imageurl + `);background-size:50px;width:50px;height:50px;border: 2px solid #5BA9AE;border-radius:50%;"></div>                                
+                        el.innerHTML = `<div style="display: flex; flex-direction: column; align-items: center;opacity:0.75">
+                                            <span style="background:white;padding:3px;border: 2px solid #5BA9AE;border-radius:10px;text-align:center;font-size:10px;line-height:10px;margin:4px">` +  name + `</span>
+                                            <div style="background:url(`+ imageurl + `);background-size:45px;width:45px;height:45px;border: 2px solid #5BA9AE;border-radius:50%;"></div>
                                         </div>`;
                                         
                         el.onclick = function() {

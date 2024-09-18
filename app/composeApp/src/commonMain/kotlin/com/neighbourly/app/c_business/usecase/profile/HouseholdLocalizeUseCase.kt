@@ -33,4 +33,13 @@ class HouseholdLocalizeUseCase(
             }
         }
     }
+
+    suspend fun fetchGpsCandidate() {
+        val token = sessionStore.token
+        token?.let {
+            apiGw.getGpsCandidate(token).let {
+                sessionStore.storeCandidate(it)
+            }
+        }
+    }
 }

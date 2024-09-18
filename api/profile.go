@@ -65,7 +65,7 @@ func RetreiveSessionUserData(userId string) (*User, error) {
 
 	if existingHousehold.Householdid != nil {
 		err := db.QueryRow(`SELECT 
-				COUNT(DISTINCT coordinates_add_numerics_1, coordinates_add_numerics_2) % ? / ? AS gpsCnt
+				COUNT(*) % ? / ? AS gpsCnt
 			FROM				
 				coordinates
 			WHERE 

@@ -2,7 +2,7 @@ package com.neighbourly.app.b_adapt.gateway
 
 import com.neighbourly.app.a_device.api.KtorAuthApi
 import com.neighbourly.app.d_entity.data.FileContents
-import com.neighbourly.app.d_entity.data.HeatmapItem
+import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.data.User
 import com.neighbourly.app.d_entity.interf.AuthApi
@@ -98,9 +98,14 @@ class AuthApiGw(
         )
     }
 
-    override suspend fun getGpsHeatmap(token: String): List<HeatmapItem>? =
+    override suspend fun getGpsHeatmap(token: String): List<GpsItem>? =
         runContextCatchTranslateThrow {
-            api.getGpsHeatmap(API_BASE_URL, token)?.map { it.toHeatmapItem() }
+            api.getGpsHeatmap(API_BASE_URL, token)?.map { it.toGpsItem() }
+        }
+
+    override suspend fun getGpsCandidate(token: String): GpsItem =
+        runContextCatchTranslateThrow {
+            api.getGpsCandidate(API_BASE_URL, token).toGpsItem()
         }
 
     companion object {

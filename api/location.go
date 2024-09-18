@@ -25,7 +25,7 @@ func LogGpsLocation(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err := db.Exec("INSERT INTO coordinates (coordinates_data, coordinates_add_numerics_0, coordinates_add_numerics_1, coordinates_add_numerics_2, coordinates_add_numerics_3) VALUES (?, ?, ?, ?, ?)",
-		time.Now().Unix(), userId, *gps.Latitude*float64(10000), *gps.Longitude*float64(10000), gps.Timezone)
+		time.Now().Unix(), userId, *gps.Latitude*float64(gpsPrecisionFactor), *gps.Longitude*float64(gpsPrecisionFactor), gps.Timezone)
 
 	if err != nil {
 		http.Error(w, "Failed to store location"+err.Error(), http.StatusInternalServerError)
@@ -90,42 +90,4 @@ func GetGpsHeatmap(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(gpsPayloads)
-}
-
-func RetrieveHeatmap(userId string, onlyNight bool) ([]GpsPayload, error) {
-	query := `SELECT coordinates_add_numerics_1 / 10000, coordinates_add_numerics_2 / 10000, COUNT(*) FROM coordinates
-				WHERE coordinates_add_numerics_0 = ?`
-
-	if onlyNight {
-		query += ` AND (
-						TIME(ADDTIME(FROM_UNIXTIME(coordinates_data), SEC_TO_TIME(coordinates_add_numerics_3 * 3600))) BETWEEN '` + nightStart + `' AND '23:59:59'
-						OR TIME(ADDTIME(FROM_UNIXTIME(coordinates_data), SEC_TO_TIME(coordinates_add_numerics_3 * 3600))) BETWEEN '00:00:00' AND '` + nightEnd + `'
-					)`
-	}
-
-	query += ` GROUP BY coordinates_add_numerics_1, coordinates_add_numerics_2`
-
-	rows, err := db.Query(query, userId)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var gpsPayloads []GpsPayload
-	for rows.Next() {
-		var gpsPayload GpsPayload
-		err := rows.Scan(
-			&gpsPayload.Latitude,
-			&gpsPayload.Longitude,
-			&gpsPayload.Frequency,
-		)
-
-		if err != nil {
-			return nil, err
-		}
-
-		gpsPayloads = append(gpsPayloads, gpsPayload)
-	}
-
-	return gpsPayloads, nil
 }

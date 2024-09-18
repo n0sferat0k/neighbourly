@@ -1,8 +1,8 @@
 package com.neighbourly.app.a_device.api
 
 import com.neighbourly.app.b_adapt.gateway.ApiException
+import com.neighbourly.app.b_adapt.gateway.GpsItemDTO
 import com.neighbourly.app.b_adapt.gateway.GpsLogInput
-import com.neighbourly.app.b_adapt.gateway.HeatmapItemDTO
 import com.neighbourly.app.b_adapt.gateway.LoginInput
 import com.neighbourly.app.b_adapt.gateway.RegisterInput
 import com.neighbourly.app.b_adapt.gateway.UpdateProfileInput
@@ -189,7 +189,7 @@ class KtorAuthApi {
     suspend fun getGpsHeatmap(
         baseUrl: String,
         token: String,
-    ): List<HeatmapItemDTO>? {
+    ): List<GpsItemDTO>? {
         val response =
             client.get(baseUrl + "gps/heatmap?onlyNight=false") {
                 headers {
@@ -198,7 +198,24 @@ class KtorAuthApi {
             }
 
         if (response.status.value == 200) {
-            return response.body<List<HeatmapItemDTO>?>()
+            return response.body<List<GpsItemDTO>?>()
+        } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun getGpsCandidate(
+        baseUrl: String,
+        token: String,
+    ): GpsItemDTO {
+        val response =
+            client.get(baseUrl + "gps/candidate") {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
+            }
+        if (response.status.value == 200) {
+            return response.body<GpsItemDTO>()
         } else {
             throw ApiException(response.bodyAsText())
         }

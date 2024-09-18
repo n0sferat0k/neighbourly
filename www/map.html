@@ -50,20 +50,20 @@
                 mapLoaded = true;
 
                 //window.kmpJsBridge.callNative("MapFeedback", "{\"mapReady\":true}", function (data) { });
-                // addHousehold(23.6684, 47.6531, 1, "Krucz House", 'http://neighbourly.go.ro/householdsIMGS/boiling-frog.png');
+                addHousehold(23.6684, 47.6531, 1, "Krucz House", 'http://neighbourly.go.ro/householdsIMGS/boiling-frog.png');
                 
                 //addNeighbourhood("1", [[23.664421990469435,47.65655129393659],[23.665995201870714,47.64961446944116],[23.670235774323487,47.64969293384053],[23.668970442219916,47.653967631296325],[23.67055763940516,47.656120831152805],[23.6676487837274,47.65622253206254],[23.664421990469435,47.65655129393659]]);
                 
-                addLocationHeatMap("heatmap_1", [
-                    {'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [23.6684, 47.6531]},'properties': {'frequency': 1 }},
-                    {'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [23.6685, 47.6531]},'properties': {'frequency': 4 }},
-                    {'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [23.6694, 47.6531]},'properties': {'frequency': 3 }},
-                    {'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [23.6684, 47.6541]},'properties': {'frequency': 10 }}                    
-                    // Add more features as needed
-                ]);
+                // addLocationHeatMap("heatmap_1", [
+                //     {'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [23.6684, 47.6531]},'properties': {'frequency': 1 }},
+                //     {'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [23.6685, 47.6531]},'properties': {'frequency': 4 }},
+                //     {'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [23.6694, 47.6531]},'properties': {'frequency': 3 }},
+                //     {'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [23.6684, 47.6541]},'properties': {'frequency': 10 }}                    
+                //     // Add more features as needed
+                // ]);
 
                 //setDot(23.6684, 47.6531, 'current');
-                center(23.6684, 47.6531, 15)
+                // center(23.6684, 47.6531, 15)
                 
                 //clearHouseholds();
                 
@@ -245,9 +245,9 @@
                         households[id].setLngLat([longitude, latitude]);
                     }
                     
-                    el.innerHTML = `<div style="display: flex; flex-direction: column; align-items: center;">
-                                        <span style="background:white;padding:4px;border: 2px solid #5BA9AE;border-radius:10px;">` +  name + `</span>
-                                        <div style="background:url(`+ imageurl + `);background-size:50px;width:50px;height:50px;border: 2px solid #5BA9AE;border-radius:50%;"></div>                                
+                    el.innerHTML = `<div style="display: flex; flex-direction: column; align-items: center;opacity:0.75">
+                                        <span style="background:white;padding:3px;border: 2px solid #5BA9AE;border-radius:10px;text-align:center;font-size:10px;line-height:10px;margin:4px">` +  name + `</span>
+                                        <div style="background:url(`+ imageurl + `);background-size:45px;width:45px;height:45px;border: 2px solid #5BA9AE;border-radius:50%;"></div>
                                     </div>`;
                                     
                     el.onclick = function() {

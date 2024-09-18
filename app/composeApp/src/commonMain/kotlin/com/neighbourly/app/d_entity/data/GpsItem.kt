@@ -1,7 +1,7 @@
 package com.neighbourly.app.d_entity.data
 
-data class HeatmapItem(
+data class GpsItem(
     val latitude: Float,
     val longitude: Float,
-    val frequency: Int,
+    val frequency: Int? = null,
 )

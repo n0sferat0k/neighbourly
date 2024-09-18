@@ -1,7 +1,7 @@
 package com.neighbourly.app.d_entity.interf
 
 import com.neighbourly.app.d_entity.data.FileContents
-import com.neighbourly.app.d_entity.data.HeatmapItem
+import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.User
 
 interface AuthApi {
@@ -45,5 +45,7 @@ interface AuthApi {
         longitude: Float,
     )
 
-    suspend fun getGpsHeatmap(token: String): List<HeatmapItem>?
+    suspend fun getGpsHeatmap(token: String): List<GpsItem>?
+
+    suspend fun getGpsCandidate(token: String): GpsItem
 }

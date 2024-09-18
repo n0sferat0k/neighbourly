@@ -48,10 +48,10 @@ data class UserDTO(
 )
 
 @Serializable
-data class HeatmapItemDTO(
+data class GpsItemDTO(
     val latitude: Float,
     val longitude: Float,
-    val frequency: Int,
+    val frequency: Int? = null,
 )
 
 @Serializable

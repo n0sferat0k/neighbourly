@@ -19,16 +19,23 @@ class MapViewModel(
     val state: StateFlow<MapViewState> = _state.asStateFlow()
 
     init {
-        sessionStore.heatmap
-            .onEach { heatmap ->
+        sessionStore.localization
+            .onEach { localization ->
                 _state.update {
                     it.copy(
                         heatmap =
-                            heatmap?.map {
-                                HeatmapItemVS(
+                            localization.heatmap?.map {
+                                GpsItemVS(
                                     latitude = it.latitude,
                                     longitude = it.longitude,
-                                    frequency = it.frequency,
+                                    frequency = it.frequency ?: 1,
+                                )
+                            },
+                        candidate =
+                            localization.candidate?.let {
+                                GpsItemVS(
+                                    latitude = it.latitude,
+                                    longitude = it.longitude,
                                 )
                             },
                     )
@@ -38,16 +45,24 @@ class MapViewModel(
         sessionStore.user
             .onEach { user ->
                 if (user?.localizing == true) {
-                    householdLocalizeUseCase.fetchGpsLogs()
+                    runCatching {
+                        householdLocalizeUseCase.fetchGpsLogs()
+                        householdLocalizeUseCase.fetchGpsCandidate()
+                    }
                 }
                 _state.update {
                     it.copy(
                         household =
-                            user?.household?.location?.let {
+                            user?.household?.let {
                                 HouseholdVS(
                                     id = user.household.householdid,
-                                    latitude = it.first,
-                                    longitude = it.second,
+                                    location =
+                                        user.household.location?.let {
+                                            GpsItemVS(
+                                                it.first,
+                                                it.second,
+                                            )
+                                        },
                                     name = user.household.name,
                                     imageurl = user.household.imageurl,
                                 )
@@ -74,13 +89,13 @@ class MapViewModel(
     data class MapViewState(
         val household: HouseholdVS? = null,
         val neighbourhoods: List<NeighbourhoodVS> = emptyList(),
-        val heatmap: List<HeatmapItemVS>? = null,
+        val heatmap: List<GpsItemVS>? = null,
+        val candidate: GpsItemVS? = null,
     )
 
     data class HouseholdVS(
         val id: Int,
-        val latitude: Float,
-        val longitude: Float,
+        val location: GpsItemVS? = null,
         val name: String,
         val imageurl: String? = null,
     )
@@ -91,9 +106,9 @@ class MapViewModel(
         val geofence: String,
     )
 
-    data class HeatmapItemVS(
+    data class GpsItemVS(
         val latitude: Float,
         val longitude: Float,
-        val frequency: Int,
+        val frequency: Int = 1,
     )
 }

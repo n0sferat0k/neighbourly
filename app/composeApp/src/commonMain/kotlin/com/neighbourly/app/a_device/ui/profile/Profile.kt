@@ -53,7 +53,7 @@ fun Profile(viewModel: ProfileViewModel = viewModel { KoinProvider.KOIN.get<Prof
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 ProfileMenu(imageUpdating = state.imageUpdating) { indexSelected ->
-                    if (indexSelected == contentIndex) {
+                    if (indexSelected == 0 && indexSelected == contentIndex) {
                         showFilePicker = true
                     } else {
                         contentIndex = indexSelected

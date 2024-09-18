@@ -1,6 +1,6 @@
 package com.neighbourly.app.b_adapt.gateway
 
-import com.neighbourly.app.d_entity.data.HeatmapItem
+import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.Household
 import com.neighbourly.app.d_entity.data.Neighbourhood
 import com.neighbourly.app.d_entity.data.User
@@ -48,8 +48,8 @@ fun NeighbourhoodDTO.toNeighbourhood(): Neighbourhood =
         parent = parent?.toUser(),
     )
 
-fun HeatmapItemDTO.toHeatmapItem(): HeatmapItem =
-    HeatmapItem(
+fun GpsItemDTO.toGpsItem(): GpsItem =
+    GpsItem(
         latitude = latitude,
         longitude = longitude,
         frequency = frequency,

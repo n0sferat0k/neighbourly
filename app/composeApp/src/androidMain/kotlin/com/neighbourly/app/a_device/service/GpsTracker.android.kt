@@ -142,10 +142,12 @@ class GpsTrackingService : Service() {
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult.lastLocation?.let {
                     MainScope().launch {
-                        householdLocalizeUseCase.reportLocation(
-                            it.latitude.toFloat(),
-                            it.longitude.toFloat(),
-                        )
+                        kotlin.runCatching {
+                            householdLocalizeUseCase.reportLocation(
+                                it.latitude.toFloat(),
+                                it.longitude.toFloat(),
+                            )
+                        }
                     }
                 }
             }

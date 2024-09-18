@@ -1,6 +1,7 @@
 package com.neighbourly.app.a_device.store
 
-import com.neighbourly.app.d_entity.data.HeatmapItem
+import com.neighbourly.app.d_entity.data.GpsItem
+import com.neighbourly.app.d_entity.data.LocalizationProgress
 import com.neighbourly.app.d_entity.data.User
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import com.neighbourly.app.d_entity.interf.SessionStore
@@ -19,10 +20,10 @@ class SessionHybridStore(
     val keyValueRegistry: KeyValueRegistry,
 ) : SessionStore {
     private var userState = MutableStateFlow<User?>(null)
-    private var heatmapState = MutableStateFlow<List<HeatmapItem>?>(null)
+    private var localizationState = MutableStateFlow(LocalizationProgress())
 
     override val user = userState.asSharedFlow()
-    override val heatmap = heatmapState.asSharedFlow()
+    override val localization = localizationState.asSharedFlow()
 
     override val isLoggedIn = user.map { it != null }
 
@@ -39,8 +40,12 @@ class SessionHybridStore(
         saveToStore()
     }
 
-    override suspend fun storeHeatmap(heatmap: List<HeatmapItem>?) {
-        heatmapState.update { heatmap }
+    override suspend fun storeHeatmap(heatmap: List<GpsItem>?) {
+        localizationState.update { it.copy(heatmap = heatmap) }
+    }
+
+    override suspend fun storeCandidate(candidate: GpsItem) {
+        localizationState.update { it.copy(candidate = candidate) }
     }
 
     override suspend fun update(updater: (User?) -> User?) {

@@ -1,9 +1,5 @@
 package main
 
-const gpsSampleTarget = 200
-const nightStart = "20:00:00"
-const nightEnd = "08:00:00"
-
 type Neighbourhood struct {
 	Neighbourhoodid *int64  `json:"neighbourhoodid"`
 	Name            *string `json:"name"`
