@@ -13,7 +13,7 @@ class LogoutUseCase(
             kotlin.runCatching {
                 apiGw.logout(token, logoutAll)
             }
-            sessionStore.clear()
         }
+        sessionStore.clear()
     }
 }

@@ -45,7 +45,11 @@ fun HouseholdLocalize(viewModel: HouseholdLocalizeViewModel = viewModel { KoinPr
             Box(modifier = Modifier.size(150.dp)) {
                 CurlyText(
                     modifier = Modifier.align(Alignment.Center),
-                    text = (state.gpsprogress * 100).toString() + " %",
+                    text =
+                        (state.gpsprogress * 100)
+                            .toBigDecimal()
+                            .setScale(1)
+                            .toString() + " %",
                     fontSize = 40.sp,
                     bold = true,
                 )

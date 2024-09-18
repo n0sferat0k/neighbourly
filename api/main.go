@@ -30,7 +30,7 @@ func main() {
 	r.HandleFunc("/logout", LogoutUser).Methods("POST")
 	r.HandleFunc("/profile/refresh", RefreshProfile).Methods("POST")
 	r.HandleFunc("/profile/update", UpdateProfile).Methods("POST")
-	//r.HandleFunc("/profile/updateHousehold", UpdateHousehold).Methods("POST")
+	r.HandleFunc("/profile/updateHousehold", UpdateHousehold).Methods("POST")
 	r.HandleFunc("/profile/upload", UploadImage).Methods("POST")
 	r.HandleFunc("/gps/log", LogGpsLocation).Methods("POST")
 	r.HandleFunc("/gps/heatmap", GetGpsHeatmap).Methods("GET")

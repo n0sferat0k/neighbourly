@@ -197,7 +197,7 @@ func UpdateHousehold(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		//Insert the household into the database
-		insertResult, err := db.Exec(`INSERT INTO households (households_titlu_EN, households_add_strings_0, households_text_EN) VALUES  (?,?,?)`,
+		insertResult, err := db.Exec(`INSERT INTO households (households_titlu_EN, households_add_strings_0, households_text_EN, households_pic) VALUES  (?,?,?,'')`,
 			household.Name, household.Address, household.About)
 
 		if err != nil {
@@ -222,7 +222,7 @@ func UpdateHousehold(w http.ResponseWriter, r *http.Request) {
 
 	existingUser, err := RetreiveSessionUserData(userId)
 	if err != nil {
-		http.Error(w, "Failed to get user info "+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Failed to get user info for "+userId+":"+err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")

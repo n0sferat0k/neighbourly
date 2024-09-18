@@ -19,15 +19,13 @@ class ProfileUpdateUseCase(
             val user = apiGw.updateProfile(it, fullname, email, phone, about)
             sessionStore.update {
                 it?.copy(
-                    id = user.id,
                     username = user.username,
                     about = user.about,
                     fullname = user.fullname,
                     email = user.email,
                     phone = user.phone,
                     imageurl = user.imageurl,
-                    authtoken = user.authtoken,
-                    household = it.household,
+                    household = user.household,
                     neighbourhoods = user.neighbourhoods,
                 )
             }
