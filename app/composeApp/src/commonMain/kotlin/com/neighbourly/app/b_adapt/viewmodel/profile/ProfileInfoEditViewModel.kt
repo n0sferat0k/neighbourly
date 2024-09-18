@@ -10,7 +10,6 @@ import com.neighbourly.app.d_entity.util.isValidPhone
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -25,16 +24,19 @@ class ProfileInfoEditViewModel(
 
     init {
         sessionStore.user
-            .filterNotNull()
-            .onEach { user ->
-                _state.update {
-                    it.copy(
-                        username = user.username,
-                        fullname = user.fullname,
-                        email = user.email,
-                        phone = user.phone,
-                        about = user.about.orEmpty(),
-                    )
+            .onEach {
+                it?.let { user ->
+                    _state.update {
+                        it.copy(
+                            username = user.username,
+                            fullname = user.fullname,
+                            email = user.email,
+                            phone = user.phone,
+                            about = user.about.orEmpty(),
+                        )
+                    }
+                } ?: run {
+                    _state.update { ProfileViewState() }
                 }
             }.launchIn(viewModelScope)
     }

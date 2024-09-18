@@ -7,7 +7,6 @@ import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -22,14 +21,17 @@ class HouseholdLocalizeViewModel(
 
     init {
         sessionStore.user
-            .filterNotNull()
-            .onEach { user ->
-                _state.update {
-                    it.copy(
-                        localized = user.household?.location != null,
-                        localizing = user.localizing,
-                        gpsprogress = user.household?.gpsprogress ?: 0f,
-                    )
+            .onEach {
+                it?.let { user ->
+                    _state.update {
+                        it.copy(
+                            localized = user.household?.location != null,
+                            localizing = user.localizing,
+                            gpsprogress = user.household?.gpsprogress ?: 0f,
+                        )
+                    }
+                } ?: run {
+                    _state.update { HouseholdLocalizeViewState() }
                 }
             }.launchIn(viewModelScope)
     }

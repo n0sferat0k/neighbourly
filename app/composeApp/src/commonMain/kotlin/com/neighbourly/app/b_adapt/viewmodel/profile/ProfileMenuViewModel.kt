@@ -6,7 +6,6 @@ import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -19,15 +18,18 @@ class ProfileMenuViewModel(
 
     init {
         sessionStore.user
-            .filterNotNull()
-            .onEach { user ->
-                _state.update {
-                    it.copy(
-                        imageurl = user.imageurl,
-                        hasHousehold = user.household != null,
-                        householdLocalized = user.household?.location != null,
-                        hasNeighbourhoods = user.neighbourhoods.isNotEmpty(),
-                    )
+            .onEach {
+                it?.let { user ->
+                    _state.update {
+                        it.copy(
+                            imageurl = user.imageurl,
+                            hasHousehold = user.household != null,
+                            householdLocalized = user.household?.location != null,
+                            hasNeighbourhoods = user.neighbourhoods.isNotEmpty(),
+                        )
+                    }
+                } ?: run {
+                    _state.update { ProfileMenuViewState() }
                 }
             }.launchIn(viewModelScope)
     }

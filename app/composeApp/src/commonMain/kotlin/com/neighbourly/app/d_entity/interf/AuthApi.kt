@@ -23,6 +23,11 @@ interface AuthApi {
         profileImageFileContents: FileContents,
     ): String
 
+    suspend fun updateHouseholdImage(
+        token: String,
+        profileImageFileContents: FileContents,
+    ): String
+
     suspend fun refreshProfile(token: String): User
 
     suspend fun logout(
@@ -35,6 +40,13 @@ interface AuthApi {
         fullname: String,
         email: String,
         phone: String,
+        about: String,
+    ): User
+
+    suspend fun updateHousehold(
+        token: String,
+        name: String,
+        address: String,
         about: String,
     ): User
 

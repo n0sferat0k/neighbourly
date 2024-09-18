@@ -105,6 +105,11 @@
                 neighbourhoods = [];                
             }
 
+            function clearLocationHeatMap(id) {
+                map.removeLayer(id);
+                map.removeSource(id);
+            }
+
             function addLocationHeatMap(id, data) {
                 if (mapLoaded) {
                     if (map.getSource(id) !== undefined) {

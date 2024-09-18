@@ -130,6 +130,8 @@ fun Map(
                 data += "]"
 
                 navigator.evaluateJavaScript("addLocationHeatMap('heatmap', " + data + ")")
+            } ?: run {
+                navigator.evaluateJavaScript("clearLocationHeatMap('heatmap')")
             }
         }
     }
@@ -261,6 +263,11 @@ val html =
                 function addNeighbourhood(id, data) {
                     addGeofence("neighbourhood_" + id, data);
                     neighbourhoods.push("neighbourhood_" + id);
+                }
+                
+                function clearLocationHeatMap(id) {
+                    map.removeLayer(id);
+                    map.removeSource(id);
                 }
                 
                 function addLocationHeatMap(id, data) {

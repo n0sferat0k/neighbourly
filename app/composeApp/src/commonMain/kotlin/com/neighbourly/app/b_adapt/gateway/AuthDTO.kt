@@ -26,6 +26,13 @@ data class UpdateProfileInput(
 )
 
 @Serializable
+data class UpdateHouseholdInput(
+    val name: String,
+    val address: String,
+    val about: String,
+)
+
+@Serializable
 data class GpsLogInput(
     val timezone: Int,
     val latitude: Float,

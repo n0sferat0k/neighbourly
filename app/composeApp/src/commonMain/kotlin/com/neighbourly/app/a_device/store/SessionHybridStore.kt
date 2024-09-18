@@ -55,6 +55,7 @@ class SessionHybridStore(
 
     override suspend fun clear() {
         userState.emit(null)
+        localizationState.emit(LocalizationProgress())
         saveToStore()
     }
 

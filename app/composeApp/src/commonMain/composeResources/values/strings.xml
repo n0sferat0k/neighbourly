@@ -12,6 +12,9 @@
     <string name="save">Save</string>
     <string name="here">Here</string>
     <string name="everywhere">Everywhere</string>
+    <string name="householdName">Household Name</string>
+    <string name="address">Address</string>
+    <string name="about">About</string>
 
     <string name="err_password_mismatch">The two passwords must match</string>
     <string name="need_to_localize">Your home does not have an established geo location ! \n\n In order for you to be able to create or join neighbourhoods you will need to establish your home base by allowing the app to track your gps location for a while !</string>

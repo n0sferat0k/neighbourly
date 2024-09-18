@@ -22,11 +22,21 @@ class AuthApiGw(
 
     override suspend fun updateProfileImage(
         token: String,
-        profileImageFileContents: FileContents,
+        imageFileContents: FileContents,
     ): String =
         runContextCatchTranslateThrow {
             api
-                .uploadImage(API_BASE_URL, token, profileImageFileContents)
+                .uploadImage(API_BASE_URL, token, TARGET_PROFILE, imageFileContents)
+                .prependResourceUrlBase()
+        }
+
+    override suspend fun updateHouseholdImage(
+        token: String,
+        imageFileContents: FileContents,
+    ): String =
+        runContextCatchTranslateThrow {
+            api
+                .uploadImage(API_BASE_URL, token, TARGET_HOUSEHOLD, imageFileContents)
                 .prependResourceUrlBase()
         }
 
@@ -46,6 +56,25 @@ class AuthApiGw(
                         fullname = fullname,
                         phone = phone,
                         email = email,
+                        about = about,
+                    ),
+                ).toUser()
+        }
+
+    override suspend fun updateHousehold(
+        token: String,
+        name: String,
+        address: String,
+        about: String,
+    ): User =
+        runContextCatchTranslateThrow {
+            api
+                .updateHousehold(
+                    API_BASE_URL,
+                    token,
+                    UpdateHouseholdInput(
+                        name = name,
+                        address = address,
                         about = about,
                     ),
                 ).toUser()
@@ -110,6 +139,8 @@ class AuthApiGw(
 
     companion object {
         const val API_BASE_URL = "http://neighbourly.go.ro:8080/"
+        const val TARGET_PROFILE = "profile"
+        const val TARGET_HOUSEHOLD = "household"
     }
 
     suspend inline fun <R> runContextCatchTranslateThrow(crossinline block: suspend () -> R): R =

@@ -27,6 +27,7 @@ import com.neighbourly.app.a_device.ui.ErrorText
 import com.neighbourly.app.a_device.ui.font
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileInfoEditViewModel
 import neighbourly.composeapp.generated.resources.Res
+import neighbourly.composeapp.generated.resources.about
 import neighbourly.composeapp.generated.resources.email
 import neighbourly.composeapp.generated.resources.fullname
 import neighbourly.composeapp.generated.resources.phone
@@ -83,6 +84,19 @@ fun ProfileInfoEdit(viewModel: ProfileInfoEditViewModel = viewModel { KoinProvid
         },
         label = { Text(stringResource(Res.string.phone)) },
         isError = state.phoneError,
+        modifier = Modifier.fillMaxWidth(),
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    // About Input
+    OutlinedTextField(
+        value = state.aboutOverride ?: state.about,
+        onValueChange = {
+            viewModel.updateAbout(it)
+        },
+        maxLines = 5,
+        label = { Text(stringResource(Res.string.about)) },
         modifier = Modifier.fillMaxWidth(),
     )
 

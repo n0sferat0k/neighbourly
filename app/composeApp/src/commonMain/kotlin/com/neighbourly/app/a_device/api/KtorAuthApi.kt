@@ -5,6 +5,7 @@ import com.neighbourly.app.b_adapt.gateway.GpsItemDTO
 import com.neighbourly.app.b_adapt.gateway.GpsLogInput
 import com.neighbourly.app.b_adapt.gateway.LoginInput
 import com.neighbourly.app.b_adapt.gateway.RegisterInput
+import com.neighbourly.app.b_adapt.gateway.UpdateHouseholdInput
 import com.neighbourly.app.b_adapt.gateway.UpdateProfileInput
 import com.neighbourly.app.b_adapt.gateway.UserDTO
 import com.neighbourly.app.d_entity.data.FileContents
@@ -106,9 +107,29 @@ class KtorAuthApi {
         updateProfileInput: UpdateProfileInput,
     ): UserDTO {
         val response: HttpResponse =
-            client.post(baseUrl + "profile/refresh") {
+            client.post(baseUrl + "profile/update") {
                 contentType(ContentType.Application.Json)
                 setBody(updateProfileInput)
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
+            }
+        if (response.status.value == 200) {
+            return response.body<UserDTO>()
+        } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun updateHousehold(
+        baseUrl: String,
+        token: String,
+        updateHouseholdInput: UpdateHouseholdInput,
+    ): UserDTO {
+        val response: HttpResponse =
+            client.post(baseUrl + "profile/updateHousehold") {
+                contentType(ContentType.Application.Json)
+                setBody(updateHouseholdInput)
                 headers {
                     append(HttpHeaders.Authorization, "Bearer " + token)
                 }
@@ -140,11 +161,12 @@ class KtorAuthApi {
     suspend fun uploadImage(
         baseUrl: String,
         token: String,
+        target: String,
         fileContents: FileContents,
     ): String {
         val response: HttpResponse =
             client.submitFormWithBinaryData(
-                url = baseUrl + "profile/upload",
+                url = baseUrl + "profile/upload?target=" + target,
                 formData =
                     formData {
                         append(
