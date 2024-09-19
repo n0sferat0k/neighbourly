@@ -29,12 +29,18 @@ kotlin {
             implementation(libs.play.services.location)
             implementation(libs.accompanist.permissions)
 
+            api(libs.androidx.camera.camera2)
+            api(libs.androidx.camera.lifecycle)
+            api(libs.androidx.camera.view)
+            api(libs.barcode.scanning)
+
             implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
+            implementation(compose.materialIconsExtended)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -49,14 +55,19 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.encoding)
+
             implementation(libs.kamel.image)
+            implementation(libs.kotlinx.io)
 
             implementation(libs.koin.core)
+            implementation(libs.core)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
-
+            implementation(libs.webcam.capture)
+            implementation(libs.webcam.capture.driver.native)
+            implementation(libs.javase)
             implementation(libs.ktor.client.cio)
         }
     }

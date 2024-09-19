@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -39,151 +41,207 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.MultipleFilePicker
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.CurlyText
 import com.neighbourly.app.a_device.ui.ErrorText
 import com.neighbourly.app.a_device.ui.font
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdInfoEditViewModel
+import com.neighbourly.app.generateQrCode
 import com.neighbourly.app.loadContentsFromFile
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.about
+import neighbourly.composeapp.generated.resources.add_member
 import neighbourly.composeapp.generated.resources.address
+import neighbourly.composeapp.generated.resources.create_from_scratch
 import neighbourly.composeapp.generated.resources.householdName
 import neighbourly.composeapp.generated.resources.houses
+import neighbourly.composeapp.generated.resources.invite_or_create_household
 import neighbourly.composeapp.generated.resources.save
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun HouseholdInfoEdit(viewModel: HouseholdInfoEditViewModel = viewModel { KoinProvider.KOIN.get<HouseholdInfoEditViewModel>() }) {
+fun HouseholdInfoEdit(
+    viewModel: HouseholdInfoEditViewModel = viewModel { KoinProvider.KOIN.get<HouseholdInfoEditViewModel>() },
+    onAddMember: () -> Unit,
+) {
     val state by viewModel.state.collectAsState()
     val defaultHouseImg = painterResource(Res.drawable.houses)
     var showFilePicker by remember { mutableStateOf(false) }
+    var tabindex by remember { mutableStateOf(if (state.hasHousehold) 1 else 0) }
 
-    MultipleFilePicker(show = showFilePicker, fileExtensions = listOf("jpg", "png")) { file ->
-        showFilePicker = false
+    if (tabindex == 0) {
+        Column {
+            CurlyText(text = stringResource(Res.string.invite_or_create_household))
 
-        file?.get(0)?.platformFile?.toString()?.let {
-            viewModel.onHouseholdImageUpdate(loadContentsFromFile(it))
+            state.userQr.takeIf { !it.isNullOrBlank() }?.let {
+                Image(
+                    painter = BitmapPainter(generateQrCode(it, 400)),
+                    contentDescription = "QR Code",
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                )
+            }
+
+            CurlyText(
+                modifier = Modifier.clickable { tabindex = 1 },
+                bold = true,
+                text = stringResource(Res.string.create_from_scratch),
+            )
         }
     }
+    if (tabindex == 1) {
+        Column {
+            Row {
+                // Name Input
+                OutlinedTextField(
+                    value = state.nameOverride ?: state.name,
+                    enabled = state.editableHousehold,
+                    onValueChange = {
+                        viewModel.updateName(it)
+                    },
+                    label = { Text(stringResource(Res.string.householdName)) },
+                    isError = state.nameError,
+                    modifier = Modifier.weight(1f),
+                )
 
-    Row {
-        // Name Input
-        OutlinedTextField(
-            value = state.nameOverride ?: state.name,
-            onValueChange = {
-                viewModel.updateName(it)
-            },
-            label = { Text(stringResource(Res.string.householdName)) },
-            isError = state.nameError,
-            modifier = Modifier.weight(1f),
-        )
+                if (state.hasHousehold) {
+                    MultipleFilePicker(
+                        show = showFilePicker,
+                        fileExtensions = listOf("jpg", "png"),
+                    ) { file ->
+                        showFilePicker = false
 
-        if (state.hasHousehold) {
-            Spacer(modifier = Modifier.width(3.dp))
+                        file?.get(0)?.platformFile?.toString()?.let {
+                            viewModel.onHouseholdImageUpdate(loadContentsFromFile(it))
+                        }
+                    }
 
-            Box(
-                modifier =
-                    Modifier
-                        .size(60.dp)
-                        .align(Alignment.Bottom)
-                        .border(2.dp, AppColors.primary, CircleShape)
-                        .clickable { showFilePicker = true },
-                contentAlignment = Alignment.Center,
-            ) {
-                state.imageurl.let {
-                    if (!it.isNullOrBlank() && !state.imageUpdating) {
-                        KamelImage(
-                            modifier = Modifier.fillMaxSize().clip(CircleShape),
-                            resource = asyncPainterResource(data = it),
-                            contentDescription = "Profile Image",
-                            contentScale = ContentScale.Crop,
-                            onLoading = { progress ->
-                                CircularProgressIndicator(
-                                    progress = progress,
-                                    color = AppColors.primary,
+                    Spacer(modifier = Modifier.width(3.dp))
+
+                    Box(
+                        modifier =
+                            Modifier
+                                .size(60.dp)
+                                .align(Alignment.Bottom)
+                                .border(2.dp, AppColors.primary, CircleShape)
+                                .clickable { showFilePicker = true },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        state.imageurl.let {
+                            if (!it.isNullOrBlank() && !state.imageUpdating) {
+                                KamelImage(
+                                    modifier = Modifier.fillMaxSize().clip(CircleShape),
+                                    resource = asyncPainterResource(data = it),
+                                    contentDescription = "Profile Image",
+                                    contentScale = ContentScale.Crop,
+                                    onLoading = { progress ->
+                                        CircularProgressIndicator(
+                                            progress = progress,
+                                            color = AppColors.primary,
+                                        )
+                                    },
                                 )
-                            },
-                        )
-                    } else if (state.imageUpdating) {
-                        CircularProgressIndicator(color = AppColors.primary)
-                    } else {
-                        Image(
-                            modifier = Modifier.fillMaxSize().clip(CircleShape),
-                            painter = defaultHouseImg,
-                            contentDescription = "Household Image",
-                            colorFilter = ColorFilter.tint(AppColors.primary),
-                        )
+                            } else if (state.imageUpdating) {
+                                CircularProgressIndicator(color = AppColors.primary)
+                            } else {
+                                Image(
+                                    modifier = Modifier.fillMaxSize().clip(CircleShape),
+                                    painter = defaultHouseImg,
+                                    contentDescription = "Household Image",
+                                    colorFilter = ColorFilter.tint(AppColors.primary),
+                                )
+                            }
+                        }
                     }
                 }
             }
-        }
-    }
 
-    Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-    // Address Input
-    OutlinedTextField(
-        value = state.addressOverride ?: state.address,
-        onValueChange = {
-            viewModel.updateAddress(it)
-        },
-        label = { Text(stringResource(Res.string.address)) },
-        isError = state.addressError,
-        modifier = Modifier.fillMaxWidth(),
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    // About Input
-    OutlinedTextField(
-        value = state.aboutOverride ?: state.about,
-        onValueChange = {
-            viewModel.updateAbout(it)
-        },
-        maxLines = 5,
-        label = { Text(stringResource(Res.string.about)) },
-        modifier = Modifier.fillMaxWidth(),
-    )
-
-    Spacer(modifier = Modifier.height(8.dp))
-
-    // Save Button
-    Button(
-        onClick = {
-            viewModel.onSaveHousehold()
-        },
-        modifier =
-            Modifier
-                .wrapContentWidth()
-                .height(48.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = AppColors.primary),
-    ) {
-        if (state.saving) {
-            CircularProgressIndicator(
-                modifier =
-                    Modifier
-                        .size(24.dp)
-                        .padding(end = 8.dp),
-                color = Color.White,
-                strokeWidth = 2.dp,
+            // Address Input
+            OutlinedTextField(
+                value = state.addressOverride ?: state.address,
+                enabled = state.editableHousehold,
+                onValueChange = {
+                    viewModel.updateAddress(it)
+                },
+                label = { Text(stringResource(Res.string.address)) },
+                isError = state.addressError,
+                modifier = Modifier.fillMaxWidth(),
             )
-        }
-        Text(
-            stringResource(Res.string.save),
-            color = Color.White,
-            style =
-                TextStyle(
-                    fontFamily = font(),
-                    fontSize = 18.sp,
-                    color = AppColors.primary,
-                ),
-        )
-    }
 
-    if (state.error.isNotEmpty()) {
-        ErrorText(state.error)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // About Input
+            OutlinedTextField(
+                value = state.aboutOverride ?: state.about,
+                enabled = state.editableHousehold,
+                onValueChange = {
+                    viewModel.updateAbout(it)
+                },
+                maxLines = 5,
+                label = { Text(stringResource(Res.string.about)) },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (state.editableHousehold) {
+                // Save Button
+                Button(
+                    onClick = {
+                        viewModel.onSaveHousehold()
+                    },
+                    modifier =
+                        Modifier
+                            .wrapContentWidth()
+                            .height(48.dp)
+                            .align(Alignment.CenterHorizontally),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = AppColors.primary),
+                ) {
+                    if (state.saving) {
+                        CircularProgressIndicator(
+                            modifier =
+                                Modifier
+                                    .size(24.dp)
+                                    .padding(end = 8.dp),
+                            color = Color.White,
+                            strokeWidth = 2.dp,
+                        )
+                    }
+                    Text(
+                        stringResource(Res.string.save),
+                        color = Color.White,
+                        style =
+                            TextStyle(
+                                fontFamily = font(),
+                                fontSize = 18.sp,
+                                color = AppColors.primary,
+                            ),
+                    )
+                }
+
+                if (state.error.isNotEmpty()) {
+                    ErrorText(state.error)
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                CurlyText(
+                    modifier =
+                        Modifier
+                            .clickable {
+                                onAddMember()
+                            }.align(Alignment.Start),
+                    bold = true,
+                    text = stringResource(Res.string.add_member),
+                )
+            }
+        }
     }
 }

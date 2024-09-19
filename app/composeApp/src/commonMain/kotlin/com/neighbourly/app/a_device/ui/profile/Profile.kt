@@ -68,8 +68,13 @@ fun Profile(viewModel: ProfileViewModel = viewModel { KoinProvider.KOIN.get<Prof
                 Spacer(modifier = Modifier.height(8.dp))
 
                 when (contentIndex) {
+                    -1 -> HouseholdBarcodeScanner()
                     0 -> ProfileInfoEdit()
-                    1 -> HouseholdInfoEdit()
+                    1 ->
+                        HouseholdInfoEdit {
+                            contentIndex = -1
+                        }
+
                     2 -> HouseholdLocalize()
                     3 -> NeighbourhoodInfoEdit()
                 }

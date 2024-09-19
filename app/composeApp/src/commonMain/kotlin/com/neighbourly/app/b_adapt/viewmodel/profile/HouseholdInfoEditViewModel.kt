@@ -14,6 +14,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class HouseholdInfoEditViewModel(
     val householdInfoUpdateUseCase: HouseholdInfoUpdateUseCase,
@@ -30,6 +33,7 @@ class HouseholdInfoEditViewModel(
                     _state.update {
                         it.copy(
                             hasHousehold = true,
+                            editableHousehold = household.headid == user.id,
                             imageurl = household.imageurl,
                             name = household.name,
                             address = household.address,
@@ -37,7 +41,22 @@ class HouseholdInfoEditViewModel(
                         )
                     }
                 } ?: run {
-                    _state.update { HouseholdInfoEditViewState() }
+                    _state.update {
+                        HouseholdInfoEditViewState(
+                            userQr =
+                                user?.let {
+                                    Json.encodeToString(
+                                        UserQR(
+                                            id = user.id,
+                                            name = user.username,
+                                            fullName = user.fullname,
+                                            email = user.email,
+                                            phone = user.phone,
+                                        ),
+                                    )
+                                },
+                        )
+                    }
                 }
             }.launchIn(viewModelScope)
     }
@@ -89,7 +108,9 @@ class HouseholdInfoEditViewModel(
     data class HouseholdInfoEditViewState(
         val error: String = "",
         val saving: Boolean = false,
+        val userQr: String? = null,
         val hasHousehold: Boolean = false,
+        val editableHousehold: Boolean = false,
         val imageurl: String? = null,
         val imageUpdating: Boolean = false,
         val name: String = "",
@@ -100,5 +121,14 @@ class HouseholdInfoEditViewModel(
         val aboutOverride: String? = null,
         val nameError: Boolean = false,
         val addressError: Boolean = false,
+    )
+
+    @Serializable
+    data class UserQR(
+        val id: Int,
+        val name: String,
+        val fullName: String,
+        val phone: String,
+        val email: String,
     )
 }

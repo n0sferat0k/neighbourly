@@ -11,7 +11,7 @@ const MinClusterDiversity = 3
 const gpsSampleTarget = 100
 const gpsPrecisionFactor = 100000
 const nightStart = "20:00:00"
-const nightEnd = "08:00:00"
+const nightEnd = "09:00:00"
 
 func RetrieveHeatmap(userId string, onlyNight bool) ([]GpsPayload, error) {
 	factorStr := strconv.Itoa(gpsPrecisionFactor)

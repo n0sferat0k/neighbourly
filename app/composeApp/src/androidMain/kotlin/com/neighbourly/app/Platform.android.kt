@@ -2,19 +2,23 @@ package com.neighbourly.app
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.CAMERA
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_PHONE_NUMBERS
 import android.Manifest.permission.READ_PHONE_STATE
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Looper
 import android.provider.OpenableColumns
 import android.telephony.SubscriptionManager
 import android.telephony.SubscriptionManager.DEFAULT_SUBSCRIPTION_ID
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.core.net.toUri
@@ -25,6 +29,9 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
+import com.google.zxing.common.BitMatrix
 import com.neighbourly.app.NeighbourlyApp.Companion.locationProvider
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
@@ -45,6 +52,7 @@ actual fun requestPermissions() {
     val permissionState =
         rememberMultiplePermissionsState(
             listOf(
+                CAMERA,
                 ACCESS_COARSE_LOCATION,
                 ACCESS_FINE_LOCATION,
                 READ_EXTERNAL_STORAGE,
@@ -163,3 +171,28 @@ actual val keyValueRegistry: KeyValueRegistry =
     )
 actual val isLargeLandscape: Boolean
     get() = TODO("Not yet implemented")
+
+actual fun generateQrCode(
+    content: String,
+    size: Int,
+): ImageBitmap {
+    val bitMatrix: BitMatrix =
+        MultiFormatWriter().encode(
+            content,
+            BarcodeFormat.QR_CODE,
+            size,
+            size,
+            null,
+        )
+    val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+    for (x in 0 until size) {
+        for (y in 0 until size) {
+            bitmap.setPixel(
+                x,
+                y,
+                if (bitMatrix[x, y]) Color.BLACK else Color.WHITE,
+            )
+        }
+    }
+    return bitmap.asImageBitmap()
+}

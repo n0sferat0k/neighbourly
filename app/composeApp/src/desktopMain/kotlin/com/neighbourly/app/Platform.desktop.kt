@@ -1,12 +1,18 @@
 package com.neighbourly.app
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.toComposeImageBitmap
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
+import com.google.zxing.common.BitMatrix
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
+import java.awt.Color
+import java.awt.image.BufferedImage
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
@@ -67,3 +73,28 @@ actual val httpClientEngine: HttpClientEngine = CIO.create()
 actual val keyValueRegistry: KeyValueRegistry = DesktopFileBasedRegistry()
 actual val isLargeLandscape: Boolean
     get() = TODO("Not yet implemented")
+
+actual fun generateQrCode(
+    content: String,
+    size: Int,
+): ImageBitmap {
+    val bitMatrix: BitMatrix =
+        MultiFormatWriter().encode(
+            content,
+            BarcodeFormat.QR_CODE,
+            size,
+            size,
+            null,
+        )
+    val bufferedImage = BufferedImage(size, size, BufferedImage.TYPE_INT_RGB)
+    for (x in 0 until size) {
+        for (y in 0 until size) {
+            bufferedImage.setRGB(
+                x,
+                y,
+                if (bitMatrix[x, y]) Color.BLACK.rgb else Color.WHITE.rgb,
+            )
+        }
+    }
+    return bufferedImage.toComposeImageBitmap()
+}

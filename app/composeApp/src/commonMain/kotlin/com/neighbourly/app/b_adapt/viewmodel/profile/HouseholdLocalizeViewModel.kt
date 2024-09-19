@@ -25,6 +25,7 @@ class HouseholdLocalizeViewModel(
                 it?.let { user ->
                     _state.update {
                         it.copy(
+                            hasHouse = user.household != null,
                             localized = user.household?.location != null,
                             localizing = user.localizing,
                             gpsprogress = user.household?.gpsprogress ?: 0f,
@@ -43,6 +44,7 @@ class HouseholdLocalizeViewModel(
     }
 
     data class HouseholdLocalizeViewState(
+        val hasHouse: Boolean = false,
         val localized: Boolean = false,
         val localizing: Boolean = false,
         val gpsprogress: Float = 0f,

@@ -1,6 +1,7 @@
 package com.neighbourly.app
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
@@ -36,3 +37,8 @@ expect val httpClientEngine: HttpClientEngine
 expect val keyValueRegistry: KeyValueRegistry
 
 expect val isLargeLandscape: Boolean
+
+expect fun generateQrCode(
+    content: String,
+    size: Int,
+): ImageBitmap
