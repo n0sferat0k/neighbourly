@@ -11,7 +11,7 @@ class ProfileRefreshUseCase(
         val token = sessionStore.token
         token?.let {
             val user = apiGw.refreshProfile(token)
-            sessionStore.update {
+            sessionStore.updateUser {
                 it?.copy(
                     username = user.username,
                     about = user.about,

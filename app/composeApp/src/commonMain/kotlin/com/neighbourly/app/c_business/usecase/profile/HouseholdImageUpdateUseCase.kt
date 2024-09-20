@@ -13,7 +13,7 @@ class HouseholdImageUpdateUseCase(
 
         token?.let {
             apiGw.updateHouseholdImage(it, profileImageFileContents).let { imgUrl ->
-                sessionStore.update { it?.copy(household = it.household?.copy(imageurl = imgUrl)) }
+                sessionStore.updateUser { it?.copy(household = it.household?.copy(imageurl = imgUrl)) }
             }
         }
     }

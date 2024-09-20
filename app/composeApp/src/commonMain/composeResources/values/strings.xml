@@ -13,15 +13,30 @@
     <string name="here">Here</string>
     <string name="everywhere">Everywhere</string>
     <string name="householdName">Household Name</string>
+    <string name="neighbourhoodName">Neighbourhood Name</string>
     <string name="address">Address</string>
     <string name="about">About</string>
     <string name="add_member">Add Member</string>
+    <string name="accept">Accept</string>
+    <string name="retry">Retry</string>
+    <string name="relocate">Relocate</string>
+    <string name="create">Create</string>
 
     <string name="err_password_mismatch">The two passwords must match</string>
     <string name="invite_or_create_household">You need to define a household, use the below QR code to be invited to an existing household or create your own from scratch !</string>
     <string name="create_from_scratch">Create household from scratch !</string>
     <string name="need_to_create_household">You need to define a household before you can start establishing it's location !</string>
-    <string name="need_to_localize">Your home does not have an established geo location ! \n\n In order for you to be able to create or join neighbourhoods you will need to establish your home base by allowing the app to track your gps location for a while !</string>
+    <string name="need_to_localize">Your home does not have an established geo location! \n\n In order for you to be able to create or join neighbourhoods you will need to establish your home base by allowing the app to track your gps location for a while !</string>
     <string name="track_me">Track Me!</string>
-    <string name="localize_progress">Your location is being tracked to establish your home base ! \n\n This might take a couple days, be patient and keep your GPS turned on until the below progress reaches 100% !</string>
+    <string name="localize_progress">Your location is being tracked to establish your home base! \n\n This might take a couple days, be patient and keep your GPS turned on until the below progress reaches 100% !</string>
+    <string name="localize_completed">A strong candidate location for your household has been located! \n\n Double check on the map that the location is correct and hit ACCEPT. If the location is incorrect you may hit RETRY to start the localizing process again !</string>
+    <string name="household_localized">Your household has been located! \n\n If the location is incorrect you can RELOCATE but keep in mind that relocating outside of a neighbourhood you previously joined will automatically remove you and your household from said neighbourhood !</string>
+
+    <string name="need_to_have_household">You need to belong to a household with an established location before you can join neighbourhoods !</string>
+    <string name="no_neighbourhood">Your household doesn't belong to any neighbourhoods yet !</string>
+    <string name="list_neighbourhoods">Your household belongs to the following neighbourhood(s):</string>
+    <string name="join_neighbourhood">You can join an existing neighbourhood by invitation using the below QR code:</string>
+    <string name="create_neighbourhood">Or you can create a new neighbourhood as long as it doesn't overlap with more than 2 existing neighbourhoods.</string>
+    <string name="draw_neighbourhood">Once you are happy with the neighbourhood geofence, provide a name and save the neighbourhood.</string>
+
 </resources>

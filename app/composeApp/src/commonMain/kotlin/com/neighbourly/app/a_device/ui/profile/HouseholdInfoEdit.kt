@@ -13,11 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -30,20 +26,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.MultipleFilePicker
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.CurlyButton
 import com.neighbourly.app.a_device.ui.CurlyText
 import com.neighbourly.app.a_device.ui.ErrorText
-import com.neighbourly.app.a_device.ui.font
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdInfoEditViewModel
 import com.neighbourly.app.generateQrCode
 import com.neighbourly.app.loadContentsFromFile
@@ -191,39 +184,12 @@ fun HouseholdInfoEdit(
             Spacer(modifier = Modifier.height(8.dp))
 
             if (state.editableHousehold) {
-                // Save Button
-                Button(
-                    onClick = {
-                        viewModel.onSaveHousehold()
-                    },
-                    modifier =
-                        Modifier
-                            .wrapContentWidth()
-                            .height(48.dp)
-                            .align(Alignment.CenterHorizontally),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = AppColors.primary),
+                CurlyButton(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    text = stringResource(Res.string.save),
+                    loading = state.saving,
                 ) {
-                    if (state.saving) {
-                        CircularProgressIndicator(
-                            modifier =
-                                Modifier
-                                    .size(24.dp)
-                                    .padding(end = 8.dp),
-                            color = Color.White,
-                            strokeWidth = 2.dp,
-                        )
-                    }
-                    Text(
-                        stringResource(Res.string.save),
-                        color = Color.White,
-                        style =
-                            TextStyle(
-                                fontFamily = font(),
-                                fontSize = 18.sp,
-                                color = AppColors.primary,
-                            ),
-                    )
+                    viewModel.onSaveHousehold()
                 }
 
                 if (state.error.isNotEmpty()) {

@@ -6,6 +6,7 @@ import com.neighbourly.app.b_adapt.gateway.GpsLogInput
 import com.neighbourly.app.b_adapt.gateway.LoginInput
 import com.neighbourly.app.b_adapt.gateway.RegisterInput
 import com.neighbourly.app.b_adapt.gateway.UpdateHouseholdInput
+import com.neighbourly.app.b_adapt.gateway.UpdateNeighbourhoodInput
 import com.neighbourly.app.b_adapt.gateway.UpdateProfileInput
 import com.neighbourly.app.b_adapt.gateway.UserDTO
 import com.neighbourly.app.d_entity.data.FileContents
@@ -141,6 +142,26 @@ class KtorAuthApi {
         }
     }
 
+    suspend fun updateNeighbourhood(
+        baseUrl: String,
+        token: String,
+        updateNeighbourhoodInput: UpdateNeighbourhoodInput,
+    ): UserDTO {
+        val response: HttpResponse =
+            client.post(baseUrl + "profile/updateNeighbourhood") {
+                contentType(ContentType.Application.Json)
+                setBody(updateNeighbourhoodInput)
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
+            }
+        if (response.status.value == 200) {
+            return response.body<UserDTO>()
+        } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
     suspend fun refreshProfile(
         baseUrl: String,
         token: String,
@@ -199,12 +220,16 @@ class KtorAuthApi {
         token: String,
         gpsLogInput: GpsLogInput,
     ) {
-        client.post(baseUrl + "gps/log") {
-            contentType(ContentType.Application.Json)
-            setBody(gpsLogInput)
-            headers {
-                append(HttpHeaders.Authorization, "Bearer " + token)
+        val response =
+            client.post(baseUrl + "gps/log") {
+                contentType(ContentType.Application.Json)
+                setBody(gpsLogInput)
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
             }
+        if (response.status.value != 200) {
+            throw ApiException(response.bodyAsText())
         }
     }
 
@@ -239,6 +264,53 @@ class KtorAuthApi {
         if (response.status.value == 200) {
             return response.body<GpsItemDTO>()
         } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun acceptGpsCandidate(
+        baseUrl: String,
+        token: String,
+    ): GpsItemDTO {
+        val response =
+            client.post(baseUrl + "gps/acceptCandidate") {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
+            }
+        if (response.status.value == 200) {
+            return response.body<GpsItemDTO>()
+        } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun clearGpsData(
+        baseUrl: String,
+        token: String,
+    ) {
+        val response =
+            client.get(baseUrl + "gps/clear") {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
+            }
+        if (response.status.value != 200) {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun resetHouseholdLocation(
+        baseUrl: String,
+        token: String,
+    ) {
+        val response =
+            client.get(baseUrl + "gps/resetHouseholdLocation") {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
+            }
+        if (response.status.value != 200) {
             throw ApiException(response.bodyAsText())
         }
     }

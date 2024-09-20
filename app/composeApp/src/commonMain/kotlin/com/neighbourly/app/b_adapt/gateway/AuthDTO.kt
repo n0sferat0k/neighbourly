@@ -33,6 +33,13 @@ data class UpdateHouseholdInput(
 )
 
 @Serializable
+data class UpdateNeighbourhoodInput(
+    val neighbourhoodid: Int? = null,
+    val name: String,
+    val geofence: String,
+)
+
+@Serializable
 data class GpsLogInput(
     val timezone: Int,
     val latitude: Float,

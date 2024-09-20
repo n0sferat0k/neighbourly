@@ -43,7 +43,32 @@ class HouseholdLocalizeViewModel(
         }
     }
 
+    fun onAccept() {
+        viewModelScope.launch {
+            _state.update { it.copy(loading = true) }
+            householdLocalizeUseCase.acceptGpsCandidate()
+            _state.update { it.copy(loading = false) }
+        }
+    }
+
+    fun onRetry() {
+        viewModelScope.launch {
+            _state.update { it.copy(loading = true) }
+            householdLocalizeUseCase.retryMonitoring()
+            _state.update { it.copy(loading = false) }
+        }
+    }
+
+    fun onRelocate() {
+        viewModelScope.launch {
+            _state.update { it.copy(loading = true) }
+            householdLocalizeUseCase.relocateHousehold()
+            _state.update { it.copy(loading = false) }
+        }
+    }
+
     data class HouseholdLocalizeViewState(
+        val loading: Boolean = false,
         val hasHouse: Boolean = false,
         val localized: Boolean = false,
         val localizing: Boolean = false,

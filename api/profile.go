@@ -29,8 +29,8 @@ func RetreiveSessionUserData(userId string) (*User, error) {
 		H.households_text_EN AS Householdabout,
 		H.households_pic AS HouseholdImageURL,
 		H.households_add_numerics_0 AS HeadID,
-		H.households_add_numerics_1 / 10000000 AS Latitude,
-		H.households_add_numerics_2 / 10000000 AS Longitude,
+		H.households_add_numerics_1 / ? AS Latitude,
+		H.households_add_numerics_2 / ? AS Longitude,
 		H.households_add_strings_0 AS Address
 
 		FROM 
@@ -42,7 +42,7 @@ func RetreiveSessionUserData(userId string) (*User, error) {
 		WHERE 
 			U.users_id = ?			
 		LIMIT 1`,
-		userId,
+		gpsPrecisionFactor, gpsPrecisionFactor, userId,
 	).Scan(
 		&existingUser.Userid,
 		&existingUser.Userabout,
@@ -68,7 +68,7 @@ func RetreiveSessionUserData(userId string) (*User, error) {
 
 	if existingHousehold.Householdid != nil {
 		err := db.QueryRow(`SELECT 
-				COUNT(*) % ? / ? AS gpsCnt
+				COUNT(*) / ? AS gpsCnt
 			FROM				
 				coordinates
 			WHERE 
@@ -80,7 +80,7 @@ func RetreiveSessionUserData(userId string) (*User, error) {
 					TIME(ADDTIME(FROM_UNIXTIME(coordinates_data), SEC_TO_TIME(coordinates_add_numerics_3 * 3600))) BETWEEN '00:00:00' AND '`+nightEnd+`'
 				)
 			LIMIT 1`,
-			gpsSampleTarget, gpsSampleTarget, userId,
+			gpsSampleTarget, userId,
 		).Scan(
 			&existingHousehold.GpsProgress,
 		)
@@ -165,6 +165,94 @@ func RetreiveSessionUserData(userId string) (*User, error) {
 
 	existingUser.Neighbourhoods = neighbourhoods
 	return &existingUser, nil
+}
+
+func UpdateNeighbourhood(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var userId string = validateToken(w, r)
+	if userId == "" {
+		return
+	}
+
+	var neighbourhood Neighbourhood
+	if err := json.NewDecoder(r.Body).Decode(&neighbourhood); err != nil {
+		http.Error(w, "Bad request", http.StatusBadRequest)
+		return
+	}
+
+	var householdId int
+	db.QueryRow("SELECT users_add_numerics_0 FROM users WHERE users_id = ?", userId).Scan(&householdId)
+
+	if householdId <= 0 {
+		http.Error(w, "User does not have a household", http.StatusBadRequest)
+		return
+	}
+
+	if neighbourhood.Neighbourhoodid == nil {
+		//adding new newighbourhood
+		insertResult, err := db.Exec(`INSERT INTO neighbourhoods (neighbourhoods_titlu_EN, neighbourhoods_text_EN) VALUES (?,?)`,
+			neighbourhood.Name, neighbourhood.Geofence)
+		if err != nil {
+			http.Error(w, "Failed to insert neighbourhood "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		neighbourhoodId, err := insertResult.LastInsertId()
+		if err != nil {
+			http.Error(w, "Failed to insert neighbourhood "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		_, err = db.Exec(`INSERT INTO neighbourhood_household_users (
+			neighbourhood_household_users_add_numerics_0,
+			neighbourhood_household_users_add_numerics_1,
+			neighbourhood_household_users_add_numerics_2,
+			neighbourhood_household_users_add_numerics_3,
+			neighbourhood_household_users_add_numerics_4
+		) VALUES (?,?,?,500,-1)`, neighbourhoodId, householdId, userId)
+
+		if err != nil {
+			http.Error(w, "Failed to insert neighbourhood household user "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+	} else {
+		//updating existing neighbourhood
+
+		var accLevel int
+		err := db.QueryRow(`SELECT 
+						neighbourhood_household_users_add_numerics_3 
+					FROM 
+						neighbourhood_household_users 
+					WHERE 
+						neighbourhood_household_users_add_numerics_0 = ?
+						AND
+						neighbourhood_household_users_add_numerics_2 = ?`, neighbourhood.Neighbourhoodid, userId).Scan(&accLevel)
+
+		if err != nil || accLevel < 500 {
+			http.Error(w, "User does not have enough ACC", http.StatusBadRequest)
+			return
+		}
+
+		_, err = db.Exec(`UPDATE neighbourhoods SET neighbourhoods_titlu_EN = ?, neighbourhoods_text_EN = ?`,
+			neighbourhood.Name, neighbourhood.Geofence)
+
+		if err != nil {
+			http.Error(w, "Failed to update neighbourhood "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	existingUser, err := RetreiveSessionUserData(userId)
+	if err != nil {
+		http.Error(w, "Failed to get user info for "+userId+":"+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(existingUser)
 }
 
 func UpdateHousehold(w http.ResponseWriter, r *http.Request) {

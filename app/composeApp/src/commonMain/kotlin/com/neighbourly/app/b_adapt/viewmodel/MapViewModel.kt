@@ -3,6 +3,8 @@ package com.neighbourly.app.b_adapt.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
+import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUseCase
+import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,10 +12,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class MapViewModel(
     val sessionStore: SessionStore,
     val householdLocalizeUseCase: HouseholdLocalizeUseCase,
+    val neighbourhoodManagementUseCase: NeighbourhoodManagementUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(MapViewState())
     val state: StateFlow<MapViewState> = _state.asStateFlow()
@@ -23,6 +27,7 @@ class MapViewModel(
             .onEach { localization ->
                 _state.update {
                     it.copy(
+                        drawing = localization.drawing,
                         heatmap =
                             localization.heatmap?.map {
                                 GpsItemVS(
@@ -80,13 +85,19 @@ class MapViewModel(
             }.launchIn(viewModelScope)
     }
 
-    fun onDrawn(drawData: List<List<Double>>) {
+    fun onDrawn(drawData: List<List<Float>>) {
+        viewModelScope.launch {
+            neighbourhoodManagementUseCase.saveDrawing(
+                drawData.map { GpsItem(latitude = it[0], longitude = it[1]) },
+            )
+        }
     }
 
     fun onHouseholSelected(householdid: Int) {
     }
 
     data class MapViewState(
+        val drawing: Boolean = false,
         val household: HouseholdVS? = null,
         val neighbourhoods: List<NeighbourhoodVS> = emptyList(),
         val heatmap: List<GpsItemVS>? = null,

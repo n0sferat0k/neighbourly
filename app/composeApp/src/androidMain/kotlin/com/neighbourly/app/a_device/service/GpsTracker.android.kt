@@ -32,6 +32,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+const val TRACKING_INTERVAL = 1000L // 600000L
+
 object GpsTracker {
     var isTracking = false
 
@@ -40,13 +42,18 @@ object GpsTracker {
             .get<SessionStore>()
             .user
             .onEach { user ->
-                (user?.localizing ?: false).let {
-                    if (it != isTracking) {
-                        isTracking = it
-                        when (isTracking) {
-                            true -> startTracking()
-                            false -> stopTracking()
-                        }
+                val shouldTrack =
+                    user?.let {
+                        it.localizing &&
+                            (it.household != null) &&
+                            (it.household.gpsprogress ?: 0f) < 1
+                    } ?: false
+
+                if (shouldTrack != isTracking) {
+                    isTracking = shouldTrack
+                    when (isTracking) {
+                        true -> startTracking()
+                        false -> stopTracking()
                     }
                 }
             }.launchIn(MainScope())
@@ -120,8 +127,8 @@ class GpsTrackingService : Service() {
             LocationRequest
                 .Builder(
                     Priority.PRIORITY_HIGH_ACCURACY,
-                    600000L,
-                ).setMinUpdateIntervalMillis(600000L)
+                    TRACKING_INTERVAL,
+                ).setMinUpdateIntervalMillis(TRACKING_INTERVAL)
                 .build()
 
         if (checkSelfPermission(ACCESS_FINE_LOCATION) != PERMISSION_GRANTED &&

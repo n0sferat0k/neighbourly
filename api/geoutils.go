@@ -9,7 +9,7 @@ import (
 const EarthRadius = 6371000 // Radius of Earth in meters
 const MinClusterDiversity = 3
 const gpsSampleTarget = 100
-const gpsPrecisionFactor = 100000
+const gpsPrecisionFactor = 1000000
 const nightStart = "20:00:00"
 const nightEnd = "09:00:00"
 

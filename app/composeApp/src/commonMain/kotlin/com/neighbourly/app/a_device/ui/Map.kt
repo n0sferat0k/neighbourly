@@ -24,10 +24,13 @@ import com.neighbourly.app.b_adapt.viewmodel.MapViewModel
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
+const val DEFAULT_HOUSE_IMG_URL = "http://neighbourly.go.ro/graphics/houses.png"
+
 @Composable
 fun Map(
     mapViewModel: MapViewModel = viewModel { KoinProvider.KOIN.get<MapViewModel>() },
     modifier: Modifier,
+    onDrawn: (() -> Unit)? = null,
 ) {
     val state by mapViewModel.state.collectAsState()
 
@@ -59,6 +62,7 @@ fun Map(
                     }
                     if (params.drawData != null) {
                         mapViewModel.onDrawn(params.drawData)
+                        onDrawn?.let { it() }
                     }
                 }
             },
@@ -82,15 +86,22 @@ fun Map(
         }
     }
 
+    LaunchedEffect(mapReady, state.drawing) {
+        if (state.drawing) {
+            navigator.evaluateJavaScript("enableDraw()")
+        } else {
+            navigator.evaluateJavaScript("disableDraw()")
+        }
+    }
+
     LaunchedEffect(mapReady, state.household, state.candidate) {
         if (mapReady) {
             state.household.let { household ->
-                when (household) {
-                    null ->
-                        navigator.evaluateJavaScript("clearHouseholds()")
-
-                    else -> {
-                        val image = household.imageurl ?: "http://neighbourly.go.ro/graphics/houses.png"
+                if (household?.location == null && state.candidate == null) {
+                    navigator.evaluateJavaScript("clearHouseholds()")
+                } else {
+                    if (household != null) {
+                        val image = household.imageurl ?: DEFAULT_HOUSE_IMG_URL
                         val location = household.location ?: state.candidate
                         val isCandidate = household.location == null
 
@@ -147,7 +158,7 @@ fun Map(
 @Serializable
 data class MapFeedbackModel(
     val mapReady: Boolean? = null,
-    val drawData: List<List<Double>>? = null,
+    val drawData: List<List<Float>>? = null,
     val householdid: Int? = null,
 )
 
@@ -189,6 +200,8 @@ val html =
                 var lng = 0;
                 var households = [];
                 var neighbourhoods = [];
+                var draw;
+                var updateArea;
         
                 MapboxDraw.constants.classes.CONTROL_BASE = 'maplibregl-ctrl';
                 MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
@@ -227,9 +240,9 @@ val html =
                         center(lng, lat, 15);
                     }
                 });
-        
+                        
                 function enableDraw() {
-                    const draw = new MapboxDraw({
+                    draw = new MapboxDraw({
                         displayControlsDefault: false,
                         controls: {
                             polygon: true,
@@ -250,6 +263,22 @@ val html =
                     map.on('draw.create', updateArea);
                     map.on('draw.delete', updateArea);
                     map.on('draw.update', updateArea);
+                }
+    
+                function disableDraw() {
+                    // Check if the draw control exists
+                    if (draw) {
+                        // Remove the draw control from the map
+                        map.removeControl(draw);
+    
+                        // Remove the event listeners for draw.create, draw.delete, and draw.update
+                        map.off('draw.create', updateArea);
+                        map.off('draw.delete', updateArea);
+                        map.off('draw.update', updateArea);
+    
+                        // Clear the drawn features
+                        draw.deleteAll();
+                    }
                 }
     
                 function clearNeighbourhoods() {

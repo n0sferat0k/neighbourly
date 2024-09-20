@@ -430,6 +430,10 @@ $p['DISPLAYMENUTAB']=true;
 $p['TEXT']=false;
 $p['TITLE']=false;
 
+$p['SINGULAR']=false;
+$p['DELETABLE']=true;
+$p['APPENDABLE']=true;
+
 $p['LANGUAGES']=array("EN");
 $p['CURRENTLANGUAGE']=0;
 

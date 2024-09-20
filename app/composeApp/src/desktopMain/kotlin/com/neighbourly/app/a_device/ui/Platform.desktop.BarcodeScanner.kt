@@ -66,7 +66,7 @@ actual fun BarcodeScanner(
                 modifier = Modifier.fillMaxSize(),
                 bitmap = it,
                 contentDescription = "Webcam Feed",
-                contentScale = ContentScale.FillBounds,
+                contentScale = ContentScale.Fit,
             )
         }
     }

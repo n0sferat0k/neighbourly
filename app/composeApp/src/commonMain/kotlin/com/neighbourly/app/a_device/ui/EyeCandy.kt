@@ -9,11 +9,15 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -148,6 +152,45 @@ fun CurlyText(
                 color = AppColors.primary,
             ),
     )
+}
+
+@Composable
+fun CurlyButton(
+    modifier: Modifier = Modifier,
+    text: String,
+    loading: Boolean = false,
+    onClick: () -> Unit,
+) {
+    Button(
+        onClick = onClick,
+        modifier =
+            modifier
+                .wrapContentWidth()
+                .height(48.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = ButtonDefaults.buttonColors(backgroundColor = AppColors.primary),
+    ) {
+        if (loading) {
+            CircularProgressIndicator(
+                modifier =
+                    Modifier
+                        .size(24.dp)
+                        .padding(end = 8.dp),
+                color = Color.White,
+                strokeWidth = 2.dp,
+            )
+        }
+        Text(
+            text = text,
+            color = Color.White,
+            style =
+                TextStyle(
+                    fontFamily = font(),
+                    fontSize = 18.sp,
+                    color = AppColors.primary,
+                ),
+        )
+    }
 }
 
 @Composable

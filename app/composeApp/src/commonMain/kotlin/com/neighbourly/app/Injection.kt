@@ -9,6 +9,7 @@ import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdInfoEditViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdLocalizeViewModel
+import com.neighbourly.app.b_adapt.viewmodel.profile.NeighbourhoodInfoViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileFooterViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileInfoEditViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileMenuViewModel
@@ -19,6 +20,7 @@ import com.neighbourly.app.c_business.usecase.auth.RegisterUseCase
 import com.neighbourly.app.c_business.usecase.profile.HouseholdImageUpdateUseCase
 import com.neighbourly.app.c_business.usecase.profile.HouseholdInfoUpdateUseCase
 import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
+import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileImageUpdateUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileUpdateUseCase
@@ -88,13 +90,16 @@ val adapterModule =
             LoginViewModel(get())
         }
         factory {
-            MapViewModel(get(), get())
+            MapViewModel(get(), get(), get())
         }
         factory {
             HouseholdLocalizeViewModel(get(), get())
         }
         factory {
             HouseholdInfoEditViewModel(get(), get(), get())
+        }
+        factory {
+            NeighbourhoodInfoViewModel(get(), get())
         }
     }
 
@@ -126,5 +131,8 @@ val useCaseModule =
         }
         single {
             HouseholdImageUpdateUseCase(get(), get())
+        }
+        single {
+            NeighbourhoodManagementUseCase(get(), get())
         }
     }

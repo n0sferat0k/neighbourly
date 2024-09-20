@@ -51,7 +51,9 @@
 
                 //window.kmpJsBridge.callNative("MapFeedback", "{\"mapReady\":true}", function (data) { });
                 addHousehold(23.6684, 47.6531, 1, "Krucz House", 'http://neighbourly.go.ro/householdsIMGS/boiling-frog.png');
-                
+                enableDraw();
+                disableDraw();
+
                 //addNeighbourhood("1", [[23.664421990469435,47.65655129393659],[23.665995201870714,47.64961446944116],[23.670235774323487,47.64969293384053],[23.668970442219916,47.653967631296325],[23.67055763940516,47.656120831152805],[23.6676487837274,47.65622253206254],[23.664421990469435,47.65655129393659]]);
                 
                 // addLocationHeatMap("heatmap_1", [
@@ -73,8 +75,11 @@
                 }
             });
     
+            let draw;
+            let updateArea;
+            
             function enableDraw() {
-                const draw = new MapboxDraw({
+                draw = new MapboxDraw({
                     displayControlsDefault: false,
                     controls: {
                         polygon: true,
@@ -95,6 +100,22 @@
                 map.on('draw.create', updateArea);
                 map.on('draw.delete', updateArea);
                 map.on('draw.update', updateArea);
+            }
+
+            function disableDraw() {
+                // Check if the draw control exists
+                if (draw) {
+                    // Remove the draw control from the map
+                    map.removeControl(draw);
+
+                    // Remove the event listeners for draw.create, draw.delete, and draw.update
+                    map.off('draw.create', updateArea);
+                    map.off('draw.delete', updateArea);
+                    map.off('draw.update', updateArea);
+
+                    // Clear the drawn features
+                    draw.deleteAll();
+                }
             }
 
             function clearNeighbourhoods() {

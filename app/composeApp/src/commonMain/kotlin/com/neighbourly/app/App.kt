@@ -36,7 +36,7 @@ fun App(includeMap: Boolean = true) {
     MaterialTheme {
         requestPermissions()
         if (includeMap) {
-            Map(modifier = Modifier.fillMaxSize())
+            Map(modifier = Modifier.fillMaxSize(), onDrawn = { tabindex = 0 })
         }
 
         Box(

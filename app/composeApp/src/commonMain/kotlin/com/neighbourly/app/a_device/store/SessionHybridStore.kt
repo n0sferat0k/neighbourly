@@ -10,7 +10,6 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
@@ -40,17 +39,13 @@ class SessionHybridStore(
         saveToStore()
     }
 
-    override suspend fun storeHeatmap(heatmap: List<GpsItem>?) {
-        localizationState.update { it.copy(heatmap = heatmap) }
-    }
-
-    override suspend fun storeCandidate(candidate: GpsItem) {
-        localizationState.update { it.copy(candidate = candidate) }
-    }
-
-    override suspend fun update(updater: (User?) -> User?) {
+    override suspend fun updateUser(updater: (User?) -> User?) {
         userState.emit(updater(userState.value))
         saveToStore()
+    }
+
+    override suspend fun updateLocalization(updater: (LocalizationProgress) -> LocalizationProgress) {
+        localizationState.emit(updater(localizationState.value))
     }
 
     override suspend fun clear() {
@@ -61,6 +56,8 @@ class SessionHybridStore(
 
     override val token: String?
         get() = userState.value?.authtoken
+    override val drawing: List<GpsItem>?
+        get() = localizationState.value.drawingPoints
 
     private suspend fun loadFromStore() {
         withContext(Dispatchers.IO) {

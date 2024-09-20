@@ -50,6 +50,13 @@ interface AuthApi {
         about: String,
     ): User
 
+    suspend fun updateNeighbourhood(
+        token: String,
+        id: Int? = null,
+        name: String,
+        geofence: List<GpsItem>,
+    ): User
+
     suspend fun gpsLog(
         token: String,
         timezone: Int,
@@ -60,4 +67,10 @@ interface AuthApi {
     suspend fun getGpsHeatmap(token: String): List<GpsItem>?
 
     suspend fun getGpsCandidate(token: String): GpsItem
+
+    suspend fun acceptGpsCandidate(token: String): GpsItem
+
+    suspend fun clearGpsData(token: String)
+
+    suspend fun resetHouseholdLocation(token: String)
 }

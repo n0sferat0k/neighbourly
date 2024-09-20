@@ -13,7 +13,7 @@ class ProfileImageUpdateUseCase(
 
         token?.let {
             apiGw.updateProfileImage(it, profileImageFileContents).let { imgUrl ->
-                sessionStore.update { it?.copy(imageurl = imgUrl) }
+                sessionStore.updateUser { it?.copy(imageurl = imgUrl) }
             }
         }
     }

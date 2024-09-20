@@ -8,6 +8,8 @@ import com.neighbourly.app.d_entity.data.User
 import com.neighbourly.app.d_entity.interf.AuthApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.IOException
 
 class AuthApiGw(
@@ -80,6 +82,34 @@ class AuthApiGw(
                 ).toUser()
         }
 
+    override suspend fun updateNeighbourhood(
+        token: String,
+        id: Int?,
+        name: String,
+        geofence: List<GpsItem>,
+    ): User =
+        runContextCatchTranslateThrow {
+            api
+                .updateNeighbourhood(
+                    API_BASE_URL,
+                    token,
+                    UpdateNeighbourhoodInput(
+                        neighbourhoodid = id,
+                        name = name,
+                        geofence =
+                            Json.encodeToString(
+                                geofence
+                                    .map {
+                                        listOf(
+                                            it.latitude,
+                                            it.longitude,
+                                        )
+                                    }.toList(),
+                            ),
+                    ),
+                ).toUser()
+        }
+
     override suspend fun refreshProfile(token: String): User =
         runContextCatchTranslateThrow {
             api.refreshProfile(API_BASE_URL, token).toUser()
@@ -135,6 +165,21 @@ class AuthApiGw(
     override suspend fun getGpsCandidate(token: String): GpsItem =
         runContextCatchTranslateThrow {
             api.getGpsCandidate(API_BASE_URL, token).toGpsItem()
+        }
+
+    override suspend fun acceptGpsCandidate(token: String): GpsItem =
+        runContextCatchTranslateThrow {
+            api.acceptGpsCandidate(API_BASE_URL, token).toGpsItem()
+        }
+
+    override suspend fun clearGpsData(token: String) =
+        runContextCatchTranslateThrow {
+            api.clearGpsData(API_BASE_URL, token)
+        }
+
+    override suspend fun resetHouseholdLocation(token: String) =
+        runContextCatchTranslateThrow {
+            api.resetHouseholdLocation(API_BASE_URL, token)
         }
 
     companion object {

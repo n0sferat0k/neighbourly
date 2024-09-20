@@ -10,15 +10,14 @@ interface SessionStore {
 
     suspend fun clear()
 
-    suspend fun update(updater: (User?) -> User?)
+    suspend fun updateUser(updater: (User?) -> User?)
 
-    suspend fun storeHeatmap(heatmap: List<GpsItem>?)
-
-    suspend fun storeCandidate(candidate: GpsItem)
+    suspend fun updateLocalization(updater: (LocalizationProgress) -> LocalizationProgress)
 
     val user: Flow<User?>
     val localization: Flow<LocalizationProgress>
 
     val isLoggedIn: Flow<Boolean>
     val token: String?
+    val drawing: List<GpsItem>?
 }

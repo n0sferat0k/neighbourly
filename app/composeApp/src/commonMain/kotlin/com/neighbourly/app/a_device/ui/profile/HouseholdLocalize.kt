@@ -1,37 +1,38 @@
 package com.neighbourly.app.a_device.ui.profile
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.CurlyButton
 import com.neighbourly.app.a_device.ui.CurlyText
-import com.neighbourly.app.a_device.ui.font
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdLocalizeViewModel
 import neighbourly.composeapp.generated.resources.Res
+import neighbourly.composeapp.generated.resources.accept
+import neighbourly.composeapp.generated.resources.household_localized
+import neighbourly.composeapp.generated.resources.localize_completed
 import neighbourly.composeapp.generated.resources.localize_progress
 import neighbourly.composeapp.generated.resources.need_to_create_household
 import neighbourly.composeapp.generated.resources.need_to_localize
+import neighbourly.composeapp.generated.resources.relocate
+import neighbourly.composeapp.generated.resources.retry
 import neighbourly.composeapp.generated.resources.track_me
 import org.jetbrains.compose.resources.stringResource
+import java.math.RoundingMode
 
 @Composable
 fun HouseholdLocalize(viewModel: HouseholdLocalizeViewModel = viewModel { KoinProvider.KOIN.get<HouseholdLocalizeViewModel>() }) {
@@ -40,34 +41,60 @@ fun HouseholdLocalize(viewModel: HouseholdLocalizeViewModel = viewModel { KoinPr
     if (!state.hasHouse) {
         CurlyText(text = stringResource(Res.string.need_to_create_household))
     } else {
-        if (!state.localized) {
+        if (state.localized) {
+            CurlyText(text = stringResource(Res.string.household_localized))
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            CurlyButton(text = stringResource(Res.string.relocate)) {
+                viewModel.onRelocate()
+            }
+        } else {
             if (state.localizing) {
-                CurlyText(text = stringResource(Res.string.localize_progress))
+                if (state.gpsprogress >= 1) {
+                    CurlyText(text = stringResource(Res.string.localize_completed))
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                Box(modifier = Modifier.size(150.dp)) {
-                    CurlyText(
-                        modifier = Modifier.align(Alignment.Center),
-                        text =
-                            (state.gpsprogress * 100)
-                                .toBigDecimal()
-                                .setScale(1)
-                                .toString() + " %",
-                        fontSize = 40.sp,
-                        bold = true,
-                    )
-                    if (state.gpsprogress < 0.1) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.fillMaxSize(),
-                            color = AppColors.primary,
+                    Row {
+                        CurlyButton(text = stringResource(Res.string.accept)) {
+                            viewModel.onAccept()
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        CurlyButton(text = stringResource(Res.string.retry)) {
+                            viewModel.onRetry()
+                        }
+                    }
+                } else {
+                    CurlyText(text = stringResource(Res.string.localize_progress))
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Box(modifier = Modifier.size(150.dp)) {
+                        CurlyText(
+                            modifier = Modifier.align(Alignment.Center),
+                            text =
+                                (minOf(1f, state.gpsprogress) * 100)
+                                    .toBigDecimal()
+                                    .setScale(1, RoundingMode.UP)
+                                    .toString() + " %",
+                            fontSize = 40.sp,
+                            bold = true,
                         )
-                    } else {
-                        CircularProgressIndicator(
-                            modifier = Modifier.fillMaxSize(),
-                            progress = state.gpsprogress,
-                            color = AppColors.primary,
-                        )
+                        if (state.gpsprogress < 0.1) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.fillMaxSize(),
+                                color = AppColors.primary,
+                            )
+                        } else {
+                            CircularProgressIndicator(
+                                modifier = Modifier.fillMaxSize(),
+                                progress = state.gpsprogress,
+                                color = AppColors.primary,
+                            )
+                        }
                     }
                 }
             } else {
@@ -75,27 +102,8 @@ fun HouseholdLocalize(viewModel: HouseholdLocalizeViewModel = viewModel { KoinPr
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Button(
-                    onClick = {
-                        viewModel.onLocalize()
-                    },
-                    modifier =
-                        Modifier
-                            .wrapContentWidth()
-                            .height(48.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = AppColors.primary),
-                ) {
-                    Text(
-                        stringResource(Res.string.track_me),
-                        color = Color.White,
-                        style =
-                            TextStyle(
-                                fontFamily = font(),
-                                fontSize = 18.sp,
-                                color = AppColors.primary,
-                            ),
-                    )
+                CurlyButton(text = stringResource(Res.string.track_me)) {
+                    viewModel.onLocalize()
                 }
             }
         }

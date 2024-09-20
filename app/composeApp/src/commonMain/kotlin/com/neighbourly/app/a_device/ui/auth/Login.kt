@@ -5,13 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -22,16 +16,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.CurlyButton
 import com.neighbourly.app.a_device.ui.ErrorText
-import com.neighbourly.app.a_device.ui.font
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.login
@@ -72,38 +62,8 @@ fun Login(viewModel: LoginViewModel = viewModel { KoinProvider.KOIN.get<LoginVie
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Register Button
-        Button(
-            onClick = {
-                viewModel.onLogin(username, password)
-            },
-            modifier =
-                Modifier
-                    .wrapContentWidth()
-                    .height(48.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(backgroundColor = AppColors.primary),
-        ) {
-            if (state.loading) {
-                CircularProgressIndicator(
-                    modifier =
-                        Modifier
-                            .size(24.dp)
-                            .padding(end = 8.dp),
-                    color = Color.White,
-                    strokeWidth = 2.dp,
-                )
-            }
-            Text(
-                stringResource(Res.string.login),
-                color = Color.White,
-                style =
-                    TextStyle(
-                        fontFamily = font(),
-                        fontSize = 18.sp,
-                        color = AppColors.primary,
-                    ),
-            )
+        CurlyButton(text = stringResource(Res.string.login), loading = state.loading) {
+            viewModel.onLogin(username, password)
         }
 
         if (state.error.isNotEmpty()) {

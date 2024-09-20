@@ -17,7 +17,7 @@ class ProfileUpdateUseCase(
 
         token?.let {
             val user = apiGw.updateProfile(it, fullname, email, phone, about)
-            sessionStore.update {
+            sessionStore.updateUser {
                 it?.copy(
                     username = user.username,
                     about = user.about,

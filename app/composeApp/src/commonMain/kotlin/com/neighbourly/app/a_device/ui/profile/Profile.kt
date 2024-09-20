@@ -29,7 +29,7 @@ import com.neighbourly.app.loadContentsFromFile
 fun Profile(viewModel: ProfileViewModel = viewModel { KoinProvider.KOIN.get<ProfileViewModel>() }) {
     val state by viewModel.state.collectAsState()
     var showFilePicker by remember { mutableStateOf(false) }
-    var contentIndex by remember { mutableStateOf(0) }
+    var contentIndex by remember { mutableStateOf(state.defaultContentIndex) }
 
     LaunchedEffect(Unit) {
         viewModel.refresh()
