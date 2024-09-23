@@ -20,16 +20,17 @@ type Household struct {
 	Longitude   *float64 `json:"longitude"`
 	Address     *string  `json:"address"`
 	GpsProgress *float64 `json:"gpsprogress"`
+	Members     []User   `json:"members,omitempty"`
 }
 
 type User struct {
 	Userid         *int64          `json:"id"`
 	Username       *string         `json:"username"`
-	Userabout      *string         `json:"about"`
+	Userabout      *string         `json:"about,omitempty"`
 	Password       *string         `json:"password,omitempty"`
-	Fullname       *string         `json:"fullname"`
-	Email          *string         `json:"email"`
-	Phone          *string         `json:"phone"`
+	Fullname       *string         `json:"fullname,omitempty"`
+	Email          *string         `json:"email,omitempty"`
+	Phone          *string         `json:"phone,omitempty"`
 	ImageURL       *string         `json:"imageurl,omitempty"`
 	Authtoken      *string         `json:"authtoken,omitempty"`
 	Household      *Household      `json:"household,omitempty"`

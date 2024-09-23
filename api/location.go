@@ -7,6 +7,45 @@ import (
 	"time"
 )
 
+func RetrieveHeatmap(userId string, onlyNight bool) ([]GpsPayload, error) {
+	factorStr := strconv.Itoa(gpsPrecisionFactor)
+	query := `SELECT coordinates_add_numerics_1 / ` + factorStr + `, coordinates_add_numerics_2 / ` + factorStr + `, COUNT(*) FROM coordinates
+				WHERE coordinates_add_numerics_0 = ?`
+
+	if onlyNight {
+		query += ` AND (
+						TIME(ADDTIME(FROM_UNIXTIME(coordinates_data), SEC_TO_TIME(coordinates_add_numerics_3 * 3600))) BETWEEN '` + nightStart + `' AND '23:59:59'
+						OR TIME(ADDTIME(FROM_UNIXTIME(coordinates_data), SEC_TO_TIME(coordinates_add_numerics_3 * 3600))) BETWEEN '00:00:00' AND '` + nightEnd + `'
+					)`
+	}
+
+	query += ` GROUP BY coordinates_add_numerics_1, coordinates_add_numerics_2`
+
+	rows, err := db.Query(query, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var gpsPayloads []GpsPayload
+	for rows.Next() {
+		var gpsPayload GpsPayload
+		err := rows.Scan(
+			&gpsPayload.Latitude,
+			&gpsPayload.Longitude,
+			&gpsPayload.Frequency,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		gpsPayloads = append(gpsPayloads, gpsPayload)
+	}
+
+	return gpsPayloads, nil
+}
+
 func LogGpsLocation(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
@@ -36,30 +75,6 @@ func LogGpsLocation(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func ResetHouseholdLocation(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, "Invalid request method "+r.Method, http.StatusMethodNotAllowed)
-		return
-	}
-
-	var userId string = validateToken(w, r)
-	if userId == "" {
-		return
-	}
-
-	_, err := db.Exec("DELETE FROM coordinates WHERE coordinates_add_numerics_0 = ?", userId)
-	if err != nil {
-		http.Error(w, "Failed to clear GPS data"+err.Error(), http.StatusInternalServerError)
-	}
-
-	_, err = db.Exec("UPDATE households SET households_add_numerics_1 = 0,  households_add_numerics_2 = 0 WHERE households_add_numerics_0 = ?", userId)
-	if err != nil {
-		http.Error(w, "Failed to clear household location"+err.Error(), http.StatusInternalServerError)
-	}
-
-	//return success
-	w.WriteHeader(http.StatusOK)
-}
 func ClearGpsData(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		http.Error(w, "Invalid request method "+r.Method, http.StatusMethodNotAllowed)
@@ -78,48 +93,6 @@ func ClearGpsData(w http.ResponseWriter, r *http.Request) {
 
 	//return success
 	w.WriteHeader(http.StatusOK)
-}
-
-func AcceptGpsCandidate(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, "Invalid request method "+r.Method, http.StatusMethodNotAllowed)
-		return
-	}
-
-	var userId string = validateToken(w, r)
-	if userId == "" {
-		return
-	}
-
-	gpsPayloads, err := RetrieveHeatmap(userId, true)
-
-	if err != nil {
-		http.Error(w, "Failed to get heatmap data "+err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	candidate, err := findLargestCluserLocation(gpsPayloads)
-	if err != nil {
-		http.Error(w, "Failed to get household candidate "+err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	_, err = db.Exec("UPDATE households SET households_add_numerics_1 = ?,  households_add_numerics_2 = ? WHERE households_add_numerics_0 = ?",
-		*candidate.Latitude*float64(gpsPrecisionFactor),
-		*candidate.Longitude*float64(gpsPrecisionFactor),
-		userId)
-
-	if err != nil {
-		http.Error(w, "Failed to store household location "+err.Error(), http.StatusInternalServerError)
-	}
-
-	_, err = db.Exec("DELETE FROM coordinates WHERE coordinates_add_numerics_0 = ?", userId)
-	if err != nil {
-		http.Error(w, "Failed to clear GPS data"+err.Error(), http.StatusInternalServerError)
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(candidate)
 }
 
 func GetGpsCandidate(w http.ResponseWriter, r *http.Request) {

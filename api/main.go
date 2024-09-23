@@ -31,6 +31,7 @@ func main() {
 	r.HandleFunc("/profile/refresh", RefreshProfile).Methods("POST")
 	r.HandleFunc("/profile/update", UpdateProfile).Methods("POST")
 	r.HandleFunc("/profile/updateHousehold", UpdateHousehold).Methods("POST")
+	r.HandleFunc("/profile/addToHousehold", AddToHousehold).Methods("POST")
 	r.HandleFunc("/profile/updateNeighbourhood", UpdateNeighbourhood).Methods("POST")
 	r.HandleFunc("/profile/upload", UploadImage).Methods("POST")
 	r.HandleFunc("/gps/log", LogGpsLocation).Methods("POST")
@@ -38,7 +39,7 @@ func main() {
 	r.HandleFunc("/gps/candidate", GetGpsCandidate).Methods("GET")
 	r.HandleFunc("/gps/clear", ClearGpsData).Methods("GET")
 	r.HandleFunc("/gps/resetHouseholdLocation", ResetHouseholdLocation).Methods("GET")
-	r.HandleFunc("/gps/acceptCandidate", AcceptGpsCandidate).Methods("POST")
+	r.HandleFunc("/gps/acceptCandidate", AcceptHouseholdLocation).Methods("POST")
 	fmt.Println("Starting server on :8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

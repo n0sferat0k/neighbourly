@@ -16,13 +16,14 @@ func RetreiveSessionUserData(userId string) (*User, error) {
 	var existingUser User
 	var existingHousehold Household
 
-	err := db.QueryRow(`SELECT 	U.users_id,
-		U.users_text_EN,
-		U.users_titlu_EN,
-		U.users_pic,
-		U.users_add_strings_0,		
-		U.users_add_strings_2,
-		U.users_add_strings_3,
+	err := db.QueryRow(`SELECT 	
+		U.users_id AS userid,
+		U.users_text_EN AS userabout,
+		U.users_titlu_EN AS fullname,
+		U.users_pic AS  ImageURL,
+		U.users_add_strings_0 AS Username,		
+		U.users_add_strings_2 AS Phone,
+		U.users_add_strings_3 AS Email, 
 
 		H.households_id,
 		H.households_titlu_EN,
@@ -89,6 +90,45 @@ func RetreiveSessionUserData(userId string) (*User, error) {
 			return nil, err
 		}
 
+		rows, err := db.Query(`SELECT 	
+									U.users_id AS userid,
+									U.users_text_EN AS userabout,
+									U.users_titlu_EN AS fullname,
+									U.users_pic AS  ImageURL,
+									U.users_add_strings_0 AS Username,		
+									U.users_add_strings_2 AS Phone,
+									U.users_add_strings_3 AS Email		
+								FROM 
+									users U 
+								WHERE 
+									U.users_add_numerics_0 = ?`, existingHousehold.Householdid)
+
+		if err != nil {
+			return nil, err
+		}
+
+		defer rows.Close()
+
+		var houseMembers []User
+		for rows.Next() {
+			var houseMember User
+			err := rows.Scan(
+				&houseMember.Userid,
+				&houseMember.Userabout,
+				&houseMember.Fullname,
+				&houseMember.ImageURL,
+				&houseMember.Username,
+				&houseMember.Phone,
+				&houseMember.Email,
+			)
+			if err != nil {
+				return nil, err
+			}
+
+			houseMembers = append(houseMembers, houseMember)
+		}
+
+		existingHousehold.Members = houseMembers
 		existingUser.Household = &existingHousehold
 	}
 
@@ -169,68 +209,6 @@ func RetreiveSessionUserData(userId string) (*User, error) {
 
 	existingUser.Neighbourhoods = neighbourhoods
 	return &existingUser, nil
-}
-
-func UpdateHousehold(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-		return
-	}
-
-	var userId string = validateToken(w, r)
-	if userId == "" {
-		return
-	}
-
-	var household Household
-	if err := json.NewDecoder(r.Body).Decode(&household); err != nil {
-		http.Error(w, "Bad request", http.StatusBadRequest)
-		return
-	}
-
-	var householdId int
-	db.QueryRow("SELECT users_add_numerics_0 FROM users WHERE users_id = ?", userId).Scan(&householdId)
-	if householdId > 0 {
-		// Update the household in the database
-		_, err := db.Exec(`UPDATE households SET households_titlu_EN = ?, households_add_strings_0 = ?, households_text_EN = ? WHERE households_id = ?`,
-			household.Name, household.Address, household.About, householdId)
-
-		if err != nil {
-			http.Error(w, "Failed to update household "+err.Error(), http.StatusInternalServerError)
-			return
-		}
-	} else {
-		//Insert the household into the database
-		insertResult, err := db.Exec(`INSERT INTO households (households_titlu_EN, households_add_strings_0, households_text_EN, households_pic) VALUES  (?,?,?,'')`,
-			household.Name, household.Address, household.About)
-
-		if err != nil {
-			http.Error(w, "Failed to insert household "+err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		householdId, err := insertResult.LastInsertId()
-
-		if err != nil {
-			http.Error(w, "Failed to get inserted household "+err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		_, err = db.Exec(`UPDATE users SET users_add_numerics_0 = ? WHERE users_id = ?`, householdId, userId)
-
-		if err != nil {
-			http.Error(w, "Failed to update user with household "+err.Error(), http.StatusInternalServerError)
-			return
-		}
-	}
-
-	existingUser, err := RetreiveSessionUserData(userId)
-	if err != nil {
-		http.Error(w, "Failed to get user info for "+userId+":"+err.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(existingUser)
 }
 
 func UpdateProfile(w http.ResponseWriter, r *http.Request) {
