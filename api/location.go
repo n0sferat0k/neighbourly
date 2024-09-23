@@ -98,7 +98,7 @@ func AcceptGpsCandidate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	candidate, err := CalculateCandidateHouseholdLocation(gpsPayloads)
+	candidate, err := findLargestCluserLocation(gpsPayloads)
 	if err != nil {
 		http.Error(w, "Failed to get household candidate "+err.Error(), http.StatusInternalServerError)
 		return
@@ -140,7 +140,7 @@ func GetGpsCandidate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	candidate, err := CalculateCandidateHouseholdLocation(gpsPayloads)
+	candidate, err := findLargestCluserLocation(gpsPayloads)
 	if err != nil {
 		http.Error(w, "Failed to get household candidate "+err.Error(), http.StatusInternalServerError)
 		return

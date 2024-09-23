@@ -34,7 +34,9 @@
             var lng = 0;
             var households = [];
             var neighbourhoods = [];
-    
+            var draw;
+            var updateArea;
+
             MapboxDraw.constants.classes.CONTROL_BASE = 'maplibregl-ctrl';
             MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
             MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group';
@@ -74,10 +76,7 @@
                     center(lng, lat, 21);
                 }
             });
-    
-            let draw;
-            let updateArea;
-            
+               
             function enableDraw() {
                 draw = new MapboxDraw({
                     displayControlsDefault: false,

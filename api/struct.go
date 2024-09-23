@@ -1,11 +1,13 @@
 package main
 
 type Neighbourhood struct {
-	Neighbourhoodid *int64  `json:"neighbourhoodid,omitempty"`
-	Name            *string `json:"name"`
-	Geofence        *string `json:"geofence"`
-	Access          *int64  `json:"access,omitempty"`
-	Parent          *User   `json:"parent,omitempty"`
+	Neighbourhoodid *int64   `json:"neighbourhoodid,omitempty"`
+	Name            *string  `json:"name"`
+	Geofence        *string  `json:"geofence"`
+	Latitude        *float64 `json:"latitude,omitempty"`
+	Longitude       *float64 `json:"longitude,omitempty"`
+	Access          *int64   `json:"access,omitempty"`
+	Parent          *User    `json:"parent,omitempty"`
 }
 
 type Household struct {

@@ -3,54 +3,16 @@ package main
 import (
 	"errors"
 	"math"
-	"strconv"
 )
 
-const EarthRadius = 6371000 // Radius of Earth in meters
+const EarthRadius = 6371000               // Radius of Earth in meters
+const MaxHouseholdClusterWidthMeters = 50 // 50 meters
+const MaxNeighbourhoodSizeMeters = 10000  // 10 km
 const MinClusterDiversity = 3
 const gpsSampleTarget = 100
 const gpsPrecisionFactor = 1000000
 const nightStart = "20:00:00"
 const nightEnd = "09:00:00"
-
-func RetrieveHeatmap(userId string, onlyNight bool) ([]GpsPayload, error) {
-	factorStr := strconv.Itoa(gpsPrecisionFactor)
-	query := `SELECT coordinates_add_numerics_1 / ` + factorStr + `, coordinates_add_numerics_2 / ` + factorStr + `, COUNT(*) FROM coordinates
-				WHERE coordinates_add_numerics_0 = ?`
-
-	if onlyNight {
-		query += ` AND (
-						TIME(ADDTIME(FROM_UNIXTIME(coordinates_data), SEC_TO_TIME(coordinates_add_numerics_3 * 3600))) BETWEEN '` + nightStart + `' AND '23:59:59'
-						OR TIME(ADDTIME(FROM_UNIXTIME(coordinates_data), SEC_TO_TIME(coordinates_add_numerics_3 * 3600))) BETWEEN '00:00:00' AND '` + nightEnd + `'
-					)`
-	}
-
-	query += ` GROUP BY coordinates_add_numerics_1, coordinates_add_numerics_2`
-
-	rows, err := db.Query(query, userId)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var gpsPayloads []GpsPayload
-	for rows.Next() {
-		var gpsPayload GpsPayload
-		err := rows.Scan(
-			&gpsPayload.Latitude,
-			&gpsPayload.Longitude,
-			&gpsPayload.Frequency,
-		)
-
-		if err != nil {
-			return nil, err
-		}
-
-		gpsPayloads = append(gpsPayloads, gpsPayload)
-	}
-
-	return gpsPayloads, nil
-}
 
 // haversineDistance calculates the distance between two GPS coordinates in meters.
 func haversineDistance(lat1, lon1, lat2, lon2 float64) float64 {
@@ -69,11 +31,43 @@ func haversineDistance(lat1, lon1, lat2, lon2 float64) float64 {
 	return EarthRadius * c
 }
 
+func findMaxSpreadAndCenter(gpsData [][2]float64) (float64, [2]float64) {
+	var mostEasternPoint [2]float64 = gpsData[0]
+	var mostWesternPoint [2]float64 = gpsData[0]
+	var mostNorthernPoint [2]float64 = gpsData[0]
+	var mostSouthernPoint [2]float64 = gpsData[0]
+	var center [2]float64
+
+	for i := 1; i < len(gpsData); i++ {
+		if gpsData[i][0] > mostEasternPoint[0] {
+			mostEasternPoint = gpsData[i]
+		}
+
+		if gpsData[i][0] < mostWesternPoint[0] {
+			mostWesternPoint = gpsData[i]
+		}
+
+		if gpsData[i][1] > mostNorthernPoint[1] {
+			mostNorthernPoint = gpsData[i]
+		}
+
+		if gpsData[i][1] < mostSouthernPoint[1] {
+			mostSouthernPoint = gpsData[i]
+		}
+	}
+
+	center[0] = (mostEasternPoint[0] + mostWesternPoint[0]) / 2
+	center[1] = (mostNorthernPoint[1] + mostSouthernPoint[1]) / 2
+
+	return math.Max(
+		haversineDistance(mostEasternPoint[1], mostEasternPoint[0], mostWesternPoint[1], mostWesternPoint[0]),
+		haversineDistance(mostNorthernPoint[1], mostNorthernPoint[0], mostSouthernPoint[1], mostSouthernPoint[0]),
+	), center
+}
+
 // CalculateCandidate finds the likely home location by identifying the largest cluster of GPS points
 // within a 50-meter radius and calculating the weighted average coordinates based on frequency.
-func CalculateCandidateHouseholdLocation(gpsData []GpsPayload) (GpsPayload, error) {
-	const MaxDistance = 50 // 50 meters
-
+func findLargestCluserLocation(gpsData []GpsPayload) (GpsPayload, error) {
 	var bestCluster []GpsPayload
 	maxClusterSize := 0
 
@@ -87,7 +81,7 @@ func CalculateCandidateHouseholdLocation(gpsData []GpsPayload) (GpsPayload, erro
 
 		for j := 0; j < len(gpsData); j++ {
 			if i != j && gpsData[j].Latitude != nil && gpsData[j].Longitude != nil {
-				if haversineDistance(*gpsData[i].Latitude, *gpsData[i].Longitude, *gpsData[j].Latitude, *gpsData[j].Longitude) <= MaxDistance {
+				if haversineDistance(*gpsData[i].Latitude, *gpsData[i].Longitude, *gpsData[j].Latitude, *gpsData[j].Longitude) <= MaxHouseholdClusterWidthMeters {
 					cluster = append(cluster, gpsData[j])
 				}
 			}

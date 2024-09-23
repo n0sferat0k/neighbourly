@@ -217,6 +217,16 @@ $p['APPENDABLE']=true;
 $p['LANGUAGES']=array("EN");
 $p['CURRENTLANGUAGE']=0;
 
+$p['ADD_NUMERICS'] = array(	
+	array("EN" => "Latitude"),
+	array("EN" => "Longitude"),
+);
+
+$p['ADD_NUMERICS_modif'] = array(
+	array(0 => true,1 => true),
+	array(0 => true,1 => true)	
+);
+
 $p['LIST_template']="TEMPLATES/table_list.php";
 $p['SINGLE_template']="TEMPLATES/single_neighbourhood.php";
 
