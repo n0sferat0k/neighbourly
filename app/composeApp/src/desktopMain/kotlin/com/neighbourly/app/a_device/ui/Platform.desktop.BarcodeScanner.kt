@@ -2,7 +2,8 @@ package com.neighbourly.app.a_device.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -33,6 +34,7 @@ actual fun BarcodeScanner(
     onDone: ((String) -> Unit),
 ) {
     var image by remember { mutableStateOf<ImageBitmap?>(null) }
+    var imageRatio by remember { mutableStateOf(1f) }
     val coroutineScope = rememberCoroutineScope()
     var webcam: Webcam
 
@@ -51,6 +53,7 @@ actual fun BarcodeScanner(
             while (webcam.isOpen) {
                 val bufferedImage: BufferedImage = webcam.image
                 image = bufferedImage.toBitmap().asComposeImageBitmap()
+                imageRatio = image?.let { it.width.toFloat() / it.height.toFloat() } ?: 1f
                 decodeBarcode(bufferedImage)?.let { onDone(it) }
             }
         }
@@ -63,10 +66,13 @@ actual fun BarcodeScanner(
     Box(modifier = modifier) {
         image?.let {
             Image(
-                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.FillWidth,
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(imageRatio),
                 bitmap = it,
                 contentDescription = "Webcam Feed",
-                contentScale = ContentScale.Fit,
             )
         }
     }
