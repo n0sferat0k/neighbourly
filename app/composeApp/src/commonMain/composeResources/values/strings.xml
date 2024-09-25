@@ -21,6 +21,8 @@
     <string name="retry">Retry</string>
     <string name="relocate">Relocate</string>
     <string name="create">Create</string>
+    <string name="add_to_household">Add To Household</string>
+    <string name="neighbourhood_acc">Neighbourhoods Acc:</string>
 
     <string name="err_password_mismatch">The two passwords must match</string>
     <string name="invite_or_create_household">You need to define a household, use the below QR code to be invited to an existing household or create your own from scratch !</string>
@@ -39,4 +41,5 @@
     <string name="create_neighbourhood">Or you can create a new neighbourhood as long as it doesn't overlap with more than 2 existing neighbourhoods.</string>
     <string name="draw_neighbourhood">Once you are happy with the neighbourhood geofence, provide a name and save the neighbourhood.</string>
 
+    <string name="attempting_to_add_household_member">You are about to add the following person to your household. By doing this they will automatically gain access to all neighbourhoods your household is a part of and you will become their supervisor. \n\n Please check and configure below their permission levels.</string>
 </resources>

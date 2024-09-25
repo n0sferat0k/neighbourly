@@ -33,6 +33,12 @@ data class UpdateHouseholdInput(
 )
 
 @Serializable
+data class AddMemberToHouseholdInput(
+    val id: Int,
+    val username: String,
+)
+
+@Serializable
 data class UpdateNeighbourhoodInput(
     val neighbourhoodid: Int? = null,
     val name: String,

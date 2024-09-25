@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -15,6 +16,9 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,9 +26,14 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.darkrockstudios.libraries.mpfilepicker.MultipleFilePicker
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.ErrorText
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileMenuViewModel
+import com.neighbourly.app.loadContentsFromFile
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import neighbourly.composeapp.generated.resources.Res
@@ -36,12 +45,23 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun ProfileMenu(
+    navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() },
     viewModel: ProfileMenuViewModel = viewModel { KoinProvider.KOIN.get<ProfileMenuViewModel>() },
     imageUpdating: Boolean = false,
-    onContentSelected: (Int) -> Unit,
 ) {
+    val navigation by navigationViewModel.state.collectAsState()
     val state by viewModel.state.collectAsState()
     val defaultProfile = painterResource(Res.drawable.profile)
+
+    var showFilePicker by remember { mutableStateOf(false) }
+
+    MultipleFilePicker(show = showFilePicker, fileExtensions = listOf("jpg", "png")) { file ->
+        showFilePicker = false
+
+        file?.get(0)?.platformFile?.toString()?.let {
+            viewModel.onProfileImageUpdate(loadContentsFromFile(it))
+        }
+    }
 
     Row(modifier = Modifier.fillMaxWidth()) {
         state.imageurl.let {
@@ -52,7 +72,11 @@ fun ProfileMenu(
                             .size(80.dp)
                             .border(2.dp, AppColors.primary, CircleShape)
                             .clickable {
-                                onContentSelected(0)
+                                if (navigation.profileContent == ProfileContent.ProfileInfoEdit) {
+                                    showFilePicker = true
+                                } else {
+                                    navigationViewModel.goToProfileInfoEdit()
+                                }
                             },
                     contentAlignment = Alignment.Center,
                 ) {
@@ -75,7 +99,11 @@ fun ProfileMenu(
                 Image(
                     modifier =
                         Modifier.size(80.dp).clickable {
-                            onContentSelected(0)
+                            if (navigation.profileContent == ProfileContent.ProfileInfoEdit) {
+                                showFilePicker = true
+                            } else {
+                                navigationViewModel.goToProfileInfoEdit()
+                            }
                         },
                     painter = defaultProfile,
                     contentDescription = "Profile Image",
@@ -88,7 +116,7 @@ fun ProfileMenu(
 
         Image(
             painter = painterResource(Res.drawable.home),
-            contentDescription = "Home",
+            contentDescription = "Household",
             contentScale = ContentScale.FillBounds,
             colorFilter =
                 if (state.hasHousehold) {
@@ -98,13 +126,13 @@ fun ProfileMenu(
                 },
             modifier =
                 Modifier.size(48.dp).clickable {
-                    onContentSelected(1)
+                    navigationViewModel.goToHouseholdInfoEdit()
                 },
         )
         Spacer(Modifier.width(14.dp).fillMaxHeight())
         Image(
             painter = painterResource(Res.drawable.map),
-            contentDescription = "Map",
+            contentDescription = "HouseholdLocalize",
             contentScale = ContentScale.FillBounds,
             colorFilter =
                 if (state.householdLocalized) {
@@ -114,13 +142,13 @@ fun ProfileMenu(
                 },
             modifier =
                 Modifier.size(48.dp).clickable {
-                    onContentSelected(2)
+                    navigationViewModel.goToHouseholdLocalize()
                 },
         )
         Spacer(Modifier.width(14.dp).fillMaxHeight())
         Image(
             painter = painterResource(Res.drawable.polygon),
-            contentDescription = "Map",
+            contentDescription = "Neighbourhood",
             contentScale = ContentScale.FillBounds,
             colorFilter =
                 if (state.hasNeighbourhoods) {
@@ -130,8 +158,12 @@ fun ProfileMenu(
                 },
             modifier =
                 Modifier.size(48.dp).clickable {
-                    onContentSelected(3)
+                    navigationViewModel.goToNeighbourhoodInfoEdit()
                 },
         )
+    }
+    if (state.error.isNotEmpty()) {
+        Spacer(modifier = Modifier.height(8.dp))
+        ErrorText(state.error)
     }
 }

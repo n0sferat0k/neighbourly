@@ -12,9 +12,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 class NeighbourhoodInfoViewModel(
     val sessionStore: SessionStore,
@@ -42,16 +39,7 @@ class NeighbourhoodInfoViewModel(
                             hasLocalizedHouse = user.household != null && user.household.location != null,
                             hasNeighbourhoods = user.neighbourhoods.isNotEmpty(),
                             neighbourhoods = user.neighbourhoods.map { it.name },
-                            userQr =
-                                Json.encodeToString(
-                                    UserQR(
-                                        id = user.id,
-                                        name = user.username,
-                                        fullName = user.fullname,
-                                        email = user.email,
-                                        phone = user.phone,
-                                    ),
-                                ),
+                            userQr = "${user.id},${user.username}",
                         )
                     }
                 } ?: run {
@@ -100,14 +88,5 @@ class NeighbourhoodInfoViewModel(
         val name: String = "",
         val nameOverride: String? = null,
         val nameError: Boolean = false,
-    )
-
-    @Serializable
-    data class UserQR(
-        val id: Int,
-        val name: String,
-        val fullName: String,
-        val phone: String,
-        val email: String,
     )
 }

@@ -37,6 +37,7 @@ import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.CurlyButton
 import com.neighbourly.app.a_device.ui.CurlyText
 import com.neighbourly.app.a_device.ui.ErrorText
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdInfoEditViewModel
 import com.neighbourly.app.generateQrCode
 import com.neighbourly.app.loadContentsFromFile
@@ -56,8 +57,8 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun HouseholdInfoEdit(
+    navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() },
     viewModel: HouseholdInfoEditViewModel = viewModel { KoinProvider.KOIN.get<HouseholdInfoEditViewModel>() },
-    onAddMember: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
     val defaultHouseImg = painterResource(Res.drawable.houses)
@@ -202,7 +203,7 @@ fun HouseholdInfoEdit(
                     modifier =
                         Modifier
                             .clickable {
-                                onAddMember()
+                                navigationViewModel.goToAddMember()
                             }.align(Alignment.Start),
                     bold = true,
                     text = stringResource(Res.string.add_member),

@@ -7,6 +7,8 @@ import com.neighbourly.app.b_adapt.viewmodel.MainViewModel
 import com.neighbourly.app.b_adapt.viewmodel.MapViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
+import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdAddMemberViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdInfoEditViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdLocalizeViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.NeighbourhoodInfoViewModel
@@ -20,6 +22,7 @@ import com.neighbourly.app.c_business.usecase.auth.RegisterUseCase
 import com.neighbourly.app.c_business.usecase.profile.HouseholdImageUpdateUseCase
 import com.neighbourly.app.c_business.usecase.profile.HouseholdInfoUpdateUseCase
 import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
+import com.neighbourly.app.c_business.usecase.profile.HouseholdMemberAddUseCase
 import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileImageUpdateUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
@@ -65,6 +68,9 @@ val adapterModule =
         single<AuthApi> {
             AuthApiGw(KtorAuthApi())
         }
+        single {
+            NavigationViewModel()
+        }
         factory {
             MainViewModel(get())
         }
@@ -75,10 +81,10 @@ val adapterModule =
             RegisterViewModel(get(), get())
         }
         factory {
-            ProfileViewModel(get(), get(), get())
+            ProfileViewModel(get(), get())
         }
         factory {
-            ProfileMenuViewModel(get())
+            ProfileMenuViewModel(get(), get())
         }
         factory {
             ProfileInfoEditViewModel(get(), get())
@@ -100,6 +106,9 @@ val adapterModule =
         }
         factory {
             NeighbourhoodInfoViewModel(get(), get())
+        }
+        factory {
+            HouseholdAddMemberViewModel(get(), get())
         }
     }
 
@@ -134,5 +143,8 @@ val useCaseModule =
         }
         single {
             NeighbourhoodManagementUseCase(get(), get())
+        }
+        single {
+            HouseholdMemberAddUseCase(get(), get())
         }
     }

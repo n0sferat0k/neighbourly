@@ -82,6 +82,23 @@ class AuthApiGw(
                 ).toUser()
         }
 
+    override suspend fun addMemberToHousehold(
+        token: String,
+        id: Int,
+        username: String,
+    ): User =
+        runContextCatchTranslateThrow {
+            api
+                .addMemberToHousehold(
+                    API_BASE_URL,
+                    token,
+                    AddMemberToHouseholdInput(
+                        id = id,
+                        username = username,
+                    ),
+                ).toUser()
+        }
+
     override suspend fun updateNeighbourhood(
         token: String,
         id: Int?,

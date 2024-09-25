@@ -1,5 +1,6 @@
 package com.neighbourly.app.a_device.api
 
+import com.neighbourly.app.b_adapt.gateway.AddMemberToHouseholdInput
 import com.neighbourly.app.b_adapt.gateway.ApiException
 import com.neighbourly.app.b_adapt.gateway.GpsItemDTO
 import com.neighbourly.app.b_adapt.gateway.GpsLogInput
@@ -131,6 +132,26 @@ class KtorAuthApi {
             client.post(baseUrl + "profile/updateHousehold") {
                 contentType(ContentType.Application.Json)
                 setBody(updateHouseholdInput)
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
+            }
+        if (response.status.value == 200) {
+            return response.body<UserDTO>()
+        } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun addMemberToHousehold(
+        baseUrl: String,
+        token: String,
+        addMemberToHouseholdInput: AddMemberToHouseholdInput,
+    ): UserDTO {
+        val response: HttpResponse =
+            client.post(baseUrl + "profile/addToHousehold") {
+                contentType(ContentType.Application.Json)
+                setBody(addMemberToHouseholdInput)
                 headers {
                     append(HttpHeaders.Authorization, "Bearer " + token)
                 }

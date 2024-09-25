@@ -10,19 +10,20 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.ContentBox
 import com.neighbourly.app.a_device.ui.HalfCircleHalo
 import com.neighbourly.app.a_device.ui.MainContent
 import com.neighbourly.app.a_device.ui.Map
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.houses
 import org.jetbrains.compose.resources.painterResource
@@ -30,13 +31,22 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun App(includeMap: Boolean = true) {
-    var tabindex by remember { mutableStateOf(if (includeMap) -1 else 0) }
+fun App(
+    navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() },
+    includeMap: Boolean = true,
+) {
+    val navigation by navigationViewModel.state.collectAsState()
+    LaunchedEffect(includeMap) {
+        navigationViewModel.setDisableMainContentToggle(!includeMap)
+    }
 
     MaterialTheme {
         requestPermissions()
         if (includeMap) {
-            Map(modifier = Modifier.fillMaxSize(), onDrawn = { tabindex = 0 })
+            Map(
+                modifier = Modifier.fillMaxSize(),
+                onDrawn = { navigationViewModel.goToNeighbourhoodInfoEdit() },
+            )
         }
 
         Box(
@@ -57,11 +67,11 @@ fun App(includeMap: Boolean = true) {
                         .width(110.dp)
                         .height(80.dp)
                         .clickable(onClick = {
-                            tabindex = if (tabindex == 0) -1 else 0
+                            navigationViewModel.toggleMainContent()
                         }),
             )
 
-            AnimatedVisibility(tabindex == 0) {
+            AnimatedVisibility(navigation.mainContentVisible) {
                 ContentBox {
                     MainContent()
                 }

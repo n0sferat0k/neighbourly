@@ -50,6 +50,12 @@ interface AuthApi {
         about: String,
     ): User
 
+    suspend fun addMemberToHousehold(
+        token: String,
+        id: Int,
+        username: String,
+    ): User
+
     suspend fun updateNeighbourhood(
         token: String,
         id: Int? = null,
