@@ -1,20 +1,20 @@
 package com.neighbourly.app.b_adapt.gateway
 
-import com.neighbourly.app.a_device.api.KtorAuthApi
+import com.neighbourly.app.a_device.api.KtorApi
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.data.User
-import com.neighbourly.app.d_entity.interf.AuthApi
+import com.neighbourly.app.d_entity.interf.Api
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.IOException
 
-class AuthApiGw(
-    val api: KtorAuthApi,
-) : AuthApi {
+class ApiGateway(
+    val api: KtorApi,
+) : Api {
     override suspend fun logout(
         token: String,
         logoutAll: Boolean,
@@ -130,6 +130,15 @@ class AuthApiGw(
     override suspend fun refreshProfile(token: String): User =
         runContextCatchTranslateThrow {
             api.refreshProfile(API_BASE_URL, token).toUser()
+        }
+
+    override suspend fun fetchProfile(
+        token: String,
+        id: Int,
+        username: String,
+    ): User =
+        runContextCatchTranslateThrow {
+            api.fetchProfile(API_BASE_URL, token, FetchProfileInput(id, username)).toUser()
         }
 
     override suspend fun register(

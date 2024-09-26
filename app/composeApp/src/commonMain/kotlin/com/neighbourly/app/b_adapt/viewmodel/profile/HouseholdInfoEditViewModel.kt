@@ -35,6 +35,7 @@ class HouseholdInfoEditViewModel(
                             name = household.name,
                             address = household.address,
                             about = household.about,
+                            members = household.members?.map { it.fullname },
                         )
                     }
                 } ?: run {
@@ -107,5 +108,6 @@ class HouseholdInfoEditViewModel(
         val aboutOverride: String? = null,
         val nameError: Boolean = false,
         val addressError: Boolean = false,
+        val members: List<String>? = null,
     )
 }

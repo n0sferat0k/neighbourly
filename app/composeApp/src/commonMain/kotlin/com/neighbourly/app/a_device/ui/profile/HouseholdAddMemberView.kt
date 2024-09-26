@@ -16,6 +16,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -47,9 +48,17 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun HouseholdAddMember(viewModel: HouseholdAddMemberViewModel = viewModel { KoinProvider.KOIN.get<HouseholdAddMemberViewModel>() }) {
+fun HouseholdAddMemberView(
+    id: Int,
+    username: String,
+    viewModel: HouseholdAddMemberViewModel = viewModel { KoinProvider.KOIN.get<HouseholdAddMemberViewModel>() },
+) {
     val state by viewModel.state.collectAsState()
     val defaultProfile = painterResource(Res.drawable.profile)
+
+    LaunchedEffect(id, username) {
+        viewModel.loadProfile(id, username)
+    }
 
     Column {
         CurlyText(text = stringResource(Res.string.attempting_to_add_household_member))
@@ -154,18 +163,13 @@ fun HouseholdAddMember(viewModel: HouseholdAddMemberViewModel = viewModel { Koin
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            state.neighbourhoodsAndAcc.forEach { neighbourhoodAndAcc ->
+            state.neighbourhoodsAndAcc.toList().forEach { (id, item) ->
                 OutlinedTextField(
-                    value =
-                        state.neighbourhoodAndAccOverrideVS
-                            .getOrDefault(
-                                key = neighbourhoodAndAcc.id,
-                                defaultValue = neighbourhoodAndAcc.access - 1,
-                            ).toString(),
+                    value = (item.accessOverride ?: (item.access - 1)).toString(),
                     onValueChange = {
-                        viewModel.updateNeighbourhoodAcc(neighbourhoodAndAcc.id, it)
+                        viewModel.updateNeighbourhoodAcc(id, it)
                     },
-                    label = { Text(neighbourhoodAndAcc.name) },
+                    label = { Text(item.name) },
                     modifier = Modifier.fillMaxWidth(),
                 )
             }

@@ -4,9 +4,11 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,6 +43,7 @@ import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.app_name
 import neighbourly.composeapp.generated.resources.curlzmt
 import neighbourly.composeapp.generated.resources.houses
+import neighbourly.composeapp.generated.resources.refresh
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -56,6 +59,7 @@ data object AppColors {
 fun BoxHeader(
     modifier: Modifier = Modifier,
     busy: Boolean = false,
+    refresh: (() -> Unit)? = null,
 ) {
     Row(modifier = modifier.padding(start = 10.dp)) {
         Image(
@@ -78,6 +82,24 @@ fun BoxHeader(
             CircularProgressIndicator(
                 modifier = Modifier.size(36.dp).align(Alignment.Bottom).padding(start = 5.dp),
                 color = AppColors.primary,
+            )
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        if (refresh != null) {
+            Image(
+                modifier =
+                    Modifier
+                        .size(40.dp)
+                        .padding(4.dp)
+                        .align(Alignment.CenterVertically)
+                        .clickable {
+                            refresh()
+                        },
+                painter = painterResource(Res.drawable.refresh),
+                colorFilter = ColorFilter.tint(AppColors.primary),
+                contentDescription = null,
             )
         }
     }

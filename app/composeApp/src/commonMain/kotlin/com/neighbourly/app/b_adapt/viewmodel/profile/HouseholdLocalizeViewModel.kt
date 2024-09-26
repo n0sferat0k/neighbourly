@@ -29,6 +29,7 @@ class HouseholdLocalizeViewModel(
                             localized = user.household?.location != null,
                             localizing = user.localizing,
                             gpsprogress = user.household?.gpsprogress ?: 0f,
+                            editableHousehold = user.household?.headid == user.id,
                         )
                     }
                 } ?: run {
@@ -72,6 +73,7 @@ class HouseholdLocalizeViewModel(
         val hasHouse: Boolean = false,
         val localized: Boolean = false,
         val localizing: Boolean = false,
+        val editableHousehold: Boolean = false,
         val gpsprogress: Float = 0f,
     )
 }

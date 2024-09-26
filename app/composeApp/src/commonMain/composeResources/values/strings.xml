@@ -32,7 +32,11 @@
     <string name="track_me">Track Me!</string>
     <string name="localize_progress">Your location is being tracked to establish your home base! \n\n This might take a couple days, be patient and keep your GPS turned on until the below progress reaches 100% !</string>
     <string name="localize_completed">A strong candidate location for your household has been located! \n\n Double check on the map that the location is correct and hit ACCEPT. If the location is incorrect you may hit RETRY to start the localizing process again !</string>
-    <string name="household_localized">Your household has been located! \n\n If the location is incorrect you can RELOCATE but keep in mind that relocating outside of a neighbourhood you previously joined will automatically remove you and your household from said neighbourhood !</string>
+
+    <string name="household_localized">Your household has been located!</string>
+    <string name="household_not_localized">Your household has not yet been located!</string>
+    <string name="household_relocate">If the location is incorrect you can RELOCATE but keep in mind that relocating outside of a neighbourhood you previously joined will automatically remove you and your household from said neighbourhood !</string>
+    <string name="household_cannot_relocate">Only the head of the household may locate or relocate the household !</string>
 
     <string name="need_to_have_household">You need to belong to a household with an established location before you can join neighbourhoods !</string>
     <string name="no_neighbourhood">Your household doesn't belong to any neighbourhoods yet !</string>
@@ -42,4 +46,7 @@
     <string name="draw_neighbourhood">Once you are happy with the neighbourhood geofence, provide a name and save the neighbourhood.</string>
 
     <string name="attempting_to_add_household_member">You are about to add the following person to your household. By doing this they will automatically gain access to all neighbourhoods your household is a part of and you will become their supervisor. \n\n Please check and configure below their permission levels.</string>
+
+    <string name="list_household_members">Your household has the following member(s):</string>
+
 </resources>

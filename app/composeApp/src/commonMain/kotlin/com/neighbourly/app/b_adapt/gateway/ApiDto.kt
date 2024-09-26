@@ -46,6 +46,12 @@ data class UpdateNeighbourhoodInput(
 )
 
 @Serializable
+data class FetchProfileInput(
+    val id: Int,
+    val username: String,
+)
+
+@Serializable
 data class GpsLogInput(
     val timezone: Int,
     val latitude: Float,
@@ -85,6 +91,7 @@ data class HouseholdDTO(
     val longitude: Float? = null,
     val address: String,
     val gpsprogress: Float? = null,
+    val members: List<UserDTO>? = null,
 )
 
 @Serializable

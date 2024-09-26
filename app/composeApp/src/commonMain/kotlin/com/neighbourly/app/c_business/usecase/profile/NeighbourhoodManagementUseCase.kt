@@ -1,11 +1,11 @@
 package com.neighbourly.app.c_business.usecase.profile
 
 import com.neighbourly.app.d_entity.data.GpsItem
-import com.neighbourly.app.d_entity.interf.AuthApi
+import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.SessionStore
 
 class NeighbourhoodManagementUseCase(
-    val apiGw: AuthApi,
+    val apiGw: Api,
     val sessionStore: SessionStore,
 ) {
     suspend fun startDrawing() {

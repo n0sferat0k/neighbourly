@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -19,7 +18,12 @@ import com.neighbourly.app.a_device.ui.BoxContent
 import com.neighbourly.app.a_device.ui.BoxFooter
 import com.neighbourly.app.a_device.ui.BoxHeader
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.*
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdAddMember
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdInfoEdit
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdLocalize
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdScanMember
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.NeighbourhoodInfoEdit
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.ProfileInfoEdit
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileViewModel
 
 @Composable
@@ -37,7 +41,9 @@ fun Profile(
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        BoxHeader(Modifier.align(Alignment.Start), busy = state.loading)
+        BoxHeader(Modifier.align(Alignment.Start), busy = state.loading) {
+            viewModel.refresh()
+        }
 
         BoxContent(modifier = Modifier.weight(1f)) {
             Column(
@@ -47,14 +53,15 @@ fun Profile(
                 ProfileMenu()
 
                 Spacer(modifier = Modifier.height(8.dp))
-
-                when (navigation.profileContent) {
-                    ProfileInfoEdit -> ProfileInfoEdit()
-                    HouseholdInfoEdit -> HouseholdInfoEdit()
-                    HouseholdLocalize -> HouseholdLocalize()
-                    NeighbourhoodInfoEdit -> NeighbourhoodInfoEdit()
-                    is HouseholdAddMember -> HouseholdAddMember()
-                    HouseholdScanMember -> HouseholdBarcodeScanner()
+                navigation.profileContent.let {
+                    when (it) {
+                        ProfileInfoEdit -> ProfileInfoEditView()
+                        HouseholdInfoEdit -> HouseholdInfoEditView()
+                        HouseholdLocalize -> HouseholdLocalizeView()
+                        NeighbourhoodInfoEdit -> NeighbourhoodInfoEditView()
+                        is HouseholdAddMember -> HouseholdAddMemberView(it.id, it.username)
+                        HouseholdScanMember -> HouseholdBarcodeScannerView()
+                    }
                 }
             }
         }

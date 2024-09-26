@@ -2,6 +2,7 @@ package com.neighbourly.app.a_device.api
 
 import com.neighbourly.app.b_adapt.gateway.AddMemberToHouseholdInput
 import com.neighbourly.app.b_adapt.gateway.ApiException
+import com.neighbourly.app.b_adapt.gateway.FetchProfileInput
 import com.neighbourly.app.b_adapt.gateway.GpsItemDTO
 import com.neighbourly.app.b_adapt.gateway.GpsLogInput
 import com.neighbourly.app.b_adapt.gateway.LoginInput
@@ -34,7 +35,7 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-class KtorAuthApi {
+class KtorApi {
     private val client =
         HttpClient(httpClientEngine) {
             install(Logging) {
@@ -189,6 +190,26 @@ class KtorAuthApi {
     ): UserDTO {
         val response: HttpResponse =
             client.post(baseUrl + "profile/refresh") {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
+            }
+        if (response.status.value == 200) {
+            return response.body<UserDTO>()
+        } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun fetchProfile(
+        baseUrl: String,
+        token: String,
+        fetchProfileInput: FetchProfileInput,
+    ): UserDTO {
+        val response: HttpResponse =
+            client.post(baseUrl + "profile/fetch") {
+                contentType(ContentType.Application.Json)
+                setBody(fetchProfileInput)
                 headers {
                     append(HttpHeaders.Authorization, "Bearer " + token)
                 }

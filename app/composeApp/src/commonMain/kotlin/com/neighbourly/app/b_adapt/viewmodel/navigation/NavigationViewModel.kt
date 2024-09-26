@@ -33,7 +33,7 @@ public class NavigationViewModel : ViewModel() {
     }
 
     fun goToHouseholdInfoEdit() {
-        _state.update { it.copy(mainContentVisible = true, profileContent = HouseholdInfoEdit) }
+        _state.update { it.copy(mainContentVisible = true, profileContent = HouseholdInfoEdit, addingNewHousehold = false) }
     }
 
     fun goToHouseholdLocalize() {
@@ -56,9 +56,16 @@ public class NavigationViewModel : ViewModel() {
         }
     }
 
+    fun goToAddHousehold() {
+        _state.update {
+            it.copy(addingNewHousehold = true)
+        }
+    }
+
     data class NavigationViewState(
         val disableMainToggle: Boolean = false,
         val mainContentVisible: Boolean = false,
+        val addingNewHousehold: Boolean = false,
         val profileContent: ProfileContent = ProfileInfoEdit,
     )
 

@@ -4,7 +4,7 @@ import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.User
 
-interface AuthApi {
+interface Api {
     suspend fun login(
         username: String,
         password: String,
@@ -29,6 +29,12 @@ interface AuthApi {
     ): String
 
     suspend fun refreshProfile(token: String): User
+
+    suspend fun fetchProfile(
+        token: String,
+        id: Int,
+        username: String,
+    ): User
 
     suspend fun logout(
         token: String,

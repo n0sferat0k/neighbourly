@@ -32,7 +32,7 @@ import neighbourly.composeapp.generated.resources.save
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun NeighbourhoodInfoEdit(viewModel: NeighbourhoodInfoViewModel = viewModel { KoinProvider.KOIN.get<NeighbourhoodInfoViewModel>() }) {
+fun NeighbourhoodInfoEditView(viewModel: NeighbourhoodInfoViewModel = viewModel { KoinProvider.KOIN.get<NeighbourhoodInfoViewModel>() }) {
     val state by viewModel.state.collectAsState()
 
     if (state.drawing) {

@@ -141,6 +141,7 @@ func RetreiveSessionUserData(userId string) (*User, error) {
 		NHU.neighbourhood_household_users_add_numerics_3 AS access,
 		
 		P.users_id AS parentId,
+		P.users_add_strings_0 AS Username,
 		P.users_text_EN AS parentAbout,
 		P.users_titlu_EN AS parentFullname,
 		P.users_pic AS parentImageURL,		
@@ -189,6 +190,7 @@ func RetreiveSessionUserData(userId string) (*User, error) {
 			&neighbourhood.Access,
 
 			&parent.Userid,
+			&parent.Username,
 			&parent.Userabout,
 			&parent.Fullname,
 			&parent.ImageURL,
@@ -208,6 +210,43 @@ func RetreiveSessionUserData(userId string) (*User, error) {
 	}
 
 	existingUser.Neighbourhoods = neighbourhoods
+	return &existingUser, nil
+}
+
+func RetreiveUserData(userId int64, userName string) (*User, error) {
+	var existingUser User
+
+	err := db.QueryRow(`SELECT 	
+		U.users_id AS userid,
+		U.users_text_EN AS userabout,
+		U.users_titlu_EN AS fullname,
+		U.users_pic AS  ImageURL,
+		U.users_add_strings_0 AS Username,		
+		U.users_add_strings_2 AS Phone,
+		U.users_add_strings_3 AS Email
+
+		FROM 
+			users U 
+		WHERE 
+			U.users_id = ?			
+		AND 
+			U.users_add_strings_0 = ?
+		LIMIT 1`,
+		userId, userName,
+	).Scan(
+		&existingUser.Userid,
+		&existingUser.Userabout,
+		&existingUser.Fullname,
+		&existingUser.ImageURL,
+		&existingUser.Username,
+		&existingUser.Phone,
+		&existingUser.Email,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return &existingUser, nil
 }
 
@@ -257,6 +296,33 @@ func RefreshProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	existingUser, err := RetreiveSessionUserData(userId)
+	if err != nil {
+		http.Error(w, "Failed to get user info "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(existingUser)
+}
+
+func FetchProfile(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var userId string = validateToken(w, r)
+	if userId == "" {
+		return
+	}
+
+	var user User
+	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+		http.Error(w, "Bad request", http.StatusBadRequest)
+		return
+	}
+
+	existingUser, err := RetreiveUserData(*user.Userid, *user.Username)
+
 	if err != nil {
 		http.Error(w, "Failed to get user info "+err.Error(), http.StatusInternalServerError)
 		return

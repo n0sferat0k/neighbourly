@@ -51,21 +51,23 @@ import neighbourly.composeapp.generated.resources.create_from_scratch
 import neighbourly.composeapp.generated.resources.householdName
 import neighbourly.composeapp.generated.resources.houses
 import neighbourly.composeapp.generated.resources.invite_or_create_household
+import neighbourly.composeapp.generated.resources.list_household_members
 import neighbourly.composeapp.generated.resources.save
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun HouseholdInfoEdit(
+fun HouseholdInfoEditView(
     navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() },
     viewModel: HouseholdInfoEditViewModel = viewModel { KoinProvider.KOIN.get<HouseholdInfoEditViewModel>() },
 ) {
     val state by viewModel.state.collectAsState()
+    val navigation by navigationViewModel.state.collectAsState()
+
     val defaultHouseImg = painterResource(Res.drawable.houses)
     var showFilePicker by remember { mutableStateOf(false) }
-    var tabindex by remember { mutableStateOf(if (state.hasHousehold) 1 else 0) }
 
-    if (tabindex == 0) {
+    if (!state.hasHousehold && !navigation.addingNewHousehold) {
         Column {
             CurlyText(text = stringResource(Res.string.invite_or_create_household))
 
@@ -81,19 +83,21 @@ fun HouseholdInfoEdit(
             }
 
             CurlyText(
-                modifier = Modifier.clickable { tabindex = 1 },
+                modifier =
+                    Modifier.clickable {
+                        navigationViewModel.goToAddHousehold()
+                    },
                 bold = true,
                 text = stringResource(Res.string.create_from_scratch),
             )
         }
-    }
-    if (tabindex == 1) {
+    } else {
         Column {
             Row {
                 // Name Input
                 OutlinedTextField(
                     value = state.nameOverride ?: state.name,
-                    enabled = state.editableHousehold,
+                    enabled = state.editableHousehold || navigation.addingNewHousehold,
                     onValueChange = {
                         viewModel.updateName(it)
                     },
@@ -159,7 +163,7 @@ fun HouseholdInfoEdit(
             // Address Input
             OutlinedTextField(
                 value = state.addressOverride ?: state.address,
-                enabled = state.editableHousehold,
+                enabled = state.editableHousehold || navigation.addingNewHousehold,
                 onValueChange = {
                     viewModel.updateAddress(it)
                 },
@@ -173,7 +177,7 @@ fun HouseholdInfoEdit(
             // About Input
             OutlinedTextField(
                 value = state.aboutOverride ?: state.about,
-                enabled = state.editableHousehold,
+                enabled = state.editableHousehold || navigation.addingNewHousehold,
                 onValueChange = {
                     viewModel.updateAbout(it)
                 },
@@ -182,9 +186,9 @@ fun HouseholdInfoEdit(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            if (state.editableHousehold || navigation.addingNewHousehold) {
+                Spacer(modifier = Modifier.height(8.dp))
 
-            if (state.editableHousehold) {
                 CurlyButton(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     text = stringResource(Res.string.save),
@@ -208,6 +212,16 @@ fun HouseholdInfoEdit(
                     bold = true,
                     text = stringResource(Res.string.add_member),
                 )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (state.members != null) {
+                CurlyText(text = stringResource(Res.string.list_household_members))
+
+                state.members?.forEach {
+                    CurlyText(text = "* " + it, bold = true)
+                }
             }
         }
     }

@@ -9,7 +9,7 @@ import com.neighbourly.app.a_device.ui.BarcodeScanner
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 
 @Composable
-fun HouseholdBarcodeScanner(navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }) {
+fun HouseholdBarcodeScannerView(navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }) {
     BarcodeScanner(modifier = Modifier.fillMaxSize()) { scanString ->
         scanString.split(",").let { tokens ->
             runCatching {

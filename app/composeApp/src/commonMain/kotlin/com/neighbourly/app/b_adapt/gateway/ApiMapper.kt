@@ -37,6 +37,7 @@ fun HouseholdDTO.toHousehold(): Household =
             },
         address = address,
         gpsprogress = gpsprogress,
+        members = members?.map { it.toUser() },
     )
 
 fun NeighbourhoodDTO.toNeighbourhood(): Neighbourhood =

@@ -43,7 +43,7 @@ fun main() {
                                 .fillMaxHeight()
                                 .background(AppColors.primaryLight),
                     ) {
-                        App(false)
+                        App(includeMap = false)
                     }
                     Box(
                         modifier =

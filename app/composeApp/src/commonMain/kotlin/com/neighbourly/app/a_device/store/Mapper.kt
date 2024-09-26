@@ -49,6 +49,7 @@ fun StoreHousehold.toHousehold(): Household =
                 null
             },
         address = this.address,
+        members = members?.map { it.toUser() },
     )
 
 fun Household.toStoreHousehold(): StoreHousehold =
@@ -61,6 +62,7 @@ fun Household.toStoreHousehold(): StoreHousehold =
         latitude = location?.first,
         longitude = location?.second,
         address = this.address,
+        members = members?.map { it.toStoreUser() },
     )
 
 fun Neighbourhood.toStoreNeighbourhood(): StoreNeighbourhood =
@@ -107,6 +109,7 @@ data class StoreHousehold(
     val longitude: Float? = null,
     val address: String,
     val gpsprogress: Float? = null,
+    val members: List<StoreUser>? = null,
 )
 
 @Serializable

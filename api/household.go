@@ -26,7 +26,7 @@ func AddToHousehold(w http.ResponseWriter, r *http.Request) {
 	db.QueryRow("SELECT COUNT(*) > 0 AS found FROM users WHERE users_add_numerics_0 = 0 AND users_id = ? AND users_add_strings_0 = ?", familyMember.Userid, familyMember.Username).Scan(&familyMemberFound)
 
 	if !familyMemberFound {
-		http.Error(w, "User not found", http.StatusNotFound)
+		http.Error(w, "User not found, or already added to household", http.StatusNotFound)
 		return
 	}
 

@@ -25,7 +25,7 @@ import neighbourly.composeapp.generated.resources.username
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun ProfileInfoEdit(viewModel: ProfileInfoEditViewModel = viewModel { KoinProvider.KOIN.get<ProfileInfoEditViewModel>() }) {
+fun ProfileInfoEditView(viewModel: ProfileInfoEditViewModel = viewModel { KoinProvider.KOIN.get<ProfileInfoEditViewModel>() }) {
     val state by viewModel.state.collectAsState()
 
     // Username Input

@@ -28,6 +28,7 @@ func main() {
 	r.HandleFunc("/register", RegisterUser).Methods("POST")
 	r.HandleFunc("/login", LoginUser).Methods("POST")
 	r.HandleFunc("/logout", LogoutUser).Methods("POST")
+	r.HandleFunc("/profile/fetch", FetchProfile).Methods("POST")
 	r.HandleFunc("/profile/refresh", RefreshProfile).Methods("POST")
 	r.HandleFunc("/profile/update", UpdateProfile).Methods("POST")
 	r.HandleFunc("/profile/updateHousehold", UpdateHousehold).Methods("POST")
