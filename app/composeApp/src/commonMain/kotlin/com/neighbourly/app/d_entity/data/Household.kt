@@ -3,11 +3,11 @@ package com.neighbourly.app.d_entity.data
 data class Household(
     val householdid: Int,
     val name: String,
-    val about: String,
-    val imageurl: String? = null,
     val headid: Int,
+    val about: String? = null,
+    val imageurl: String? = null,
     val location: Pair<Float, Float>? = null,
-    val address: String,
+    val address: String? = null,
     val gpsprogress: Float? = null,
     val members: List<User>? = null,
 )

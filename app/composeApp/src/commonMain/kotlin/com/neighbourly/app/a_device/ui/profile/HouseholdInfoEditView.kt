@@ -126,7 +126,11 @@ fun HouseholdInfoEditView(
                                 .size(60.dp)
                                 .align(Alignment.Bottom)
                                 .border(2.dp, AppColors.primary, CircleShape)
-                                .clickable { showFilePicker = true },
+                                .clickable {
+                                    if (state.editableHousehold) {
+                                        showFilePicker = true
+                                    }
+                                },
                         contentAlignment = Alignment.Center,
                     ) {
                         state.imageurl.let {
@@ -134,7 +138,7 @@ fun HouseholdInfoEditView(
                                 KamelImage(
                                     modifier = Modifier.fillMaxSize().clip(CircleShape),
                                     resource = asyncPainterResource(data = it),
-                                    contentDescription = "Profile Image",
+                                    contentDescription = "Household Image",
                                     contentScale = ContentScale.Crop,
                                     onLoading = { progress ->
                                         CircularProgressIndicator(
@@ -162,7 +166,7 @@ fun HouseholdInfoEditView(
 
             // Address Input
             OutlinedTextField(
-                value = state.addressOverride ?: state.address,
+                value = state.addressOverride ?: state.address ?: "",
                 enabled = state.editableHousehold || navigation.addingNewHousehold,
                 onValueChange = {
                     viewModel.updateAddress(it)
@@ -176,7 +180,7 @@ fun HouseholdInfoEditView(
 
             // About Input
             OutlinedTextField(
-                value = state.aboutOverride ?: state.about,
+                value = state.aboutOverride ?: state.about ?: "",
                 enabled = state.editableHousehold || navigation.addingNewHousehold,
                 onValueChange = {
                     viewModel.updateAbout(it)
@@ -202,21 +206,23 @@ fun HouseholdInfoEditView(
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
+            }
 
+            if (state.editableHousehold) {
                 CurlyText(
                     modifier =
                         Modifier
                             .clickable {
-                                navigationViewModel.goToAddMember()
+                                navigationViewModel.goToScanMemberForHousehold()
                             }.align(Alignment.Start),
                     bold = true,
                     text = stringResource(Res.string.add_member),
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
             if (state.members != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+
                 CurlyText(text = stringResource(Res.string.list_household_members))
 
                 state.members?.forEach {

@@ -33,6 +33,7 @@ func main() {
 	r.HandleFunc("/profile/update", UpdateProfile).Methods("POST")
 	r.HandleFunc("/profile/updateHousehold", UpdateHousehold).Methods("POST")
 	r.HandleFunc("/profile/addToHousehold", AddToHousehold).Methods("POST")
+	r.HandleFunc("/profile/addToNeighbourhood", AddToNeighbourhood).Methods("POST")
 	r.HandleFunc("/profile/updateNeighbourhood", UpdateNeighbourhood).Methods("POST")
 	r.HandleFunc("/profile/upload", UploadImage).Methods("POST")
 	r.HandleFunc("/gps/log", LogGpsLocation).Methods("POST")

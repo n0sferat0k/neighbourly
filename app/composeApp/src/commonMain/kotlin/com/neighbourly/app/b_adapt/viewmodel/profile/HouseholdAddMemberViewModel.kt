@@ -49,7 +49,7 @@ class HouseholdAddMemberViewModel(
             try {
                 _state.update { it.copy(error = "", adding = true) }
                 householdMemberAddUseCase.execute(_state.value.id, _state.value.username)
-                _state.update { it.copy(error = "", adding = false) }
+                _state.update { it.copy(error = "", adding = false, added = true) }
             } catch (e: OpException) {
                 _state.update { it.copy(error = e.msg, adding = false) }
             }
@@ -57,10 +57,10 @@ class HouseholdAddMemberViewModel(
     }
 
     fun updateNeighbourhoodAcc(
-        id: Int,
+        neighbourhoodid: Int,
         access: String,
     ) {
-        val neighbourhoodAndAcc = _state.value.neighbourhoodsAndAcc[id]!!
+        val neighbourhoodAndAcc = _state.value.neighbourhoodsAndAcc[neighbourhoodid]!!
         val newAcc = min(access.toIntOrNull() ?: 0, neighbourhoodAndAcc.access - 1)
         _state.update {
             it.copy(
@@ -68,7 +68,7 @@ class HouseholdAddMemberViewModel(
                     it.neighbourhoodsAndAcc
                         .toMutableMap()
                         .apply {
-                            put(id, neighbourhoodAndAcc.copy(accessOverride = newAcc))
+                            put(neighbourhoodid, neighbourhoodAndAcc.copy(accessOverride = newAcc))
                         },
             )
         }
@@ -79,7 +79,7 @@ class HouseholdAddMemberViewModel(
         username: String,
     ) {
         viewModelScope.launch {
-            _state.update { it.copy(error = "", loading = true) }
+            _state.update { it.copy(error = "", loading = true, added = false) }
             try {
                 fetchProfileUseCase.execute(id, username)?.let { user ->
                     _state.update {
@@ -88,9 +88,9 @@ class HouseholdAddMemberViewModel(
                             loading = false,
                             id = user.id,
                             username = user.username,
-                            fullname = user.fullname,
-                            email = user.email,
-                            phone = user.phone,
+                            fullname = user.fullname.orEmpty(),
+                            email = user.email.orEmpty(),
+                            phone = user.phone.orEmpty(),
                             about = user.about.orEmpty(),
                             imageurl = user.imageurl,
                         )
@@ -109,6 +109,7 @@ class HouseholdAddMemberViewModel(
         val error: String = "",
         val id: Int = -1,
         val adding: Boolean = false,
+        val added: Boolean = false,
         val username: String = "",
         val fullname: String = "",
         val email: String = "",

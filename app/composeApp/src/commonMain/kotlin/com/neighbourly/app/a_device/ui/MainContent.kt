@@ -7,12 +7,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.auth.LoginOrRegister
 import com.neighbourly.app.a_device.ui.profile.Profile
-import com.neighbourly.app.b_adapt.viewmodel.MainViewModel
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 
 @Composable
-fun MainContent(mainViewModel: MainViewModel = viewModel { KoinProvider.KOIN.get<MainViewModel>() }) {
-    val state by mainViewModel.state.collectAsState()
-    if (state.isLoggedIn) {
+fun MainContent(navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }) {
+    val navigation by navigationViewModel.state.collectAsState()
+    if (navigation.userLoggedIn) {
         Profile()
     } else {
         LoginOrRegister()

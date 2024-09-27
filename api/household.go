@@ -111,8 +111,8 @@ func UpdateHousehold(w http.ResponseWriter, r *http.Request) {
 	db.QueryRow("SELECT users_add_numerics_0 FROM users WHERE users_id = ?", userId).Scan(&householdId)
 	if householdId > 0 {
 		// Update the household in the database
-		_, err := db.Exec(`UPDATE households SET households_titlu_EN = ?, households_add_strings_0 = ?, households_text_EN = ? WHERE households_id = ?`,
-			household.Name, household.Address, household.About, householdId)
+		_, err := db.Exec(`UPDATE households SET households_titlu_EN = ?, households_add_strings_0 = ?, households_text_EN = ? WHERE households_id = ? AND households_add_numerics_0 = ?`,
+			household.Name, household.Address, household.About, householdId, userId)
 
 		if err != nil {
 			http.Error(w, "Failed to update household "+err.Error(), http.StatusInternalServerError)
@@ -120,8 +120,8 @@ func UpdateHousehold(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		//Insert the household into the database
-		insertResult, err := db.Exec(`INSERT INTO households (households_titlu_EN, households_add_strings_0, households_text_EN, households_pic) VALUES  (?,?,?,'')`,
-			household.Name, household.Address, household.About)
+		insertResult, err := db.Exec(`INSERT INTO households (households_add_numerics_0, households_titlu_EN, households_add_strings_0, households_text_EN, households_pic) VALUES  (?,?,?,?,'')`,
+			userId, household.Name, household.Address, household.About)
 
 		if err != nil {
 			http.Error(w, "Failed to insert household "+err.Error(), http.StatusInternalServerError)

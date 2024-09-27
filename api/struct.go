@@ -13,13 +13,13 @@ type Neighbourhood struct {
 type Household struct {
 	Householdid *int64   `json:"householdid"`
 	Name        *string  `json:"name"`
-	About       *string  `json:"about"`
-	ImageURL    *string  `json:"imageurl"`
 	HeadID      *int64   `json:"headid"`
-	Latitude    *float64 `json:"latitude"`
-	Longitude   *float64 `json:"longitude"`
-	Address     *string  `json:"address"`
-	GpsProgress *float64 `json:"gpsprogress"`
+	About       *string  `json:"about,omitempty"`
+	ImageURL    *string  `json:"imageurl,omitempty"`
+	Latitude    *float64 `json:"latitude,omitempty"`
+	Longitude   *float64 `json:"longitude,omitempty"`
+	Address     *string  `json:"address,omitempty"`
+	GpsProgress *float64 `json:"gpsprogress,omitempty"`
 	Members     []User   `json:"members,omitempty"`
 }
 
@@ -42,4 +42,11 @@ type GpsPayload struct {
 	Latitude  *float64 `json:"latitude"`
 	Longitude *float64 `json:"longitude"`
 	Frequency *int64   `json:"frequency,omitempty"`
+}
+
+type AddToNeighbourhoodRequest struct {
+	Neighbourhoodid *int64          `json:"neighbourhoodid"`
+	Userid          *int64          `json:"id"`
+	Username        *string         `json:"username"`
+	Accs            map[int64]int64 `json:"accs"`
 }

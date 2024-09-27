@@ -22,6 +22,7 @@
     <string name="relocate">Relocate</string>
     <string name="create">Create</string>
     <string name="add_to_household">Add To Household</string>
+    <string name="add_to_neighbourhood">Add To Neighbourhood</string>
     <string name="neighbourhood_acc">Neighbourhoods Acc:</string>
 
     <string name="err_password_mismatch">The two passwords must match</string>
@@ -41,11 +42,16 @@
     <string name="need_to_have_household">You need to belong to a household with an established location before you can join neighbourhoods !</string>
     <string name="no_neighbourhood">Your household doesn't belong to any neighbourhoods yet !</string>
     <string name="list_neighbourhoods">Your household belongs to the following neighbourhood(s):</string>
-    <string name="join_neighbourhood">You can join an existing neighbourhood by invitation using the below QR code:</string>
+    <string name="join_neighbourhood">You and your household may join existing neighbourhoods by invitation if your household falls within it's bounds. \nUse the below QR code:</string>
     <string name="create_neighbourhood">Or you can create a new neighbourhood as long as it doesn't overlap with more than 2 existing neighbourhoods.</string>
+    <string name="cannot_create_neighbourhood">Only the household head can create new neighbourhoods !</string>
     <string name="draw_neighbourhood">Once you are happy with the neighbourhood geofence, provide a name and save the neighbourhood.</string>
 
-    <string name="attempting_to_add_household_member">You are about to add the following person to your household. By doing this they will automatically gain access to all neighbourhoods your household is a part of and you will become their supervisor. \n\n Please check and configure below their permission levels.</string>
+    <string name="attempting_to_add_household_member">You are about to add the following person to your household. By doing this they will automatically gain access to all neighbourhoods your household is a part of and you will become their supervisor. \n\nPlease check and configure their permission levels below:</string>
+
+    <string name="attempting_to_add_neighbourhood_member">You are about to add the following person to your neighbourhood. By doing this, their household and all the members within will automatically gain access to the neighbourhood and you will become their supervisor. \n\nPlease check and configure their permission levels below:</string>
+
+    <string name="cannot_add_to_neighbourhood_member">Only people with established households can be added to neighbourhoods !</string>
 
     <string name="list_household_members">Your household has the following member(s):</string>
 

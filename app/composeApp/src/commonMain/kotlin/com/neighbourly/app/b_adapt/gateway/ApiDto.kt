@@ -39,6 +39,14 @@ data class AddMemberToHouseholdInput(
 )
 
 @Serializable
+data class AddMemberToNeighbourhoodInput(
+    val neighbourhoodid: Int,
+    val id: Int,
+    val username: String,
+    val accs: Map<Int, Int>?,
+)
+
+@Serializable
 data class UpdateNeighbourhoodInput(
     val neighbourhoodid: Int? = null,
     val name: String,
@@ -64,9 +72,9 @@ data class UserDTO(
     val username: String,
     val about: String? = null,
     val password: String? = null,
-    val fullname: String,
-    val email: String,
-    val phone: String,
+    val fullname: String? = null,
+    val email: String? = null,
+    val phone: String? = null,
     val imageurl: String? = null,
     val authtoken: String? = null,
     val household: HouseholdDTO? = null,
@@ -84,12 +92,12 @@ data class GpsItemDTO(
 data class HouseholdDTO(
     val householdid: Int,
     val name: String,
-    val about: String,
-    val imageurl: String? = null,
     val headid: Int,
+    val about: String? = null,
+    val imageurl: String? = null,
     val latitude: Float? = null,
     val longitude: Float? = null,
-    val address: String,
+    val address: String? = null,
     val gpsprogress: Float? = null,
     val members: List<UserDTO>? = null,
 )

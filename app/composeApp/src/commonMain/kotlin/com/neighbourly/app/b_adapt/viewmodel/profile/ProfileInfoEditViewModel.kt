@@ -29,9 +29,9 @@ class ProfileInfoEditViewModel(
                     _state.update {
                         it.copy(
                             username = user.username,
-                            fullname = user.fullname,
-                            email = user.email,
-                            phone = user.phone,
+                            fullname = user.fullname.orEmpty(),
+                            email = user.email.orEmpty(),
+                            phone = user.phone.orEmpty(),
                             about = user.about.orEmpty(),
                         )
                     }

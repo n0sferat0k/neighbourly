@@ -33,9 +33,9 @@ class HouseholdInfoEditViewModel(
                             editableHousehold = household.headid == user.id,
                             imageurl = household.imageurl,
                             name = household.name,
-                            address = household.address,
-                            about = household.about,
-                            members = household.members?.map { it.fullname },
+                            address = household.address.orEmpty(),
+                            about = household.about.orEmpty(),
+                            members = household.members?.map { it.fullname ?: it.username },
                         )
                     }
                 } ?: run {

@@ -62,6 +62,14 @@ interface Api {
         username: String,
     ): User
 
+    suspend fun addMemberToNeighbourhood(
+        token: String,
+        neighbourhoodid: Int,
+        id: Int,
+        username: String,
+        accs: Map<Int, Int>?,
+    )
+
     suspend fun updateNeighbourhood(
         token: String,
         id: Int? = null,

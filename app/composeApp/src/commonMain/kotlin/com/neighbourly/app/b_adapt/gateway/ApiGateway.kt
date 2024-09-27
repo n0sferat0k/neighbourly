@@ -99,6 +99,26 @@ class ApiGateway(
                 ).toUser()
         }
 
+    override suspend fun addMemberToNeighbourhood(
+        token: String,
+        neighbourhoodid: Int,
+        id: Int,
+        username: String,
+        accs: Map<Int, Int>?,
+    ) = runContextCatchTranslateThrow {
+        api
+            .addMemberToNeighbourhood(
+                API_BASE_URL,
+                token,
+                AddMemberToNeighbourhoodInput(
+                    neighbourhoodid = neighbourhoodid,
+                    id = id,
+                    username = username,
+                    accs = accs,
+                ),
+            )
+    }
+
     override suspend fun updateNeighbourhood(
         token: String,
         id: Int?,

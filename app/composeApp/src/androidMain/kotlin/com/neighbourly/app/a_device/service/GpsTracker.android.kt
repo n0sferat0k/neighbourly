@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-const val TRACKING_INTERVAL = 1000L // 600000L
+const val TRACKING_INTERVAL = 600000L
 
 object GpsTracker {
     var isTracking = false

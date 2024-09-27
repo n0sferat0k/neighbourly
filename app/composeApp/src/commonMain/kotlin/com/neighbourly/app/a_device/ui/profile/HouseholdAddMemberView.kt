@@ -31,6 +31,7 @@ import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.CurlyButton
 import com.neighbourly.app.a_device.ui.CurlyText
 import com.neighbourly.app.a_device.ui.ErrorText
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdAddMemberViewModel
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -51,6 +52,7 @@ import org.jetbrains.compose.resources.stringResource
 fun HouseholdAddMemberView(
     id: Int,
     username: String,
+    navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() },
     viewModel: HouseholdAddMemberViewModel = viewModel { KoinProvider.KOIN.get<HouseholdAddMemberViewModel>() },
 ) {
     val state by viewModel.state.collectAsState()
@@ -58,6 +60,12 @@ fun HouseholdAddMemberView(
 
     LaunchedEffect(id, username) {
         viewModel.loadProfile(id, username)
+    }
+
+    LaunchedEffect(state.added) {
+        if (state.added) {
+            navigationViewModel.goToHouseholdInfoEdit()
+        }
     }
 
     Column {

@@ -38,8 +38,9 @@ class NeighbourhoodInfoViewModel(
                         it.copy(
                             hasLocalizedHouse = user.household != null && user.household.location != null,
                             hasNeighbourhoods = user.neighbourhoods.isNotEmpty(),
-                            neighbourhoods = user.neighbourhoods.map { it.name },
+                            isHouseholdHead = user.household?.headid == user.id,
                             userQr = "${user.id},${user.username}",
+                            neighbourhoods = user.neighbourhoods.map { it.neighbourhoodid to it.name }.toMap(),
                         )
                     }
                 } ?: run {
@@ -83,7 +84,8 @@ class NeighbourhoodInfoViewModel(
         val drawingDone: Boolean = false,
         val hasLocalizedHouse: Boolean = false,
         val hasNeighbourhoods: Boolean = false,
-        val neighbourhoods: List<String> = emptyList(),
+        val isHouseholdHead: Boolean = false,
+        val neighbourhoods: Map<Int, String> = emptyMap(),
         val userQr: String? = null,
         val name: String = "",
         val nameOverride: String? = null,
