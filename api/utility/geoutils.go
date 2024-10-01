@@ -1,6 +1,7 @@
-package main
+package utility
 
 import (
+	"api/entity"
 	"errors"
 	"math"
 )
@@ -9,13 +10,13 @@ const EarthRadius = 6371000               // Radius of Earth in meters
 const MaxHouseholdClusterWidthMeters = 50 // 50 meters
 const MaxNeighbourhoodSizeMeters = 10000  // 10 km
 const MinClusterDiversity = 3
-const gpsSampleTarget = 100
-const gpsPrecisionFactor = 1000000
-const nightStart = "20:00:00"
-const nightEnd = "09:00:00"
+const GpsSampleTarget = 100
+const GpsPrecisionFactor = 1000000
+const NightStart = "20:00:00"
+const NightEnd = "09:00:00"
 
 // haversineDistance calculates the distance between two GPS coordinates in meters.
-func haversineDistance(lat1, lon1, lat2, lon2 float64) float64 {
+func HaversineDistance(lat1, lon1, lat2, lon2 float64) float64 {
 	lat1Rad := lat1 * math.Pi / 180
 	lon1Rad := lon1 * math.Pi / 180
 	lat2Rad := lat2 * math.Pi / 180
@@ -31,7 +32,7 @@ func haversineDistance(lat1, lon1, lat2, lon2 float64) float64 {
 	return EarthRadius * c
 }
 
-func findMaxSpreadAndCenter(gpsData [][2]float64) (float64, [2]float64) {
+func FindMaxSpreadAndCenter(gpsData [][2]float64) (float64, [2]float64) {
 	var mostEasternPoint [2]float64 = gpsData[0]
 	var mostWesternPoint [2]float64 = gpsData[0]
 	var mostNorthernPoint [2]float64 = gpsData[0]
@@ -60,15 +61,15 @@ func findMaxSpreadAndCenter(gpsData [][2]float64) (float64, [2]float64) {
 	center[1] = (mostNorthernPoint[1] + mostSouthernPoint[1]) / 2
 
 	return math.Max(
-		haversineDistance(mostEasternPoint[1], mostEasternPoint[0], mostWesternPoint[1], mostWesternPoint[0]),
-		haversineDistance(mostNorthernPoint[1], mostNorthernPoint[0], mostSouthernPoint[1], mostSouthernPoint[0]),
+		HaversineDistance(mostEasternPoint[1], mostEasternPoint[0], mostWesternPoint[1], mostWesternPoint[0]),
+		HaversineDistance(mostNorthernPoint[1], mostNorthernPoint[0], mostSouthernPoint[1], mostSouthernPoint[0]),
 	), center
 }
 
 // CalculateCandidate finds the likely home location by identifying the largest cluster of GPS points
 // within a 50-meter radius and calculating the weighted average coordinates based on frequency.
-func findLargestCluserLocation(gpsData []GpsPayload) (GpsPayload, error) {
-	var bestCluster []GpsPayload
+func FindLargestCluserLocation(gpsData []entity.GpsPayload) (entity.GpsPayload, error) {
+	var bestCluster []entity.GpsPayload
 	maxClusterSize := 0
 
 	// Find the largest cluster of GPS coordinates within the 50-meter radius
@@ -77,11 +78,11 @@ func findLargestCluserLocation(gpsData []GpsPayload) (GpsPayload, error) {
 			continue // Skip if essential fields are missing
 		}
 
-		cluster := []GpsPayload{gpsData[i]}
+		cluster := []entity.GpsPayload{gpsData[i]}
 
 		for j := 0; j < len(gpsData); j++ {
 			if i != j && gpsData[j].Latitude != nil && gpsData[j].Longitude != nil {
-				if haversineDistance(*gpsData[i].Latitude, *gpsData[i].Longitude, *gpsData[j].Latitude, *gpsData[j].Longitude) <= MaxHouseholdClusterWidthMeters {
+				if HaversineDistance(*gpsData[i].Latitude, *gpsData[i].Longitude, *gpsData[j].Latitude, *gpsData[j].Longitude) <= MaxHouseholdClusterWidthMeters {
 					cluster = append(cluster, gpsData[j])
 				}
 			}
@@ -102,7 +103,7 @@ func findLargestCluserLocation(gpsData []GpsPayload) (GpsPayload, error) {
 
 	//If the best cluster is not diverse enough, return an error
 	if len(bestCluster) < MinClusterDiversity {
-		return GpsPayload{}, errors.New("Not enough diversity in GPS data")
+		return entity.GpsPayload{}, errors.New("Not enough diversity in GPS data")
 	}
 
 	// Calculate the weighted average coordinates of the best cluster
@@ -117,13 +118,13 @@ func findLargestCluserLocation(gpsData []GpsPayload) (GpsPayload, error) {
 
 	// Handle case where no valid cluster is found
 	if totalFrequency == 0 {
-		return GpsPayload{}, errors.New("Not enough diversity in GPS data")
+		return entity.GpsPayload{}, errors.New("Not enough diversity in GPS data")
 	}
 
 	averageLat := sumLat / totalFrequency
 	averageLon := sumLon / totalFrequency
 
-	return GpsPayload{
+	return entity.GpsPayload{
 		Latitude:  &averageLat,
 		Longitude: &averageLon,
 	}, nil

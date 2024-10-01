@@ -1,6 +1,8 @@
-package main
+package onboarding
 
 import (
+	"api/entity"
+	"api/utility"
 	"database/sql"
 	"encoding/json"
 	"net/http"
@@ -8,34 +10,32 @@ import (
 )
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
-	//********************************************************VALIDATION - http method
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	ctx := r.Context()
+	ctx = utility.RequirePost(ctx, w, r)
+	ctx = utility.RequirePayloadUser(ctx, w, r)
+
+	if ctx.Value(utility.CtxKeyContinue) == false {
 		return
 	}
-	//********************************************************VALIDATION - user payload
-	var user User
-	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		http.Error(w, "Bad request", http.StatusBadRequest)
-		return
-	}
+	user := ctx.Value(utility.CtxKeyUser).(entity.User)
+
 	//********************************************************VALIDATION - phone number format
-	if !validatePhoneNumber(*user.Phone) {
+	if !utility.ValidatePhoneNumber(*user.Phone) {
 		http.Error(w, "Invalid phone number", http.StatusBadRequest)
 		return
 	}
 	//********************************************************VALIDATION - email format
-	if !validateEmail(*user.Email) {
+	if !utility.ValidateEmail(*user.Email) {
 		http.Error(w, "Invalid email", http.StatusBadRequest)
 		return
 	}
 
 	//********************************************************VALIDATION - unique usrname
 	var existingUserId string
-	err := db.QueryRow("SELECT users_id FROM users WHERE users_add_strings_0 = ? LIMIT 1", user.Username).Scan(&existingUserId)
+	err := utility.DB.QueryRow("SELECT users_id FROM users WHERE users_add_strings_0 = ? LIMIT 1", user.Username).Scan(&existingUserId)
 	if err == sql.ErrNoRows {
 		// Hash the password
-		hashedPassword, err := hashPassword(*user.Password)
+		hashedPassword, err := utility.HashPassword(*user.Password)
 		if err != nil {
 			http.Error(w, "Failed to hash password", http.StatusInternalServerError)
 			return
@@ -44,7 +44,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 
 		var now = time.Now()
 		// Insert the new user into the database
-		insertResult, err := db.Exec(`INSERT INTO users (
+		insertResult, err := utility.DB.Exec(`INSERT INTO users (
 			users_add_strings_0,
 			users_add_strings_1, 
 			users_titlu_EN, 
@@ -76,7 +76,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		user.Userid = &insertedID
 
 		//create an auth token
-		authToken, err := generateAuthToken()
+		authToken, err := utility.GenerateAuthToken()
 		if err != nil {
 			http.Error(w, "Failed to generate token", http.StatusInternalServerError)
 			return
@@ -85,7 +85,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		var tokenExpiration = time.Now().Add(time.Hour * 24 * 7) // 1 week
 
 		// Insert the new token into the database
-		_, err = db.Exec("INSERT INTO tokens (tokens_add_numerics_0 , tokens_titlu_EN, tokens_data) VALUES (?, ?, ?)",
+		_, err = utility.DB.Exec("INSERT INTO tokens (tokens_add_numerics_0 , tokens_titlu_EN, tokens_data) VALUES (?, ?, ?)",
 			user.Userid, user.Authtoken, tokenExpiration.Unix())
 		if err != nil {
 			http.Error(w, "Failed to add token "+*user.Authtoken+" -- "+err.Error(), http.StatusInternalServerError)

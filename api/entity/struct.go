@@ -1,4 +1,4 @@
-package main
+package entity
 
 type Neighbourhood struct {
 	Neighbourhoodid *int64   `json:"neighbourhoodid,omitempty"`
