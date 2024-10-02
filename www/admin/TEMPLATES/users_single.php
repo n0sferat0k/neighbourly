@@ -79,17 +79,6 @@ if($DISPLAY_TEMPLATE_BODY) {?>
 <link rel="stylesheet" type="text/css" href="CSS/TPL_single.css" />
 <script src="javascripts/POPUP_V3.js" type="text/javascript"></script>
 <script src="javascripts/GENERAL.js" type="text/javascript"></script>
-<script language="javascript" type="text/javascript">
-	tinyMCE.init({
-					mode : "textareas",
-					theme : "advanced",
-                    convert_urls : false,
-                    document_base_url : "/",
-                    relative_urls : true,
-					plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,imagemanager,filemanager"
-
-				});
-</script>
 
 <?php if($needs_auxform) { ?>
 <!-******************************************************************************** AUXILIAR FORM FOR DELETING PICTURE-->

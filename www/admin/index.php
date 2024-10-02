@@ -463,7 +463,7 @@ $p['ADD_NUMERICS_modif'] = array(
 	array(0 => true,1 => true)
 );
 
-$p['LIST_template']="TEMPLATES/table_list.php";
+$p['LIST_template']="TEMPLATES/nhu_table_list.php";
 
 $categ_manc = new combinedObjectTTDI();
 $categ_manc->setParams($p);

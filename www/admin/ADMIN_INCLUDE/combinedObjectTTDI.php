@@ -1523,6 +1523,15 @@ class combinedObjectTTDI //Text Title Date Image
 				if (isset($row[$this->params['KEY'] . '_add_numerics_0'])) {
 					$numerics_0 = $row[$this->params['KEY'] . '_add_numerics_0'];
 				}
+				if (isset($row[$this->params['KEY'] . '_add_numerics_1'])) {
+					$numerics_1 = $row[$this->params['KEY'] . '_add_numerics_1'];
+				}
+				if (isset($row[$this->params['KEY'] . '_add_numerics_2'])) {
+					$numerics_2 = $row[$this->params['KEY'] . '_add_numerics_2'];
+				}
+				if (isset($row[$this->params['KEY'] . '_add_numerics_3'])) {
+					$numerics_3 = $row[$this->params['KEY'] . '_add_numerics_3'];
+				}
 
 				$numerics = array();
 				$strings = array();
@@ -1573,6 +1582,9 @@ class combinedObjectTTDI //Text Title Date Image
 					"date" => $formattedDate,
 					"pic" => $pic,
 					"numerics_0" => isset($numerics_0) ? $numerics_0 : "",
+					"numerics_1" => isset($numerics_1) ? $numerics_1 : "",
+					"numerics_2" => isset($numerics_2) ? $numerics_2 : "",
+					"numerics_3" => isset($numerics_3) ? $numerics_3 : "",
 					"strings_0" => isset($strings_0) ? $strings_0 : "",
 					"numerics" => $numerics,
 					"strings" => $strings,
