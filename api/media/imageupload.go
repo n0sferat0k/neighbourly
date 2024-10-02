@@ -2,6 +2,7 @@ package media
 
 import (
 	"api/utility"
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,13 +14,15 @@ const TARGET_PROFILE = "profile"
 const TARGET_HOUSEHOLD = "household"
 
 func UploadImage(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+	var userId string
+	var token string
+
+	ctx := context.WithValue(r.Context(), utility.CtxKeyContinue, true)
 	ctx = utility.RequirePost(ctx, w, r)
-	ctx = utility.RequireValidToken(ctx, w, r)
+	ctx = utility.RequireValidToken(ctx, w, r, &userId, &token)
 	if ctx.Value(utility.CtxKeyContinue) == false {
 		return
 	}
-	userId := ctx.Value("userId").(string)
 
 	target := r.URL.Query().Get("target")
 	var targetFolder string

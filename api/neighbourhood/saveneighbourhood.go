@@ -3,20 +3,23 @@ package neighbourhood
 import (
 	"api/entity"
 	"api/utility"
+	"context"
 	"encoding/json"
 	"net/http"
 )
 
 func UpdateNeighbourhood(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+	var userId string
+	var token string
+	var neighbourhood entity.Neighbourhood
+
+	ctx := context.WithValue(r.Context(), utility.CtxKeyContinue, true)
 	ctx = utility.RequirePost(ctx, w, r)
-	ctx = utility.RequireValidToken(ctx, w, r)
-	ctx = utility.RequirePayloadNeighbourhood(ctx, w, r)
+	ctx = utility.RequireValidToken(ctx, w, r, &userId, &token)
+	ctx = utility.RequirePayload(ctx, w, r, &neighbourhood)
 	if ctx.Value(utility.CtxKeyContinue) == false {
 		return
 	}
-	userId := ctx.Value("userId").(string)
-	neighbourhood := ctx.Value("neighbourhood").(entity.Neighbourhood)
 
 	var geofence [][2]float64
 	json.Unmarshal([]byte(*neighbourhood.Geofence), &geofence)
@@ -90,5 +93,5 @@ func UpdateNeighbourhood(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	utility.ReturnSelfSession(ctx, w, r, nil)
+	utility.ReturnSelfSession(userId, w, r, nil)
 }

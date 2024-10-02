@@ -2,19 +2,21 @@ package onboarding
 
 import (
 	"api/utility"
+	"context"
 	"fmt"
 	"net/http"
 )
 
 func LogoutUser(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+	var userId string
+	var token string
+
+	ctx := context.WithValue(r.Context(), utility.CtxKeyContinue, true)
 	ctx = utility.RequirePost(ctx, w, r)
-	ctx = utility.RequireValidToken(ctx, w, r)
+	ctx = utility.RequireValidToken(ctx, w, r, &userId, &token)
 	if ctx.Value(utility.CtxKeyContinue) == false {
 		return
 	}
-	userId := ctx.Value(utility.CtxKeyUserId).(string)
-	token := ctx.Value(utility.CtxKeyToken).(string)
 
 	logoutAll := r.URL.Query().Get("logoutAll")
 

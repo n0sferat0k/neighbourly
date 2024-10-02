@@ -20,6 +20,7 @@ import (
 func main() {
 
 	utility.ConnectDB()
+	defer utility.DB.Close()
 
 	//request handlers
 	r := mux.NewRouter()

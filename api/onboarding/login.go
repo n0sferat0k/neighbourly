@@ -3,25 +3,27 @@ package onboarding
 import (
 	"api/entity"
 	"api/utility"
+	"context"
 	"database/sql"
 	"net/http"
 	"time"
 )
 
 func LoginUser(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+	var user entity.User
+
+	ctx := context.WithValue(r.Context(), utility.CtxKeyContinue, true)
 	ctx = utility.RequirePost(ctx, w, r)
-	ctx = utility.RequirePayloadUser(ctx, w, r)
+	ctx = utility.RequirePayload(ctx, w, r, &user)
 	if ctx.Value(utility.CtxKeyContinue) == false {
 		return
 	}
-	user := ctx.Value(utility.CtxKeyUser).(entity.User)
 
 	var userId string
 	var passHash string
 
 	err := utility.DB.QueryRow(`SELECT 	U.users_id,								
-								U.users_add_strings_1								
+									U.users_add_strings_1								
 								FROM 
 									users U 								
 								WHERE 
@@ -35,7 +37,7 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			http.Error(w, "Username or Password incorrect", http.StatusUnauthorized)
+			http.Error(w, "Username or Password incorrect"+err.Error(), http.StatusUnauthorized)
 			return
 		} else {
 			http.Error(w, "Database error "+err.Error(), http.StatusInternalServerError)
@@ -65,5 +67,5 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utility.ReturnSelfSession(ctx, w, r, &authToken)
+	utility.ReturnSelfSession(userId, w, r, &authToken)
 }

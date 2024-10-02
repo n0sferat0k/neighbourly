@@ -3,19 +3,23 @@ package profile
 import (
 	"api/entity"
 	"api/utility"
+	"context"
 	"encoding/json"
 	"net/http"
 )
 
 func FetchProfile(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+	var userId string
+	var token string
+	var user entity.User
+
+	ctx := context.WithValue(r.Context(), utility.CtxKeyContinue, true)
 	ctx = utility.RequirePost(ctx, w, r)
-	ctx = utility.RequireValidToken(ctx, w, r)
-	ctx = utility.RequirePayloadUser(ctx, w, r)
+	ctx = utility.RequireValidToken(ctx, w, r, &userId, &token)
+	ctx = utility.RequirePayload(ctx, w, r, &user)
 	if ctx.Value(utility.CtxKeyContinue) == false {
 		return
 	}
-	user := ctx.Value(utility.CtxKeyUser).(entity.User)
 
 	existingUser, err := utility.RetreiveUserData(*user.Userid, *user.Username)
 	if err != nil {

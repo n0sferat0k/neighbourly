@@ -260,3 +260,9 @@ ERROR: No matching issuer found
 [0923/125131.887:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
 [0923/125132.459:INFO:CONSOLE(42)] "Error: Cannot remove non-existing layer "heatmap".", source: https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.js (42)
 [0923/125132.459:INFO:CONSOLE(17)] "Uncaught Error: Invalid arguments; expecting a single integer", source: file:///kcefbrowser/568891561#url=about:blank (17)
+[1002/153005.550:INFO:child_thread_impl.cc(957)] ChildThreadImpl::EnsureConnected()
+[1002/153005.655:INFO:child_thread_impl.cc(957)] ChildThreadImpl::EnsureConnected()
+[1002/153034.109:ERROR:network_service_instance_impl.cc(599)] Network service crashed, restarting service.
+[1002/165327.897:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
+[1002/165328.309:INFO:CONSOLE(42)] "Error: Cannot remove non-existing layer "heatmap".", source: https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.js (42)
+[1002/165328.310:INFO:CONSOLE(17)] "Uncaught Error: Invalid arguments; expecting a single integer", source: file:///kcefbrowser/1782926404#url=about:blank (17)

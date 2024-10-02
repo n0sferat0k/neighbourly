@@ -3,19 +3,22 @@ package household
 import (
 	"api/entity"
 	"api/utility"
+	"context"
 	"encoding/json"
 	"net/http"
 	"time"
 )
 
 func LogGpsLocation(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+	var userId string
+	var token string
+
+	ctx := context.WithValue(r.Context(), utility.CtxKeyContinue, true)
 	ctx = utility.RequirePost(ctx, w, r)
-	ctx = utility.RequireValidToken(ctx, w, r)
+	ctx = utility.RequireValidToken(ctx, w, r, &userId, &token)
 	if ctx.Value(utility.CtxKeyContinue) == false {
 		return
 	}
-	userId := ctx.Value("userId").(string)
 
 	var gps entity.GpsPayload
 	if err := json.NewDecoder(r.Body).Decode(&gps); err != nil {

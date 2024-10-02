@@ -3,19 +3,22 @@ package profile
 import (
 	"api/entity"
 	"api/utility"
+	"context"
 	"net/http"
 )
 
 func UpdateProfile(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+	var userId string
+	var token string
+	var user entity.User
+
+	ctx := context.WithValue(r.Context(), utility.CtxKeyContinue, true)
 	ctx = utility.RequirePost(ctx, w, r)
-	ctx = utility.RequireValidToken(ctx, w, r)
-	ctx = utility.RequirePayloadUser(ctx, w, r)
+	ctx = utility.RequireValidToken(ctx, w, r, &userId, &token)
+	ctx = utility.RequirePayload(ctx, w, r, &user)
 	if ctx.Value(utility.CtxKeyContinue) == false {
 		return
 	}
-	userId := ctx.Value(utility.CtxKeyUserId).(string)
-	user := ctx.Value(utility.CtxKeyUser).(entity.User)
 
 	// Update the user in the database
 	_, err := utility.DB.Exec(`UPDATE users SET users_titlu_EN = ?, users_add_strings_3 = ?, users_add_strings_2 =  ?,  users_text_EN = ? WHERE users_id = ?`,
@@ -25,5 +28,5 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utility.ReturnSelfSession(ctx, w, r, nil)
+	utility.ReturnSelfSession(userId, w, r, nil)
 }

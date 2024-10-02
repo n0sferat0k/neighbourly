@@ -12,5 +12,4 @@ func ConnectDB() {
 	if err := DB.Ping(); err != nil {
 		panic(err)
 	}
-	defer DB.Close()
 }

@@ -3,6 +3,7 @@ package onboarding
 import (
 	"api/entity"
 	"api/utility"
+	"context"
 	"database/sql"
 	"encoding/json"
 	"net/http"
@@ -10,14 +11,14 @@ import (
 )
 
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	ctx = utility.RequirePost(ctx, w, r)
-	ctx = utility.RequirePayloadUser(ctx, w, r)
+	var user entity.User
 
+	ctx := context.WithValue(r.Context(), utility.CtxKeyContinue, true)
+	ctx = utility.RequirePost(ctx, w, r)
+	ctx = utility.RequirePayload(ctx, w, r, &user)
 	if ctx.Value(utility.CtxKeyContinue) == false {
 		return
 	}
-	user := ctx.Value(utility.CtxKeyUser).(entity.User)
 
 	//********************************************************VALIDATION - phone number format
 	if !utility.ValidatePhoneNumber(*user.Phone) {

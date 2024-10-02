@@ -3,19 +3,22 @@ package household
 import (
 	"api/entity"
 	"api/utility"
+	"context"
 	"net/http"
 )
 
 func UpdateHousehold(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+	var userId string
+	var token string
+	var household entity.Household
+
+	ctx := context.WithValue(r.Context(), utility.CtxKeyContinue, true)
 	ctx = utility.RequirePost(ctx, w, r)
-	ctx = utility.RequireValidToken(ctx, w, r)
-	ctx = utility.RequirePayloadHousehold(ctx, w, r)
+	ctx = utility.RequireValidToken(ctx, w, r, &userId, &token)
+	ctx = utility.RequirePayload(ctx, w, r, &household)
 	if ctx.Value(utility.CtxKeyContinue) == false {
 		return
 	}
-	userId := ctx.Value("userId").(string)
-	household := ctx.Value("household").(entity.Household)
 
 	var householdId int
 	utility.DB.QueryRow("SELECT users_add_numerics_0 FROM users WHERE users_id = ?", userId).Scan(&householdId)
@@ -53,5 +56,5 @@ func UpdateHousehold(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	utility.ReturnSelfSession(ctx, w, r, nil)
+	utility.ReturnSelfSession(userId, w, r, nil)
 }

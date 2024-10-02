@@ -32,6 +32,26 @@ func HaversineDistance(lat1, lon1, lat2, lon2 float64) float64 {
 	return EarthRadius * c
 }
 
+func PointInPolygon(lon, lat float64, polygon [][2]float64) bool {
+	oddNodes := false
+	j := len(polygon) - 1
+
+	// Iterate over all edges of the polygon
+	for i := 0; i < len(polygon); i++ {
+		// Check if the point is within the bounds of the edge
+		if polygon[i][0] < lon && polygon[j][0] >= lon || polygon[j][0] < lon && polygon[i][0] >= lon {
+			// Check if the point is to the left of the edge
+			if polygon[i][1]+(lon-polygon[i][0])/(polygon[j][0]-polygon[i][0])*(polygon[j][1]-polygon[i][1]) < lat {
+				// Toggle the oddNodes flag
+				oddNodes = !oddNodes
+			}
+		}
+		j = i
+	}
+	// Return true if the number of intersections is odd
+	return oddNodes
+}
+
 func FindMaxSpreadAndCenter(gpsData [][2]float64) (float64, [2]float64) {
 	var mostEasternPoint [2]float64 = gpsData[0]
 	var mostWesternPoint [2]float64 = gpsData[0]

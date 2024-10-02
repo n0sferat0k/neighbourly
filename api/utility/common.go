@@ -1,7 +1,6 @@
 package utility
 
 import (
-	"api/entity"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -10,12 +9,9 @@ import (
 	"time"
 )
 
-const CtxKeyContinue = "continue"
-const CtxKeyUserId = "userId"
-const CtxKeyToken = "token"
-const CtxKeyHousehold = "household"
-const CtxKeyUser = "user"
-const CtxKeyNeighbourhood = "neighbourhood"
+type contextKey string
+
+const CtxKeyContinue contextKey = "continue"
 
 func RequirePost(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
 	//********************************************************VALIDATION - http method
@@ -39,7 +35,7 @@ func RequireGet(ctx context.Context, w http.ResponseWriter, r *http.Request) con
 	return ctx
 }
 
-func RequireValidToken(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
+func RequireValidToken(ctx context.Context, w http.ResponseWriter, r *http.Request, userId *string, userToken *string) context.Context {
 	//********************************************************VALIDATION - token
 	if ctx.Value(CtxKeyContinue) == true {
 		// Extract the token from the request headers
@@ -68,73 +64,34 @@ func RequireValidToken(ctx context.Context, w http.ResponseWriter, r *http.Reque
 			return context.WithValue(ctx, CtxKeyContinue, false)
 		}
 
-		ctx = context.WithValue(ctx, CtxKeyUserId, existingTokenUserId)
-		ctx = context.WithValue(ctx, CtxKeyToken, token)
+		*userId = existingTokenUserId
+		*userToken = token
+
 		return ctx
 	}
 	return ctx
 }
 
-func RequirePayloadHousehold(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
-	//********************************************************VALIDATION - payload
+// RequirePayload decodes the JSON payload into the provided type
+func RequirePayload(ctx context.Context, w http.ResponseWriter, r *http.Request, v interface{}) context.Context {
 	if ctx.Value(CtxKeyContinue) == true {
 		if r.Header.Get("Content-Type") != "application/json" {
+			http.Error(w, "Unexpected content type", http.StatusBadRequest)
+			return context.WithValue(ctx, CtxKeyContinue, false)
+		}
+		if err := json.NewDecoder(r.Body).Decode(v); err != nil {
 			http.Error(w, "Bad request", http.StatusBadRequest)
 			return context.WithValue(ctx, CtxKeyContinue, false)
 		}
-		var household entity.Household
-		if err := json.NewDecoder(r.Body).Decode(&household); err != nil {
-			http.Error(w, "Bad request", http.StatusBadRequest)
-			return context.WithValue(ctx, CtxKeyContinue, false)
-		}
-
-		context.WithValue(ctx, CtxKeyHousehold, household)
 	}
 	return ctx
 }
 
-func RequirePayloadUser(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
-	//********************************************************VALIDATION - payload
-	if ctx.Value(CtxKeyContinue) == true {
-		if r.Header.Get("Content-Type") != "application/json" {
-			http.Error(w, "Bad request", http.StatusBadRequest)
-			return context.WithValue(ctx, CtxKeyContinue, false)
-		}
-		var user entity.User
-		if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-			http.Error(w, "Bad request", http.StatusBadRequest)
-			return context.WithValue(ctx, CtxKeyContinue, false)
-		}
-
-		context.WithValue(ctx, CtxKeyUser, user)
-	}
-	return ctx
-}
-
-func RequirePayloadNeighbourhood(ctx context.Context, w http.ResponseWriter, r *http.Request) context.Context {
-	if ctx.Value(CtxKeyContinue) == true {
-		if r.Header.Get("Content-Type") != "application/json" {
-			http.Error(w, "Bad request", http.StatusBadRequest)
-			return context.WithValue(ctx, CtxKeyContinue, false)
-		}
-		var neighbourhood entity.Neighbourhood
-		if err := json.NewDecoder(r.Body).Decode(&neighbourhood); err != nil {
-			http.Error(w, "Bad request", http.StatusBadRequest)
-			return context.WithValue(ctx, CtxKeyContinue, false)
-		}
-
-		context.WithValue(ctx, CtxKeyNeighbourhood, neighbourhood)
-	}
-	return ctx
-}
-
-func ReturnSelfSession(ctx context.Context, w http.ResponseWriter, r *http.Request, authToken *string) context.Context {
-	userId := ctx.Value("userId").(string)
-
+func ReturnSelfSession(userId string, w http.ResponseWriter, r *http.Request, authToken *string) {
 	existingUser, err := RetreiveSessionUserData(userId)
 	if err != nil {
 		http.Error(w, "Failed to get user info for "+userId+":"+err.Error(), http.StatusInternalServerError)
-		return context.WithValue(ctx, CtxKeyContinue, false)
+		return
 	}
 	if authToken != nil {
 		existingUser.Authtoken = authToken
@@ -142,6 +99,4 @@ func ReturnSelfSession(ctx context.Context, w http.ResponseWriter, r *http.Reque
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(existingUser)
-
-	return ctx
 }

@@ -3,19 +3,22 @@ package membership
 import (
 	"api/entity"
 	"api/utility"
+	"context"
 	"net/http"
 )
 
 func AddToHousehold(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
+	var familyMember entity.User
+	var userId string
+	var token string
+
+	ctx := context.WithValue(r.Context(), utility.CtxKeyContinue, true)
 	ctx = utility.RequirePost(ctx, w, r)
-	ctx = utility.RequireValidToken(ctx, w, r)
-	ctx = utility.RequirePayloadUser(ctx, w, r)
+	ctx = utility.RequireValidToken(ctx, w, r, &userId, &token)
+	ctx = utility.RequirePayload(ctx, w, r, &familyMember)
 	if ctx.Value(utility.CtxKeyContinue) == false {
 		return
 	}
-	userId := ctx.Value("userId").(string)
-	familyMember := ctx.Value("user").(entity.User)
 
 	var familyMemberFound bool = false
 	utility.DB.QueryRow("SELECT COUNT(*) > 0 AS found FROM users WHERE users_add_numerics_0 = 0 AND users_id = ? AND users_add_strings_0 = ?", familyMember.Userid, familyMember.Username).Scan(&familyMemberFound)
@@ -77,5 +80,5 @@ func AddToHousehold(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	utility.ReturnSelfSession(ctx, w, r, nil)
+	utility.ReturnSelfSession(userId, w, r, nil)
 }
