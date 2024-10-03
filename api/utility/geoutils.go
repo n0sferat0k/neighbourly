@@ -12,7 +12,7 @@ const MaxNeighbourhoodSizeMeters = 10000  // 10 km
 const MinClusterDiversity = 3
 const GpsSampleTarget = 100
 const GpsPrecisionFactor = 1000000
-const NightStart = "20:00:00"
+const NightStart = "18:00:00"
 const NightEnd = "09:00:00"
 
 // haversineDistance calculates the distance between two GPS coordinates in meters.
