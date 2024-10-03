@@ -2,6 +2,8 @@ package com.neighbourly.app.b_adapt.viewmodel.navigation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.MainMenu
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ManageProfile
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdAddMember
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdInfoEdit
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdLocalize
@@ -35,6 +37,7 @@ public class NavigationViewModel(
                             mainContentVisible = true,
                             addingNewHousehold = false,
                             profileContent = ProfileInfoEdit,
+                            restrictedContent = !loggedIn || user?.household?.location == null || user.neighbourhoods.isEmpty(),
                         )
                     }
                 }
@@ -51,30 +54,74 @@ public class NavigationViewModel(
     }
 
     fun toggleMainContent() {
-        _state.update { it.copy(mainContentVisible = if (it.disableMainToggle) true else !it.mainContentVisible) }
+        if (_state.value.mainContentVisible) {
+            _state.update {
+                it.copy(
+                    mainContentVisible = it.disableMainToggle,
+                    mainContent = MainMenu,
+                    profileContent = ProfileInfoEdit,
+                    addingNewHousehold = false,
+                )
+            }
+        } else {
+            _state.update { it.copy(mainContentVisible = true) }
+        }
+    }
+
+    fun goToProfile() {
+        _state.update {
+            it.copy(
+                mainContentVisible = true,
+                mainContent = ManageProfile,
+                profileContent = ProfileInfoEdit,
+            )
+        }
+    }
+
+    fun goToMainPage(page: MainContent) {
+        _state.update {
+            it.copy(
+                mainContentVisible = true,
+                mainContent = page,
+            )
+        }
     }
 
     fun goToScanMemberForHousehold() {
-        _state.update { it.copy(mainContentVisible = true, profileContent = HouseholdScanMember) }
+        _state.update {
+            it.copy(
+                mainContentVisible = true,
+                mainContent = ManageProfile,
+                profileContent = HouseholdScanMember,
+            )
+        }
     }
 
     fun goToScanMemberHouseholdForNeighbourhood(neighbourhoodid: Int) {
         _state.update {
             it.copy(
                 mainContentVisible = true,
+                mainContent = ManageProfile,
                 profileContent = NeighbourhoodScanMember(neighbourhoodid),
             )
         }
     }
 
     fun goToProfileInfoEdit() {
-        _state.update { it.copy(mainContentVisible = true, profileContent = ProfileInfoEdit) }
+        _state.update {
+            it.copy(
+                mainContentVisible = true,
+                mainContent = ManageProfile,
+                profileContent = ProfileInfoEdit,
+            )
+        }
     }
 
     fun goToHouseholdInfoEdit() {
         _state.update {
             it.copy(
                 mainContentVisible = true,
+                mainContent = ManageProfile,
                 profileContent = HouseholdInfoEdit,
                 addingNewHousehold = false,
             )
@@ -82,11 +129,23 @@ public class NavigationViewModel(
     }
 
     fun goToHouseholdLocalize() {
-        _state.update { it.copy(mainContentVisible = true, profileContent = HouseholdLocalize) }
+        _state.update {
+            it.copy(
+                mainContentVisible = true,
+                mainContent = ManageProfile,
+                profileContent = HouseholdLocalize,
+            )
+        }
     }
 
     fun goToNeighbourhoodInfoEdit() {
-        _state.update { it.copy(mainContentVisible = true, profileContent = NeighbourhoodInfoEdit) }
+        _state.update {
+            it.copy(
+                mainContentVisible = true,
+                mainContent = ManageProfile,
+                profileContent = NeighbourhoodInfoEdit,
+            )
+        }
     }
 
     fun goToNeighbourhoodAddHousehold(
@@ -97,12 +156,13 @@ public class NavigationViewModel(
         _state.update {
             it.copy(
                 mainContentVisible = true,
+                mainContent = ManageProfile,
                 profileContent =
-                    NeighbourhoodAddMemberHousehold(
-                        neighbourhoodid,
-                        id,
-                        username,
-                    ),
+                NeighbourhoodAddMemberHousehold(
+                    neighbourhoodid,
+                    id,
+                    username,
+                ),
             )
         }
     }
@@ -114,6 +174,7 @@ public class NavigationViewModel(
         _state.update {
             it.copy(
                 mainContentVisible = true,
+                mainContent = ManageProfile,
                 profileContent = HouseholdAddMember(id, username),
             )
         }
@@ -121,7 +182,12 @@ public class NavigationViewModel(
 
     fun goToAddHousehold() {
         _state.update {
-            it.copy(addingNewHousehold = true)
+            it.copy(
+                mainContentVisible = true,
+                mainContent = ManageProfile,
+                profileContent = HouseholdInfoEdit,
+                addingNewHousehold = true,
+            )
         }
     }
 
@@ -134,10 +200,28 @@ public class NavigationViewModel(
     data class NavigationViewState(
         val userLoggedIn: Boolean = false,
         val disableMainToggle: Boolean = false,
+        val restrictedContent: Boolean = true,
         val mainContentVisible: Boolean = false,
         val addingNewHousehold: Boolean = false,
+        val mainContent: MainContent = MainMenu,
         val profileContent: ProfileContent = ProfileInfoEdit,
     )
+
+    sealed class MainContent {
+        object MainMenu : MainContent()
+
+        object ManageProfile : MainContent()
+        object ManageMyStuff : MainContent()
+        object PublishStuff : MainContent()
+
+        object FindDonations : MainContent()
+        object FindBarters : MainContent()
+        object FindSales : MainContent()
+        object FindEvents : MainContent()
+        object FindNeeds : MainContent()
+        object FindRequests : MainContent()
+        object FindSkillshare : MainContent()
+    }
 
     sealed class ProfileContent {
         object ProfileInfoEdit : ProfileContent()

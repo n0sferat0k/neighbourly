@@ -1,6 +1,5 @@
 package com.neighbourly.app
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,7 +18,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.a_device.ui.AppColors
-import com.neighbourly.app.a_device.ui.ContentBox
 import com.neighbourly.app.a_device.ui.HalfCircleHalo
 import com.neighbourly.app.a_device.ui.MainContent
 import com.neighbourly.app.a_device.ui.Map
@@ -71,10 +69,8 @@ fun App(
                         }),
             )
 
-            AnimatedVisibility(navigation.mainContentVisible) {
-                ContentBox {
-                    MainContent()
-                }
+            if (navigation.mainContentVisible) {
+                MainContent()
             }
         }
     }

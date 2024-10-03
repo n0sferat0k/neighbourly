@@ -68,16 +68,12 @@ fun BoxHeader(
             colorFilter = ColorFilter.tint(AppColors.primary),
             contentDescription = null,
         )
-        Text(
+        CurlyText(
             modifier = Modifier.align(Alignment.Bottom).padding(start = 5.dp),
             text = stringResource(Res.string.app_name),
-            style =
-                TextStyle(
-                    fontFamily = font(),
-                    fontSize = 24.sp,
-                    color = AppColors.primary,
-                ),
+            fontSize = 24.sp,
         )
+
         if (busy) {
             CircularProgressIndicator(
                 modifier = Modifier.size(36.dp).align(Alignment.Bottom).padding(start = 5.dp),
@@ -252,7 +248,7 @@ fun HalfCircleHalo(modifier: Modifier = Modifier) {
 @Composable
 fun ContentBox(
     modifier: Modifier = Modifier,
-    content: @Composable androidx.compose.foundation.layout.BoxScope.() -> Unit,
+    content: @Composable BoxScope.() -> Unit,
 ) {
     Box(
         modifier =

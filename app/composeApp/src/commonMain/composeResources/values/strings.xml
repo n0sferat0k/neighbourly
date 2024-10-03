@@ -25,6 +25,20 @@
     <string name="add_to_neighbourhood">Add To Neighbourhood</string>
     <string name="neighbourhood_acc">Neighbourhoods Acc:</string>
 
+    <string name="profile">Profile</string>
+    <string name="mystuff">My Stuff</string>
+    <string name="publish">Publish</string>
+
+    <string name="donations">Donations</string>
+    <string name="bartering">Bartering</string>
+    <string name="sales">Sales</string>
+    <string name="events">Events</string>
+    <string name="needs">Needs</string>
+    <string name="requests">Requests</string>
+    <string name="skillshare">Skillshare</string>
+
+    <string name="under_construction">Under Construction !</string>
+
     <string name="err_password_mismatch">The two passwords must match</string>
     <string name="invite_or_create_household">You need to define a household, use the below QR code to be invited to an existing household or create your own from scratch !</string>
     <string name="create_from_scratch">Create household from scratch !</string>

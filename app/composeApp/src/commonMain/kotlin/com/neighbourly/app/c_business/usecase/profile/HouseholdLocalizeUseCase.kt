@@ -2,6 +2,8 @@ package com.neighbourly.app.c_business.usecase.profile
 
 import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.SessionStore
+import java.util.Calendar
+import java.util.TimeZone
 
 class HouseholdLocalizeUseCase(
     val apiGw: Api,
@@ -21,7 +23,10 @@ class HouseholdLocalizeUseCase(
     ) {
         val token = sessionStore.token
         token?.let {
-            apiGw.gpsLog(token, -10, latitude, longitude)
+            val timeZone = TimeZone.getDefault()
+            val offsetInMillis = timeZone.rawOffset + if (timeZone.inDaylightTime(Calendar.getInstance().time)) timeZone.dstSavings else 0
+            val timeZoneHours = offsetInMillis / (1000 * 60 * 60)
+            apiGw.gpsLog(token, timeZoneHours, latitude, longitude)
         }
     }
 

@@ -266,3 +266,6 @@ ERROR: No matching issuer found
 [1002/165327.897:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
 [1002/165328.309:INFO:CONSOLE(42)] "Error: Cannot remove non-existing layer "heatmap".", source: https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.js (42)
 [1002/165328.310:INFO:CONSOLE(17)] "Uncaught Error: Invalid arguments; expecting a single integer", source: file:///kcefbrowser/1782926404#url=about:blank (17)
+[1003/095553.429:INFO:CONSOLE(13)] "add callback: 0, function (data) { }", source:  (13)
+[1003/095554.023:INFO:CONSOLE(42)] "Error: Cannot remove non-existing layer "heatmap".", source: https://unpkg.com/maplibre-gl@4.6.0/dist/maplibre-gl.js (42)
+[1003/095554.024:INFO:CONSOLE(17)] "Uncaught Error: Invalid arguments; expecting a single integer", source: file:///kcefbrowser/542904888#url=about:blank (17)
