@@ -75,7 +75,7 @@ func UpdateNeighbourhood(w http.ResponseWriter, r *http.Request) {
 						neighbourhood_household_users 
 					WHERE 
 						neighbourhood_household_users_add_numerics_0 = ?
-						AND
+					AND
 						neighbourhood_household_users_add_numerics_2 = ?`, neighbourhood.Neighbourhoodid, userId).Scan(&accLevel)
 
 		if err != nil || accLevel < 500 {
