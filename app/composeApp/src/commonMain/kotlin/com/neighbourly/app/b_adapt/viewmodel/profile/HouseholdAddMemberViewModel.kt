@@ -3,7 +3,7 @@ package com.neighbourly.app.b_adapt.viewmodel.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.c_business.usecase.profile.FetchProfileUseCase
-import com.neighbourly.app.c_business.usecase.profile.HouseholdMemberAddUseCase
+import com.neighbourly.app.c_business.usecase.profile.HouseholdManagementUseCase
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +17,7 @@ import kotlin.math.min
 
 class HouseholdAddMemberViewModel(
     val sessionStore: SessionStore,
-    val householdMemberAddUseCase: HouseholdMemberAddUseCase,
+    val householdManagementUseCase: HouseholdManagementUseCase,
     val fetchProfileUseCase: FetchProfileUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(HouseholdAddMemberViewState())
@@ -48,7 +48,7 @@ class HouseholdAddMemberViewModel(
         viewModelScope.launch {
             try {
                 _state.update { it.copy(error = "", adding = true) }
-                householdMemberAddUseCase.execute(_state.value.id, _state.value.username)
+                householdManagementUseCase.addMember(_state.value.id, _state.value.username)
                 _state.update { it.copy(error = "", adding = false, added = true) }
             } catch (e: OpException) {
                 _state.update { it.copy(error = e.msg, adding = false) }

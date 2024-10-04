@@ -20,12 +20,9 @@ import com.neighbourly.app.c_business.usecase.auth.LoginUseCase
 import com.neighbourly.app.c_business.usecase.auth.LogoutUseCase
 import com.neighbourly.app.c_business.usecase.auth.RegisterUseCase
 import com.neighbourly.app.c_business.usecase.profile.FetchProfileUseCase
-import com.neighbourly.app.c_business.usecase.profile.HouseholdImageUpdateUseCase
-import com.neighbourly.app.c_business.usecase.profile.HouseholdInfoUpdateUseCase
+import com.neighbourly.app.c_business.usecase.profile.HouseholdManagementUseCase
 import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
-import com.neighbourly.app.c_business.usecase.profile.HouseholdMemberAddUseCase
 import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUseCase
-import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodMemberAddUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileImageUpdateUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileUpdateUseCase
@@ -101,7 +98,7 @@ val adapterModule =
             HouseholdLocalizeViewModel(get(), get())
         }
         factory {
-            HouseholdInfoEditViewModel(get(), get(), get())
+            HouseholdInfoEditViewModel(get(), get())
         }
         factory {
             NeighbourhoodInfoViewModel(get(), get())
@@ -138,19 +135,10 @@ val useCaseModule =
             HouseholdLocalizeUseCase(get(), get())
         }
         single {
-            HouseholdInfoUpdateUseCase(get(), get())
-        }
-        single {
-            HouseholdImageUpdateUseCase(get(), get())
+            HouseholdManagementUseCase(get(), get())
         }
         single {
             NeighbourhoodManagementUseCase(get(), get())
-        }
-        single {
-            HouseholdMemberAddUseCase(get(), get())
-        }
-        single {
-            NeighbourhoodMemberAddUseCase(get(), get())
         }
         single {
             FetchProfileUseCase(get(), get())

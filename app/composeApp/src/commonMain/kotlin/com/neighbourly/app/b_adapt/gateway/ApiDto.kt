@@ -105,8 +105,8 @@ data class HouseholdDTO(
 @Serializable
 data class NeighbourhoodDTO(
     val neighbourhoodid: Int,
-    val name: String,
-    val geofence: String,
-    val access: Int,
+    val name: String? = null,
+    val geofence: String? = null,
+    val access: Int? = null,
     val parent: UserDTO? = null,
 )

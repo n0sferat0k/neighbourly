@@ -12,8 +12,8 @@ type Neighbourhood struct {
 
 type Household struct {
 	Householdid *int64   `json:"householdid"`
-	Name        *string  `json:"name"`
-	HeadID      *int64   `json:"headid"`
+	Name        *string  `json:"name,omitempty"`
+	HeadID      *int64   `json:"headid,omitempty"`
 	About       *string  `json:"about,omitempty"`
 	ImageURL    *string  `json:"imageurl,omitempty"`
 	Latitude    *float64 `json:"latitude,omitempty"`

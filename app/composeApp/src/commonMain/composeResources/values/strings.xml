@@ -17,6 +17,7 @@
     <string name="address">Address</string>
     <string name="about">About</string>
     <string name="add_member">Add Member</string>
+    <string name="leave_household">Leave Household</string>
     <string name="accept">Accept</string>
     <string name="retry">Retry</string>
     <string name="relocate">Relocate</string>
@@ -24,6 +25,12 @@
     <string name="add_to_household">Add To Household</string>
     <string name="add_to_neighbourhood">Add To Neighbourhood</string>
     <string name="neighbourhood_acc">Neighbourhoods Acc:</string>
+
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="leaving">Leaving</string>
+    <string name="confirm_leaving_neighbourhood">This action will take you and your entire household out of this neighbourhood, If you are the creator of the neighbourhood, it will be inherited by the next in line. Are you sure you want to continue ?</string>
+    <string name="confirm_leaving_household">Leaving a household will also take out of any neighbourhoods you are in, are you sure you want to continue ?</string>
 
     <string name="profile">Profile</string>
     <string name="mystuff">My Stuff</string>

@@ -21,7 +21,7 @@ func AddToHousehold(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var familyMemberFound bool = false
-	utility.DB.QueryRow("SELECT COUNT(*) > 0 AS found FROM users WHERE users_add_numerics_0 = 0 AND users_id = ? AND users_add_strings_0 = ?", familyMember.Userid, familyMember.Username).Scan(&familyMemberFound)
+	utility.DB.QueryRow("SELECT COUNT(*) > 0 AS found FROM users WHERE users_add_numerics_0 = -1 AND users_id = ? AND users_add_strings_0 = ?", familyMember.Userid, familyMember.Username).Scan(&familyMemberFound)
 	if !familyMemberFound {
 		http.Error(w, "User not found, or already added to household", http.StatusNotFound)
 		return
@@ -34,7 +34,7 @@ func AddToHousehold(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := utility.DB.Exec(`UPDATE users SET users_add_numerics_0 = ? WHERE users_add_numerics_0 = 0 AND users_id = ? AND users_add_strings_0 = ?`,
+	_, err := utility.DB.Exec(`UPDATE users SET users_add_numerics_0 = ? WHERE users_add_numerics_0 = -1 AND users_id = ? AND users_add_strings_0 = ?`,
 		householdId, familyMember.Userid, familyMember.Username)
 	if err != nil {
 		http.Error(w, "Failed to add user to household "+err.Error(), http.StatusInternalServerError)

@@ -7,6 +7,7 @@ import com.neighbourly.app.b_adapt.gateway.FetchProfileInput
 import com.neighbourly.app.b_adapt.gateway.GpsItemDTO
 import com.neighbourly.app.b_adapt.gateway.GpsLogInput
 import com.neighbourly.app.b_adapt.gateway.LoginInput
+import com.neighbourly.app.b_adapt.gateway.NeighbourhoodDTO
 import com.neighbourly.app.b_adapt.gateway.RegisterInput
 import com.neighbourly.app.b_adapt.gateway.UpdateHouseholdInput
 import com.neighbourly.app.b_adapt.gateway.UpdateNeighbourhoodInput
@@ -145,6 +146,24 @@ class KtorApi {
         }
     }
 
+    suspend fun leaveHousehold(
+        baseUrl: String,
+        token: String,
+    ): UserDTO {
+        val response: HttpResponse =
+            client.post(baseUrl + "profile/leaveHousehold") {
+                contentType(ContentType.Application.Json)
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
+            }
+        if (response.status.value == 200) {
+            return response.body<UserDTO>()
+        } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
     suspend fun addMemberToHousehold(
         baseUrl: String,
         token: String,
@@ -202,6 +221,27 @@ class KtorApi {
             throw ApiException(response.bodyAsText())
         }
     }
+
+    suspend fun leaveNeighbourhood(
+        baseUrl: String,
+        token: String,
+        neighbourhoodId: Int,
+    ): UserDTO {
+        val response: HttpResponse =
+            client.post(baseUrl + "profile/leaveNeighbourhood") {
+                contentType(ContentType.Application.Json)
+                setBody(NeighbourhoodDTO(neighbourhoodid = neighbourhoodId))
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
+            }
+        if (response.status.value == 200) {
+            return response.body<UserDTO>()
+        } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
 
     suspend fun refreshProfile(
         baseUrl: String,

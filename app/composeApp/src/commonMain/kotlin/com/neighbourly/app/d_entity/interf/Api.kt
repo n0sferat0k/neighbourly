@@ -56,6 +56,10 @@ interface Api {
         about: String,
     ): User
 
+    suspend fun leaveHousehold(
+        token: String,
+    ): User
+
     suspend fun addMemberToHousehold(
         token: String,
         id: Int,
@@ -75,6 +79,11 @@ interface Api {
         id: Int? = null,
         name: String,
         geofence: List<GpsItem>,
+    ): User
+
+    suspend fun leaveNeighbourhood(
+        token: String,
+        neighbourhoodId: Int,
     ): User
 
     suspend fun gpsLog(

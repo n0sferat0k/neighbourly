@@ -30,15 +30,17 @@ import neighbourly.composeapp.generated.resources.username
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun Login(viewModel: LoginViewModel = viewModel { KoinProvider.KOIN.get<LoginViewModel>() }) {
+fun Login(
+    modifier: Modifier = Modifier,
+    viewModel: LoginViewModel = viewModel { KoinProvider.KOIN.get<LoginViewModel>() }
+) {
     val state by viewModel.state.collectAsState()
     var username by remember { mutableStateOf("n0sferat0k") }
     var password by remember { mutableStateOf("caca") }
 
     Column(
-        modifier =
-            Modifier
-                .widthIn(max = 400.dp),
+        modifier = modifier
+            .widthIn(max = 400.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         // Username Input

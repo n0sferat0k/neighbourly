@@ -3,7 +3,7 @@ package com.neighbourly.app.b_adapt.viewmodel.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.c_business.usecase.profile.FetchProfileUseCase
-import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodMemberAddUseCase
+import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUseCase
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +17,7 @@ import kotlin.math.min
 
 class NeighbourhoodAddMemberViewModel(
     val sessionStore: SessionStore,
-    val neighbourhoodMemberAddUseCase: NeighbourhoodMemberAddUseCase,
+    val neighbourhoodManagementUseCase: NeighbourhoodManagementUseCase,
     val fetchProfileUseCase: FetchProfileUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(NeighbourhoodAddMemberViewState())
@@ -64,7 +64,7 @@ class NeighbourhoodAddMemberViewModel(
         viewModelScope.launch {
             try {
                 _state.update { it.copy(error = "", adding = true) }
-                neighbourhoodMemberAddUseCase.execute(
+                neighbourhoodManagementUseCase.addMember(
                     _state.value.neighbourhoodid,
                     _state.value.id,
                     _state.value.username,

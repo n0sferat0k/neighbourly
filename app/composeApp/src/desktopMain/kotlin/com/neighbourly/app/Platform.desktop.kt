@@ -1,3 +1,5 @@
+@file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+
 package com.neighbourly.app
 
 import androidx.compose.runtime.Composable
@@ -21,12 +23,6 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import javax.imageio.ImageIO
 import kotlin.io.path.readBytes
-
-class JVMPlatform : Platform {
-    override val isWide: Boolean = true
-}
-
-actual fun getPlatform(): Platform = JVMPlatform()
 
 @Composable
 actual fun requestPermissions() {
@@ -52,10 +48,8 @@ actual object GetLocation {
     }
 }
 
-actual fun loadImageFromFile(file: String): BitmapPainter? = BitmapPainter(ImageIO.read(File(file)).toComposeImageBitmap())
-
-actual fun loadImageFromByteAray(content: ByteArray): BitmapPainter? =
-    BitmapPainter(ImageIO.read(content.inputStream()).toComposeImageBitmap())
+actual fun loadImageFromFile(file: String): BitmapPainter? =
+    BitmapPainter(ImageIO.read(File(file)).toComposeImageBitmap())
 
 actual fun loadContentsFromFile(file: String): FileContents? {
     val path: Path = Paths.get(file)
@@ -70,31 +64,18 @@ actual fun loadContentsFromFile(file: String): FileContents? {
 actual fun getPhoneNumber(): String = ""
 
 actual val httpClientEngine: HttpClientEngine = CIO.create()
-actual val keyValueRegistry: KeyValueRegistry = DesktopFileBasedRegistry()
-actual val isLargeLandscape: Boolean
-    get() = TODO("Not yet implemented")
 
-actual fun generateQrCode(
-    content: String,
-    size: Int,
-): ImageBitmap {
-    val bitMatrix: BitMatrix =
-        MultiFormatWriter().encode(
-            content,
-            BarcodeFormat.QR_CODE,
-            size,
-            size,
-            null,
-        )
-    val bufferedImage = BufferedImage(size, size, BufferedImage.TYPE_INT_RGB)
-    for (x in 0 until size) {
-        for (y in 0 until size) {
-            bufferedImage.setRGB(
-                x,
-                y,
-                if (bitMatrix[x, y]) Color.BLACK.rgb else Color.WHITE.rgb,
-            )
-        }
+actual val keyValueRegistry: KeyValueRegistry = DesktopFileBasedRegistry()
+
+actual class PlatformBitmap actual constructor(width: Int, height: Int) {
+    private val innerBmp: BufferedImage
+
+    init {
+        innerBmp = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
     }
-    return bufferedImage.toComposeImageBitmap()
+
+    actual fun setPixel(x: Int, y: Int, value: Int) =
+        innerBmp.setRGB(x, y, value)
+
+    actual fun asImageBitmap(): ImageBitmap = innerBmp.toComposeImageBitmap()
 }

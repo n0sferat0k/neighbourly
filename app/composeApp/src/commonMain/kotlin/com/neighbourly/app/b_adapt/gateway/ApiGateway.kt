@@ -82,6 +82,17 @@ class ApiGateway(
                 ).toUser()
         }
 
+    override suspend fun leaveHousehold(
+        token: String,
+    ): User =
+        runContextCatchTranslateThrow {
+            api
+                .leaveHousehold(
+                    API_BASE_URL,
+                    token,
+                ).toUser()
+        }
+
     override suspend fun addMemberToHousehold(
         token: String,
         id: Int,
@@ -134,17 +145,26 @@ class ApiGateway(
                         neighbourhoodid = id,
                         name = name,
                         geofence =
-                            Json.encodeToString(
-                                geofence
-                                    .map {
-                                        listOf(
-                                            it.latitude,
-                                            it.longitude,
-                                        )
-                                    }.toList(),
-                            ),
+                        Json.encodeToString(
+                            geofence
+                                .map {
+                                    listOf(
+                                        it.latitude,
+                                        it.longitude,
+                                    )
+                                }.toList(),
+                        ),
                     ),
                 ).toUser()
+        }
+
+    override suspend fun leaveNeighbourhood(
+        token: String,
+        neighbourhoodId: Int,
+    ): User =
+        runContextCatchTranslateThrow {
+            api
+                .leaveNeighbourhood(API_BASE_URL, token, neighbourhoodId).toUser()
         }
 
     override suspend fun refreshProfile(token: String): User =

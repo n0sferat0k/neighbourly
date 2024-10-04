@@ -33,13 +33,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.MultipleFilePicker
 import com.neighbourly.app.KoinProvider
+import com.neighbourly.app.a_device.ui.Alert
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.CurlyButton
 import com.neighbourly.app.a_device.ui.CurlyText
 import com.neighbourly.app.a_device.ui.ErrorText
+import com.neighbourly.app.a_device.ui.utils.generateQrCode
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdInfoEditViewModel
-import com.neighbourly.app.generateQrCode
 import com.neighbourly.app.loadContentsFromFile
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -47,10 +48,13 @@ import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.about
 import neighbourly.composeapp.generated.resources.add_member
 import neighbourly.composeapp.generated.resources.address
+import neighbourly.composeapp.generated.resources.confirm_leaving_household
 import neighbourly.composeapp.generated.resources.create_from_scratch
 import neighbourly.composeapp.generated.resources.householdName
 import neighbourly.composeapp.generated.resources.houses
 import neighbourly.composeapp.generated.resources.invite_or_create_household
+import neighbourly.composeapp.generated.resources.leave_household
+import neighbourly.composeapp.generated.resources.leaving
 import neighbourly.composeapp.generated.resources.list_household_members
 import neighbourly.composeapp.generated.resources.save
 import org.jetbrains.compose.resources.painterResource
@@ -66,6 +70,7 @@ fun HouseholdInfoEditView(
 
     val defaultHouseImg = painterResource(Res.drawable.houses)
     var showFilePicker by remember { mutableStateOf(false) }
+    var showRemoveAlert by remember { mutableStateOf(false) }
 
     if (!state.hasHousehold && !navigation.addingNewHousehold) {
         Column {
@@ -76,17 +81,17 @@ fun HouseholdInfoEditView(
                     painter = BitmapPainter(generateQrCode(it, 400)),
                     contentDescription = "QR Code",
                     modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
+                    Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
                 )
             }
 
             CurlyText(
                 modifier =
-                    Modifier.clickable {
-                        navigationViewModel.goToAddHousehold()
-                    },
+                Modifier.clickable {
+                    navigationViewModel.goToAddHousehold()
+                },
                 bold = true,
                 text = stringResource(Res.string.create_from_scratch),
             )
@@ -122,15 +127,15 @@ fun HouseholdInfoEditView(
 
                     Box(
                         modifier =
-                            Modifier
-                                .size(60.dp)
-                                .align(Alignment.Bottom)
-                                .border(2.dp, AppColors.primary, CircleShape)
-                                .clickable {
-                                    if (state.editableHousehold) {
-                                        showFilePicker = true
-                                    }
-                                },
+                        Modifier
+                            .size(60.dp)
+                            .align(Alignment.Bottom)
+                            .border(2.dp, AppColors.primary, CircleShape)
+                            .clickable {
+                                if (state.editableHousehold) {
+                                    showFilePicker = true
+                                }
+                            },
                         contentAlignment = Alignment.Center,
                     ) {
                         state.imageurl.let {
@@ -207,16 +212,41 @@ fun HouseholdInfoEditView(
 
                 Spacer(modifier = Modifier.height(8.dp))
             }
-
-            if (state.editableHousehold) {
-                CurlyText(
-                    modifier =
+            Box(modifier = Modifier.fillMaxWidth()) {
+                if (state.editableHousehold) {
+                    CurlyText(
+                        modifier =
                         Modifier
                             .clickable {
                                 navigationViewModel.goToScanMemberForHousehold()
-                            }.align(Alignment.Start),
+                            }.align(Alignment.CenterStart),
+                        bold = true,
+                        text = stringResource(Res.string.add_member),
+                    )
+                }
+
+                if (showRemoveAlert) {
+                    Alert(
+                        title = stringResource(Res.string.leaving) + " " + state.name,
+                        text = stringResource(Res.string.confirm_leaving_household),
+                        ok = {
+                            showRemoveAlert = false
+                            viewModel.onLeaveHousehold()
+                        },
+                        cancel = {
+                            showRemoveAlert = false
+                        }
+                    )
+                }
+
+                CurlyText(
+                    modifier =
+                    Modifier
+                        .clickable {
+                            showRemoveAlert = true
+                        }.align(Alignment.CenterEnd),
                     bold = true,
-                    text = stringResource(Res.string.add_member),
+                    text = stringResource(Res.string.leave_household),
                 )
             }
 

@@ -27,14 +27,14 @@ fun HouseholdDTO.toHousehold(): Household =
         imageurl = imageurl?.prependResourceUrlBase(),
         headid = headid,
         location =
-            if (latitude != null && longitude != null && latitude != 0f && longitude != 0f) {
-                Pair(
-                    latitude,
-                    longitude,
-                )
-            } else {
-                null
-            },
+        if (latitude != null && longitude != null && latitude != 0f && longitude != 0f) {
+            Pair(
+                latitude,
+                longitude,
+            )
+        } else {
+            null
+        },
         address = address,
         gpsprogress = gpsprogress,
         members = members?.map { it.toUser() },
@@ -43,9 +43,9 @@ fun HouseholdDTO.toHousehold(): Household =
 fun NeighbourhoodDTO.toNeighbourhood(): Neighbourhood =
     Neighbourhood(
         neighbourhoodid = neighbourhoodid,
-        name = name,
-        geofence = geofence,
-        access = access,
+        name = name.orEmpty(),
+        geofence = geofence.orEmpty(),
+        access = access ?: 0,
         parent = parent?.toUser(),
     )
 
@@ -56,6 +56,7 @@ fun GpsItemDTO.toGpsItem(): GpsItem =
         frequency = frequency,
     )
 
-fun String.prependResourceUrlBase() = this.takeIf { !it.isNullOrBlank() }?.let { CONTENT_BASE_URL + it } ?: this
+fun String.prependResourceUrlBase() =
+    this.takeIf { !it.isNullOrBlank() }?.let { CONTENT_BASE_URL + it } ?: this
 
 const val CONTENT_BASE_URL = "http://neighbourly.go.ro/"

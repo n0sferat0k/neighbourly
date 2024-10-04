@@ -53,15 +53,14 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 			users_add_strings_2,
 			users_text_EN,
 			users_pic,
-			users_data) 
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+			users_data
+			users_add_numerics_0) 
+		VALUES (?, ?, ?, ?, ?, "", "", ?, -1)`,
 			user.Username,
 			hashedPassword,
 			user.Fullname,
 			user.Email,
 			user.Phone,
-			"",
-			"",
 			now.Unix())
 		if err != nil {
 			http.Error(w, "Failed to register user "+err.Error(), http.StatusInternalServerError)

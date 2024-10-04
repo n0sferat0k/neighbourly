@@ -2,8 +2,7 @@ package com.neighbourly.app.b_adapt.viewmodel.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.neighbourly.app.c_business.usecase.profile.HouseholdImageUpdateUseCase
-import com.neighbourly.app.c_business.usecase.profile.HouseholdInfoUpdateUseCase
+import com.neighbourly.app.c_business.usecase.profile.HouseholdManagementUseCase
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.interf.SessionStore
@@ -16,8 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class HouseholdInfoEditViewModel(
-    val householdInfoUpdateUseCase: HouseholdInfoUpdateUseCase,
-    val householdImageUpdateUseCase: HouseholdImageUpdateUseCase,
+    val householdManagementUseCase: HouseholdManagementUseCase,
     val sessionStore: SessionStore,
 ) : ViewModel() {
     private val _state = MutableStateFlow(HouseholdInfoEditViewState())
@@ -63,7 +61,7 @@ class HouseholdInfoEditViewModel(
             viewModelScope.launch {
                 try {
                     _state.update { it.copy(error = "", saving = true) }
-                    householdInfoUpdateUseCase.execute(
+                    householdManagementUseCase.updateInfo(
                         it.nameOverride ?: it.name,
                         it.addressOverride ?: it.address,
                         it.aboutOverride ?: it.about,
@@ -81,13 +79,24 @@ class HouseholdInfoEditViewModel(
             try {
                 fileContents?.let {
                     _state.update { it.copy(error = "", imageUpdating = true) }
-                    householdImageUpdateUseCase.execute(it)
+                    householdManagementUseCase.updateImage(it)
                     _state.update { it.copy(error = "", imageUpdating = false) }
                 } ?: run {
                     _state.update { it.copy(error = "Unable to read file", imageUpdating = false) }
                 }
             } catch (e: OpException) {
                 _state.update { it.copy(error = e.msg, imageUpdating = false) }
+            }
+        }
+    }
+
+    fun onLeaveHousehold() {
+        viewModelScope.launch {
+            try {
+                _state.update { it.copy(error = "") }
+                householdManagementUseCase.leaveHousehold()
+            } catch (e:OpException) {
+                _state.update { it.copy(error = e.msg) }
             }
         }
     }

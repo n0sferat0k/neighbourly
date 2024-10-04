@@ -1,3 +1,5 @@
+@file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+
 package com.neighbourly.app
 
 import androidx.compose.runtime.Composable
@@ -6,12 +8,6 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
-
-interface Platform {
-    val isWide: Boolean
-}
-
-expect fun getPlatform(): Platform
 
 @Composable
 expect fun requestPermissions()
@@ -26,8 +22,6 @@ expect object GetLocation {
 
 expect fun loadImageFromFile(file: String): BitmapPainter?
 
-expect fun loadImageFromByteAray(content: ByteArray): BitmapPainter?
-
 expect fun loadContentsFromFile(file: String): FileContents?
 
 expect fun getPhoneNumber(): String
@@ -36,9 +30,7 @@ expect val httpClientEngine: HttpClientEngine
 
 expect val keyValueRegistry: KeyValueRegistry
 
-expect val isLargeLandscape: Boolean
-
-expect fun generateQrCode(
-    content: String,
-    size: Int,
-): ImageBitmap
+expect class PlatformBitmap(width: Int, height: Int) {
+    fun setPixel(x: Int, y: Int, value: Int)
+    fun asImageBitmap(): ImageBitmap
+}

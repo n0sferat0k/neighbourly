@@ -7,9 +7,13 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -20,7 +24,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
@@ -85,9 +91,9 @@ actual fun BarcodeScanner(
                 }
         }
 
-    Box(modifier = modifier) {
+    Box(modifier = modifier.wrapContentSize().widthIn(max = 300.dp).heightIn(max = 400.dp)) {
         AndroidView(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.widthIn(max = 300.dp).heightIn(max = 400.dp).align(Alignment.Center),
             factory = { PreviewView(context) },
         ) { view ->
             val cameraProvider = ProcessCameraProvider.getInstance(context).get()

@@ -1,3 +1,5 @@
+@file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+
 package com.neighbourly.app
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
@@ -38,12 +40,6 @@ import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.okhttp.OkHttp
 import java.nio.file.Paths
-
-class AndroidPlatform : Platform {
-    override val isWide: Boolean = false
-}
-
-actual fun getPlatform(): Platform = AndroidPlatform()
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -122,11 +118,6 @@ actual fun loadImageFromFile(file: String): BitmapPainter? =
             ).asImageBitmap(),
     )
 
-actual fun loadImageFromByteAray(content: ByteArray): BitmapPainter? =
-    BitmapPainter(
-        BitmapFactory.decodeByteArray(content, 0, content.size).asImageBitmap(),
-    )
-
 actual fun loadContentsFromFile(file: String): FileContents? {
     val fileUri = file.toUri()
     NeighbourlyApp.appContext.contentResolver.let { contentResolver ->
@@ -169,30 +160,16 @@ actual val keyValueRegistry: KeyValueRegistry =
             Application.MODE_PRIVATE,
         ),
     )
-actual val isLargeLandscape: Boolean
-    get() = TODO("Not yet implemented")
 
-actual fun generateQrCode(
-    content: String,
-    size: Int,
-): ImageBitmap {
-    val bitMatrix: BitMatrix =
-        MultiFormatWriter().encode(
-            content,
-            BarcodeFormat.QR_CODE,
-            size,
-            size,
-            null,
-        )
-    val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-    for (x in 0 until size) {
-        for (y in 0 until size) {
-            bitmap.setPixel(
-                x,
-                y,
-                if (bitMatrix[x, y]) Color.BLACK else Color.WHITE,
-            )
-        }
+actual class PlatformBitmap actual constructor(width: Int, height: Int) {
+    private val innerBmp: Bitmap
+
+    init {
+        innerBmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
     }
-    return bitmap.asImageBitmap()
+
+    actual fun setPixel(x: Int, y: Int, value: Int) =
+        innerBmp.setPixel(x, y, value)
+
+    actual fun asImageBitmap(): ImageBitmap = innerBmp.asImageBitmap()
 }

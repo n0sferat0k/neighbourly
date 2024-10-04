@@ -14,10 +14,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
@@ -41,6 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.app_name
+import neighbourly.composeapp.generated.resources.cancel
+import neighbourly.composeapp.generated.resources.confirm
 import neighbourly.composeapp.generated.resources.curlzmt
 import neighbourly.composeapp.generated.resources.houses
 import neighbourly.composeapp.generated.resources.refresh
@@ -53,6 +57,37 @@ data object AppColors {
     val primaryLight: Color = Color(0xFFdeedee)
     val complementary: Color = Color(0xffae605b)
     val complementaryLight: Color = Color(0xFFeedfde)
+}
+
+
+@Composable
+fun Alert(
+    title: String,
+    text: String,
+    ok: (() -> Unit)? = null,
+    cancel: (() -> Unit)? = null,
+) {
+    AlertDialog(
+        onDismissRequest = { cancel?.invoke() },
+        title = { CurlyText(text = title) },
+        text = { CurlyText(text = text) },
+        confirmButton = {
+            CurlyButton(
+                text = stringResource(Res.string.confirm),
+                modifier = Modifier.padding(5.dp)
+            ) {
+                ok?.invoke()
+            }
+        },
+        dismissButton = {
+            CurlyButton(
+                text = stringResource(Res.string.cancel),
+                modifier = Modifier.padding(5.dp)
+            ) {
+                cancel?.invoke()
+            }
+        }
+    )
 }
 
 @Composable
@@ -86,13 +121,13 @@ fun BoxHeader(
         if (refresh != null) {
             Image(
                 modifier =
-                    Modifier
-                        .size(40.dp)
-                        .padding(4.dp)
-                        .align(Alignment.CenterVertically)
-                        .clickable {
-                            refresh()
-                        },
+                Modifier
+                    .size(40.dp)
+                    .padding(4.dp)
+                    .align(Alignment.CenterVertically)
+                    .clickable {
+                        refresh()
+                    },
                 painter = painterResource(Res.drawable.refresh),
                 colorFilter = ColorFilter.tint(AppColors.primary),
                 contentDescription = null,
@@ -107,24 +142,24 @@ fun BoxContent(
     content: @Composable BoxScope.() -> Unit,
 ) {
     Box(modifier.fillMaxWidth()) {
-        Box(modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
             Box(
-                modifier = modifier.fillMaxSize().padding(20.dp),
+                modifier = Modifier.wrapContentSize().padding(20.dp).align(Alignment.TopCenter),
                 content = content,
             )
         }
         Box(
-            modifier
+            Modifier
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
                         colorStops =
-                            arrayOf(
-                                0.0f to Color.White,
-                                0.05f to Color.Transparent,
-                                0.95f to Color.Transparent,
-                                1f to Color.White,
-                            ),
+                        arrayOf(
+                            0.0f to Color.White,
+                            0.05f to Color.Transparent,
+                            0.95f to Color.Transparent,
+                            1f to Color.White,
+                        ),
                     ),
                 ),
         )
@@ -163,12 +198,12 @@ fun CurlyText(
         modifier = modifier,
         text = text,
         style =
-            TextStyle(
-                fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
-                fontFamily = font(),
-                fontSize = fontSize,
-                color = AppColors.primary,
-            ),
+        TextStyle(
+            fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
+            fontFamily = font(),
+            fontSize = fontSize,
+            color = AppColors.primary,
+        ),
     )
 }
 
@@ -182,18 +217,18 @@ fun CurlyButton(
     Button(
         onClick = onClick,
         modifier =
-            modifier
-                .wrapContentWidth()
-                .height(48.dp),
+        modifier
+            .wrapContentWidth()
+            .height(48.dp),
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = AppColors.primary),
     ) {
         if (loading) {
             CircularProgressIndicator(
                 modifier =
-                    Modifier
-                        .size(24.dp)
-                        .padding(end = 8.dp),
+                Modifier
+                    .size(24.dp)
+                    .padding(end = 8.dp),
                 color = Color.White,
                 strokeWidth = 2.dp,
             )
@@ -202,11 +237,11 @@ fun CurlyButton(
             text = text,
             color = Color.White,
             style =
-                TextStyle(
-                    fontFamily = font(),
-                    fontSize = 18.sp,
-                    color = AppColors.primary,
-                ),
+            TextStyle(
+                fontFamily = font(),
+                fontSize = 18.sp,
+                color = AppColors.primary,
+            ),
         )
     }
 }
@@ -217,10 +252,10 @@ fun ErrorText(errMsg: String) {
         text = errMsg,
         color = Color.Red,
         style =
-            TextStyle(
-                fontFamily = font(),
-                fontSize = 18.sp,
-            ),
+        TextStyle(
+            fontFamily = font(),
+            fontSize = 18.sp,
+        ),
     )
 }
 
@@ -233,11 +268,11 @@ fun HalfCircleHalo(modifier: Modifier = Modifier) {
         drawIntoCanvas { canvas ->
             drawRect(
                 brush =
-                    Brush.radialGradient(
-                        colors = listOf(Color.White, Color.White, Color.Transparent),
-                        center = Offset(canvasWidth / 2, canvasHeight),
-                        radius = canvasWidth / 2,
-                    ),
+                Brush.radialGradient(
+                    colors = listOf(Color.White, Color.White, Color.Transparent),
+                    center = Offset(canvasWidth / 2, canvasHeight),
+                    radius = canvasWidth / 2,
+                ),
                 topLeft = Offset(0f, 0f),
                 size = Size(canvasWidth, canvasHeight),
             )
@@ -252,19 +287,19 @@ fun ContentBox(
 ) {
     Box(
         modifier =
-            modifier
-                .alpha(.9f)
-                .fillMaxSize()
-                .padding(20.dp, 20.dp, 20.dp, 100.dp),
+        modifier
+            .alpha(.9f)
+            .fillMaxSize()
+            .padding(20.dp, 20.dp, 20.dp, 100.dp),
     ) {
         Box(
             modifier =
-                Modifier
-                    .border(1.dp, AppColors.primary, RoundedCornerShape(20.dp))
-                    .background(
-                        color = Color.White,
-                        shape = RoundedCornerShape(20.dp),
-                    ),
+            Modifier
+                .border(1.dp, AppColors.primary, RoundedCornerShape(20.dp))
+                .background(
+                    color = Color.White,
+                    shape = RoundedCornerShape(20.dp),
+                ),
             content = content,
         )
     }

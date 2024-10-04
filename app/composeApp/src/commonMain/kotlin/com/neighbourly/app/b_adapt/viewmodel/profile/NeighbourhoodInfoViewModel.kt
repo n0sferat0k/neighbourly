@@ -40,7 +40,13 @@ class NeighbourhoodInfoViewModel(
                             hasNeighbourhoods = user.neighbourhoods.isNotEmpty(),
                             isHouseholdHead = user.household?.headid == user.id,
                             userQr = "${user.id},${user.username}",
-                            neighbourhoods = user.neighbourhoods.map { it.neighbourhoodid to it.name }.toMap(),
+                            neighbourhoods = user.neighbourhoods.map {
+                                NeighbourhoodVS(
+                                    id = it.neighbourhoodid,
+                                    name = it.name,
+                                    acc = it.access,
+                                )
+                            },
                         )
                     }
                 } ?: run {
@@ -55,7 +61,14 @@ class NeighbourhoodInfoViewModel(
         }
     }
 
-    fun updateName(name: String) = _state.update { it.copy(nameOverride = name, nameError = name.isBlank()) }
+    fun onCancelNeighbourhoodCreate() {
+        viewModelScope.launch {
+            neighbourhoodManagementUseCase.cancelDrawing()
+        }
+    }
+
+    fun updateName(name: String) =
+        _state.update { it.copy(nameOverride = name, nameError = name.isBlank()) }
 
     fun onSaveNeighbourhood() {
         _state.value.let {
@@ -77,6 +90,18 @@ class NeighbourhoodInfoViewModel(
         }
     }
 
+    fun leaveNeighbourhood(neighbourhoodId: Int) {
+        viewModelScope.launch {
+            try {
+                _state.update { it.copy(error = "") }
+                neighbourhoodManagementUseCase.leaveNeighbourhood(neighbourhoodId)
+            } catch (e: OpException) {
+                _state.update { it.copy(error = e.msg) }
+            }
+        }
+    }
+
+
     data class NeighbourhoodInfoViewState(
         val error: String = "",
         val saving: Boolean = false,
@@ -85,10 +110,12 @@ class NeighbourhoodInfoViewModel(
         val hasLocalizedHouse: Boolean = false,
         val hasNeighbourhoods: Boolean = false,
         val isHouseholdHead: Boolean = false,
-        val neighbourhoods: Map<Int, String> = emptyMap(),
+        val neighbourhoods: List<NeighbourhoodVS> = emptyList(),
         val userQr: String? = null,
         val name: String = "",
         val nameOverride: String? = null,
         val nameError: Boolean = false,
     )
+
+    data class NeighbourhoodVS(val name: String, val id: Int, val acc: Int)
 }
