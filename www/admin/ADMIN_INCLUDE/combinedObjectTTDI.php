@@ -1206,11 +1206,14 @@ class combinedObjectTTDI //Text Title Date Image
 							$filename_lable = $TEXTS[$LANG]['lable_noname'];
 						else
 							$filename_lable = $filename;
-					} else
+					} else {
 						$filename = "";
+						$filename_lable = $filename;
+					}
 
 					$basename = basename($row2[$this->params['KEY'] . '_FILES_file']);
-					$tokens = explode("\.", $basename);
+					$tokens = explode(".", $basename);
+					
 					switch ($tokens[1]) {
 						case "txt":
 							$filepic = "graphics/fileicon_txt.jpg";
@@ -1366,6 +1369,7 @@ class combinedObjectTTDI //Text Title Date Image
 
 
 			$tpl->set('images', array());
+			$tpl->set('files', array());
 			$tpl->set('pic_isdeletable', false);
 			$tpl->set('keyvalue', '-1');
 			$tpl->set('pic_src', "");
@@ -1556,7 +1560,7 @@ class combinedObjectTTDI //Text Title Date Image
 					$query_IMGS = "SELECT * FROM " . $this->params['KEY'] . "_imgs WHERE " . $this->params['KEY'] . "_IMGS_id = '" . $row[$this->params['KEY'] . '_pic'] . "'";
 					$data_IMGS = mysqli_query($connection, $query_IMGS) or die(mysqli_error($connection) . $query_IMGS);
 					$row_IMGS = mysqli_fetch_array($data_IMGS);
-					if ($row_IMGS[$this->params['KEY'] . "_IMGS_pic"] != '-1')
+					if (isset($row_IMGS) && $row_IMGS[$this->params['KEY'] . "_IMGS_pic"] != '-1')
 						$pic = "../" . $row_IMGS[$this->params['KEY'] . "_IMGS_pic"];
 					else
 						$pic = $this->params['NOPICSRC'];

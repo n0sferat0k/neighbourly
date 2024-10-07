@@ -332,45 +332,6 @@ $coords = new combinedObjectTTDI();
 $coords->setParams($p);
 $classManagger->add($coords);
 
-/*********************************************************************************CATEGORIES*/
-
-unset($p);
-$p = $combinedObcejtTTDI_defparams;
-$p['KEY']="categories";
-$p['MENULABLE']="Item Categories";
-$p['DISPLAYMENUTAB']=true;
-
-$p['PIC']=false;
-$p['DATE']=false;
-$p['TEXT']=false;
-$p['TITLE']=true;
-$p['ACCENT']=false;
-$p['ZINDEX']=false;
-$p['MOVEABLE']=false;
-$p['SORTINDEX']=false;
-
-$p['TITLE_modif']=true;
-
-$p['SINGULAR']=false;
-$p['DELETABLE']=true;
-$p['APPENDABLE']=true;
-
-$p['LANGUAGES']=array("EN");
-$p['CURRENTLANGUAGE']=0;
-
-$p['ADD_STRINGS'] = array(		
-	array("EN" => "Enum Const"),	
-);
-$p['ADD_STRINGS_modif'] = array(
-	array(0 => true,1 => true),	
-);
-
-$p['LIST_template']="TEMPLATES/table_list.php";
-
-$categ_manc = new combinedObjectTTDI();
-$categ_manc->setParams($p);
-$classManagger->add($categ_manc);
-
 /*********************************************************************************ITEMS*/
 
 unset($p);
@@ -387,12 +348,16 @@ $p['MULTIFILE']=true;
 $p['DATE']=true;
 $p['TEXT']=true;
 $p['TITLE']=true;
-$p['ACCENT']=false;
+$p['LINK']=true;
+$p['ACCENT']=true;
 $p['ZINDEX']=false;
 $p['MOVEABLE']=false;
 $p['SORTINDEX']=false;
 
+$p['DATE_modif']=true;
+$p['TEXT_modif']=true;
 $p['TITLE_modif']=true;
+$p['LINK_modif']=true;
 
 $p['SINGULAR']=false;
 $p['DELETABLE']=true;
@@ -402,27 +367,26 @@ $p['LANGUAGES']=array("EN");
 $p['CURRENTLANGUAGE']=0;
 
 $p['ADD_STRINGS'] = array(		
-	array("EN" => "Enum Const"),	
+	array("EN" => "Category"),			
 );
-
 $p['ADD_STRINGS_modif'] = array(
 	array(0 => true,1 => true),	
 );
-
-$p['ADD_NUMERICS'] = array(
-	array("EN" => "Neighbourhood"),
-	array("EN" => "Household"),
-	array("EN" => "User"),
-	array("EN" => "Category"),
+$p['ADD_NUMERICS'] = array(	
+	array("EN" => "N.H.U Id"),
+	array("EN" => "Target User Id"),
+	array("EN" => "Start Date"),
+	array("EN" => "End Date"),	
 );
 $p['ADD_NUMERICS_modif'] = array(
-	array(0 => true,1 => true),
-	array(0 => true,1 => true),
-	array(0 => true,1 => true),
-	array(0 => true,1 => true)
+	array(0 => true,1 => true),	
+	array(0 => true,1 => true),	
+	array(0 => true,1 => true),	
+	array(0 => true,1 => true),	
 );
 
 $p['LIST_template']="TEMPLATES/table_list.php";
+$p['SINGLE_template']="TEMPLATES/items_single.php";
 
 $categ_manc = new combinedObjectTTDI();
 $categ_manc->setParams($p);
