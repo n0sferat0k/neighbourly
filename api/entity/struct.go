@@ -56,11 +56,11 @@ type Item struct {
 	Name            *string          `json:"name,omitempty"`
 	Description     *string          `json:"description,omitempty"`
 	Url             *string          `json:"url,omitempty"`
-	TargetUserid    *int64           `json:"targetuserid,omitempty"`
+	TargetUserid    *int64           `json:"targetUserId,omitempty"`
 	Images          map[int64]string `json:"images,omitempty"`
 	Files           map[int64]string `json:"files,omitempty"`
-	StartTs         *int64           `json:"startts,omitempty"`
-	EndTs           *int64           `json:"endts,omitempty"`
+	StartTs         *int64           `json:"startTs,omitempty"`
+	EndTs           *int64           `json:"endTs,omitempty"`
 	LastModifiedTs  *int64           `json:"lastmodifiedts,omitempty"`
 	Neighbourhoodid *int64           `json:"neighbourhoodid,omitempty"`
 	Householdid     *int64           `json:"householdid,omitempty"`

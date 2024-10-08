@@ -6,14 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.toComposeImageBitmap
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.MultiFormatWriter
-import com.google.zxing.common.BitMatrix
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
-import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.File
 import java.net.HttpURLConnection
@@ -79,3 +77,6 @@ actual class PlatformBitmap actual constructor(width: Int, height: Int) {
 
     actual fun asImageBitmap(): ImageBitmap = innerBmp.toComposeImageBitmap()
 }
+
+actual val databaseDriver: SqlDriver
+    get() = JdbcSqliteDriver("jdbc:sqlite:neighbourly.db").also { NeighbourlyDB.Schema.create(it) }

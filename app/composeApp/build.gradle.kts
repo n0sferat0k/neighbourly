@@ -8,6 +8,15 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.sqlDelightPlugin)
+}
+
+sqldelight {
+    databases {
+        create("NeighbourlyDB") {
+            packageName.set("com.neighbourly.app")
+        }
+    }
 }
 
 kotlin {
@@ -35,6 +44,8 @@ kotlin {
             api(libs.barcode.scanning)
 
             implementation(libs.ktor.client.okhttp)
+
+            implementation(libs.sqldelight.android.driver)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -61,6 +72,8 @@ kotlin {
 
             implementation(libs.koin.core)
             implementation(libs.core)
+
+            implementation(libs.sqldelight.runtime)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -69,9 +82,12 @@ kotlin {
             implementation(libs.webcam.capture.driver.native)
             implementation(libs.javase)
             implementation(libs.ktor.client.cio)
+
+            implementation(libs.sqldelight.sqlite.driver)
         }
     }
 }
+
 
 android {
     namespace = "com.neighbourly.app"

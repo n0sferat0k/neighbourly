@@ -2,6 +2,7 @@ package com.neighbourly.app.b_adapt.gateway
 
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.Household
+import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.data.Neighbourhood
 import com.neighbourly.app.d_entity.data.User
 
@@ -54,6 +55,23 @@ fun GpsItemDTO.toGpsItem(): GpsItem =
         latitude = latitude,
         longitude = longitude,
         frequency = frequency,
+    )
+
+fun ItemDTO.toItem(): Item =
+    Item(
+        id = id,
+        name = name,
+        description = description,
+        url = url,
+        targetUserId = targetUserId,
+        images = images,
+        files = files,
+        startTs = startTs,
+        endTs = endTs,
+        lastModifiedTs = lastModifiedTs,
+        neighbourhoodId = neighbourhoodId,
+        householdId = householdId,
+        userId = userId,
     )
 
 fun String.prependResourceUrlBase() =

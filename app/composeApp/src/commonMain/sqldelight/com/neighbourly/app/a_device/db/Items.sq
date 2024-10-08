@@ -1,0 +1,15 @@
+CREATE TABLE Items (
+  id INTEGER PRIMARY KEY NOT NULL,
+  name TEXT,
+  description TEXT,
+  url TEXT,
+  targetuserid INTEGER,
+  images TEXT,
+  files TEXT,
+  startts INTEGER,
+  endts INTEGER,
+  lastmodifiedts INTEGER NOT NULL,
+  neighbourhoodid INTEGER,
+  householdid INTEGER,
+  userid INTEGER
+);

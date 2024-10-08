@@ -44,7 +44,7 @@ func main() {
 	r.HandleFunc("/gps/clear", household.ClearGpsData).Methods("GET")
 	r.HandleFunc("/gps/resetHouseholdLocation", household.ResetHouseholdLocation).Methods("GET")
 	r.HandleFunc("/gps/acceptCandidate", household.AcceptHouseholdLocation).Methods("POST")
-	r.HandleFunc("/content/sync", content.Synchronise).Methods("POST")
+	r.HandleFunc("/content/sync", content.Synchronise).Methods("GET")
 	fmt.Println("Starting server on :8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

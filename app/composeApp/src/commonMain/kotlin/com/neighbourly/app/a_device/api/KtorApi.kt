@@ -6,6 +6,7 @@ import com.neighbourly.app.b_adapt.gateway.ApiException
 import com.neighbourly.app.b_adapt.gateway.FetchProfileInput
 import com.neighbourly.app.b_adapt.gateway.GpsItemDTO
 import com.neighbourly.app.b_adapt.gateway.GpsLogInput
+import com.neighbourly.app.b_adapt.gateway.ItemDTO
 import com.neighbourly.app.b_adapt.gateway.LoginInput
 import com.neighbourly.app.b_adapt.gateway.NeighbourhoodDTO
 import com.neighbourly.app.b_adapt.gateway.RegisterInput
@@ -412,6 +413,25 @@ class KtorApi {
                 }
             }
         if (response.status.value != 200) {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun synchronizeItems(
+        baseUrl: String,
+        token: String,
+        lastSyncTs: Int,
+    ):List<ItemDTO> {
+        val response =
+            client.post(baseUrl + "content/sync") {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                    append(HttpHeaders.IfModifiedSince, lastSyncTs.toString())
+                }
+            }
+        if (response.status.value == 200) {
+            return response.body<List<ItemDTO>>()
+        } else {
             throw ApiException(response.bodyAsText())
         }
     }

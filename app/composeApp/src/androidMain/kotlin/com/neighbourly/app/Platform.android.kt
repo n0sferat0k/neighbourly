@@ -24,6 +24,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.core.net.toUri
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -173,3 +175,6 @@ actual class PlatformBitmap actual constructor(width: Int, height: Int) {
 
     actual fun asImageBitmap(): ImageBitmap = innerBmp.asImageBitmap()
 }
+
+actual val databaseDriver: SqlDriver
+    get() = AndroidSqliteDriver(NeighbourlyDB.Schema, NeighbourlyApp.appContext, "neighbourly.db")
