@@ -1,0 +1,21 @@
+CREATE TABLE Households (
+  id INTEGER PRIMARY KEY NOT NULL,
+  name TEXT,
+  about TEXT,
+  image TEXT,
+  address TEXT,
+  headid INTEGER,
+  latitude INTEGER,
+  longitude INTEGER,
+  lastmodifiedts INTEGER NOT NULL
+);
+
+addOrUpdateHousehold:
+INSERT OR REPLACE INTO Households(id,
+                    name, about, image, address, headid,
+                    latitude, longitude, lastmodifiedts
+                  )  VALUES(?,?, ?,?,?,?,?,?,?);
+
+
+getLastModified:
+SELECT MAX(lastmodifiedts) AS lastModifTs FROM Items;

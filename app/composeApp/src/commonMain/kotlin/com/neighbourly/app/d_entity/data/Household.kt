@@ -9,5 +9,6 @@ data class Household(
     val location: Pair<Float, Float>? = null,
     val address: String? = null,
     val gpsprogress: Float? = null,
+    val lastModifiedTs: Int,
     val members: List<User>? = null,
 )

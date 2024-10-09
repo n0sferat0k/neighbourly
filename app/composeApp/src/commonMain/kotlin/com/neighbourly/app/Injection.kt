@@ -3,9 +3,11 @@ package com.neighbourly.app
 import com.neighbourly.app.a_device.api.KtorApi
 import com.neighbourly.app.a_device.store.SessionHybridStore
 import com.neighbourly.app.b_adapt.gateway.ApiGateway
+import com.neighbourly.app.b_adapt.interactor.DbInteractor
 import com.neighbourly.app.b_adapt.viewmodel.MapViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
+import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdAddMemberViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdInfoEditViewModel
@@ -19,14 +21,16 @@ import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileViewModel
 import com.neighbourly.app.c_business.usecase.auth.LoginUseCase
 import com.neighbourly.app.c_business.usecase.auth.LogoutUseCase
 import com.neighbourly.app.c_business.usecase.auth.RegisterUseCase
+import com.neighbourly.app.c_business.usecase.items.ContentSyncUseCase
 import com.neighbourly.app.c_business.usecase.profile.FetchProfileUseCase
-import com.neighbourly.app.c_business.usecase.profile.HouseholdManagementUseCase
 import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
+import com.neighbourly.app.c_business.usecase.profile.HouseholdManagementUseCase
 import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileImageUpdateUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileUpdateUseCase
 import com.neighbourly.app.d_entity.interf.Api
+import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import com.neighbourly.app.d_entity.interf.SessionStore
 import org.koin.core.Koin
@@ -67,6 +71,9 @@ val adapterModule =
         single<Api> {
             ApiGateway(KtorApi())
         }
+        single<Db> {
+            DbInteractor(createDatabase())
+        }
         single {
             NavigationViewModel(get())
         }
@@ -77,7 +84,7 @@ val adapterModule =
             RegisterViewModel(get(), get())
         }
         factory {
-            ProfileViewModel(get(), get())
+            ProfileViewModel(get(), get(), get())
         }
         factory {
             ProfileMenuViewModel(get(), get())
@@ -108,6 +115,9 @@ val adapterModule =
         }
         factory {
             NeighbourhoodAddMemberViewModel(get(), get(), get())
+        }
+        factory {
+            FilteredItemListViewModel(get(), get())
         }
     }
 
@@ -142,5 +152,8 @@ val useCaseModule =
         }
         single {
             FetchProfileUseCase(get(), get())
+        }
+        single {
+            ContentSyncUseCase(get(), get(), get())
         }
     }

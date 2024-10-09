@@ -34,14 +34,14 @@ func UploadImage(w http.ResponseWriter, r *http.Request) {
 		targetFolder = "usersIMGS"
 		targetFilePrefix = "profile_" + userId
 		utility.DB.QueryRow("SELECT users_pic FROM users WHERE users_id = ?", userId).Scan(&oldUserImg)
-		updateQuery = "UPDATE users SET users_pic = ? WHERE users_id = " + userId
+		updateQuery = "UPDATE users SET users_data = UNIX_TIMESTAMP(), users_pic = ? WHERE users_id = " + userId
 	} else if target == TARGET_HOUSEHOLD {
 		var householdId string
 		utility.DB.QueryRow("SELECT users_add_numerics_0 FROM users WHERE users_id = ?", userId).Scan(&householdId)
 		targetFolder = "householdsIMGS"
 		targetFilePrefix = "household_" + householdId
 		utility.DB.QueryRow("SELECT households_pic FROM households WHERE households_id = ?", householdId).Scan(&oldUserImg)
-		updateQuery = "UPDATE households SET households_pic = ? WHERE households_id = " + householdId
+		updateQuery = "UPDATE households SET households_data = UNIX_TIMESTAMP(), households_pic = ? WHERE households_id = " + householdId
 	}
 
 	// Parse the multipart form data

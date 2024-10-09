@@ -2,6 +2,7 @@ package com.neighbourly.app.d_entity.data
 
 data class Item(
     val id: Int,
+    val type: ItemType = ItemType.INFO,
     val name: String? = null,
     val description: String? = null,
     val url: String? = null,
@@ -15,3 +16,19 @@ data class Item(
     val householdId: Int? = null,
     val userId: Int? = null,
 )
+
+enum class ItemType {
+    INFO,
+    DONATION,
+    BARTER,
+    SALE,
+    EVENT,
+    NEED,
+    REQUEST,
+    SKILLSHARE, ;
+
+    companion object {
+        fun getByName(type: String?): ItemType =
+            entries.filter { it.name == type }.firstOrNull() ?: INFO
+    }
+}

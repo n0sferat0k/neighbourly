@@ -15,6 +15,8 @@ fun StoreUser.toUser() =
         phone = this.phone,
         imageurl = this.imageurl,
         authtoken = this.authtoken,
+        householdid = this.householdid,
+        lastModifiedTs = this.lastModifiedTs,
         household = this.household?.toHousehold(),
         neighbourhoods = this.neighbourhoods.map { it.toStoreNeighbourhood() },
         localizing = this.localizing,
@@ -30,6 +32,8 @@ fun User.toStoreUser(): StoreUser =
         phone = this.phone,
         imageurl = this.imageurl,
         authtoken = this.authtoken,
+        householdid = this.householdid,
+        lastModifiedTs = this.lastModifiedTs,
         household = this.household?.toStoreHousehold(),
         neighbourhoods = this.neighbourhoods.map { it.toStoreNeighbourhood() },
         localizing = this.localizing,
@@ -43,12 +47,13 @@ fun StoreHousehold.toHousehold(): Household =
         imageurl = this.imageurl,
         headid = this.headid,
         location =
-            if (latitude != null && longitude != null && latitude != 0f && longitude != 0f) {
-                Pair(latitude, longitude)
-            } else {
-                null
-            },
+        if (latitude != null && longitude != null && latitude != 0f && longitude != 0f) {
+            Pair(latitude, longitude)
+        } else {
+            null
+        },
         address = this.address,
+        lastModifiedTs = this.lastModifiedTs,
         members = members?.map { it.toUser() },
     )
 
@@ -62,6 +67,7 @@ fun Household.toStoreHousehold(): StoreHousehold =
         latitude = location?.first,
         longitude = location?.second,
         address = this.address,
+        lastModifiedTs = this.lastModifiedTs,
         members = members?.map { it.toStoreUser() },
     )
 
@@ -93,6 +99,8 @@ data class StoreUser(
     val phone: String? = null,
     val imageurl: String? = null,
     val authtoken: String? = null,
+    val householdid: Int? = null,
+    val lastModifiedTs: Int = 0,
     val household: StoreHousehold? = null,
     val neighbourhoods: List<StoreNeighbourhood> = emptyList(),
     val localizing: Boolean = false,
@@ -108,6 +116,7 @@ data class StoreHousehold(
     val latitude: Float? = null,
     val longitude: Float? = null,
     val address: String? = null,
+    val lastModifiedTs: Int = 0,
     val gpsprogress: Float? = null,
     val members: List<StoreUser>? = null,
 )

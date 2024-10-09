@@ -1,5 +1,6 @@
 CREATE TABLE Items (
   id INTEGER PRIMARY KEY NOT NULL,
+  type TEXT,
   name TEXT,
   description TEXT,
   url TEXT,
@@ -13,3 +14,18 @@ CREATE TABLE Items (
   householdid INTEGER,
   userid INTEGER
 );
+
+addOrUpdateItem:
+INSERT OR REPLACE INTO Items(id, type,
+                  name,description,url,
+                  targetuserid,
+                  images,files,
+                  startts,endts,lastmodifiedts,
+                  neighbourhoodid,householdid,userid
+                  )  VALUES(?,?, ?,?,?,?,?,?,?,?,?,?,?,?);
+
+filterItems:
+SELECT * FROM Items WHERE type = ? ORDER BY id DESC;
+
+getLastModified:
+SELECT MAX(lastmodifiedts) AS lastModifTs FROM Items;

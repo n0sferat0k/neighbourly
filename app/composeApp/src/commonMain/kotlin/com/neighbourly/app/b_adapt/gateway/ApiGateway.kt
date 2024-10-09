@@ -3,6 +3,7 @@ package com.neighbourly.app.b_adapt.gateway
 import com.neighbourly.app.a_device.api.KtorApi
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.GpsItem
+import com.neighbourly.app.d_entity.data.Household
 import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.data.User
@@ -249,9 +250,18 @@ class ApiGateway(
             api.resetHouseholdLocation(API_BASE_URL, token)
         }
 
-    override suspend fun synchronizeItems(token: String, lastSyncTs: Int): List<Item> =
+    override suspend fun synchronizeContent(
+        token: String,
+        lastSyncTs: Int?
+    ): Triple<List<Item>, List<User>, List<Household>> =
         runContextCatchTranslateThrow {
-            api.synchronizeItems(API_BASE_URL, token, lastSyncTs).map { it.toItem() }
+            api.synchronizeContent(API_BASE_URL, token, lastSyncTs ?: 0).let {
+                Triple(
+                    it.items.map { it.toItem() },
+                    it.users.map { it.toUser() },
+                    it.houses.map { it.toHousehold() }
+                )
+            }
         }
 
     companion object {

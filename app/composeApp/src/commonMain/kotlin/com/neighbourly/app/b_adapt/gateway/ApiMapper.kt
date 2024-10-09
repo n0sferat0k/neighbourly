@@ -1,8 +1,10 @@
 package com.neighbourly.app.b_adapt.gateway
 
+import com.neighbourly.app.a_device.store.toHousehold
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.Household
 import com.neighbourly.app.d_entity.data.Item
+import com.neighbourly.app.d_entity.data.ItemType
 import com.neighbourly.app.d_entity.data.Neighbourhood
 import com.neighbourly.app.d_entity.data.User
 
@@ -17,6 +19,7 @@ fun UserDTO.toUser(): User =
         imageurl = imageurl?.prependResourceUrlBase(),
         authtoken = authtoken,
         household = household?.toHousehold(),
+        lastModifiedTs = lastModifiedTs,
         neighbourhoods = neighbourhoods.map { it.toNeighbourhood() },
     )
 
@@ -38,6 +41,7 @@ fun HouseholdDTO.toHousehold(): Household =
         },
         address = address,
         gpsprogress = gpsprogress,
+        lastModifiedTs = lastModifiedTs,
         members = members?.map { it.toUser() },
     )
 
@@ -60,6 +64,7 @@ fun GpsItemDTO.toGpsItem(): GpsItem =
 fun ItemDTO.toItem(): Item =
     Item(
         id = id,
+        type = ItemType.getByName(type),
         name = name,
         description = description,
         url = url,
@@ -75,6 +80,6 @@ fun ItemDTO.toItem(): Item =
     )
 
 fun String.prependResourceUrlBase() =
-    this.takeIf { !it.isNullOrBlank() }?.let { CONTENT_BASE_URL + it } ?: this
+    this.takeIf { it.isNotBlank() }?.let { CONTENT_BASE_URL + it } ?: this
 
 const val CONTENT_BASE_URL = "http://neighbourly.go.ro/"

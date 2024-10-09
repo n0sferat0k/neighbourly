@@ -160,6 +160,9 @@ $p['TITLE_modif']=true;
 $p['TEXT']=true;
 $p['TEXT_modif']=true;
 
+$p['DATE']=true;
+$p['DATE_modif']=true;
+
 $p['SINGULAR']=false;
 $p['DELETABLE']=true;
 $p['APPENDABLE']=true;
@@ -400,6 +403,9 @@ $p = $combinedObcejtTTDI_defparams;
 $p['KEY']="neighbourhood_household_users";
 $p['MENULABLE']="N. H. Users";
 $p['DISPLAYMENUTAB']=true;
+
+$p['DATE']=true;
+$p['DATE_modif']=true;
 
 $p['TEXT']=false;
 $p['TITLE']=false;

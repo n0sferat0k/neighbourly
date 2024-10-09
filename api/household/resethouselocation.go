@@ -23,7 +23,7 @@ func ResetHouseholdLocation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = utility.DB.Exec("UPDATE households SET households_add_numerics_1 = 0,  households_add_numerics_2 = 0 WHERE households_add_numerics_0 = ?", userId)
+	_, err = utility.DB.Exec("UPDATE households SET households_data = UNIX_TIMESTAMP(), households_add_numerics_1 = 0,  households_add_numerics_2 = 0 WHERE households_add_numerics_0 = ?", userId)
 	if err != nil {
 		http.Error(w, "Failed to clear household location"+err.Error(), http.StatusInternalServerError)
 		return

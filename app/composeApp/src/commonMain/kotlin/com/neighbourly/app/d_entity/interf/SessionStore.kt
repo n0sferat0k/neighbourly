@@ -19,5 +19,6 @@ interface SessionStore {
 
     val isLoggedIn: Flow<Boolean>
     val token: String?
+    var lastSyncTs : Int?
     val drawing: List<GpsItem>?
 }

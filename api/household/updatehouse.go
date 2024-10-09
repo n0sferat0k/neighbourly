@@ -24,7 +24,7 @@ func UpdateHousehold(w http.ResponseWriter, r *http.Request) {
 	utility.DB.QueryRow("SELECT users_add_numerics_0 FROM users WHERE users_id = ?", userId).Scan(&householdId)
 	if householdId > 0 {
 		// Update the household in the database
-		_, err := utility.DB.Exec(`UPDATE households SET households_titlu_EN = ?, households_add_strings_0 = ?, households_text_EN = ? WHERE households_id = ? AND households_add_numerics_0 = ?`,
+		_, err := utility.DB.Exec(`UPDATE households SET households_data = UNIX_TIMESTAMP(), households_titlu_EN = ?, households_add_strings_0 = ?, households_text_EN = ? WHERE households_id = ? AND households_add_numerics_0 = ?`,
 			household.Name, household.Address, household.About, householdId, userId)
 
 		if err != nil {
@@ -33,7 +33,7 @@ func UpdateHousehold(w http.ResponseWriter, r *http.Request) {
 		}
 	} else {
 		//Insert the household into the database
-		insertResult, err := utility.DB.Exec(`INSERT INTO households (households_add_numerics_0, households_titlu_EN, households_add_strings_0, households_text_EN, households_pic) VALUES  (?,?,?,?,'')`,
+		insertResult, err := utility.DB.Exec(`INSERT INTO households (households_data, households_add_numerics_0, households_titlu_EN, households_add_strings_0, households_text_EN, households_pic) VALUES  (UNIX_TIMESTAMP(),?,?,?,?,'')`,
 			userId, household.Name, household.Address, household.About)
 
 		if err != nil {
@@ -48,7 +48,7 @@ func UpdateHousehold(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		_, err = utility.DB.Exec(`UPDATE users SET users_add_numerics_0 = ? WHERE users_id = ?`, householdId, userId)
+		_, err = utility.DB.Exec(`UPDATE users SET users_data = UNIX_TIMESTAMP(), users_add_numerics_0 = ? WHERE users_id = ?`, householdId, userId)
 
 		if err != nil {
 			http.Error(w, "Failed to update user with household "+err.Error(), http.StatusInternalServerError)

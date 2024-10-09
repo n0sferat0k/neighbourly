@@ -53,7 +53,7 @@ func LeaveNeighbourhoodWithHousehold(userId string, householdId int64, neighbour
 		//if an heir was found, make them the head of the neighbourhood
 		if heirId > 0 {
 			//make heir the head of the neighbourhood
-			_, err = DB.Exec(`UPDATE neighbourhood_household_users SET neighbourhood_household_users_add_numerics_3 = 500, neighbourhood_household_users_add_numerics_4 = -1 WHERE neighbourhood_household_users_add_numerics_0 = ? AND neighbourhood_household_users_add_numerics_2 = ?`, neighbourhoodid, heirId)
+			_, err = DB.Exec(`UPDATE neighbourhood_household_users SET neighbourhood_household_users_data = UNIX_TIMESTAMP(), neighbourhood_household_users_add_numerics_3 = 500, neighbourhood_household_users_add_numerics_4 = -1 WHERE neighbourhood_household_users_add_numerics_0 = ? AND neighbourhood_household_users_add_numerics_2 = ?`, neighbourhoodid, heirId)
 			if err != nil {
 				return errors.New("Failed to update heir to head of neighbourhood" + err.Error())
 			}

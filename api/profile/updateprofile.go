@@ -21,7 +21,7 @@ func UpdateProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Update the user in the database
-	_, err := utility.DB.Exec(`UPDATE users SET users_titlu_EN = ?, users_add_strings_3 = ?, users_add_strings_2 =  ?,  users_text_EN = ? WHERE users_id = ?`,
+	_, err := utility.DB.Exec(`UPDATE users SET users_data = UNIX_TIMESTAMP(), users_titlu_EN = ?, users_add_strings_3 = ?, users_add_strings_2 =  ?,  users_text_EN = ? WHERE users_id = ?`,
 		user.Fullname, user.Email, user.Phone, user.Userabout, userId)
 	if err != nil {
 		http.Error(w, "Failed to register user "+err.Error(), http.StatusInternalServerError)

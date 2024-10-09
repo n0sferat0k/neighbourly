@@ -10,6 +10,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
@@ -58,6 +59,12 @@ class SessionHybridStore(
         get() = userState.value?.authtoken
     override val drawing: List<GpsItem>?
         get() = localizationState.value.drawingPoints
+    override var lastSyncTs: Int?
+        get() = userState.value?.lastSyncTs
+        set(value) {
+            userState.update { it?.copy(lastSyncTs = value) }
+            saveToStore()
+        }
 
     private suspend fun loadFromStore() {
         withContext(Dispatchers.IO) {
@@ -67,7 +74,7 @@ class SessionHybridStore(
         }
     }
 
-    private suspend fun saveToStore() {
+    private fun saveToStore() {
         keyValueRegistry.putString(KEY_STORE_VERSION, STORE_VERSION)
         userState.value?.let {
             keyValueRegistry.putString(KEY_USER, Json.encodeToString(it.toStoreUser()))

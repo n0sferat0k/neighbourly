@@ -11,16 +11,17 @@ type Neighbourhood struct {
 }
 
 type Household struct {
-	Householdid *int64   `json:"householdid"`
-	Name        *string  `json:"name,omitempty"`
-	HeadID      *int64   `json:"headid,omitempty"`
-	About       *string  `json:"about,omitempty"`
-	ImageURL    *string  `json:"imageurl,omitempty"`
-	Latitude    *float64 `json:"latitude,omitempty"`
-	Longitude   *float64 `json:"longitude,omitempty"`
-	Address     *string  `json:"address,omitempty"`
-	GpsProgress *float64 `json:"gpsprogress,omitempty"`
-	Members     []User   `json:"members,omitempty"`
+	Householdid    *int64   `json:"householdid"`
+	Name           *string  `json:"name,omitempty"`
+	HeadID         *int64   `json:"headid,omitempty"`
+	About          *string  `json:"about,omitempty"`
+	ImageURL       *string  `json:"imageurl,omitempty"`
+	Latitude       *float64 `json:"latitude,omitempty"`
+	Longitude      *float64 `json:"longitude,omitempty"`
+	Address        *string  `json:"address,omitempty"`
+	GpsProgress    *float64 `json:"gpsprogress,omitempty"`
+	LastModifiedTs *int64   `json:"lastModifiedTs,omitempty"`
+	Members        []User   `json:"members,omitempty"`
 }
 
 type User struct {
@@ -33,7 +34,9 @@ type User struct {
 	Phone          *string         `json:"phone,omitempty"`
 	ImageURL       *string         `json:"imageurl,omitempty"`
 	Authtoken      *string         `json:"authtoken,omitempty"`
+	Householdid    *int64          `json:"householdid"`
 	Household      *Household      `json:"household,omitempty"`
+	LastModifiedTs *int64          `json:"lastModifiedTs,omitempty"`
 	Neighbourhoods []Neighbourhood `json:"neighbourhoods,omitempty"`
 }
 
@@ -53,6 +56,7 @@ type AddToNeighbourhoodRequest struct {
 
 type Item struct {
 	Itemid          *int64           `json:"id"`
+	Type            *string          `json:"type,omitempty"`
 	Name            *string          `json:"name,omitempty"`
 	Description     *string          `json:"description,omitempty"`
 	Url             *string          `json:"url,omitempty"`
@@ -61,8 +65,14 @@ type Item struct {
 	Files           map[int64]string `json:"files,omitempty"`
 	StartTs         *int64           `json:"startTs,omitempty"`
 	EndTs           *int64           `json:"endTs,omitempty"`
-	LastModifiedTs  *int64           `json:"lastmodifiedts,omitempty"`
-	Neighbourhoodid *int64           `json:"neighbourhoodid,omitempty"`
-	Householdid     *int64           `json:"householdid,omitempty"`
-	Userid          *int64           `json:"userid,omitempty"`
+	LastModifiedTs  *int64           `json:"lastModifiedTs,omitempty"`
+	Neighbourhoodid *int64           `json:"neighbourhoodId,omitempty"`
+	Householdid     *int64           `json:"householdId,omitempty"`
+	Userid          *int64           `json:"userId,omitempty"`
+}
+
+type SyncResponse struct {
+	Items      []Item      `json:"items,omitempty"`
+	Users      []User      `json:"users,omitempty"`
+	Households []Household `json:"households,omitempty"`
 }

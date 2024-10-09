@@ -29,7 +29,7 @@ func AcceptHouseholdLocation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = utility.DB.Exec("UPDATE households SET households_add_numerics_1 = ?,  households_add_numerics_2 = ? WHERE households_add_numerics_0 = ?",
+	_, err = utility.DB.Exec("UPDATE households SET households_data = UNIX_TIMESTAMP(), households_add_numerics_1 = ?,  households_add_numerics_2 = ? WHERE households_add_numerics_0 = ?",
 		*candidate.Latitude*float64(utility.GpsPrecisionFactor),
 		*candidate.Longitude*float64(utility.GpsPrecisionFactor),
 		userId)

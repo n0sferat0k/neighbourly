@@ -2,6 +2,7 @@ package com.neighbourly.app.d_entity.interf
 
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.GpsItem
+import com.neighbourly.app.d_entity.data.Household
 import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.data.User
 
@@ -104,5 +105,5 @@ interface Api {
 
     suspend fun resetHouseholdLocation(token: String)
 
-    suspend fun synchronizeItems(token: String, lastSyncTs: Int): List<Item>
+    suspend fun synchronizeContent(token: String, lastSyncTs: Int?): Triple<List<Item>, List<User>, List<Household>>
 }

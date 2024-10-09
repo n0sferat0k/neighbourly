@@ -139,6 +139,7 @@ if($DISPLAY_TEMPLATE_BODY) {?>
 									if($add_strings_counter == 0) {
 										?>
 											<select class="INPUT_SELECT" name="<?php echo $add_strings[$add_strings_counter]['add_stringsINP']; ?>">
+												<option value="INFO" <?php if($add_strings[$add_strings_counter]['add_stringsVAL'] == "INFO") echo 'selected="selected"'?> >Info</option>
 												<option value="DONATION" <?php if($add_strings[$add_strings_counter]['add_stringsVAL'] == "DONATION") echo 'selected="selected"'?> >Donation</option>
 												<option value="BARTER" <?php if($add_strings[$add_strings_counter]['add_stringsVAL'] == "BARTER") echo 'selected="selected"'?> >Barter</option>
 												<option value="SALE" <?php if($add_strings[$add_strings_counter]['add_stringsVAL'] == "SALE") echo 'selected="selected"'?> >Sale</option>

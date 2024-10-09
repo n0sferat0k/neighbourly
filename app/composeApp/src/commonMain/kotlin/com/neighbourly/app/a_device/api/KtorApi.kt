@@ -6,10 +6,10 @@ import com.neighbourly.app.b_adapt.gateway.ApiException
 import com.neighbourly.app.b_adapt.gateway.FetchProfileInput
 import com.neighbourly.app.b_adapt.gateway.GpsItemDTO
 import com.neighbourly.app.b_adapt.gateway.GpsLogInput
-import com.neighbourly.app.b_adapt.gateway.ItemDTO
 import com.neighbourly.app.b_adapt.gateway.LoginInput
 import com.neighbourly.app.b_adapt.gateway.NeighbourhoodDTO
 import com.neighbourly.app.b_adapt.gateway.RegisterInput
+import com.neighbourly.app.b_adapt.gateway.SyncResponseDTO
 import com.neighbourly.app.b_adapt.gateway.UpdateHouseholdInput
 import com.neighbourly.app.b_adapt.gateway.UpdateNeighbourhoodInput
 import com.neighbourly.app.b_adapt.gateway.UpdateProfileInput
@@ -417,20 +417,20 @@ class KtorApi {
         }
     }
 
-    suspend fun synchronizeItems(
+    suspend fun synchronizeContent(
         baseUrl: String,
         token: String,
         lastSyncTs: Int,
-    ):List<ItemDTO> {
+    ):SyncResponseDTO {
         val response =
-            client.post(baseUrl + "content/sync") {
+            client.get(baseUrl + "content/sync") {
                 headers {
                     append(HttpHeaders.Authorization, "Bearer " + token)
                     append(HttpHeaders.IfModifiedSince, lastSyncTs.toString())
                 }
             }
         if (response.status.value == 200) {
-            return response.body<List<ItemDTO>>()
+            return response.body<SyncResponseDTO>()
         } else {
             throw ApiException(response.bodyAsText())
         }

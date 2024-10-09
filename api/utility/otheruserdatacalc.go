@@ -16,6 +16,7 @@ func RetreiveUserData(userId int64, userName string) (*entity.User, error) {
 		U.users_add_strings_0 AS Username,		
 		U.users_add_strings_2 AS Phone,
 		U.users_add_strings_3 AS Email,
+		U.users_add_numerics_0 AS Householdid,
 
 		H.households_id,
 		H.households_titlu_EN,
@@ -43,6 +44,7 @@ func RetreiveUserData(userId int64, userName string) (*entity.User, error) {
 		&existingUser.Username,
 		&existingUser.Phone,
 		&existingUser.Email,
+		&existingUser.Householdid,
 
 		&existingHousehold.Householdid,
 		&existingHousehold.Name,

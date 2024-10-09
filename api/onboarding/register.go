@@ -46,6 +46,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 		var now = time.Now()
 		// Insert the new user into the database
 		insertResult, err := utility.DB.Exec(`INSERT INTO users (
+			users_data,
 			users_add_strings_0,
 			users_add_strings_1, 
 			users_titlu_EN, 
@@ -55,7 +56,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 			users_pic,
 			users_data
 			users_add_numerics_0) 
-		VALUES (?, ?, ?, ?, ?, "", "", ?, -1)`,
+		VALUES (UNIX_TIMESTAMP(), ?, ?, ?, ?, ?, "", "", ?, -1)`,
 			user.Username,
 			hashedPassword,
 			user.Fullname,

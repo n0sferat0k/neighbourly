@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.auth.LoginOrRegister
+import com.neighbourly.app.a_device.ui.items.FilteredItemList
 import com.neighbourly.app.a_device.ui.profile.Profile
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindBarters
@@ -20,6 +21,7 @@ import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.Main
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ManageMyStuff
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ManageProfile
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.PublishStuff
+import com.neighbourly.app.d_entity.data.ItemType
 
 @Composable
 fun MainContent(navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }) {
@@ -42,7 +44,7 @@ fun MainContent(navigationViewModel: NavigationViewModel = viewModel { KoinProvi
         AnimatedVisibility(navigation.mainContent == ManageProfile) { ContentBox { Profile() } }
         AnimatedVisibility(navigation.mainContent == ManageMyStuff) { ContentBox { UnderConstruction() } }
         AnimatedVisibility(navigation.mainContent == PublishStuff) { ContentBox { UnderConstruction() } }
-        AnimatedVisibility(navigation.mainContent == FindDonations) { ContentBox { UnderConstruction() } }
+        AnimatedVisibility(navigation.mainContent == FindDonations) { ContentBox { FilteredItemList(ItemType.DONATION) } }
         AnimatedVisibility(navigation.mainContent == FindBarters) { ContentBox { UnderConstruction() } }
         AnimatedVisibility(navigation.mainContent == FindSales) { ContentBox { UnderConstruction() } }
         AnimatedVisibility(navigation.mainContent == FindEvents) { ContentBox { UnderConstruction() } }

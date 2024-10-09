@@ -42,7 +42,7 @@ func LeaveHousehold(w http.ResponseWriter, r *http.Request) {
 
 		if heirId > 0 {
 			//if found, make the heir the head of the household
-			_, err = utility.DB.Exec(`UPDATE households SET households_add_numerics_0 = ? WHERE households_id = ?`, heirId, householdId)
+			_, err = utility.DB.Exec(`UPDATE households SET households_data = UNIX_TIMESTAMP(), households_add_numerics_0 = ? WHERE households_id = ?`, heirId, householdId)
 			if err != nil {
 				http.Error(w, "Failed to inherit household"+err.Error(), http.StatusInternalServerError)
 				return

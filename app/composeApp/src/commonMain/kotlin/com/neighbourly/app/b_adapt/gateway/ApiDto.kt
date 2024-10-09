@@ -77,6 +77,8 @@ data class UserDTO(
     val phone: String? = null,
     val imageurl: String? = null,
     val authtoken: String? = null,
+    val lastModifiedTs: Int = 0,
+    val householdid: Int? = null,
     val household: HouseholdDTO? = null,
     val neighbourhoods: List<NeighbourhoodDTO> = emptyList(),
 )
@@ -99,6 +101,7 @@ data class HouseholdDTO(
     val longitude: Float? = null,
     val address: String? = null,
     val gpsprogress: Float? = null,
+    val lastModifiedTs: Int = 0,
     val members: List<UserDTO>? = null,
 )
 
@@ -114,6 +117,7 @@ data class NeighbourhoodDTO(
 @Serializable
 data class ItemDTO(
     val id: Int,
+    val type: String,
     val name: String? = null,
     val description: String? = null,
     val url: String? = null,
@@ -126,4 +130,11 @@ data class ItemDTO(
     val neighbourhoodId: Int? = null,
     val householdId: Int? = null,
     val userId: Int? = null,
+)
+
+@Serializable
+data class SyncResponseDTO(
+    val items: List<ItemDTO> = emptyList(),
+    val users: List<UserDTO> = emptyList(),
+    val houses: List<HouseholdDTO> = emptyList()
 )
