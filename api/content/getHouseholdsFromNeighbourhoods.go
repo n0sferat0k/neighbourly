@@ -31,7 +31,7 @@ func GetHouseholdsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([
 
 	// If we have a valid sinceTs, we only get the items that have been modified since then
 	if sinceTs != "" {
-		sql += " AND H.households_data >= " + sinceTs
+		sql += " AND H.households_data > " + sinceTs
 	}
 	houseRows, err := utility.DB.Query(sql, utility.GpsPrecisionFactor, utility.GpsPrecisionFactor, neighbourhoodids)
 	if err != nil {

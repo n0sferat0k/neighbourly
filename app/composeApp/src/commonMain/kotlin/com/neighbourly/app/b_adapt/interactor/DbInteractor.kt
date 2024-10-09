@@ -67,7 +67,21 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
     }
 
     override suspend fun storeHouseholds(households: List<Household>) {
-        TODO("Not yet implemented")
+        withContext(Dispatchers.IO) {
+            households.forEach {
+                db.householdsQueries.addOrUpdateHousehold(
+                    id = it.householdid.toLong(),
+                    name = it.name,
+                    about = it.about,
+                    image = it.imageurl,
+                    address = it.address,
+                    headid = it.headid.toLong(),
+                    latitude = it.location?.first?.toLong(),
+                    longitude = it.location?.second?.toLong(),
+                    lastmodifiedts = it.lastModifiedTs.toLong(),
+                )
+            }
+        }
     }
 
     override suspend fun filterItems(type: ItemType): List<Item> {

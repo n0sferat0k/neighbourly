@@ -33,7 +33,7 @@ func GetUsrersFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]ent
 
 	// If we have a valid sinceTs, we only get the items that have been modified since then
 	if sinceTs != "" {
-		sql += " AND U.users_data >= " + sinceTs
+		sql += " AND U.users_data > " + sinceTs
 	}
 	userRows, err := utility.DB.Query(sql, neighbourhoodids)
 	if err != nil {
