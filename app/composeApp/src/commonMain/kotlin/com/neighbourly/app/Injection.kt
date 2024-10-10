@@ -99,7 +99,7 @@ val adapterModule =
             LoginViewModel(get())
         }
         factory {
-            MapViewModel(get(), get(), get())
+            MapViewModel(get(), get(), get(), get())
         }
         factory {
             HouseholdLocalizeViewModel(get(), get())

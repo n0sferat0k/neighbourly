@@ -76,8 +76,8 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
                     image = it.imageurl,
                     address = it.address,
                     headid = it.headid.toLong(),
-                    latitude = it.location?.first?.toLong(),
-                    longitude = it.location?.second?.toLong(),
+                    latitude = it.location?.first?.toDouble(),
+                    longitude = it.location?.second?.toDouble(),
                     lastmodifiedts = it.lastModifiedTs.toLong(),
                 )
             }
@@ -102,6 +102,30 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
                     neighbourhoodId = it.neighbourhoodid?.toInt(),
                     householdId = it.householdid?.toInt(),
                     userId = it.userid?.toInt(),
+                )
+            }
+        }
+    }
+
+    override suspend fun filterHouseholds(): List<Household> {
+        return withContext(Dispatchers.IO) {
+            db.householdsQueries.filterHouseholds().executeAsList().map {
+                Household(
+                    householdid = it.id.toInt(),
+                    name = it.name,
+                    headid = it.headid.toInt(),
+                    about = it.about,
+                    imageurl = it.image,
+                    location = it.latitude?.let { lat ->
+                        it.longitude?.let { lng ->
+                            Pair(
+                                lat.toFloat(),
+                                lng.toFloat(),
+                            )
+                        }
+                    },
+                    address = it.address,
+                    lastModifiedTs = it.lastmodifiedts.toInt(),
                 )
             }
         }

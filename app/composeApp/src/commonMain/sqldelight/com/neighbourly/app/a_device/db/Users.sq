@@ -1,0 +1,20 @@
+CREATE TABLE Users (
+  id INTEGER PRIMARY KEY NOT NULL,
+  username TEXT,
+  fullname TEXT,
+  about TEXT,
+  email TEXT,
+  phone TEXT,
+  image TEXT,
+  householdid INTEGER,
+  lastmodifiedts INTEGER NOT NULL
+);
+
+addOrUpdateUser:
+INSERT OR REPLACE INTO Users(id, username,
+                    fullname, about, email, phone, image,
+                    householdid, lastmodifiedts
+                  )  VALUES(?,?, ?,?,?,?,?,?,?);
+
+getLastModified:
+SELECT MAX(lastmodifiedts) AS lastModifTs FROM Items;

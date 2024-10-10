@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
 import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUseCase
 import com.neighbourly.app.d_entity.data.GpsItem
+import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 
 class MapViewModel(
     val sessionStore: SessionStore,
+    val database: Db,
     val householdLocalizeUseCase: HouseholdLocalizeUseCase,
     val neighbourhoodManagementUseCase: NeighbourhoodManagementUseCase,
 ) : ViewModel() {
@@ -29,20 +31,20 @@ class MapViewModel(
                     it.copy(
                         drawing = localization.drawing,
                         heatmap =
-                            localization.heatmap?.map {
-                                GpsItemVS(
-                                    latitude = it.latitude,
-                                    longitude = it.longitude,
-                                    frequency = it.frequency ?: 1,
-                                )
-                            },
+                        localization.heatmap?.map {
+                            GpsItemVS(
+                                latitude = it.latitude,
+                                longitude = it.longitude,
+                                frequency = it.frequency ?: 1,
+                            )
+                        },
                         candidate =
-                            localization.candidate?.let {
-                                GpsItemVS(
-                                    latitude = it.latitude,
-                                    longitude = it.longitude,
-                                )
-                            },
+                        localization.candidate?.let {
+                            GpsItemVS(
+                                latitude = it.latitude,
+                                longitude = it.longitude,
+                            )
+                        },
                     )
                 }
             }.launchIn(viewModelScope)
@@ -57,29 +59,30 @@ class MapViewModel(
                 }
                 _state.update {
                     it.copy(
+                        lastSyncTs = user?.lastSyncTs ?: 0,
                         household =
-                            user?.household?.let {
+                        user?.household?.let { household ->
+                            (household.location?.toGpsItemVS()
+                                ?: _state.value.candidate)?.let { location ->
                                 HouseholdVS(
-                                    id = user.household.householdid,
-                                    location =
-                                        user.household.location?.let {
-                                            GpsItemVS(
-                                                it.first,
-                                                it.second,
-                                            )
-                                        },
-                                    name = user.household.name,
-                                    imageurl = user.household.imageurl,
+                                    id = household.householdid,
+                                    location = location,
+                                    name = if (household.location == null)
+                                        household.name + "<br />[CANDIDATE]"
+                                    else
+                                        household.name,
+                                    imageurl = household.imageurl
                                 )
-                            },
+                            }
+                        },
                         neighbourhoods =
-                            user?.neighbourhoods?.map {
-                                NeighbourhoodVS(
-                                    id = it.neighbourhoodid,
-                                    name = it.name,
-                                    geofence = it.geofence,
-                                )
-                            } ?: emptyList(),
+                        user?.neighbourhoods?.map {
+                            NeighbourhoodVS(
+                                id = it.neighbourhoodid,
+                                name = it.name,
+                                geofence = it.geofence,
+                            )
+                        } ?: emptyList(),
                     )
                 }
             }.launchIn(viewModelScope)
@@ -96,9 +99,32 @@ class MapViewModel(
     fun onHouseholSelected(householdid: Int) {
     }
 
+    fun refreshMapContent() {
+        viewModelScope.launch {
+            database.filterHouseholds().let { filteredHouses ->
+                _state.update {
+                    it.copy(
+                        houses = filteredHouses.filter { it.location != null }.map {
+                            HouseholdVS(
+                                id = it.householdid,
+                                location = it.location!!.let {
+                                    GpsItemVS(it.first, it.second)
+                                },
+                                name = it.name,
+                                imageurl = it.imageurl,
+                            )
+                        }
+                    )
+                }
+            }
+        }
+    }
+
     data class MapViewState(
         val drawing: Boolean = false,
+        val lastSyncTs: Int = 0,
         val household: HouseholdVS? = null,
+        val houses: List<HouseholdVS> = emptyList(),
         val neighbourhoods: List<NeighbourhoodVS> = emptyList(),
         val heatmap: List<GpsItemVS>? = null,
         val candidate: GpsItemVS? = null,
@@ -106,7 +132,7 @@ class MapViewModel(
 
     data class HouseholdVS(
         val id: Int,
-        val location: GpsItemVS? = null,
+        val location: GpsItemVS,
         val name: String,
         val imageurl: String? = null,
     )
@@ -122,4 +148,10 @@ class MapViewModel(
         val longitude: Float,
         val frequency: Int = 1,
     )
+
+    fun Pair<Float, Float>.toGpsItemVS() =
+        GpsItemVS(
+            first,
+            second,
+        )
 }

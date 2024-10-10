@@ -1,12 +1,12 @@
 CREATE TABLE Households (
   id INTEGER PRIMARY KEY NOT NULL,
-  name TEXT,
+  name TEXT NOT NULL,
   about TEXT,
   image TEXT,
   address TEXT,
-  headid INTEGER,
-  latitude INTEGER,
-  longitude INTEGER,
+  headid INTEGER NOT NULL,
+  latitude REAL,
+  longitude REAL,
   lastmodifiedts INTEGER NOT NULL
 );
 
@@ -16,6 +16,9 @@ INSERT OR REPLACE INTO Households(id,
                     latitude, longitude, lastmodifiedts
                   )  VALUES(?,?, ?,?,?,?,?,?,?);
 
+
+filterHouseholds:
+SELECT * FROM Households ORDER BY id DESC;
 
 getLastModified:
 SELECT MAX(lastmodifiedts) AS lastModifTs FROM Items;

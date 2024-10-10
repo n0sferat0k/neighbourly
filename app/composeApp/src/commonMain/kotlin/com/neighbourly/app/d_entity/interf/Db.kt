@@ -11,4 +11,5 @@ interface Db {
     suspend fun storeUsers(users: List<User>)
     suspend fun storeHouseholds(households: List<Household>)
     suspend fun filterItems(type: ItemType): List<Item>
+    suspend fun filterHouseholds():List<Household>
 }
