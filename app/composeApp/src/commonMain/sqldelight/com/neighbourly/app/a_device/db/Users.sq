@@ -17,4 +17,4 @@ INSERT OR REPLACE INTO Users(id, username,
                   )  VALUES(?,?, ?,?,?,?,?,?,?);
 
 getLastModified:
-SELECT MAX(lastmodifiedts) AS lastModifTs FROM Items;
+SELECT MAX(lastmodifiedts) AS lastModifTs FROM Users;

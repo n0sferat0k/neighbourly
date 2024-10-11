@@ -1,6 +1,7 @@
 package com.neighbourly.app.b_adapt.interactor
 
 import com.neighbourly.app.NeighbourlyDB
+import com.neighbourly.app.adevice.db.Items
 import com.neighbourly.app.d_entity.data.Household
 import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.data.ItemType
@@ -84,25 +85,18 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
         }
     }
 
-    override suspend fun filterItems(type: ItemType): List<Item> {
+    override suspend fun filterItemsByType(type: ItemType): List<Item> {
         return withContext(Dispatchers.IO) {
-            db.itemsQueries.filterItems(type.name).executeAsList().map {
-                Item(
-                    id = it.id.toInt(),
-                    type = ItemType.getByName(it.type),
-                    name = it.name,
-                    description = it.description,
-                    url = it.url,
-                    targetUserId = it.targetuserid?.toInt(),
-                    images = it.images?.let { Json.decodeFromString(it) } ?: emptyMap(),
-                    files = it.files?.let { Json.decodeFromString(it) } ?: emptyMap(),
-                    startTs = it.startts?.toInt(),
-                    endTs = it.endts?.toInt(),
-                    lastModifiedTs = it.lastmodifiedts.toInt(),
-                    neighbourhoodId = it.neighbourhoodid?.toInt(),
-                    householdId = it.householdid?.toInt(),
-                    userId = it.userid?.toInt(),
-                )
+            db.itemsQueries.filterItemsByType(type.name).executeAsList().map {
+                it.toItem()
+            }
+        }
+    }
+
+    override suspend fun filterItemsByHousehold(householdId: Int): List<Item> {
+        return withContext(Dispatchers.IO) {
+            db.itemsQueries.filterItemsByHousehold(householdId.toLong()).executeAsList().map {
+                it.toItem()
             }
         }
     }
@@ -131,3 +125,21 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
         }
     }
 }
+
+private fun Items.toItem():Item =
+    Item(
+        id = id.toInt(),
+        type = ItemType.getByName(type),
+        name = name,
+        description = description,
+        url = url,
+        targetUserId = targetuserid?.toInt(),
+        images = images?.let { Json.decodeFromString(it) } ?: emptyMap(),
+        files = files?.let { Json.decodeFromString(it) } ?: emptyMap(),
+        startTs = startts?.toInt(),
+        endTs = endts?.toInt(),
+        lastModifiedTs = lastmodifiedts.toInt(),
+        neighbourhoodId = neighbourhoodid?.toInt(),
+        householdId = householdid?.toInt(),
+        userId = userid?.toInt(),
+    )

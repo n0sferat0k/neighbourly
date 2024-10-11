@@ -136,5 +136,5 @@ data class ItemDTO(
 data class SyncResponseDTO(
     val items: List<ItemDTO> = emptyList(),
     val users: List<UserDTO> = emptyList(),
-    val houses: List<HouseholdDTO> = emptyList()
+    val households: List<HouseholdDTO> = emptyList()
 )

@@ -30,7 +30,7 @@ class FilteredItemListViewModel(
             _state.update { it.copy(loading = true) }
             try {
                 syncItemsUseCase.execute(force)
-                database.filterItems(_state.value.type).let { items ->
+                database.filterItemsByType(_state.value.type).let { items ->
                     _state.update {
                         it.copy(
                             loading = false,

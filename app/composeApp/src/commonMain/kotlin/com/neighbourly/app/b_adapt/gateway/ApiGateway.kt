@@ -259,7 +259,7 @@ class ApiGateway(
                 Triple(
                     it.items.map { it.toItem() },
                     it.users.map { it.toUser() },
-                    it.houses.map { it.toHousehold() }
+                    it.households.map { it.toHousehold() }
                 )
             }
         }

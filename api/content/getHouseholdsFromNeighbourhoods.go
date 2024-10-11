@@ -20,7 +20,7 @@ func GetHouseholdsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([
 			FROM 				
 				households H 
 			WHERE EXISTS(SELECT
-							neighbourhood_household_users_id 
+							NHU.neighbourhood_household_users_id 
 						FROM 
 							neighbourhood_household_users NHU
 						WHERE 

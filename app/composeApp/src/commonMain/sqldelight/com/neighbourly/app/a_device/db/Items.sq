@@ -24,8 +24,11 @@ INSERT OR REPLACE INTO Items(id, type,
                   neighbourhoodid,householdid,userid
                   )  VALUES(?,?, ?,?,?,?,?,?,?,?,?,?,?,?);
 
-filterItems:
+filterItemsByType:
 SELECT * FROM Items WHERE type = ? ORDER BY id DESC;
+
+filterItemsByHousehold:
+SELECT * FROM Items WHERE householdid = ? ORDER BY id DESC;
 
 getLastModified:
 SELECT MAX(lastmodifiedts) AS lastModifTs FROM Items;

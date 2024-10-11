@@ -33,7 +33,7 @@ import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.Main
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.PublishStuff
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.barter
-import neighbourly.composeapp.generated.resources.bartering
+import neighbourly.composeapp.generated.resources.barterings
 import neighbourly.composeapp.generated.resources.donate
 import neighbourly.composeapp.generated.resources.donations
 import neighbourly.composeapp.generated.resources.event
@@ -106,7 +106,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
             }
             RightMenuItemBox(
                 modifier = Modifier.align(Alignment.End),
-                text = stringResource(Res.string.bartering),
+                text = stringResource(Res.string.barterings),
                 image = painterResource(Res.drawable.barter),
                 delayMs = 250
             ) {

@@ -21,4 +21,4 @@ filterHouseholds:
 SELECT * FROM Households ORDER BY id DESC;
 
 getLastModified:
-SELECT MAX(lastmodifiedts) AS lastModifTs FROM Items;
+SELECT MAX(lastmodifiedts) AS lastModifTs FROM Households;

@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
 import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUseCase
 import com.neighbourly.app.d_entity.data.GpsItem
+import com.neighbourly.app.d_entity.data.ItemType
 import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.SessionStore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MapViewModel(
     val sessionStore: SessionStore,
@@ -71,7 +74,10 @@ class MapViewModel(
                                         household.name + "<br />[CANDIDATE]"
                                     else
                                         household.name,
-                                    imageurl = household.imageurl
+                                    floatName = true,
+                                    address = household.address.orEmpty(),
+                                    description = household.about.orEmpty(),
+                                    imageurl = household.imageurl,
                                 )
                             }
                         },
@@ -96,25 +102,59 @@ class MapViewModel(
         }
     }
 
-    fun onHouseholSelected(householdid: Int) {
+    fun onHouseholdSelected(householdid: Int, byName: ItemType) {
+        println("AAAAAAAAAAAAA")
     }
 
     fun refreshMapContent() {
         viewModelScope.launch {
-            database.filterHouseholds().let { filteredHouses ->
-                _state.update {
-                    it.copy(
-                        houses = filteredHouses.filter { it.location != null }.map {
-                            HouseholdVS(
-                                id = it.householdid,
-                                location = it.location!!.let {
-                                    GpsItemVS(it.first, it.second)
-                                },
-                                name = it.name,
-                                imageurl = it.imageurl,
-                            )
-                        }
+            withContext(Dispatchers.Default) {
+                val filteredHouses = database.filterHouseholds()
+
+                val houses = filteredHouses.filter { it.location != null }.map {
+                    val items = database.filterItemsByHousehold(it.householdid)
+
+                    HouseholdVS(
+                        id = it.householdid,
+                        location = it.location!!.let {
+                            GpsItemVS(it.first, it.second)
+                        },
+                        name = it.name,
+                        floatName = false,
+                        address = it.address.orEmpty(),
+                        description = it.about.orEmpty(),
+                        imageurl = it.imageurl,
+                        skillshare = items.filter { it.type == ItemType.SKILLSHARE }.size,
+                        requests = items.filter { it.type == ItemType.REQUEST }.size,
+                        needs = items.filter { it.type == ItemType.NEED }.size,
+                        events = items.filter { it.type == ItemType.EVENT }.size,
+                        sales = items.filter { it.type == ItemType.SALE }.size,
+                        barterings = items.filter { it.type == ItemType.BARTER }.size,
+                        donations = items.filter { it.type == ItemType.DONATION }.size
                     )
+                }.toMutableList()
+
+                _state.value.household?.let {
+                    val items = database.filterItemsByHousehold(it.id)
+                    houses.add(
+                        it.copy(
+                            skillshare = items.filter { it.type == ItemType.SKILLSHARE }.size,
+                            requests = items.filter { it.type == ItemType.REQUEST }.size,
+                            needs = items.filter { it.type == ItemType.NEED }.size,
+                            events = items.filter { it.type == ItemType.EVENT }.size,
+                            sales = items.filter { it.type == ItemType.SALE }.size,
+                            barterings = items.filter { it.type == ItemType.BARTER }.size,
+                            donations = items.filter { it.type == ItemType.DONATION }.size
+                        )
+                    )
+                }
+
+                withContext(Dispatchers.Main) {
+                    _state.update {
+                        it.copy(
+                            houses = houses
+                        )
+                    }
                 }
             }
         }
@@ -134,6 +174,16 @@ class MapViewModel(
         val id: Int,
         val location: GpsItemVS,
         val name: String,
+        val floatName: Boolean = false,
+        val address: String = "",
+        val description: String = "",
+        val skillshare: Int = 0,
+        val requests: Int = 0,
+        val needs: Int = 0,
+        val events: Int = 0,
+        val sales: Int = 0,
+        val barterings: Int = 0,
+        val donations: Int = 0,
         val imageurl: String? = null,
     )
 
