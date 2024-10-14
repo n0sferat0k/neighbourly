@@ -124,10 +124,10 @@ val adapterModule =
 val useCaseModule =
     module {
         single {
-            LoginUseCase(get(), get())
+            LoginUseCase(get(), get(), get())
         }
         single {
-            LogoutUseCase(get(), get())
+            LogoutUseCase(get(), get(), get())
         }
         single {
             RegisterUseCase(get(), get())

@@ -16,6 +16,8 @@ INSERT OR REPLACE INTO Households(id,
                     latitude, longitude, lastmodifiedts
                   )  VALUES(?,?, ?,?,?,?,?,?,?);
 
+clear:
+DELETE FROM Households WHERE 1;
 
 filterHouseholds:
 SELECT * FROM Households ORDER BY id DESC;

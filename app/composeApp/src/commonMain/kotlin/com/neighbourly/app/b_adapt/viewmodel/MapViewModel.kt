@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
 import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUseCase
 import com.neighbourly.app.d_entity.data.GpsItem
+import com.neighbourly.app.d_entity.data.Household
 import com.neighbourly.app.d_entity.data.ItemType
 import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.SessionStore
@@ -28,6 +29,12 @@ class MapViewModel(
     val state: StateFlow<MapViewState> = _state.asStateFlow()
 
     init {
+        sessionStore.isLoggedIn.onEach {
+            if (!it) {
+                _state.update { MapViewState() }
+            }
+        }.launchIn(viewModelScope)
+
         sessionStore.localization
             .onEach { localization ->
                 _state.update {
@@ -60,29 +67,20 @@ class MapViewModel(
                         householdLocalizeUseCase.fetchGpsCandidate()
                     }
                 }
+                val ownHousehold = user?.household?.let { household ->
+                    household.toHouseholdVS(_state.value.candidate, true).let {
+                        if (household.location == null) {
+                            it?.copy(name = household.name + "<br />[CANDIDATE]")
+                        } else {
+                            it
+                        }
+                    }
+                }
                 _state.update {
                     it.copy(
                         lastSyncTs = user?.lastSyncTs ?: 0,
-                        household =
-                        user?.household?.let { household ->
-                            (household.location?.toGpsItemVS()
-                                ?: _state.value.candidate)?.let { location ->
-                                HouseholdVS(
-                                    id = household.householdid,
-                                    location = location,
-                                    name = if (household.location == null)
-                                        household.name + "<br />[CANDIDATE]"
-                                    else
-                                        household.name,
-                                    floatName = true,
-                                    address = household.address.orEmpty(),
-                                    description = household.about.orEmpty(),
-                                    imageurl = household.imageurl,
-                                )
-                            }
-                        },
-                        neighbourhoods =
-                        user?.neighbourhoods?.map {
+                        myHousehold = ownHousehold?.pullStatsClone(),
+                        neighbourhoods = user?.neighbourhoods?.map {
                             NeighbourhoodVS(
                                 id = it.neighbourhoodid,
                                 name = it.name,
@@ -103,7 +101,7 @@ class MapViewModel(
     }
 
     fun onHouseholdSelected(householdid: Int, byName: ItemType) {
-        println("AAAAAAAAAAAAA")
+
     }
 
     fun refreshMapContent() {
@@ -112,47 +110,13 @@ class MapViewModel(
                 val filteredHouses = database.filterHouseholds()
 
                 val houses = filteredHouses.filter { it.location != null }.map {
-                    val items = database.filterItemsByHousehold(it.householdid)
-
-                    HouseholdVS(
-                        id = it.householdid,
-                        location = it.location!!.let {
-                            GpsItemVS(it.first, it.second)
-                        },
-                        name = it.name,
-                        floatName = false,
-                        address = it.address.orEmpty(),
-                        description = it.about.orEmpty(),
-                        imageurl = it.imageurl,
-                        skillshare = items.filter { it.type == ItemType.SKILLSHARE }.size,
-                        requests = items.filter { it.type == ItemType.REQUEST }.size,
-                        needs = items.filter { it.type == ItemType.NEED }.size,
-                        events = items.filter { it.type == ItemType.EVENT }.size,
-                        sales = items.filter { it.type == ItemType.SALE }.size,
-                        barterings = items.filter { it.type == ItemType.BARTER }.size,
-                        donations = items.filter { it.type == ItemType.DONATION }.size
-                    )
-                }.toMutableList()
-
-                _state.value.household?.let {
-                    val items = database.filterItemsByHousehold(it.id)
-                    houses.add(
-                        it.copy(
-                            skillshare = items.filter { it.type == ItemType.SKILLSHARE }.size,
-                            requests = items.filter { it.type == ItemType.REQUEST }.size,
-                            needs = items.filter { it.type == ItemType.NEED }.size,
-                            events = items.filter { it.type == ItemType.EVENT }.size,
-                            sales = items.filter { it.type == ItemType.SALE }.size,
-                            barterings = items.filter { it.type == ItemType.BARTER }.size,
-                            donations = items.filter { it.type == ItemType.DONATION }.size
-                        )
-                    )
-                }
+                    it.toHouseholdVS()?.pullStatsClone()
+                }.filterNotNull().toMutableList()
 
                 withContext(Dispatchers.Main) {
                     _state.update {
                         it.copy(
-                            houses = houses
+                            otherHouseholds = houses
                         )
                     }
                 }
@@ -160,11 +124,24 @@ class MapViewModel(
         }
     }
 
+    private suspend fun HouseholdVS.pullStatsClone(): HouseholdVS {
+        val items = database.filterItemsByHousehold(id)
+        return this.copy(
+            skillshare = items.filter { it.type == ItemType.SKILLSHARE }.size,
+            requests = items.filter { it.type == ItemType.REQUEST }.size,
+            needs = items.filter { it.type == ItemType.NEED }.size,
+            events = items.filter { it.type == ItemType.EVENT }.size,
+            sales = items.filter { it.type == ItemType.SALE }.size,
+            barterings = items.filter { it.type == ItemType.BARTER }.size,
+            donations = items.filter { it.type == ItemType.DONATION }.size
+        )
+    }
+
     data class MapViewState(
         val drawing: Boolean = false,
         val lastSyncTs: Int = 0,
-        val household: HouseholdVS? = null,
-        val houses: List<HouseholdVS> = emptyList(),
+        val myHousehold: HouseholdVS? = null,
+        val otherHouseholds: List<HouseholdVS> = emptyList(),
         val neighbourhoods: List<NeighbourhoodVS> = emptyList(),
         val heatmap: List<GpsItemVS>? = null,
         val candidate: GpsItemVS? = null,
@@ -204,4 +181,21 @@ class MapViewModel(
             first,
             second,
         )
+
+    fun Household.toHouseholdVS(
+        alternateLocation: GpsItemVS? = null,
+        floatName: Boolean = false
+    ): HouseholdVS? =
+        (location?.let { GpsItemVS(it.first, it.second) } ?: alternateLocation)?.let { location ->
+            HouseholdVS(
+                id = householdid,
+                location = location,
+                name = name,
+                floatName = floatName,
+                address = address.orEmpty(),
+                description = about.orEmpty(),
+                imageurl = imageurl,
+            )
+        }
+
 }

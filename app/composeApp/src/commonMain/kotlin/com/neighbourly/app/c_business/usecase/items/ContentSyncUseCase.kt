@@ -12,7 +12,7 @@ class ContentSyncUseCase(
     val sessionStore: SessionStore,
 ) {
     private val currentTs
-        get() = System.currentTimeMillis() / 1000
+        get() = (System.currentTimeMillis() / 1000).toInt()
 
     suspend fun execute(force: Boolean = false) {
         val token = sessionStore.token
@@ -24,6 +24,7 @@ class ContentSyncUseCase(
                 dbInteractor.storeItems(content.first)
                 dbInteractor.storeUsers(content.second)
                 dbInteractor.storeHouseholds(content.third)
+                sessionStore.lastSyncTs = currentTs
             }
         }
     }

@@ -14,6 +14,14 @@ import kotlinx.serialization.json.Json
 import kotlin.math.max
 
 class DbInteractor(val db: NeighbourlyDB) : Db {
+    override suspend fun clear() {
+        return withContext(Dispatchers.IO) {
+            db.itemsQueries.clear()
+            db.householdsQueries.clear()
+            db.usersQueries.clear()
+        }
+    }
+
     override suspend fun getLastModifTs(): Int {
         return withContext(Dispatchers.IO) {
             max(

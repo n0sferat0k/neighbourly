@@ -100,11 +100,13 @@ fun Map(
         }
     }
 
-    LaunchedEffect(mapReady, state.houses, state.household, state.candidate) {
+    LaunchedEffect(mapReady, state.otherHouseholds, state.myHousehold, state.candidate) {
         if (mapReady) {
-            var housesToShow = state.houses.toMutableList()
-            state.household?.let { household ->
-                if (firstGps && household.location != null) {
+            val housesToShow = state.otherHouseholds.toMutableList()
+
+            state.myHousehold?.let { household ->
+                housesToShow.add(household)
+                if (firstGps) {
                     navigator.evaluateJavaScript("center(${household.location.longitude}, ${household.location.latitude}, 15);")
                     firstGps = false
                 }
@@ -113,26 +115,25 @@ fun Map(
             if (housesToShow.isEmpty()) {
                 navigator.evaluateJavaScript("clearHouseholds()")
             } else {
-                var js = housesToShow.map {
+                val js = housesToShow.map {
                     "{" +
-                        "'longitude':${it.location.longitude}, " +
-                        "'latitude':${it.location.latitude}, " +
-                        "'id':${it.id}, " +
-                        "'name':'${it.name}', " +
-                        "'floatName':'${it.floatName}', " +
-                        "'address':'${it.address}', " +
-                        "'description':'${it.description}', " +
-                        "'donations':${it.donations}, " +
-                        "'barterings':${it.barterings}, " +
-                        "'sales':${it.sales}, " +
-                        "'events':${it.events}, " +
-                        "'needs':${it.needs}, " +
-                        "'requests':${it.requests}, " +
-                        "'skillshare':${it.skillshare}, " +
-                        "'imageurl':'${it.imageurl ?: ""}'" +
-                    "}"
+                            "'longitude':${it.location.longitude}, " +
+                            "'latitude':${it.location.latitude}, " +
+                            "'id':${it.id}, " +
+                            "'name':'${it.name}', " +
+                            "'floatName':'${it.floatName}', " +
+                            "'address':'${it.address}', " +
+                            "'description':'${it.description}', " +
+                            "'donations':${it.donations}, " +
+                            "'barterings':${it.barterings}, " +
+                            "'sales':${it.sales}, " +
+                            "'events':${it.events}, " +
+                            "'needs':${it.needs}, " +
+                            "'requests':${it.requests}, " +
+                            "'skillshare':${it.skillshare}, " +
+                            "'imageurl':'${it.imageurl ?: ""}'" +
+                            "}"
                 }.joinToString(separator = ",", prefix = "updateHouseholds([", postfix = "]);")
-                println("AAAAAAAAAAAAAAA " + js)
                 navigator.evaluateJavaScript(js)
             }
         }
@@ -153,8 +154,8 @@ fun Map(
     LaunchedEffect(mapReady, state.heatmap) {
         if (mapReady) {
             state.heatmap.takeIf { !it.isNullOrEmpty() }?.let {
-                var js = it.map { heatmapItem ->
-                    "{'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [${heatmapItem.longitude}, ${heatmapItem.latitude}]},'properties': {'frequency': ${heatmapItem.frequency} }},"
+                val js = it.map { heatmapItem ->
+                    "{'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [${heatmapItem.longitude}, ${heatmapItem.latitude}]},'properties': {'frequency': ${heatmapItem.frequency} }}"
                 }.joinToString(
                     separator = ",",
                     prefix = "addLocationHeatMap('heatmap', [",
@@ -181,7 +182,7 @@ data class MapFeedbackModel(
     val mapReady: Boolean? = null,
     val drawData: List<List<Float>>? = null,
     val householdid: Int? = null,
-    val type:String? = null,
+    val type: String? = null,
 )
 
 val html =

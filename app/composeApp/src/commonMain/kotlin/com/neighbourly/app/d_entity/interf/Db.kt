@@ -6,6 +6,7 @@ import com.neighbourly.app.d_entity.data.ItemType
 import com.neighbourly.app.d_entity.data.User
 
 interface Db {
+    suspend fun clear()
     suspend fun getLastModifTs(): Int?
     suspend fun storeItems(items: List<Item>)
     suspend fun storeUsers(users: List<User>)

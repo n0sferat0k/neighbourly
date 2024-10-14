@@ -16,5 +16,8 @@ INSERT OR REPLACE INTO Users(id, username,
                     householdid, lastmodifiedts
                   )  VALUES(?,?, ?,?,?,?,?,?,?);
 
+clear:
+DELETE FROM Users WHERE 1;
+
 getLastModified:
 SELECT MAX(lastmodifiedts) AS lastModifTs FROM Users;

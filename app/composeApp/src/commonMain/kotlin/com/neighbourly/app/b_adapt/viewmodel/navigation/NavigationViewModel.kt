@@ -27,18 +27,25 @@ public class NavigationViewModel(
     val state: StateFlow<NavigationViewState> = _state.asStateFlow()
 
     init {
+        sessionStore.isLoggedIn.onEach {
+            when (it) {
+                true -> _state.update {
+                    it.copy(userLoggedIn = true, mainContentVisible = true)
+                }
+
+                false -> _state.update {
+                    NavigationViewState(
+                        disableMainToggle = _state.value.disableMainToggle
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+
         sessionStore.user
             .onEach { user ->
-                val loggedIn = user != null
-                if (loggedIn != _state.value.userLoggedIn) {
+                user?.let {
                     _state.update {
-                        it.copy(
-                            userLoggedIn = loggedIn,
-                            mainContentVisible = true,
-                            addingNewHousehold = false,
-                            profileContent = ProfileInfoEdit,
-                            restrictedContent = !loggedIn || user?.household?.location == null || user.neighbourhoods.isEmpty(),
-                        )
+                        it.copy(restrictedContent = user.household?.location == null || user.neighbourhoods.isEmpty())
                     }
                 }
             }.launchIn(viewModelScope)
@@ -201,7 +208,7 @@ public class NavigationViewModel(
         val userLoggedIn: Boolean = false,
         val disableMainToggle: Boolean = false,
         val restrictedContent: Boolean = true,
-        val mainContentVisible: Boolean = false,
+        val mainContentVisible: Boolean = true,
         val addingNewHousehold: Boolean = false,
         val mainContent: MainContent = MainMenu,
         val profileContent: ProfileContent = ProfileInfoEdit,

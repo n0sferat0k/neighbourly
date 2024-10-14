@@ -1,11 +1,13 @@
 package com.neighbourly.app.c_business.usecase.auth
 
+import com.neighbourly.app.c_business.usecase.items.ContentSyncUseCase
 import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.SessionStore
 
 class LoginUseCase(
     val apiGw: Api,
     val sessionStore: SessionStore,
+    val syncUseCase: ContentSyncUseCase,
 ) {
     suspend fun execute(
         username: String,
@@ -13,5 +15,6 @@ class LoginUseCase(
     ) {
         val user = apiGw.login(username, password)
         sessionStore.storeUser(user)
+        syncUseCase.execute(true)
     }
 }
