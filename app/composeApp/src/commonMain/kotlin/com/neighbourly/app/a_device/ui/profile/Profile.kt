@@ -14,11 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.BoxContent
+import com.neighbourly.app.a_device.ui.BoxScrollableContent
 import com.neighbourly.app.a_device.ui.BoxFooter
 import com.neighbourly.app.a_device.ui.BoxHeader
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.*
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.*
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileViewModel
 
@@ -41,7 +40,7 @@ fun Profile(
             viewModel.refresh()
         }
 
-        BoxContent(modifier = Modifier.weight(1f)) {
+        BoxScrollableContent(modifier = Modifier.weight(1f)) {
             Column(
                 modifier = Modifier.padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,

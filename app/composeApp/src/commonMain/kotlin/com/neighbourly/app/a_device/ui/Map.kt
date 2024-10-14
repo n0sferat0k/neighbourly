@@ -21,6 +21,7 @@ import com.neighbourly.app.GeoLocationCallback
 import com.neighbourly.app.GetLocation
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.b_adapt.viewmodel.MapViewModel
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.d_entity.data.ItemType
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -28,6 +29,7 @@ import kotlinx.serialization.json.Json
 @Composable
 fun Map(
     viewModel: MapViewModel = viewModel { KoinProvider.KOIN.get<MapViewModel>() },
+    navigation: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() },
     modifier: Modifier,
     onDrawn: (() -> Unit)? = null,
 ) {
@@ -54,7 +56,7 @@ fun Map(
                 ) {
                     val params = Json.decodeFromString<MapFeedbackModel>(message.params)
                     params.householdid?.let {
-                        viewModel.onHouseholdSelected(it, ItemType.getByName(params.type))
+                        navigation.goToFindItems(ItemType.getByName(params.type), it)
                     }
                     if (params.mapReady == true) {
                         mapReady = true
@@ -266,10 +268,15 @@ val html =
                     zoom: 1
                 });
         
+                function callNative(obj) {
+                    //alert(JSON.stringify(obj));
+                    window.kmpJsBridge.callNative("MapFeedback", JSON.stringify(obj), function (data) { });
+                }
+    
                 map.on('load', () => {                
                     mapLoaded = true;
-    
-                    window.kmpJsBridge.callNative("MapFeedback", "{\"mapReady\":true}", function (data) { });
+                    
+                    callNative({mapReady:true});
                             
                     // updateHouseholds([
                     //     {'longitude':23.6685, 'latitude':47.653, 'id':1, 'donations':3, 'skillshare':5,'name':'Fam. Krucz', 'floatName':true, 'address':'Catinei 21','description':'This is our little house on the hill. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a massa at est malesuada faucibus. Donec ultricies, velit a aliquet pulvinar, sapien nibh mollis ante, sed egestas est arcu sed mi. Nullam facilisis efficitur libero vitae vulputate. Mauris nec mauris malesuada, mattis risus eu, pharetra urna. Etiam ac tincidunt tellus, ac commodo urna. Phasellus blandit elit at blandit auctor. Nulla facilisi. Suspendisse potenti. Aliquam diam arcu, aliquet non elementum ut, sollicitudin quis massa. Aliquam erat volutpat. Donec tortor est, blandit nec pellentesque sit amet, placerat quis nisi. Nulla nec facilisis diam. Phasellus convallis hendrerit est a auctor. Praesent vitae mauris convallis, tristique lacus at, porttitor orci. Integer consectetur nec dui vel dictum. Vestibulum sit amet purus sit amet lacus blandit semper vitae ac est. ', 'imageurl':''},
@@ -336,7 +343,7 @@ val html =
                             const data = draw.getAll().features[0].geometry.coordinates[0].map(function (point) {
                                 return [point[0], point[1]];
                             });                
-                            window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ drawData: data }), function (data) { });
+                            callNative({ drawData: data });
                         }
                     }
         
@@ -570,7 +577,7 @@ val html =
     
                         if(house.donations > 0) {
                             popupHtml +=    `                                            
-                                                <div class="item_icon" onclick="window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ householdid: '`+house.id+`', type: 'DONATION' }), function (data) { });">
+                                                <div class="item_icon" onclick="callNative({ householdid: `+house.id+`, type: 'DONATION'});">
                                                     <svg width="36px" height="36px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path fill="#5BA9AE" d="M20,6h-2.18c0.11,-0.31 0.18,-0.65 0.18,-1 0,-1.66 -1.34,-3 -3,-3 -1.05,0 -1.96,0.54 -2.5,1.35l-0.5,0.67 -0.5,-0.68C10.96,2.54 10.05,2 9,2 7.34,2 6,3.34 6,5c0,0.35 0.07,0.69 0.18,1L4,6c-1.11,0 -1.99,0.89 -1.99,2L2,19c0,1.11 0.89,2 2,2h16c1.11,0 2,-0.89 2,-2L22,8c0,-1.11 -0.89,-2 -2,-2zM15,4c0.55,0 1,0.45 1,1s-0.45,1 -1,1 -1,-0.45 -1,-1 0.45,-1 1,-1zM9,4c0.55,0 1,0.45 1,1s-0.45,1 -1,1 -1,-0.45 -1,-1 0.45,-1 1,-1zM20,19L4,19v-2h16v2zM20,14L4,14L4,8h5.08L7,10.83 8.62,12 11,8.76l1,-1.36 1,1.36L15.38,12 17,10.83 14.92,8L20,8v6z" />
                                                     </svg>
@@ -579,7 +586,7 @@ val html =
                         }
                         if(house.barrterings > 0) {
                             popupHtml +=    `  
-                                                <div class="item_icon" onclick="window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ householdid: '`+house.id+`', type: 'BARTER' }), function (data) { });">
+                                                <div class="item_icon" onclick="callNative({ householdid: `+house.id+`, type: 'BARTER' });">
                                                     <svg width="36px" height="36px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">                                            
                                                         <path fill="#5BA9AE" d="M16.48,10.41c-0.39,0.39 -1.04,0.39 -1.43,0l-4.47,-4.46l-7.05,7.04l-0.66,-0.63c-1.17,-1.17 -1.17,-3.07 0,-4.24l4.24,-4.24c1.17,-1.17 3.07,-1.17 4.24,0L16.48,9C16.87,9.39 16.87,10.02 16.48,10.41zM17.18,8.29c0.78,0.78 0.78,2.05 0,2.83c-1.27,1.27 -2.61,0.22 -2.83,0l-3.76,-3.76l-5.57,5.57c-0.39,0.39 -0.39,1.02 0,1.41c0.39,0.39 1.02,0.39 1.42,0l4.62,-4.62l0.71,0.71l-4.62,4.62c-0.39,0.39 -0.39,1.02 0,1.41c0.39,0.39 1.02,0.39 1.42,0l4.62,-4.62l0.71,0.71l-4.62,4.62c-0.39,0.39 -0.39,1.02 0,1.41c0.39,0.39 1.02,0.39 1.41,0l4.62,-4.62l0.71,0.71l-4.62,4.62c-0.39,0.39 -0.39,1.02 0,1.41c0.39,0.39 1.02,0.39 1.41,0l8.32,-8.34c1.17,-1.17 1.17,-3.07 0,-4.24l-4.24,-4.24c-1.15,-1.15 -3.01,-1.17 -4.18,-0.06L17.18,8.29z" />
                                                     </svg>
@@ -588,7 +595,7 @@ val html =
                         }
                         if(house.sales > 0) {
                             popupHtml +=    `  
-                                                <div class="item_icon" onclick="window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ householdid: '`+house.id+`', type: 'SALE' }), function (data) { });">  
+                                                <div class="item_icon" onclick="callNative({ householdid: `+house.id+`, type: 'SALE' });">  
                                                     <svg width="36px" height="36px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path fill="#5BA9AE" d="M21.41,11.41l-8.83,-8.83C12.21,2.21 11.7,2 11.17,2H4C2.9,2 2,2.9 2,4v7.17c0,0.53 0.21,1.04 0.59,1.41l8.83,8.83c0.78,0.78 2.05,0.78 2.83,0l7.17,-7.17C22.2,13.46 22.2,12.2 21.41,11.41zM6.5,8C5.67,8 5,7.33 5,6.5S5.67,5 6.5,5S8,5.67 8,6.5S7.33,8 6.5,8z" />
                                                     </svg>
@@ -597,7 +604,7 @@ val html =
                         }
                         if(house.events > 0) {
                             popupHtml +=    `  
-                                                <div class="item_icon" onclick="window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ householdid: '`+house.id+`', type: 'EVENT' }), function (data) { });">
+                                                <div class="item_icon" onclick="callNative({ householdid: `+house.id+`, type: 'EVENT' });">
                                                     <svg width="36px" height="36px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path fill="#5BA9AE" d="M19,5h-2V3H7v2H5C3.9,5 3,5.9 3,7v1c0,2.55 1.92,4.63 4.39,4.94c0.63,1.5 1.98,2.63 3.61,2.96V19H7v2h10v-2h-4v-3.1c1.63,-0.33 2.98,-1.46 3.61,-2.96C19.08,12.63 21,10.55 21,8V7C21,5.9 20.1,5 19,5zM5,8V7h2v3.82C5.84,10.4 5,9.3 5,8zM19,8c0,1.3 -0.84,2.4 -2,2.82V7h2V8z" />
                                                     </svg>
@@ -606,7 +613,7 @@ val html =
                         }
                         if(house.needs > 0) {
                             popupHtml +=    ` 
-                                                <div class="item_icon" onclick="window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ householdid: '`+house.id+`', type: 'NEED' }), function (data) { });">
+                                                <div class="item_icon" onclick="callNative({ householdid: `+house.id+`, type: 'NEED' });">
                                                     <svg width="36px" height="36px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path fill="#5BA9AE" d="M17.73,12.02l3.98,-3.98c0.39,-0.39 0.39,-1.02 0,-1.41l-4.34,-4.34c-0.39,-0.39 -1.02,-0.39 -1.41,0l-3.98,3.98L8,2.29C7.8,2.1 7.55,2 7.29,2c-0.25,0 -0.51,0.1 -0.7,0.29L2.25,6.63c-0.39,0.39 -0.39,1.02 0,1.41l3.98,3.98L2.25,16c-0.39,0.39 -0.39,1.02 0,1.41l4.34,4.34c0.39,0.39 1.02,0.39 1.41,0l3.98,-3.98 3.98,3.98c0.2,0.2 0.45,0.29 0.71,0.29 0.26,0 0.51,-0.1 0.71,-0.29l4.34,-4.34c0.39,-0.39 0.39,-1.02 0,-1.41l-3.99,-3.98zM12,9c0.55,0 1,0.45 1,1s-0.45,1 -1,1 -1,-0.45 -1,-1 0.45,-1 1,-1zM7.29,10.96L3.66,7.34l3.63,-3.63 3.62,3.62 -3.62,3.63zM10,13c-0.55,0 -1,-0.45 -1,-1s0.45,-1 1,-1 1,0.45 1,1 -0.45,1 -1,1zM12,15c-0.55,0 -1,-0.45 -1,-1s0.45,-1 1,-1 1,0.45 1,1 -0.45,1 -1,1zM14,11c0.55,0 1,0.45 1,1s-0.45,1 -1,1 -1,-0.45 -1,-1 0.45,-1 1,-1zM16.66,20.34l-3.63,-3.62 3.63,-3.63 3.62,3.62 -3.62,3.63z" />
                                                     </svg>
@@ -615,7 +622,7 @@ val html =
                         }
                         if(house.requests > 0) {
                             popupHtml +=    ` 
-                                                <div class="item_icon" onclick="window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ householdid: '`+house.id+`', type: 'REQUEST' }), function (data) { });">
+                                                <div class="item_icon" onclick="callNative({ householdid: `+house.id+`, type: 'REQUEST' });">
                                                     <svg width="36px" height="36px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path fill="#5BA9AE" d="M23,17c0,3.31 -2.69,6 -6,6v-1.5c2.48,0 4.5,-2.02 4.5,-4.5H23zM1,7c0,-3.31 2.69,-6 6,-6v1.5C4.52,2.5 2.5,4.52 2.5,7H1zM8.01,4.32l-4.6,4.6c-3.22,3.22 -3.22,8.45 0,11.67s8.45,3.22 11.67,0l7.07,-7.07c0.49,-0.49 0.49,-1.28 0,-1.77c-0.49,-0.49 -1.28,-0.49 -1.77,0l-4.42,4.42l-0.71,-0.71l6.54,-6.54c0.49,-0.49 0.49,-1.28 0,-1.77s-1.28,-0.49 -1.77,0l-5.83,5.83l-0.71,-0.71l6.89,-6.89c0.49,-0.49 0.49,-1.28 0,-1.77s-1.28,-0.49 -1.77,0l-6.89,6.89L11.02,9.8l5.48,-5.48c0.49,-0.49 0.49,-1.28 0,-1.77s-1.28,-0.49 -1.77,0l-7.62,7.62c1.22,1.57 1.11,3.84 -0.33,5.28l-0.71,-0.71c1.17,-1.17 1.17,-3.07 0,-4.24l-0.35,-0.35l4.07,-4.07c0.49,-0.49 0.49,-1.28 0,-1.77C9.29,3.83 8.5,3.83 8.01,4.32z" />
                                                     </svg>
@@ -624,13 +631,12 @@ val html =
                         }
                         if(house.skillshare > 0) {
                             popupHtml +=    ` 
-                                                <div class="item_icon" onclick="window.kmpJsBridge.callNative("MapFeedback", JSON.stringify({ householdid: '`+house.id+`', type: 'SKILLSHARE' }), function (data) { });">
+                                                <div class="item_icon" onclick="callNative({ householdid: `+house.id+`, type: 'SKILLSHARE' });">
                                                     <svg width="36px" height="36px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path fill="#5BA9AE" d="M17.34,10.19l1.41,-1.41l2.12,2.12c1.17,-1.17 1.17,-3.07 0,-4.24l-3.54,-3.54l-1.41,1.41V1.71L15.22,1l-3.54,3.54l0.71,0.71h2.83l-1.41,1.41l1.06,1.06l-2.89,2.89L7.85,6.48V5.06L4.83,2.04L2,4.87l3.03,3.03h1.41l4.13,4.13l-0.85,0.85H7.6l-5.3,5.3c-0.39,0.39 -0.39,1.02 0,1.41l2.12,2.12c0.39,0.39 1.02,0.39 1.41,0l5.3,-5.3v-2.12l5.15,-5.15L17.34,10.19z" />
                                                     </svg>
                                                     <span class="item_counter">`+house.skillshare+`</span>
-                                                </div>`;
-                        }
+                                                </div>`;                    }
     
                         popupHtml +=        `                                            
                                             </div>

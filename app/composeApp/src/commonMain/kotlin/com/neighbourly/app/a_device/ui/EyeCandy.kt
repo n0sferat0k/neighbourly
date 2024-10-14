@@ -137,12 +137,42 @@ fun BoxHeader(
 }
 
 @Composable
-fun BoxContent(
+fun BoxScrollableContent(
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit,
 ) {
     Box(modifier.fillMaxWidth()) {
         Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+            Box(
+                modifier = Modifier.wrapContentSize().padding(20.dp).align(Alignment.TopCenter),
+                content = content,
+            )
+        }
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colorStops =
+                        arrayOf(
+                            0.0f to Color.White,
+                            0.05f to Color.Transparent,
+                            0.95f to Color.Transparent,
+                            1f to Color.White,
+                        ),
+                    ),
+                ),
+        )
+    }
+}
+
+@Composable
+fun BoxStaticContent(
+    modifier: Modifier = Modifier,
+    content: @Composable BoxScope.() -> Unit,
+) {
+    Box(modifier.fillMaxWidth()) {
+        Box(Modifier.fillMaxSize()) {
             Box(
                 modifier = Modifier.wrapContentSize().padding(20.dp).align(Alignment.TopCenter),
                 content = content,

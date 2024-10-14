@@ -14,8 +14,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.*
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.*
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.under_construction
@@ -40,7 +38,7 @@ fun UnderConstruction(
             viewModel.refresh()
         }
 
-        BoxContent(modifier = Modifier.weight(1f)) {
+        BoxScrollableContent(modifier = Modifier.weight(1f)) {
             CurlyText(
                 modifier = Modifier.padding(start = 10.dp),
                 text = stringResource(Res.string.under_construction),

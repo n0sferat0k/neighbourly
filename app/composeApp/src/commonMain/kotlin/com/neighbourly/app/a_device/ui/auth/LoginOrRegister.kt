@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.AppColors
-import com.neighbourly.app.a_device.ui.BoxContent
+import com.neighbourly.app.a_device.ui.BoxScrollableContent
 import com.neighbourly.app.a_device.ui.BoxHeader
 import com.neighbourly.app.a_device.ui.font
 import neighbourly.composeapp.generated.resources.Res
@@ -35,7 +35,7 @@ fun LoginOrRegister() {
     ) {
         BoxHeader(Modifier.align(Alignment.Start))
 
-        BoxContent(modifier = Modifier.weight(1f)) {
+        BoxScrollableContent(modifier = Modifier.weight(1f)) {
             when (index) {
                 0 -> Login()
                 1 -> Register()

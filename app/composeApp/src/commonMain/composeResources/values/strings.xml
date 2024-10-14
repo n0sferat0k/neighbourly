@@ -45,6 +45,8 @@
     <string name="skillshare">Skillshare</string>
 
     <string name="under_construction">Under Construction !</string>
+    <string name="expires_in">Exp: </string>
+
 
     <string name="err_password_mismatch">The two passwords must match</string>
     <string name="invite_or_create_household">You need to define a household, use the below QR code to be invited to an existing household or create your own from scratch !</string>

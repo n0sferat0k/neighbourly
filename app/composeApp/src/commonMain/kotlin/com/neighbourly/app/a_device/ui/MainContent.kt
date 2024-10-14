@@ -10,18 +10,11 @@ import com.neighbourly.app.a_device.ui.auth.LoginOrRegister
 import com.neighbourly.app.a_device.ui.items.FilteredItemList
 import com.neighbourly.app.a_device.ui.profile.Profile
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindBarters
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindDonations
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindEvents
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindNeeds
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindRequests
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindSales
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindSkillshare
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindItems
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.MainMenu
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ManageMyStuff
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ManageProfile
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.PublishStuff
-import com.neighbourly.app.d_entity.data.ItemType
 
 @Composable
 fun MainContent(navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }) {
@@ -44,12 +37,15 @@ fun MainContent(navigationViewModel: NavigationViewModel = viewModel { KoinProvi
         AnimatedVisibility(navigation.mainContent == ManageProfile) { ContentBox { Profile() } }
         AnimatedVisibility(navigation.mainContent == ManageMyStuff) { ContentBox { UnderConstruction() } }
         AnimatedVisibility(navigation.mainContent == PublishStuff) { ContentBox { UnderConstruction() } }
-        AnimatedVisibility(navigation.mainContent == FindDonations) { ContentBox { FilteredItemList(ItemType.DONATION) } }
-        AnimatedVisibility(navigation.mainContent == FindBarters) { ContentBox { UnderConstruction() } }
-        AnimatedVisibility(navigation.mainContent == FindSales) { ContentBox { UnderConstruction() } }
-        AnimatedVisibility(navigation.mainContent == FindEvents) { ContentBox { UnderConstruction() } }
-        AnimatedVisibility(navigation.mainContent == FindNeeds) { ContentBox { UnderConstruction() } }
-        AnimatedVisibility(navigation.mainContent == FindRequests) { ContentBox { UnderConstruction() } }
-        AnimatedVisibility(navigation.mainContent == FindSkillshare) { ContentBox { UnderConstruction() } }
+        AnimatedVisibility(navigation.mainContent is FindItems) {
+            ContentBox {
+                navigation.mainContent.let {
+                    when (it) {
+                        is FindItems -> FilteredItemList(it.type, it.householdId)
+                        else -> Unit
+                    }
+                }
+            }
+        }
     }
 }

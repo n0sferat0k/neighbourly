@@ -27,11 +27,17 @@ INSERT OR REPLACE INTO Items(id, type,
 clear:
 DELETE FROM Items WHERE 1;
 
+getItems:
+SELECT * FROM Items ORDER BY id DESC;
+
 filterItemsByType:
 SELECT * FROM Items WHERE type = ? ORDER BY id DESC;
 
 filterItemsByHousehold:
 SELECT * FROM Items WHERE householdid = ? ORDER BY id DESC;
+
+filterItemsByTypeAndHousehold:
+SELECT * FROM Items WHERE type = ? AND householdid = ? ORDER BY id DESC;
 
 getLastModified:
 SELECT MAX(lastmodifiedts) AS lastModifTs FROM Items;

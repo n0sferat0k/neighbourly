@@ -100,10 +100,6 @@ class MapViewModel(
         }
     }
 
-    fun onHouseholdSelected(householdid: Int, byName: ItemType) {
-
-    }
-
     fun refreshMapContent() {
         viewModelScope.launch {
             withContext(Dispatchers.Default) {
@@ -125,7 +121,7 @@ class MapViewModel(
     }
 
     private suspend fun HouseholdVS.pullStatsClone(): HouseholdVS {
-        val items = database.filterItemsByHousehold(id)
+        val items = database.filterItems(householdId = id)
         return this.copy(
             skillshare = items.filter { it.type == ItemType.SKILLSHARE }.size,
             requests = items.filter { it.type == ItemType.REQUEST }.size,

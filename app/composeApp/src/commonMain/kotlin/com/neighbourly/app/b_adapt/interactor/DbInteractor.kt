@@ -93,17 +93,17 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
         }
     }
 
-    override suspend fun filterItemsByType(type: ItemType): List<Item> {
+    override suspend fun filterItems(type: ItemType?, householdId: Int?): List<Item> {
         return withContext(Dispatchers.IO) {
-            db.itemsQueries.filterItemsByType(type.name).executeAsList().map {
-                it.toItem()
-            }
-        }
-    }
 
-    override suspend fun filterItemsByHousehold(householdId: Int): List<Item> {
-        return withContext(Dispatchers.IO) {
-            db.itemsQueries.filterItemsByHousehold(householdId.toLong()).executeAsList().map {
+            (if (type != null && householdId != null)
+                db.itemsQueries.filterItemsByTypeAndHousehold(type.name, householdId.toLong())
+            else if (type != null)
+                db.itemsQueries.filterItemsByType(type.name)
+            else if (householdId != null)
+                db.itemsQueries.filterItemsByHousehold(householdId.toLong())
+            else
+                db.itemsQueries.getItems()).executeAsList().map {
                 it.toItem()
             }
         }
@@ -134,7 +134,7 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
     }
 }
 
-private fun Items.toItem():Item =
+private fun Items.toItem(): Item =
     Item(
         id = id.toInt(),
         type = ItemType.getByName(type),

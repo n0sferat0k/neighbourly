@@ -1,7 +1,5 @@
 package com.neighbourly.app.a_device.ui
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,27 +8,17 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.menu.LeftMenuItemBox
 import com.neighbourly.app.a_device.ui.menu.RightMenuItemBox
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindBarters
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindDonations
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindEvents
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindNeeds
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindRequests
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindSales
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindSkillshare
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ManageMyStuff
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.PublishStuff
+import com.neighbourly.app.d_entity.data.ItemType
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.barter
 import neighbourly.composeapp.generated.resources.barterings
@@ -102,7 +90,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.donate),
                 delayMs = 150
             ) {
-                navigationViewModel.goToMainPage(FindDonations)
+                navigationViewModel.goToFindItems(ItemType.DONATION)
             }
             RightMenuItemBox(
                 modifier = Modifier.align(Alignment.End),
@@ -110,7 +98,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.barter),
                 delayMs = 250
             ) {
-                navigationViewModel.goToMainPage(FindBarters)
+                navigationViewModel.goToFindItems(ItemType.BARTER)
             }
             RightMenuItemBox(
                 modifier = Modifier.align(Alignment.End),
@@ -118,7 +106,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.sale),
                 delayMs = 350
             ) {
-                navigationViewModel.goToMainPage(FindSales)
+                navigationViewModel.goToFindItems(ItemType.SALE)
             }
             RightMenuItemBox(
                 modifier = Modifier.align(Alignment.End),
@@ -126,7 +114,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.event),
                 delayMs = 450
             ) {
-                navigationViewModel.goToMainPage(FindEvents)
+                navigationViewModel.goToFindItems(ItemType.EVENT)
             }
             RightMenuItemBox(
                 modifier = Modifier.align(Alignment.End),
@@ -134,7 +122,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.need),
                 delayMs = 550
             ) {
-                navigationViewModel.goToMainPage(FindNeeds)
+                navigationViewModel.goToFindItems(ItemType.NEED)
             }
             RightMenuItemBox(
                 modifier = Modifier.align(Alignment.End),
@@ -142,7 +130,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.request),
                 delayMs = 650
             ) {
-                navigationViewModel.goToMainPage(FindRequests)
+                navigationViewModel.goToFindItems(ItemType.REQUEST)
             }
             RightMenuItemBox(
                 modifier = Modifier.align(Alignment.End),
@@ -150,7 +138,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.skillshare),
                 delayMs = 750
             ) {
-                navigationViewModel.goToMainPage(FindSkillshare)
+                navigationViewModel.goToFindItems(ItemType.SKILLSHARE)
             }
         }
     }

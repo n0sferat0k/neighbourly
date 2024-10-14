@@ -12,6 +12,7 @@ import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.Prof
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.NeighbourhoodInfoEdit
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.NeighbourhoodScanMember
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.ProfileInfoEdit
+import com.neighbourly.app.d_entity.data.ItemType
 import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -90,6 +91,15 @@ public class NavigationViewModel(
             it.copy(
                 mainContentVisible = true,
                 mainContent = page,
+            )
+        }
+    }
+
+    fun goToFindItems(itemType: ItemType? =  null, householdId: Int? = null) {
+        _state.update {
+            it.copy(
+                mainContentVisible = true,
+                mainContent = MainContent.FindItems(itemType, householdId),
             )
         }
     }
@@ -214,20 +224,17 @@ public class NavigationViewModel(
         val profileContent: ProfileContent = ProfileInfoEdit,
     )
 
-    sealed class MainContent {
-        object MainMenu : MainContent()
+    sealed interface MainContent {
+        object MainMenu : MainContent
 
-        object ManageProfile : MainContent()
-        object ManageMyStuff : MainContent()
-        object PublishStuff : MainContent()
+        object ManageProfile : MainContent
+        object ManageMyStuff : MainContent
+        object PublishStuff : MainContent
 
-        object FindDonations : MainContent()
-        object FindBarters : MainContent()
-        object FindSales : MainContent()
-        object FindEvents : MainContent()
-        object FindNeeds : MainContent()
-        object FindRequests : MainContent()
-        object FindSkillshare : MainContent()
+        data class FindItems(
+            val type: ItemType? = null,
+            val householdId: Int? = null
+        ) : MainContent
     }
 
     sealed class ProfileContent {
