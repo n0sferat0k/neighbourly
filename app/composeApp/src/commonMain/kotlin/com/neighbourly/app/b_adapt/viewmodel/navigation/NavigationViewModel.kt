@@ -28,7 +28,7 @@ public class NavigationViewModel(
     val state: StateFlow<NavigationViewState> = _state.asStateFlow()
 
     init {
-        sessionStore.isLoggedIn.onEach {
+        sessionStore.isLoggedInFlow.onEach {
             when (it) {
                 true -> _state.update {
                     it.copy(userLoggedIn = true, mainContentVisible = true)
@@ -42,7 +42,7 @@ public class NavigationViewModel(
             }
         }.launchIn(viewModelScope)
 
-        sessionStore.user
+        sessionStore.userFlow
             .onEach { user ->
                 user?.let {
                     _state.update {

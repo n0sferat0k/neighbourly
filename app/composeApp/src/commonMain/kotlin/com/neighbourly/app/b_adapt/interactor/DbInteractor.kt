@@ -57,6 +57,18 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
         }
     }
 
+    override suspend fun stripItems(validIds: List<Int>) {
+        withContext(Dispatchers.IO) {
+            db.itemsQueries.strip(validIds.map { it.toLong() })
+        }
+    }
+
+    override suspend fun deleteItem(itemId: Int) {
+        withContext(Dispatchers.IO) {
+            db.itemsQueries.delete(itemId.toLong())
+        }
+    }
+
     override suspend fun storeUsers(users: List<User>) {
         withContext(Dispatchers.IO) {
             users.forEach {
@@ -75,6 +87,12 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
         }
     }
 
+    override suspend fun stripUsers(validIds: List<Int>) {
+        withContext(Dispatchers.IO) {
+            db.usersQueries.strip(validIds.map { it.toLong() })
+        }
+    }
+
     override suspend fun storeHouseholds(households: List<Household>) {
         withContext(Dispatchers.IO) {
             households.forEach {
@@ -90,6 +108,12 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
                     lastmodifiedts = it.lastModifiedTs.toLong(),
                 )
             }
+        }
+    }
+
+    override suspend fun stripHouseholds(validIds: List<Int>) {
+        withContext(Dispatchers.IO) {
+            db.householdsQueries.strip(validIds.map { it.toLong() })
         }
     }
 

@@ -21,7 +21,8 @@ class HouseholdLocalizeUseCase(
         latitude: Float,
         longitude: Float,
     ) {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
+
         token?.let {
             val timeZone = TimeZone.getDefault()
             val offsetInMillis = timeZone.rawOffset + if (timeZone.inDaylightTime(Calendar.getInstance().time)) timeZone.dstSavings else 0
@@ -31,7 +32,8 @@ class HouseholdLocalizeUseCase(
     }
 
     suspend fun fetchGpsLogs() {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
+
         token?.let {
             apiGw.getGpsHeatmap(token).let { heatmap ->
                 sessionStore.updateLocalization { it.copy(heatmap = heatmap) }
@@ -40,7 +42,8 @@ class HouseholdLocalizeUseCase(
     }
 
     suspend fun fetchGpsCandidate() {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
+
         token?.let {
             apiGw.getGpsCandidate(token).let { candidate ->
                 sessionStore.updateLocalization { it.copy(candidate = candidate) }
@@ -49,7 +52,8 @@ class HouseholdLocalizeUseCase(
     }
 
     suspend fun acceptGpsCandidate() {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
+
         token?.let {
             apiGw.acceptGpsCandidate(token).let { gpsItem ->
                 sessionStore.updateUser {
@@ -72,7 +76,8 @@ class HouseholdLocalizeUseCase(
     }
 
     suspend fun retryMonitoring() {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
+
         token?.let {
             apiGw.clearGpsData(token)
             sessionStore.updateUser {
@@ -89,7 +94,8 @@ class HouseholdLocalizeUseCase(
     }
 
     suspend fun relocateHousehold() {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
+
         token?.let {
             apiGw.resetHouseholdLocation(token)
             sessionStore.updateUser {

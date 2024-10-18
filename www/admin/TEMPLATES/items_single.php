@@ -168,7 +168,7 @@ if($DISPLAY_TEMPLATE_BODY) {?>
 								<?php
 									if($add_numerics_counter == 2 || $add_numerics_counter == 3) {
 										$date = getdate($add_numerics[$add_numerics_counter]['add_numericsVAL']);
-										$formattedDate = (($date['mday'] < 10) ? "0" . $date['mday'] : $date['mday']) . "/" . (($date['mon'] < 10) ? "0" . $date['mon'] : $date['mon']) . "/" . $date['year'] . " " . (($date["hours"] < 10) ? "0" . $date["hours"] : $date["hours"]) . ":" . (($date['minutes'] < 10) ? "0" . $date['minutes'] : $date['minutes']) . ":" . (($date['seconds'] < 10) ? "0" . $date['seconds'] : $date['seconds']) . " GMT+0";
+										$formattedDate = (($date['mon'] < 10) ? "0" . $date['mon'] : $date['mon']) . "/" . (($date['mday'] < 10) ? "0" . $date['mday'] : $date['mday']) . "/" . $date['year'] . " " . (($date["hours"] < 10) ? "0" . $date["hours"] : $date["hours"]) . ":" . (($date['minutes'] < 10) ? "0" . $date['minutes'] : $date['minutes']) . ":" . (($date['seconds'] < 10) ? "0" . $date['seconds'] : $date['seconds']) . " " . date_default_timezone_get();
 										?>
 											<input type="hidden" id="inp_adddnum_<?php echo $add_numerics_counter ?>" name="<?php echo $add_numerics[$add_numerics_counter]['add_numericsINP']; ?>" value="<?php echo $add_numerics[$add_numerics_counter]['add_numericsVAL']?>"/> 
 											<input type="text" value="<?php echo $formattedDate; ?>" class="INPUT_TEXT" onchange="document.getElementById('inp_adddnum_<?php echo $add_numerics_counter ?>').value = new Date(this.value).getTime() / 1000"/>
@@ -213,9 +213,13 @@ if($DISPLAY_TEMPLATE_BODY) {?>
 					<div class="LABLE">
 						<?php echo $lable_date; ?>					
 					</div>
-						<?php if($date_iseditable) { ?>
+						<?php 
+						$date = getdate();
+						$formattedDate = (($date['mon'] < 10) ? "0" . $date['mon'] : $date['mon']) . "/" . (($date['mday'] < 10) ? "0" . $date['mday'] : $date['mday']) . "/" . $date['year'] . " " . (($date["hours"] < 10) ? "0" . $date["hours"] : $date["hours"]) . ":" . (($date['minutes'] < 10) ? "0" . $date['minutes'] : $date['minutes']) . ":" . (($date['seconds'] < 10) ? "0" . $date['seconds'] : $date['seconds']) . " " . date_default_timezone_get();
+						if($date_iseditable) { ?>
 							<div class="POSITIONER">
-								<input type="text" name="<?php echo $datetextINP; ?>" value="<?php echo $datetextVAL; ?>" class="INPUT_TEXT" />
+								<input type="text" id="id_<?php echo $datetextINP; ?>" name="<?php echo $datetextINP; ?>" value="<?php echo $datetextVAL; ?>" class="INPUT_TEXT" />
+								<span class="DATA_NOW" onclick="document.getElementById('id_<?php echo $datetextINP ?>').value='<?php echo $formattedDate;?>'">Now</span>
 							</div>
 						<?php } else { ?>
 							<div class="POSITIONER">

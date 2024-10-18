@@ -29,13 +29,13 @@ class MapViewModel(
     val state: StateFlow<MapViewState> = _state.asStateFlow()
 
     init {
-        sessionStore.isLoggedIn.onEach {
+        sessionStore.isLoggedInFlow.onEach {
             if (!it) {
                 _state.update { MapViewState() }
             }
         }.launchIn(viewModelScope)
 
-        sessionStore.localization
+        sessionStore.localizationFlow
             .onEach { localization ->
                 _state.update {
                     it.copy(
@@ -59,7 +59,7 @@ class MapViewModel(
                 }
             }.launchIn(viewModelScope)
 
-        sessionStore.user
+        sessionStore.userFlow
             .onEach { user ->
                 if (user?.localizing == true) {
                     runCatching {

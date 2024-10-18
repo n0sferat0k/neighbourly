@@ -16,6 +16,9 @@ INSERT OR REPLACE INTO Users(id, username,
                     householdid, lastmodifiedts
                   )  VALUES(?,?, ?,?,?,?,?,?,?);
 
+strip:
+DELETE FROM Users WHERE id NOT IN ?;
+
 clear:
 DELETE FROM Users WHERE 1;
 

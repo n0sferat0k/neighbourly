@@ -5,10 +5,36 @@ import (
 	"api/utility"
 )
 
-func GetUsrersFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]entity.User, error) {
-	//get all the items from the neighbourhoods
+func GetUsrersFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]entity.User, []int, error) {
+	//get all the user ids that still exist from the neighbourhoods
+	sql := `SELECT 
+				U.users_id
+			FROM 				
+				users U  		
+			WHERE EXISTS(SELECT
+							NHU.neighbourhood_household_users_id 
+						FROM 
+							neighbourhood_household_users NHU
+						WHERE 
+							NHU.neighbourhood_household_users_add_numerics_0 IN (?)
+						AND 
+							NHU.neighbourhood_household_users_add_numerics_2 = U.users_id
+						)`
 
-	sql := `SELECT 	
+	userRows, err := utility.DB.Query(sql, neighbourhoodids)
+	if err != nil {
+		return nil, nil, err
+	}
+	var userIds []int
+	defer userRows.Close()
+	for userRows.Next() {
+		var userId int
+		userRows.Scan(&userId)
+		userIds = append(userIds, userId)
+	}
+
+	//get all the users from the neighbourhoods
+	sql = `SELECT 	
 				U.users_id AS userid,
 				U.users_text_EN AS userabout,
 				U.users_titlu_EN AS fullname,
@@ -35,9 +61,9 @@ func GetUsrersFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]ent
 	if sinceTs != "" {
 		sql += " AND U.users_data > " + sinceTs
 	}
-	userRows, err := utility.DB.Query(sql, neighbourhoodids)
+	userRows, err = utility.DB.Query(sql, neighbourhoodids)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	var users []entity.User
@@ -58,5 +84,5 @@ func GetUsrersFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]ent
 		users = append(users, user)
 	}
 
-	return users, nil
+	return users, userIds, nil
 }

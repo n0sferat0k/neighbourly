@@ -9,8 +9,12 @@ interface Db {
     suspend fun clear()
     suspend fun getLastModifTs(): Int?
     suspend fun storeItems(items: List<Item>)
+    suspend fun stripItems(validIds: List<Int>)
+    suspend fun deleteItem(itemId: Int)
     suspend fun storeUsers(users: List<User>)
+    suspend fun stripUsers(validIds: List<Int>)
     suspend fun storeHouseholds(households: List<Household>)
+    suspend fun stripHouseholds(validIds: List<Int>)
     suspend fun filterItems(type: ItemType? = null, householdId: Int? = null): List<Item>
     suspend fun filterHouseholds():List<Household>
 }

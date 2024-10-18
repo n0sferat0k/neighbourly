@@ -32,6 +32,9 @@
     <string name="confirm_leaving_neighbourhood">This action will take you and your entire household out of this neighbourhood, If you are the creator of the neighbourhood, it will be inherited by the next in line. Are you sure you want to continue ?</string>
     <string name="confirm_leaving_household">Leaving a household will also take out of any neighbourhoods you are in, are you sure you want to continue ?</string>
 
+    <string name="deleteing_item">Deleteing Item</string>
+    <string name="confirm_deleteing_item">Are you sure you want to permanently delete the following item:</string>
+
     <string name="profile">Profile</string>
     <string name="mystuff">My Stuff</string>
     <string name="publish">Publish</string>
@@ -45,8 +48,6 @@
     <string name="skillshare">Skillshare</string>
 
     <string name="under_construction">Under Construction !</string>
-    <string name="expires_in">Exp: </string>
-
 
     <string name="err_password_mismatch">The two passwords must match</string>
     <string name="invite_or_create_household">You need to define a household, use the below QR code to be invited to an existing household or create your own from scratch !</string>

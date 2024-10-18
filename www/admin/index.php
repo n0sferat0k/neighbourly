@@ -378,8 +378,8 @@ $p['ADD_STRINGS_modif'] = array(
 $p['ADD_NUMERICS'] = array(	
 	array("EN" => "N.H.U Id"),
 	array("EN" => "Target User Id"),
-	array("EN" => "Start Date (mm/dd/yyyy hh:mm:ss GMT+TZ)"),
-	array("EN" => "End Date (mm/dd/yyyy hh:mm:ss GMT+TZ)"),	
+	array("EN" => "Start Date (mm/dd/yyyy hh:mm:ss TZ)"),
+	array("EN" => "End Date (mm/dd/yyyy hh:mm:ss TZ)"),	
 );
 $p['ADD_NUMERICS_modif'] = array(
 	array(0 => true,1 => true),	

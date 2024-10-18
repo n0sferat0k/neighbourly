@@ -2,7 +2,7 @@ package com.neighbourly.app.b_adapt.viewmodel.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.neighbourly.app.c_business.usecase.items.ContentSyncUseCase
+import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
 import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -133,23 +133,8 @@ function SaveFile($fstruct, $dir)
 }
 
 function getTimeStamp($str)
-{
-	$d1 = explode("/", $str);	
-	$day = trim($d1[0]);
-	$month = trim($d1[1]);
-	$d2 = explode(" ", $d1[2]);
-	$year = trim($d2[0]);
-	$d3 = explode(":", $d2[1]);
-	$hour = trim($d3[0]);
-	$minute = trim($d3[1]);
-	$second = trim($d3[2]);
-
-	if ((is_numeric($hour)) && (is_numeric($minute)) && (is_numeric($second)) && (is_numeric($month)) && (is_numeric($day)) && (is_numeric($year)))
-		$ts = mktime($hour, $minute, $second, $month, $day, $year);
-	else
-		$ts = strtotime($month . "/" . $day . "/" . $year);
-		
-	return $ts;
+{	
+	return strtotime($str);
 }
 
 //CREATE A DATE FORMAT STRING FROM A TIMESTAMP

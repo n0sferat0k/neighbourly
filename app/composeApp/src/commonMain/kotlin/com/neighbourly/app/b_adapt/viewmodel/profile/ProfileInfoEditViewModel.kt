@@ -23,7 +23,7 @@ class ProfileInfoEditViewModel(
     val state: StateFlow<ProfileViewState> = _state.asStateFlow()
 
     init {
-        sessionStore.user
+        sessionStore.userFlow
             .onEach {
                 it?.let { user ->
                     _state.update {

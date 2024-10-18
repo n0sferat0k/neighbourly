@@ -13,7 +13,7 @@ class ProfileUpdateUseCase(
         phone: String,
         about: String,
     ) {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
 
         token?.let {
             val user = apiGw.updateProfile(it, fullname, email, phone, about)

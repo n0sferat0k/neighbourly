@@ -1,4 +1,4 @@
-package com.neighbourly.app.c_business.usecase.items
+package com.neighbourly.app.c_business.usecase.content
 
 import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.Db
@@ -15,15 +15,21 @@ class ContentSyncUseCase(
         get() = (System.currentTimeMillis() / 1000).toInt()
 
     suspend fun execute(force: Boolean = false) {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
+
         token?.let {
             val lastSyncTs = sessionStore.lastSyncTs
             if (force || (currentTs - (lastSyncTs ?: 0)) > SYNC_DEBOUNCE_S) {
                 val lastModifTs = dbInteractor.getLastModifTs()
-                val content = apiGw.synchronizeContent(token, lastModifTs)
-                dbInteractor.storeItems(content.first)
-                dbInteractor.storeUsers(content.second)
-                dbInteractor.storeHouseholds(content.third)
+                val syncData = apiGw.synchronizeContent(token, lastModifTs)
+                dbInteractor.storeItems(syncData.items)
+                dbInteractor.storeUsers(syncData.users)
+                dbInteractor.storeHouseholds(syncData.houses)
+
+                dbInteractor.stripItems(syncData.itemIds)
+                dbInteractor.stripUsers(syncData.userIds)
+                dbInteractor.stripHouseholds(syncData.houseIds)
+
                 sessionStore.lastSyncTs = currentTs
             }
         }

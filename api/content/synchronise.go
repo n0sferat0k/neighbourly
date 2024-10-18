@@ -40,17 +40,17 @@ func Synchronise(w http.ResponseWriter, r *http.Request) {
 
 	var response entity.SyncResponse
 
-	response.Items, err = GetItemsFromNeighbourhoods(neighbourhoodids, sinceTs)
+	response.Items, response.Itemids, err = GetItemsFromNeighbourhoods(neighbourhoodids, sinceTs)
 	if err != nil {
 		http.Error(w, "Database error getting items "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-	response.Households, err = GetHouseholdsFromNeighbourhoods(neighbourhoodids, sinceTs)
+	response.Households, response.Householdids, err = GetHouseholdsFromNeighbourhoods(neighbourhoodids, sinceTs)
 	if err != nil {
 		http.Error(w, "Database error getting households "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-	response.Users, err = GetUsrersFromNeighbourhoods(neighbourhoodids, sinceTs)
+	response.Users, response.Userids, err = GetUsrersFromNeighbourhoods(neighbourhoodids, sinceTs)
 	if err != nil {
 		http.Error(w, "Database error getting users "+err.Error(), http.StatusInternalServerError)
 		return

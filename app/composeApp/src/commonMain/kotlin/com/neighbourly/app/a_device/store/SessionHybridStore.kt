@@ -22,10 +22,20 @@ class SessionHybridStore(
     private var userState = MutableStateFlow<User?>(null)
     private var localizationState = MutableStateFlow(LocalizationProgress())
 
-    override val user = userState.asSharedFlow()
-    override val localization = localizationState.asSharedFlow()
+    override val userFlow = userState.asSharedFlow()
+    override val localizationFlow = localizationState.asSharedFlow()
+    override val isLoggedInFlow = userFlow.map { it != null }
 
-    override val isLoggedIn = user.map { it != null }
+    override val user: User?
+        get() = userState.value
+    override val drawing: List<GpsItem>?
+        get() = localizationState.value.drawingPoints
+    override var lastSyncTs: Int?
+        get() = userState.value?.lastSyncTs
+        set(value) {
+            userState.update { it?.copy(lastSyncTs = value) }
+            saveToStore()
+        }
 
     init {
         if (STORE_VERSION == keyValueRegistry.getString(KEY_STORE_VERSION)) {
@@ -54,17 +64,6 @@ class SessionHybridStore(
         localizationState.emit(LocalizationProgress())
         saveToStore()
     }
-
-    override val token: String?
-        get() = userState.value?.authtoken
-    override val drawing: List<GpsItem>?
-        get() = localizationState.value.drawingPoints
-    override var lastSyncTs: Int?
-        get() = userState.value?.lastSyncTs
-        set(value) {
-            userState.update { it?.copy(lastSyncTs = value) }
-            saveToStore()
-        }
 
     private suspend fun loadFromStore() {
         withContext(Dispatchers.IO) {

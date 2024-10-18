@@ -9,6 +9,7 @@ import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.auth.LoginOrRegister
 import com.neighbourly.app.a_device.ui.items.FilteredItemList
 import com.neighbourly.app.a_device.ui.profile.Profile
+import com.neighbourly.app.b_adapt.viewmodel.items.MainContentViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindItems
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.MainMenu
@@ -17,7 +18,11 @@ import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.Main
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.PublishStuff
 
 @Composable
-fun MainContent(navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }) {
+fun MainContent(
+    viewModel: MainContentViewModel = viewModel { KoinProvider.KOIN.get<MainContentViewModel>() },
+    navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }
+) {
+    val state by viewModel.state.collectAsState()
     val navigation by navigationViewModel.state.collectAsState()
 
     if (navigation.restrictedContent) {
@@ -35,7 +40,11 @@ fun MainContent(navigationViewModel: NavigationViewModel = viewModel { KoinProvi
             FullMenuContent()
         }
         AnimatedVisibility(navigation.mainContent == ManageProfile) { ContentBox { Profile() } }
-        AnimatedVisibility(navigation.mainContent == ManageMyStuff) { ContentBox { UnderConstruction() } }
+        AnimatedVisibility(navigation.mainContent == ManageMyStuff) {
+            ContentBox {
+                FilteredItemList(type = null, householdId = state.householdId, showExpired = true)
+            }
+        }
         AnimatedVisibility(navigation.mainContent == PublishStuff) { ContentBox { UnderConstruction() } }
         AnimatedVisibility(navigation.mainContent is FindItems) {
             ContentBox {

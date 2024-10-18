@@ -135,6 +135,9 @@ data class ItemDTO(
 @Serializable
 data class SyncResponseDTO(
     val items: List<ItemDTO> = emptyList(),
+    val itemIds:List<Int> = emptyList(),
     val users: List<UserDTO> = emptyList(),
-    val households: List<HouseholdDTO> = emptyList()
+    val userIds:List<Int> = emptyList(),
+    val households: List<HouseholdDTO> = emptyList(),
+    val householdIds:List<Int> = emptyList(),
 )

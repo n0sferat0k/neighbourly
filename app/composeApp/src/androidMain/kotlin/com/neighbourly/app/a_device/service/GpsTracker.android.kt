@@ -40,7 +40,7 @@ object GpsTracker {
     fun initialize() {
         KoinProvider.KOIN
             .get<SessionStore>()
-            .user
+            .userFlow
             .onEach { user ->
                 val shouldTrack =
                     user?.let {

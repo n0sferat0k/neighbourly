@@ -14,11 +14,12 @@ interface SessionStore {
 
     suspend fun updateLocalization(updater: (LocalizationProgress) -> LocalizationProgress)
 
-    val user: Flow<User?>
-    val localization: Flow<LocalizationProgress>
+    val userFlow: Flow<User?>
+    val localizationFlow: Flow<LocalizationProgress>
 
-    val isLoggedIn: Flow<Boolean>
-    val token: String?
+    val user: User?
+
+    val isLoggedInFlow: Flow<Boolean>
     var lastSyncTs : Int?
     val drawing: List<GpsItem>?
 }

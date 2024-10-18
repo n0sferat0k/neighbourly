@@ -1,22 +1,20 @@
-package com.neighbourly.app.c_business.usecase.auth
+package com.neighbourly.app.c_business.usecase.content
 
 import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.SessionStore
 
-class LogoutUseCase(
+class ItemManagementUseCase(
+    val dbInteractor: Db,
     val apiGw: Api,
     val sessionStore: SessionStore,
-    val database: Db,
 ) {
-    suspend fun execute(logoutAll: Boolean) {
+    suspend fun delete(itemId:Int) {
         val token = sessionStore.user?.authtoken
+
         token?.let {
-            kotlin.runCatching {
-                apiGw.logout(token, logoutAll)
-            }
+            apiGw.deleteItem(token, itemId)
+            dbInteractor.deleteItem(itemId)
         }
-        sessionStore.clear()
-        database.clear()
     }
 }

@@ -12,7 +12,8 @@ class FetchProfileUseCase(
         id: Int,
         username: String,
     ): User? {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
+
         return token?.let {
             apiGw.fetchProfile(token, id, username)
         }

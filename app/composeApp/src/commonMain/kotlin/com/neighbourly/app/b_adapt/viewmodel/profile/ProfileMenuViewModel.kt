@@ -22,7 +22,7 @@ class ProfileMenuViewModel(
     val state: StateFlow<ProfileMenuViewState> = _state.asStateFlow()
 
     init {
-        sessionStore.user
+        sessionStore.userFlow
             .onEach {
                 it?.let { user ->
                     _state.update {

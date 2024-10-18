@@ -435,4 +435,18 @@ class KtorApi {
             throw ApiException(response.bodyAsText())
         }
     }
+
+    suspend fun deleteItem( baseUrl: String,
+                            token: String,
+                            itemId: Int) {
+        val response =
+            client.get(baseUrl + "content/delItem?itemId=" + itemId) {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
+            }
+        if (response.status.value != 200) {
+            throw ApiException(response.bodyAsText())
+        }
+    }
 }

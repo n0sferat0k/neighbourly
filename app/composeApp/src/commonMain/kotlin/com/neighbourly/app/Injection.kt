@@ -8,6 +8,7 @@ import com.neighbourly.app.b_adapt.viewmodel.MapViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
+import com.neighbourly.app.b_adapt.viewmodel.items.MainContentViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdAddMemberViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdInfoEditViewModel
@@ -21,7 +22,8 @@ import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileViewModel
 import com.neighbourly.app.c_business.usecase.auth.LoginUseCase
 import com.neighbourly.app.c_business.usecase.auth.LogoutUseCase
 import com.neighbourly.app.c_business.usecase.auth.RegisterUseCase
-import com.neighbourly.app.c_business.usecase.items.ContentSyncUseCase
+import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
+import com.neighbourly.app.c_business.usecase.content.ItemManagementUseCase
 import com.neighbourly.app.c_business.usecase.profile.FetchProfileUseCase
 import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
 import com.neighbourly.app.c_business.usecase.profile.HouseholdManagementUseCase
@@ -117,7 +119,10 @@ val adapterModule =
             NeighbourhoodAddMemberViewModel(get(), get(), get())
         }
         factory {
-            FilteredItemListViewModel(get(), get())
+            FilteredItemListViewModel(get(), get(), get(), get())
+        }
+        factory {
+            MainContentViewModel(get())
         }
     }
 
@@ -155,5 +160,8 @@ val useCaseModule =
         }
         single {
             ContentSyncUseCase(get(), get(), get())
+        }
+        single {
+            ItemManagementUseCase(get(), get(), get())
         }
     }

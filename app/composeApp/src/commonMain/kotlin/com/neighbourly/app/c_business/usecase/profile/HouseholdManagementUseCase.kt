@@ -13,7 +13,7 @@ class HouseholdManagementUseCase(
         address: String,
         about: String,
     ) {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
 
         token?.let {
             val user = apiGw.updateHousehold(it, name, address, about)
@@ -33,7 +33,7 @@ class HouseholdManagementUseCase(
     }
 
     suspend fun leaveHousehold() {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
 
         token?.let {
             val user = apiGw.leaveHousehold(it)
@@ -56,7 +56,7 @@ class HouseholdManagementUseCase(
         id: Int,
         username: String,
     ) {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
 
         token?.let {
             val user = apiGw.addMemberToHousehold(it, id, username)
@@ -76,7 +76,7 @@ class HouseholdManagementUseCase(
     }
 
     suspend fun updateImage(profileImageFileContents: FileContents) {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
 
         token?.let {
             apiGw.updateHouseholdImage(it, profileImageFileContents).let { imgUrl ->

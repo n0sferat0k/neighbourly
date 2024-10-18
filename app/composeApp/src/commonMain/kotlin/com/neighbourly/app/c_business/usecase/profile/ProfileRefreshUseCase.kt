@@ -8,7 +8,8 @@ class ProfileRefreshUseCase(
     val sessionStore: SessionStore,
 ) {
     suspend fun execute() {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
+
         token?.let {
             val user = apiGw.refreshProfile(token)
             sessionStore.updateUser {

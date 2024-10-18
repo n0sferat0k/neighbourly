@@ -12,7 +12,7 @@ if(!defined("IN_ADMIN"))
 							"lable_file" => "Add file:",
 							'lable_images' => "Pictures:",
 							'lable_title' => "Title:",
-							'lable_date' => "Date: (dd/mm/yyyy hh:mm:ss)",
+							'lable_date' => "Date: (mm/dd/yyyy hh:mm:ss TZ)",
 							'lable_link' => "Link:",
 							'lable_text' => "Text:",
 							'lable_accent' => "Accent:",

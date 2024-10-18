@@ -1,6 +1,6 @@
 package com.neighbourly.app.c_business.usecase.auth
 
-import com.neighbourly.app.c_business.usecase.items.ContentSyncUseCase
+import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.SessionStore
 

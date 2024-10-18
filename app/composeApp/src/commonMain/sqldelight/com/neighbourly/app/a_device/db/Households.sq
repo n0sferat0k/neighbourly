@@ -16,6 +16,9 @@ INSERT OR REPLACE INTO Households(id,
                     latitude, longitude, lastmodifiedts
                   )  VALUES(?,?, ?,?,?,?,?,?,?);
 
+strip:
+DELETE FROM Households WHERE id NOT IN ?;
+
 clear:
 DELETE FROM Households WHERE 1;
 

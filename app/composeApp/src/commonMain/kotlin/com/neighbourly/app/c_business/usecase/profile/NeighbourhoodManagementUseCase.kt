@@ -24,7 +24,8 @@ class NeighbourhoodManagementUseCase(
         id: Int? = null,
         name: String,
     ) {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
+
         val geofence = sessionStore.drawing
         if (token != null && geofence != null) {
             val user = apiGw.updateNeighbourhood(token, id, name, geofence)
@@ -51,7 +52,8 @@ class NeighbourhoodManagementUseCase(
     }
 
     suspend fun leaveNeighbourhood(neighbourhoodId: Int) {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
+
         if (token != null) {
             val user = apiGw.leaveNeighbourhood(token, neighbourhoodId)
 
@@ -76,7 +78,7 @@ class NeighbourhoodManagementUseCase(
         username: String,
         accs: Map<Int, Int>?,
     ) {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
 
         token?.let {
             apiGw.addMemberToNeighbourhood(it, neighbourhoodid, id, username, accs)

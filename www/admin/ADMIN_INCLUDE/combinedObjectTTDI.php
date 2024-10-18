@@ -1188,7 +1188,7 @@ class combinedObjectTTDI //Text Title Date Image
 			$row = mysqli_fetch_array($data);
 			if ($this->params['DATE']) {
 				$date = getdate($row[$this->params['KEY'] . '_data']);
-				$formattedDate = (($date['mday'] < 10) ? "0" . $date['mday'] : $date['mday']) . "/" . (($date['mon'] < 10) ? "0" . $date['mon'] : $date['mon']) . "/" . $date['year'] . " " . (($date["hours"] < 10) ? "0" . $date["hours"] : $date["hours"]) . ":" . (($date['minutes'] < 10) ? "0" . $date['minutes'] : $date['minutes']) . ":" . (($date['seconds'] < 10) ? "0" . $date['seconds'] : $date['seconds']);
+				$formattedDate = (($date['mon'] < 10) ? "0" . $date['mon'] : $date['mon']) . "/" . (($date['mday'] < 10) ? "0" . $date['mday'] : $date['mday']) . "/" . $date['year'] . " " . (($date["hours"] < 10) ? "0" . $date["hours"] : $date["hours"]) . ":" . (($date['minutes'] < 10) ? "0" . $date['minutes'] : $date['minutes']) . ":" . (($date['seconds'] < 10) ? "0" . $date['seconds'] : $date['seconds']) . " " . date_default_timezone_get();
 				$tpl->set('datetextVAL', $formattedDate);
 			}
 
@@ -1402,7 +1402,7 @@ class combinedObjectTTDI //Text Title Date Image
 			$tpl->set('add_strings', $ADD_STRINGS);
 
 			$date = getdate(time());
-			$formattedDate = (($date['mday'] < 10) ? "0" . $date['mday'] : $date['mday']) . "/" . (($date['mon'] < 10) ? "0" . $date['mon'] : $date['mon']) . "/" . $date['year'] . " " . (($date["hours"] < 10) ? "0" . $date["hours"] : $date["hours"]) . ":" . (($date['minutes'] < 10) ? "0" . $date['minutes'] : $date['minutes']) . ":" . (($date['seconds'] < 10) ? "0" . $date['seconds'] : $date['seconds']);
+			$formattedDate = (($date['mon'] < 10) ? "0" . $date['mon'] : $date['mon']) . "/" . (($date['mday'] < 10) ? "0" . $date['mday'] : $date['mday']) . "/" . $date['year'] . " " . (($date["hours"] < 10) ? "0" . $date["hours"] : $date["hours"]) . ":" . (($date['minutes'] < 10) ? "0" . $date['minutes'] : $date['minutes']) . ":" . (($date['seconds'] < 10) ? "0" . $date['seconds'] : $date['seconds']) . " " . date_default_timezone_get();
 			$tpl->set('datetextVAL', $formattedDate);
 			$tpl->set('texttextVAL', "");
 
@@ -1504,7 +1504,7 @@ class combinedObjectTTDI //Text Title Date Image
 			if (($count >= $from) && ($count < $to)) //ADAUGA DOAR ACELE ELEMENTE CARE APARTIN INTERVALULUI DIN PAGINARE
 			{
 				$date = getdate(getOrZero($row, $this->params['KEY'] . '_data'));
-				$formattedDate = (($date['mday'] < 10) ? "0" . $date['mday'] : $date['mday']) . "/" . (($date['mon'] < 10) ? "0" . $date['mon'] : $date['mon']) . "/" . $date['year'] . " " . (($date["hours"] < 10) ? "0" . $date["hours"] : $date["hours"]) . ":" . (($date['minutes'] < 10) ? "0" . $date['minutes'] : $date['minutes']) . ":" . (($date['seconds'] < 10) ? "0" . $date['seconds'] : $date['seconds']);
+				$formattedDate = (($date['mon'] < 10) ? "0" . $date['mon'] : $date['mon']) . "/" . (($date['mday'] < 10) ? "0" . $date['mday'] : $date['mday']) . "/" . $date['year'] . " " . (($date["hours"] < 10) ? "0" . $date["hours"] : $date["hours"]) . ":" . (($date['minutes'] < 10) ? "0" . $date['minutes'] : $date['minutes']) . ":" . (($date['seconds'] < 10) ? "0" . $date['seconds'] : $date['seconds']) . " " . date_default_timezone_get();
 
 				if ($this->params['TEXT']) {
 					if (strlen($row[$this->params['KEY'] . '_text_' . $LANG]) > 315)

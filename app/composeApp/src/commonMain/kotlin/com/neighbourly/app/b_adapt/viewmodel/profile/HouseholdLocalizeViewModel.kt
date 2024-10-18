@@ -20,7 +20,7 @@ class HouseholdLocalizeViewModel(
     val state: StateFlow<HouseholdLocalizeViewState> = _state.asStateFlow()
 
     init {
-        sessionStore.user
+        sessionStore.userFlow
             .onEach {
                 it?.let { user ->
                     _state.update {

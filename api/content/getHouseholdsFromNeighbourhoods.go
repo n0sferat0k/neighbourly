@@ -5,9 +5,36 @@ import (
 	"api/utility"
 )
 
-func GetHouseholdsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]entity.Household, error) {
-	//get all the items from the neighbourhoods
+func GetHouseholdsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]entity.Household, []int, error) {
+	//get all the house ids that still exist from the neighbourhoods
 	sql := `SELECT 
+				H.households_id
+			FROM 				
+				households H 		
+			WHERE EXISTS(SELECT
+							NHU.neighbourhood_household_users_id 
+						FROM 
+							neighbourhood_household_users NHU
+						WHERE 
+							NHU.neighbourhood_household_users_add_numerics_0 IN (?)
+						AND 
+							NHU.neighbourhood_household_users_add_numerics_1 = H.households_id
+						)`
+
+	houseRows, err := utility.DB.Query(sql, neighbourhoodids)
+	if err != nil {
+		return nil, nil, err
+	}
+	var houseIds []int
+	defer houseRows.Close()
+	for houseRows.Next() {
+		var houseId int
+		houseRows.Scan(&houseId)
+		houseIds = append(houseIds, houseId)
+	}
+
+	//get all the houses from the neighbourhoods
+	sql = `SELECT 
 				H.households_id,
 				H.households_titlu_EN,
 				H.households_text_EN AS Householdabout,
@@ -33,9 +60,9 @@ func GetHouseholdsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([
 	if sinceTs != "" {
 		sql += " AND H.households_data > " + sinceTs
 	}
-	houseRows, err := utility.DB.Query(sql, utility.GpsPrecisionFactor, utility.GpsPrecisionFactor, neighbourhoodids)
+	houseRows, err = utility.DB.Query(sql, utility.GpsPrecisionFactor, utility.GpsPrecisionFactor, neighbourhoodids)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	var houses []entity.Household
@@ -56,5 +83,5 @@ func GetHouseholdsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([
 		houses = append(houses, house)
 	}
 
-	return houses, nil
+	return houses, houseIds, nil
 }

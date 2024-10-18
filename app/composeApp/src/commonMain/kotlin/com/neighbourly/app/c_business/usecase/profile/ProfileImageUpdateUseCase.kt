@@ -9,7 +9,7 @@ class ProfileImageUpdateUseCase(
     val sessionStore: SessionStore,
 ) {
     suspend fun execute(profileImageFileContents: FileContents) {
-        val token = sessionStore.token
+        val token = sessionStore.user?.authtoken
 
         token?.let {
             apiGw.updateProfileImage(it, profileImageFileContents).let { imgUrl ->

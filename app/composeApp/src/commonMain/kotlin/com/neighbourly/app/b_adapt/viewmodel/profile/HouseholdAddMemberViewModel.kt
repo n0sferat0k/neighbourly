@@ -24,7 +24,7 @@ class HouseholdAddMemberViewModel(
     val state: StateFlow<HouseholdAddMemberViewState> = _state.asStateFlow()
 
     init {
-        sessionStore.user
+        sessionStore.userFlow
             .onEach { user ->
                 user?.household?.let { household ->
                     _state.update {

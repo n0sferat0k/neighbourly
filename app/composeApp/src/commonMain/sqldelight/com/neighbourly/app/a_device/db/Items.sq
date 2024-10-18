@@ -24,6 +24,12 @@ INSERT OR REPLACE INTO Items(id, type,
                   neighbourhoodid,householdid,userid
                   )  VALUES(?,?, ?,?,?,?,?,?,?,?,?,?,?,?);
 
+delete:
+DELETE FROM Items WHERE id = ?;
+
+strip:
+DELETE FROM Items WHERE id NOT IN ?;
+
 clear:
 DELETE FROM Items WHERE 1;
 

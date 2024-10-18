@@ -21,7 +21,7 @@ class NeighbourhoodInfoViewModel(
     val state: StateFlow<NeighbourhoodInfoViewState> = _state.asStateFlow()
 
     init {
-        sessionStore.localization
+        sessionStore.localizationFlow
             .onEach { localization ->
                 _state.update {
                     it.copy(
@@ -31,7 +31,7 @@ class NeighbourhoodInfoViewModel(
                 }
             }.launchIn(viewModelScope)
 
-        sessionStore.user
+        sessionStore.userFlow
             .onEach { user ->
                 user?.let {
                     _state.update {

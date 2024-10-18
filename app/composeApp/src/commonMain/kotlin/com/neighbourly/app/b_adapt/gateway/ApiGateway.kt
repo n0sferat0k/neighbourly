@@ -3,9 +3,8 @@ package com.neighbourly.app.b_adapt.gateway
 import com.neighbourly.app.a_device.api.KtorApi
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.GpsItem
-import com.neighbourly.app.d_entity.data.Household
-import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.data.OpException
+import com.neighbourly.app.d_entity.data.SyncData
 import com.neighbourly.app.d_entity.data.User
 import com.neighbourly.app.d_entity.interf.Api
 import kotlinx.coroutines.Dispatchers
@@ -253,16 +252,25 @@ class ApiGateway(
     override suspend fun synchronizeContent(
         token: String,
         lastSyncTs: Int?
-    ): Triple<List<Item>, List<User>, List<Household>> =
+    ): SyncData =
         runContextCatchTranslateThrow {
             api.synchronizeContent(API_BASE_URL, token, lastSyncTs ?: 0).let {
-                Triple(
-                    it.items.map { it.toItem() },
-                    it.users.map { it.toUser() },
-                    it.households.map { it.toHousehold() }
+                SyncData(
+                    items = it.items.map { it.toItem() },
+                    itemIds = it.itemIds,
+                    users = it.users.map { it.toUser() },
+                    userIds = it.userIds,
+                    houses = it.households.map { it.toHousehold() },
+                    houseIds = it.householdIds,
                 )
             }
         }
+
+    override suspend fun deleteItem(token: String, itemId: Int) {
+        runContextCatchTranslateThrow {
+            api.deleteItem(API_BASE_URL, token, itemId)
+        }
+    }
 
     companion object {
         const val API_BASE_URL = "http://neighbourly.go.ro:8080/"
