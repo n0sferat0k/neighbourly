@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.MainMenu
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ManageProfile
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ShowItemDetails
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdAddMember
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdInfoEdit
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdLocalize
@@ -95,7 +96,7 @@ public class NavigationViewModel(
         }
     }
 
-    fun goToFindItems(itemType: ItemType? =  null, householdId: Int? = null) {
+    fun goToFindItems(itemType: ItemType? = null, householdId: Int? = null) {
         _state.update {
             it.copy(
                 mainContentVisible = true,
@@ -214,6 +215,15 @@ public class NavigationViewModel(
         }
     }
 
+    fun goToItemDetails(itemId: Int) {
+        _state.update {
+            it.copy(
+                mainContentVisible = true,
+                mainContent = ShowItemDetails(itemId)
+            )
+        }
+    }
+
     data class NavigationViewState(
         val userLoggedIn: Boolean = false,
         val disableMainToggle: Boolean = false,
@@ -230,6 +240,8 @@ public class NavigationViewModel(
         object ManageProfile : MainContent
         object ManageMyStuff : MainContent
         object PublishStuff : MainContent
+
+        data class ShowItemDetails(val itemId: Int) : MainContent
 
         data class FindItems(
             val type: ItemType? = null,

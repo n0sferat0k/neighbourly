@@ -117,6 +117,12 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
         }
     }
 
+    override suspend fun getItem(itemId: Int): Item {
+        return withContext(Dispatchers.IO) {
+            db.itemsQueries.getItem(itemId.toLong()).executeAsOne().toItem()
+        }
+    }
+
     override suspend fun filterItems(type: ItemType?, householdId: Int?): List<Item> {
         return withContext(Dispatchers.IO) {
 

@@ -57,7 +57,6 @@ import neighbourly.composeapp.generated.resources.confirm
 import neighbourly.composeapp.generated.resources.curlzmt
 import neighbourly.composeapp.generated.resources.delete
 import neighbourly.composeapp.generated.resources.houses
-import neighbourly.composeapp.generated.resources.onboard
 import neighbourly.composeapp.generated.resources.refresh
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
@@ -103,13 +102,13 @@ fun Alert(
 }
 
 @Composable
-fun SwipeToDeleteBox(onDelete: () -> Unit, content: @Composable (BoxScope.() -> Unit)) {
+fun SwipeToDeleteBox(
+    modifier: Modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+    onDelete: () -> Unit,
+    content: @Composable (BoxScope.() -> Unit)
+) {
     var offsetX by remember { mutableStateOf(0f) }
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min)
-    ) {
+    Box(modifier = modifier) {
         // Background delete icon
         Box(
             modifier = Modifier.fillMaxSize(),

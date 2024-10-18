@@ -15,6 +15,7 @@ interface Db {
     suspend fun stripUsers(validIds: List<Int>)
     suspend fun storeHouseholds(households: List<Household>)
     suspend fun stripHouseholds(validIds: List<Int>)
+    suspend fun getItem(itemId:Int): Item
     suspend fun filterItems(type: ItemType? = null, householdId: Int? = null): List<Item>
     suspend fun filterHouseholds():List<Household>
 }

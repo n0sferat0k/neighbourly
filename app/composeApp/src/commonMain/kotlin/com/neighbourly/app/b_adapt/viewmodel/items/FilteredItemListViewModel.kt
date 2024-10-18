@@ -23,11 +23,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Instant
 
-const val MAX_DESC_LEN = 70
-const val MINUTE_IN_SECONDS = 60
-const val HOUR_IN_SECONDS = MINUTE_IN_SECONDS * 60
-const val DAY_IN_SECONDS = HOUR_IN_SECONDS * 24
-
 class FilteredItemListViewModel(
     val database: Db,
     val store: SessionStore,
@@ -71,12 +66,12 @@ class FilteredItemListViewModel(
             database.filterItems(_state.value.type, _state.value.householdId)
 
                 .let { items ->
-                    if (!_state.value.showExpired) {
+                    val filteredItems = if (!_state.value.showExpired) {
                         items.filter { it.endTs == null || it.endTs == 0 || it.endTs > now }
-                    }
+                    } else items
 
                     _state.update {
-                        it.copy(loading = false, items = items.map {
+                        it.copy(loading = false, items = filteredItems.map {
                             ItemVS(
                                 id = it.id,
                                 name = it.name.orEmpty(),
@@ -148,5 +143,10 @@ class FilteredItemListViewModel(
         ItemType.REQUEST -> REQUEST
         ItemType.SKILLSHARE -> SKILLSHARE
     }
-
+    companion object {
+        const val MAX_DESC_LEN = 70
+        const val MINUTE_IN_SECONDS = 60
+        const val HOUR_IN_SECONDS = MINUTE_IN_SECONDS * 60
+        const val DAY_IN_SECONDS = HOUR_IN_SECONDS * 24
+    }
 }

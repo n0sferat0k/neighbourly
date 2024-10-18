@@ -8,6 +8,7 @@ import com.neighbourly.app.b_adapt.viewmodel.MapViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
+import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.MainContentViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdAddMemberViewModel
@@ -123,6 +124,9 @@ val adapterModule =
         }
         factory {
             MainContentViewModel(get())
+        }
+        factory {
+            ItemDetailsViewModel(get(), get(), get(), get())
         }
     }
 

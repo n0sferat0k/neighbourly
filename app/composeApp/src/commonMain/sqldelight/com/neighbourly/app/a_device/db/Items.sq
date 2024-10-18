@@ -33,6 +33,9 @@ DELETE FROM Items WHERE id NOT IN ?;
 clear:
 DELETE FROM Items WHERE 1;
 
+getItem:
+SELECT * FROM Items WHERE id = ?;
+
 getItems:
 SELECT * FROM Items ORDER BY id DESC;
 

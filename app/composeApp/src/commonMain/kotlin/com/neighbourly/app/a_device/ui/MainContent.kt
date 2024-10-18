@@ -7,7 +7,8 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.auth.LoginOrRegister
-import com.neighbourly.app.a_device.ui.items.FilteredItemList
+import com.neighbourly.app.a_device.ui.items.FilteredItemListView
+import com.neighbourly.app.a_device.ui.items.ItemDetailsView
 import com.neighbourly.app.a_device.ui.profile.Profile
 import com.neighbourly.app.b_adapt.viewmodel.items.MainContentViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
@@ -16,6 +17,7 @@ import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.Main
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ManageMyStuff
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ManageProfile
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.PublishStuff
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ShowItemDetails
 
 @Composable
 fun MainContent(
@@ -38,20 +40,39 @@ fun MainContent(
     } else {
         if (navigation.mainContent == MainMenu) {
             FullMenuContent()
-        }
-        AnimatedVisibility(navigation.mainContent == ManageProfile) { ContentBox { Profile() } }
-        AnimatedVisibility(navigation.mainContent == ManageMyStuff) {
-            ContentBox {
-                FilteredItemList(type = null, householdId = state.householdId, showExpired = true)
-            }
-        }
-        AnimatedVisibility(navigation.mainContent == PublishStuff) { ContentBox { UnderConstruction() } }
-        AnimatedVisibility(navigation.mainContent is FindItems) {
-            ContentBox {
+        } else {
+            AnimatedVisibility(navigation.mainContent != MainMenu) {
                 navigation.mainContent.let {
                     when (it) {
-                        is FindItems -> FilteredItemList(it.type, it.householdId)
-                        else -> Unit
+                        is FindItems -> ContentBox {
+                            (navigation.mainContent as FindItems).let {
+                                FilteredItemListView(
+                                    type = it.type,
+                                    householdId = it.householdId,
+                                    showExpired = false
+                                )
+                            }
+                        }
+
+                        ManageMyStuff -> ContentBox {
+                            FilteredItemListView(
+                                type = null,
+                                householdId = state.householdId,
+                                showExpired = true
+                            )
+                        }
+
+                        ManageProfile -> ContentBox { Profile() }
+
+                        PublishStuff -> ContentBox {
+                            ItemDetailsView(null)
+                        }
+
+                        is ShowItemDetails -> ContentBox {
+                            ItemDetailsView(it.itemId)
+                        }
+
+                        else -> ContentBox { UnderConstruction() }
                     }
                 }
             }

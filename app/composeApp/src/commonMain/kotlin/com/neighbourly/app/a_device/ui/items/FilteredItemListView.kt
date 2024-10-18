@@ -1,19 +1,18 @@
 package com.neighbourly.app.a_device.ui.items
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -38,7 +37,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -82,22 +80,18 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun FilteredItemList(
+fun FilteredItemListView(
     type: ItemType? = null,
     householdId: Int? = null,
     showExpired: Boolean = false,
     viewModel: FilteredItemListViewModel = viewModel { KoinProvider.KOIN.get<FilteredItemListViewModel>() },
-    navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }
 ) {
     val state by viewModel.state.collectAsState()
-    val navigation by navigationViewModel.state.collectAsState()
     var showRemoveAlertForId by remember { mutableStateOf(-1) }
 
-    LaunchedEffect(type) {
+    LaunchedEffect(type, householdId, showExpired) {
         viewModel.setFilters(type, householdId, showExpired)
     }
-
-
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -110,11 +104,11 @@ fun FilteredItemList(
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(state.items) { item ->
+                items(items = state.items) { item ->
 
                     if (showRemoveAlertForId == item.id) {
                         Alert(
-                            title = stringResource(Res.string.deleteing_item) ,
+                            title = stringResource(Res.string.deleteing_item),
                             text = stringResource(Res.string.confirm_deleteing_item) + " " + item.name,
                             ok = {
                                 showRemoveAlertForId = -1
@@ -143,8 +137,12 @@ fun FilteredItemList(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ItemCard(item: ItemVS) {
+fun ItemCard(
+    item: ItemVS,
+    navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }
+) {
     val imgTag = painterResource(Res.drawable.image)
     val fileTag = painterResource(Res.drawable.file)
     val expTag = painterResource(Res.drawable.hourglass)
@@ -161,7 +159,9 @@ fun ItemCard(item: ItemVS) {
     }
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().clickable {
+                navigationViewModel.goToItemDetails(item.id)
+        },
         shape = RoundedCornerShape(8.dp),
         elevation = 4.dp
     ) {
