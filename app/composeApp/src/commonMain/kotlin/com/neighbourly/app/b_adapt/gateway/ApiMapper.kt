@@ -1,6 +1,5 @@
 package com.neighbourly.app.b_adapt.gateway
 
-import com.neighbourly.app.a_device.store.toHousehold
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.Household
 import com.neighbourly.app.d_entity.data.Item

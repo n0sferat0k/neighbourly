@@ -2,6 +2,7 @@ package com.neighbourly.app.b_adapt.interactor
 
 import com.neighbourly.app.NeighbourlyDB
 import com.neighbourly.app.adevice.db.Items
+import com.neighbourly.app.adevice.db.Users
 import com.neighbourly.app.d_entity.data.Household
 import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.data.ItemType
@@ -93,6 +94,12 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
         }
     }
 
+    override suspend fun getUsers(): List<User> {
+        return withContext(Dispatchers.IO) {
+            db.usersQueries.getUsers().executeAsList().map { it.toUser() }
+        }
+    }
+
     override suspend fun storeHouseholds(households: List<Household>) {
         withContext(Dispatchers.IO) {
             households.forEach {
@@ -163,6 +170,19 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
         }
     }
 }
+
+private fun Users.toUser(): User =
+    User(
+        id = id.toInt(),
+        username = username,
+        fullname = fullname,
+        about = about,
+        email = email,
+        phone = phone,
+        imageurl = image,
+        householdid = householdid?.toInt(),
+        lastModifiedTs = lastmodifiedts.toInt()
+    )
 
 private fun Items.toItem(): Item =
     Item(

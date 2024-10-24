@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.darkrockstudios.libraries.mpfilepicker.MultipleFilePicker
+import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.ErrorText
@@ -55,10 +55,10 @@ fun ProfileMenu(
 
     var showFilePicker by remember { mutableStateOf(false) }
 
-    MultipleFilePicker(show = showFilePicker, fileExtensions = listOf("jpg", "png")) { file ->
+    FilePicker(show = showFilePicker, fileExtensions = listOf("jpg", "png")) { file ->
         showFilePicker = false
 
-        file?.get(0)?.platformFile?.toString()?.let {
+        file?.platformFile?.toString()?.let {
             viewModel.onProfileImageUpdate(loadContentsFromFile(it))
         }
     }
@@ -68,16 +68,16 @@ fun ProfileMenu(
             if (!it.isNullOrBlank() && !imageUpdating) {
                 Box(
                     modifier =
-                        Modifier
-                            .size(80.dp)
-                            .border(2.dp, AppColors.primary, CircleShape)
-                            .clickable {
-                                if (navigation.profileContent == ProfileContent.ProfileInfoEdit) {
-                                    showFilePicker = true
-                                } else {
-                                    navigationViewModel.goToProfileInfoEdit()
-                                }
-                            },
+                    Modifier
+                        .size(80.dp)
+                        .border(2.dp, AppColors.primary, CircleShape)
+                        .clickable {
+                            if (navigation.profileContent == ProfileContent.ProfileInfoEdit) {
+                                showFilePicker = true
+                            } else {
+                                navigationViewModel.goToProfileInfoEdit()
+                            }
+                        },
                     contentAlignment = Alignment.Center,
                 ) {
                     KamelImage(
@@ -98,13 +98,13 @@ fun ProfileMenu(
             } else {
                 Image(
                     modifier =
-                        Modifier.size(80.dp).clickable {
-                            if (navigation.profileContent == ProfileContent.ProfileInfoEdit) {
-                                showFilePicker = true
-                            } else {
-                                navigationViewModel.goToProfileInfoEdit()
-                            }
-                        },
+                    Modifier.size(80.dp).clickable {
+                        if (navigation.profileContent == ProfileContent.ProfileInfoEdit) {
+                            showFilePicker = true
+                        } else {
+                            navigationViewModel.goToProfileInfoEdit()
+                        }
+                    },
                     painter = defaultProfile,
                     contentDescription = "Profile Image",
                     colorFilter = ColorFilter.tint(AppColors.primary),
@@ -119,15 +119,15 @@ fun ProfileMenu(
             contentDescription = "Household",
             contentScale = ContentScale.FillBounds,
             colorFilter =
-                if (state.hasHousehold) {
-                    ColorFilter.tint(AppColors.primary)
-                } else {
-                    ColorFilter.tint(AppColors.complementary)
-                },
+            if (state.hasHousehold) {
+                ColorFilter.tint(AppColors.primary)
+            } else {
+                ColorFilter.tint(AppColors.complementary)
+            },
             modifier =
-                Modifier.size(48.dp).clickable {
-                    navigationViewModel.goToHouseholdInfoEdit()
-                },
+            Modifier.size(48.dp).clickable {
+                navigationViewModel.goToHouseholdInfoEdit()
+            },
         )
         Spacer(Modifier.width(14.dp).fillMaxHeight())
         Image(
@@ -135,15 +135,15 @@ fun ProfileMenu(
             contentDescription = "HouseholdLocalize",
             contentScale = ContentScale.FillBounds,
             colorFilter =
-                if (state.householdLocalized) {
-                    ColorFilter.tint(AppColors.primary)
-                } else {
-                    ColorFilter.tint(AppColors.complementary)
-                },
+            if (state.householdLocalized) {
+                ColorFilter.tint(AppColors.primary)
+            } else {
+                ColorFilter.tint(AppColors.complementary)
+            },
             modifier =
-                Modifier.size(48.dp).clickable {
-                    navigationViewModel.goToHouseholdLocalize()
-                },
+            Modifier.size(48.dp).clickable {
+                navigationViewModel.goToHouseholdLocalize()
+            },
         )
         Spacer(Modifier.width(14.dp).fillMaxHeight())
         Image(
@@ -151,15 +151,15 @@ fun ProfileMenu(
             contentDescription = "Neighbourhood",
             contentScale = ContentScale.FillBounds,
             colorFilter =
-                if (state.hasNeighbourhoods) {
-                    ColorFilter.tint(AppColors.primary)
-                } else {
-                    ColorFilter.tint(AppColors.complementary)
-                },
+            if (state.hasNeighbourhoods) {
+                ColorFilter.tint(AppColors.primary)
+            } else {
+                ColorFilter.tint(AppColors.complementary)
+            },
             modifier =
-                Modifier.size(48.dp).clickable {
-                    navigationViewModel.goToNeighbourhoodInfoEdit()
-                },
+            Modifier.size(48.dp).clickable {
+                navigationViewModel.goToNeighbourhoodInfoEdit()
+            },
         )
     }
     if (state.error.isNotEmpty()) {

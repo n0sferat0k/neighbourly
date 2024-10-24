@@ -29,7 +29,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.darkrockstudios.libraries.mpfilepicker.MultipleFilePicker
+import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.CurlyButton
@@ -66,10 +66,10 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
     var profileFile by remember { mutableStateOf<FileContents?>(null) }
     var showFilePicker by remember { mutableStateOf(false) }
 
-    MultipleFilePicker(show = showFilePicker, fileExtensions = listOf("jpg", "png")) { file ->
+    FilePicker(show = showFilePicker, fileExtensions = listOf("jpg", "png")) { file ->
         showFilePicker = false
 
-        file?.get(0)?.platformFile.toString().let {
+        file?.platformFile.toString().let {
             profileImage = loadImageFromFile(it)
             profileFile = loadContentsFromFile(it)
         }

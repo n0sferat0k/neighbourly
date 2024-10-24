@@ -39,6 +39,7 @@ compose-webview-multiplatform = { module = "io.github.kevinnzou:compose-webview-
 core = { module = "com.google.zxing:core", version.ref = "core" }
 javase = { module = "com.google.zxing:javase", version.ref = "javase" }
 kamel-image = { module = "media.kamel:kamel-image", version.ref = "kamelImage" }
+
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }

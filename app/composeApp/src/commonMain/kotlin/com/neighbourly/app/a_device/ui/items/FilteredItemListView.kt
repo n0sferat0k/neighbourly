@@ -1,6 +1,5 @@
 package com.neighbourly.app.a_device.ui.items
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -45,8 +44,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.Alert
 import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.BoxFooter
 import com.neighbourly.app.a_device.ui.BoxHeader
 import com.neighbourly.app.a_device.ui.BoxStaticContent
+import com.neighbourly.app.a_device.ui.CurlyText
 import com.neighbourly.app.a_device.ui.SwipeToDeleteBox
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.BARTER
@@ -69,6 +70,7 @@ import neighbourly.composeapp.generated.resources.deleteing_item
 import neighbourly.composeapp.generated.resources.donate
 import neighbourly.composeapp.generated.resources.event
 import neighbourly.composeapp.generated.resources.file
+import neighbourly.composeapp.generated.resources.filter
 import neighbourly.composeapp.generated.resources.hourglass
 import neighbourly.composeapp.generated.resources.image
 import neighbourly.composeapp.generated.resources.info
@@ -134,10 +136,12 @@ fun FilteredItemListView(
                 }
             }
         }
+        BoxFooter(modifier = Modifier.align(Alignment.End)) {
+            CurlyText(text = stringResource(Res.string.filter), bold = true)
+        }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ItemCard(
     item: ItemVS,

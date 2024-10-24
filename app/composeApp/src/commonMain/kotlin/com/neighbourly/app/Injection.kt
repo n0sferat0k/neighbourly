@@ -132,40 +132,40 @@ val adapterModule =
 
 val useCaseModule =
     module {
-        single {
+        factory {
             LoginUseCase(get(), get(), get())
         }
-        single {
+        factory {
             LogoutUseCase(get(), get(), get())
         }
-        single {
+        factory {
             RegisterUseCase(get(), get())
         }
-        single {
+        factory {
             ProfileImageUpdateUseCase(get(), get())
         }
-        single {
+        factory {
             ProfileRefreshUseCase(get(), get())
         }
-        single {
+        factory {
             ProfileUpdateUseCase(get(), get())
         }
-        single {
+        factory {
             HouseholdLocalizeUseCase(get(), get())
         }
-        single {
+        factory {
             HouseholdManagementUseCase(get(), get())
         }
-        single {
+        factory {
             NeighbourhoodManagementUseCase(get(), get())
         }
-        single {
+        factory {
             FetchProfileUseCase(get(), get())
         }
-        single {
+        factory {
             ContentSyncUseCase(get(), get(), get())
         }
-        single {
+        factory {
             ItemManagementUseCase(get(), get(), get())
         }
     }

@@ -13,7 +13,6 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.os.Looper
 import android.provider.OpenableColumns
 import android.telephony.SubscriptionManager
@@ -33,15 +32,14 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.MultiFormatWriter
-import com.google.zxing.common.BitMatrix
 import com.neighbourly.app.NeighbourlyApp.Companion.locationProvider
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.okhttp.OkHttp
 import java.nio.file.Paths
+import kotlin.math.ceil
+import kotlin.math.max
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -107,6 +105,30 @@ actual object GetLocation {
         if (delegateCallbacks.isEmpty()) {
             locationProvider.removeLocationUpdates(actualCallback)
         }
+    }
+}
+
+actual fun loadImageFromFile(file: String, maxSizePx: Int): BitmapPainter? {
+    val stream = {
+        NeighbourlyApp.appContext.contentResolver.openInputStream(file.toUri())
+    }
+
+    // First decode with inJustDecodeBounds=true to check dimensions
+    val options = BitmapFactory.Options()
+    options.inJustDecodeBounds = true
+    options.inSampleSize = 1
+    BitmapFactory.decodeStream(stream(), null, options)
+
+    // Calculate inSampleSize
+    val maxDim = max(options.outHeight, options.outWidth)
+    if(maxDim > maxSizePx) {
+        options.inSampleSize = ceil(maxDim.toDouble() / maxSizePx.toDouble()).toInt()
+    }
+
+    // Decode bitmap with inSampleSize set
+    options.inJustDecodeBounds = false
+    return BitmapFactory.decodeStream(stream(), null, options)?.let { bitmap ->
+        BitmapPainter(bitmap.asImageBitmap())
     }
 }
 

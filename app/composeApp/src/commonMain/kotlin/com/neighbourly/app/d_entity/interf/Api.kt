@@ -2,8 +2,6 @@ package com.neighbourly.app.d_entity.interf
 
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.GpsItem
-import com.neighbourly.app.d_entity.data.Household
-import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.data.SyncData
 import com.neighbourly.app.d_entity.data.User
 

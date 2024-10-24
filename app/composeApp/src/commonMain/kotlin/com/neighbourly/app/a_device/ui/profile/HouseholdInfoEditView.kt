@@ -31,7 +31,7 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.darkrockstudios.libraries.mpfilepicker.MultipleFilePicker
+import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.Alert
 import com.neighbourly.app.a_device.ui.AppColors
@@ -112,13 +112,13 @@ fun HouseholdInfoEditView(
                 )
 
                 if (state.hasHousehold) {
-                    MultipleFilePicker(
+                    FilePicker(
                         show = showFilePicker,
                         fileExtensions = listOf("jpg", "png"),
                     ) { file ->
                         showFilePicker = false
 
-                        file?.get(0)?.platformFile?.toString()?.let {
+                        file?.platformFile?.toString()?.let {
                             viewModel.onHouseholdImageUpdate(loadContentsFromFile(it))
                         }
                     }

@@ -23,6 +23,8 @@ expect object GetLocation {
 
 expect fun loadImageFromFile(file: String): BitmapPainter?
 
+expect fun loadImageFromFile(file: String, maxSizePx: Int): BitmapPainter?
+
 expect fun loadContentsFromFile(file: String): FileContents?
 
 expect fun getPhoneNumber(): String

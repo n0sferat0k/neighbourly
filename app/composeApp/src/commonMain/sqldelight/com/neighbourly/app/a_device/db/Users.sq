@@ -1,6 +1,6 @@
 CREATE TABLE Users (
   id INTEGER PRIMARY KEY NOT NULL,
-  username TEXT,
+  username TEXT NOT NULL,
   fullname TEXT,
   about TEXT,
   email TEXT,
@@ -15,6 +15,9 @@ INSERT OR REPLACE INTO Users(id, username,
                     fullname, about, email, phone, image,
                     householdid, lastmodifiedts
                   )  VALUES(?,?, ?,?,?,?,?,?,?);
+
+getUsers:
+SELECT * FROM Users WHERE 1;
 
 strip:
 DELETE FROM Users WHERE id NOT IN ?;
