@@ -73,6 +73,9 @@
     <string name="item_url">Item url</string>
     <string name="target_user">Target user</string>
 
+    <string name="start_date">Starts:</string>
+    <string name="end_date">Ends:</string>
+
     <string name="under_construction">Under Construction !</string>
 
     <string name="err_password_mismatch">The two passwords must match</string>

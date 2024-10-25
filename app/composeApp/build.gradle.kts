@@ -74,6 +74,8 @@ kotlin {
             implementation(libs.core)
 
             implementation(libs.sqldelight.runtime)
+
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -48,6 +49,7 @@ import com.neighbourly.app.a_device.ui.BoxScrollableContent
 import com.neighbourly.app.a_device.ui.CurlyButton
 import com.neighbourly.app.a_device.ui.CurlyText
 import com.neighbourly.app.a_device.ui.SwipeToDeleteBox
+import com.neighbourly.app.a_device.ui.datetime.DateTimePicker
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel.MemImg
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
@@ -61,6 +63,7 @@ import com.neighbourly.app.d_entity.data.ItemType.SKILLSHARE
 import com.neighbourly.app.loadImageFromFile
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
+import kotlinx.datetime.LocalDateTime
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.add_file
 import neighbourly.composeapp.generated.resources.add_image
@@ -71,6 +74,7 @@ import neighbourly.composeapp.generated.resources.delete
 import neighbourly.composeapp.generated.resources.deleteing_image
 import neighbourly.composeapp.generated.resources.donate
 import neighbourly.composeapp.generated.resources.donation
+import neighbourly.composeapp.generated.resources.end_date
 import neighbourly.composeapp.generated.resources.event
 import neighbourly.composeapp.generated.resources.files
 import neighbourly.composeapp.generated.resources.images
@@ -82,9 +86,11 @@ import neighbourly.composeapp.generated.resources.request
 import neighbourly.composeapp.generated.resources.sale
 import neighbourly.composeapp.generated.resources.save
 import neighbourly.composeapp.generated.resources.skillshare
+import neighbourly.composeapp.generated.resources.start_date
 import neighbourly.composeapp.generated.resources.target_user
 import neighbourly.composeapp.generated.resources.type
 import neighbourly.composeapp.generated.resources.unknown
+
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -223,6 +229,24 @@ fun ItemDetailsView(
                     )
                 }
 
+                AutocompleteOutlinedTextField(
+                    label = { Text(stringResource(Res.string.target_user)) },
+                    entries = state.users,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    viewModel.setTargetUser(it)
+                }
+
+                OutlinedTextField(
+                    value = state.urlOverride ?: state.url,
+                    onValueChange = {
+                        viewModel.updateUrl(it)
+                    },
+                    isError = state.nameError,
+                    label = { Text(stringResource(Res.string.item_url)) },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -243,29 +267,41 @@ fun ItemDetailsView(
                     )
                 }
 
-                AutocompleteOutlinedTextField(
-                    label = { Text(stringResource(Res.string.target_user)) },
-                    entries = state.users,
+                Row(
                     modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    viewModel.setTargetUser(it)
+                    CurlyText(text = stringResource(Res.string.start_date))
+                    CurlyText(modifier = Modifier.clickable {
+                        showAttachmentFilePicker = true
+                    }, text = stringResource(Res.string.add_file), bold = true)
                 }
 
-                OutlinedTextField(
-                    value = state.urlOverride ?: state.url,
-                    onValueChange = {
-                        viewModel.updateUrl(it)
-                    },
-                    isError = state.nameError,
-                    label = { Text(stringResource(Res.string.item_url)) },
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                )
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    CurlyText(text = stringResource(Res.string.end_date))
+                    CurlyText(modifier = Modifier.clickable {
+                        showAttachmentFilePicker = true
+                    }, text = stringResource(Res.string.add_file), bold = true)
+                }
 
                 CurlyButton(
                     text = stringResource(Res.string.save),
                     loading = state.saving,
                 ) {
                     viewModel.onSave()
+                }
+
+                var selectedDateTime by remember { mutableStateOf<LocalDateTime?>(null) }
+
+                DateTimePicker(
+                    selectedDateTime = selectedDateTime,
+                    onDateTimeSelected = { selectedDateTime = it }
+                )
+                selectedDateTime?.let {
+                    Text("Selected Date-Time: $it", style = MaterialTheme.typography.h6)
                 }
             }
         }
