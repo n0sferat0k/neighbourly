@@ -75,7 +75,7 @@ kotlin {
 
             implementation(libs.sqldelight.runtime)
 
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+            implementation("io.github.epicarchitect:epic-calendar-compose:1.0.8")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -136,9 +136,11 @@ android {
         debugImplementation(compose.uiTooling)
     }
 }
+
 dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.lifecycle.service)
+    implementation(libs.androidx.room.runtime.android)
 }
 
 compose.desktop {

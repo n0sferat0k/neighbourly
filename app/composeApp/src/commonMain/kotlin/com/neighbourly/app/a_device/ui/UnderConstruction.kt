@@ -34,7 +34,7 @@ fun UnderConstruction(
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        BoxHeader(Modifier.align(Alignment.Start), busy = state.loading) {
+        BoxHeader(modifier = Modifier.align(Alignment.Start), busy = state.loading) {
             viewModel.refresh()
         }
 

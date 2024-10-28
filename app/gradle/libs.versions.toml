@@ -1,8 +1,8 @@
 [versions]
-accompanistPermissions = "0.35.2-beta"
-agp = "8.2.2"
+accompanist = "0.36.0"
+agp = "8.6.1"
 android-compileSdk = "34"
-android-minSdk = "24"
+android-minSdk = "26"
 android-targetSdk = "34"
 androidx-activityCompose = "1.9.3"
 androidx-lifecycle = "2.8.3"
@@ -28,9 +28,10 @@ webcamCaptureDriverNative = "1.0.0"
 workRuntimeKtx = "2.9.1"
 lifecycleService = "2.8.6"
 sqlDelight = "2.0.2"
+roomRuntimeAndroid = "2.7.0-alpha10"
 
 [libraries]
-accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanning" }
 androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraView" }
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraLifecycle" }
@@ -64,6 +65,7 @@ sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sq
 sqldelight-sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqlDelight" }
 webcam-capture = { module = "com.github.sarxos:webcam-capture", version.ref = "webcamCapture" }
 webcam-capture-driver-native = { module = "io.github.eduramiba:webcam-capture-driver-native", version.ref = "webcamCaptureDriverNative" }
+androidx-room-runtime-android = { group = "androidx.room", name = "room-runtime-android", version.ref = "roomRuntimeAndroid" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

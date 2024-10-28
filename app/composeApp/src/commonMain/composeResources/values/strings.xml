@@ -76,6 +76,17 @@
     <string name="start_date">Starts:</string>
     <string name="end_date">Ends:</string>
 
+    <string name="now">Now</string>
+    <string name="in_10_min">In 10 min</string>
+    <string name="in_an_hour">In 1 hour</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="next_week">Next week</string>
+
+    <string name="ok">Ok</string>
+
+    <string name="add_start">Add start</string>
+    <string name="add_end">Add end</string>
+
     <string name="under_construction">Under Construction !</string>
 
     <string name="err_password_mismatch">The two passwords must match</string>

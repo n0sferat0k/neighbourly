@@ -2,6 +2,7 @@
 
 package com.neighbourly.app.a_device.ui.items
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,7 +21,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -49,7 +49,7 @@ import com.neighbourly.app.a_device.ui.BoxScrollableContent
 import com.neighbourly.app.a_device.ui.CurlyButton
 import com.neighbourly.app.a_device.ui.CurlyText
 import com.neighbourly.app.a_device.ui.SwipeToDeleteBox
-import com.neighbourly.app.a_device.ui.datetime.DateTimePicker
+import com.neighbourly.app.a_device.ui.datetime.DateTimeDialog
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel.MemImg
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
@@ -63,10 +63,15 @@ import com.neighbourly.app.d_entity.data.ItemType.SKILLSHARE
 import com.neighbourly.app.loadImageFromFile
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.Clock.System.now
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import neighbourly.composeapp.generated.resources.Res
+import neighbourly.composeapp.generated.resources.add_end
 import neighbourly.composeapp.generated.resources.add_file
 import neighbourly.composeapp.generated.resources.add_image
+import neighbourly.composeapp.generated.resources.add_start
 import neighbourly.composeapp.generated.resources.barter
 import neighbourly.composeapp.generated.resources.bartering
 import neighbourly.composeapp.generated.resources.confirm_deleteing_image
@@ -90,9 +95,9 @@ import neighbourly.composeapp.generated.resources.start_date
 import neighbourly.composeapp.generated.resources.target_user
 import neighbourly.composeapp.generated.resources.type
 import neighbourly.composeapp.generated.resources.unknown
-
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun ItemDetailsView(
@@ -104,7 +109,10 @@ fun ItemDetailsView(
     val navigation by navigationViewModel.state.collectAsState()
     var showImageFilePicker by remember { mutableStateOf(false) }
     var showAttachmentFilePicker by remember { mutableStateOf(false) }
+    var showStartDatePicker by remember { mutableStateOf(false) }
+    var showEndDatePicker by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
     LaunchedEffect(itemId) {
         viewModel.setItem(itemId)
@@ -121,11 +129,44 @@ fun ItemDetailsView(
         }
     }
 
-    FilePicker(show = showAttachmentFilePicker, fileExtensions = listOf("jpg", "png", "pdf", "txt", "svg", "doc", "docx", "ppt", "pptx", "*")) { file ->
+    FilePicker(
+        show = showAttachmentFilePicker,
+        fileExtensions = listOf(
+            "jpg",
+            "png",
+            "pdf",
+            "txt",
+            "svg",
+            "doc",
+            "docx",
+            "ppt",
+            "pptx",
+            "*"
+        )
+    ) { file ->
         showAttachmentFilePicker = false
 
         file?.platformFile?.toString()?.let {
             viewModel.onAddFile(it)
+        }
+    }
+
+    if (showStartDatePicker) {
+        DateTimeDialog(
+            title = stringResource(Res.string.start_date),
+            instant = state.start ?: state.startOverride ?: now()
+        ) {
+            it?.let { viewModel.updateStartDate(it) }
+            showStartDatePicker = false
+        }
+    }
+    if (showEndDatePicker) {
+        DateTimeDialog(
+            title = stringResource(Res.string.end_date),
+            instant = state.end ?: state.endOverride ?: now()
+        ) {
+            it?.let { viewModel.updateEndDate(it) }
+            showEndDatePicker = false
         }
     }
 
@@ -186,6 +227,23 @@ fun ItemDetailsView(
                     }
                 }
 
+                AnimatedVisibility(
+                    listOf(NEED.name, REQUEST.name).contains(
+                        state.typeOverride ?: state.type
+                    )
+                ) {
+                    AutocompleteOutlinedTextField(
+                        text = (state.targetUserId ?: state.targetUserIdOverride)?.let { userId ->
+                            state.users.getOrDefault(userId, "")
+                        } ?: "",
+                        label = { Text(stringResource(Res.string.target_user)) },
+                        entries = state.users,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        viewModel.setTargetUser(it)
+                    }
+                }
+
                 OutlinedTextField(
                     value = state.nameOverride ?: state.name,
                     onValueChange = {
@@ -216,6 +274,16 @@ fun ItemDetailsView(
                     }, text = stringResource(Res.string.add_image), bold = true)
                 }
 
+                OutlinedTextField(
+                    value = state.urlOverride ?: state.url,
+                    onValueChange = {
+                        viewModel.updateUrl(it)
+                    },
+                    isError = state.nameError,
+                    label = { Text(stringResource(Res.string.item_url)) },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
                 if (state.images.size > 0 || state.newImages.size > 0) {
                     ImageGrid(
                         images = state.images,
@@ -228,24 +296,6 @@ fun ItemDetailsView(
                         }
                     )
                 }
-
-                AutocompleteOutlinedTextField(
-                    label = { Text(stringResource(Res.string.target_user)) },
-                    entries = state.users,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    viewModel.setTargetUser(it)
-                }
-
-                OutlinedTextField(
-                    value = state.urlOverride ?: state.url,
-                    onValueChange = {
-                        viewModel.updateUrl(it)
-                    },
-                    isError = state.nameError,
-                    label = { Text(stringResource(Res.string.item_url)) },
-                    modifier = Modifier.fillMaxWidth(),
-                )
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -272,9 +322,29 @@ fun ItemDetailsView(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     CurlyText(text = stringResource(Res.string.start_date))
-                    CurlyText(modifier = Modifier.clickable {
-                        showAttachmentFilePicker = true
-                    }, text = stringResource(Res.string.add_file), bold = true)
+                    (state.startOverride ?: state.start)?.let {
+                        CurlyText(
+                            modifier = Modifier.clickable {
+                                showStartDatePicker = true
+                            },
+                            text = it.toLocalDateTime(TimeZone.currentSystemDefault())
+                                .toJavaLocalDateTime().format(formatter),
+                            bold = true
+                        )
+                    }
+                    CurlyText(
+                        modifier = Modifier.clickable {
+                            if ((state.startOverride ?: state.start) == null)
+                                showStartDatePicker = true
+                            else
+                                viewModel.updateStartDate(null)
+                        },
+                        text = if ((state.startOverride ?: state.start) == null)
+                            stringResource(Res.string.add_start)
+                        else
+                            stringResource(Res.string.delete),
+                        bold = true
+                    )
                 }
 
                 Row(
@@ -282,9 +352,29 @@ fun ItemDetailsView(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     CurlyText(text = stringResource(Res.string.end_date))
-                    CurlyText(modifier = Modifier.clickable {
-                        showAttachmentFilePicker = true
-                    }, text = stringResource(Res.string.add_file), bold = true)
+                    (state.endOverride ?: state.end)?.let {
+                        CurlyText(
+                            modifier = Modifier.clickable {
+                                showStartDatePicker = true
+                            },
+                            text = it.toLocalDateTime(TimeZone.currentSystemDefault())
+                                .toJavaLocalDateTime().format(formatter),
+                            bold = true
+                        )
+                    }
+                    CurlyText(
+                        modifier = Modifier.clickable {
+                            if ((state.endOverride ?: state.end) == null)
+                                showEndDatePicker = true
+                            else
+                                viewModel.updateEndDate(null)
+                        },
+                        text = if ((state.endOverride ?: state.end) == null)
+                            stringResource(Res.string.add_end)
+                        else
+                            stringResource(Res.string.delete),
+                        bold = true
+                    )
                 }
 
                 CurlyButton(
@@ -292,16 +382,6 @@ fun ItemDetailsView(
                     loading = state.saving,
                 ) {
                     viewModel.onSave()
-                }
-
-                var selectedDateTime by remember { mutableStateOf<LocalDateTime?>(null) }
-
-                DateTimePicker(
-                    selectedDateTime = selectedDateTime,
-                    onDateTimeSelected = { selectedDateTime = it }
-                )
-                selectedDateTime?.let {
-                    Text("Selected Date-Time: $it", style = MaterialTheme.typography.h6)
                 }
             }
         }

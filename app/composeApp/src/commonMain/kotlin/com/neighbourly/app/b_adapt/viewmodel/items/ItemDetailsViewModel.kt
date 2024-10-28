@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
 import java.nio.file.Paths
 
 class ItemDetailsViewModel(
@@ -45,20 +46,21 @@ class ItemDetailsViewModel(
             viewModelScope.launch {
                 database.getItem(itemId = itemId).let { item ->
                     _state.update {
-                        it.copy(
-                            type = item.type.name,
+                        it.copy(type = item.type.name,
                             name = item.name.orEmpty(),
                             description = item.description.orEmpty(),
                             url = item.url.orEmpty(),
+                            start = item.startTs?.let { Instant.fromEpochSeconds(it.toLong()) },
+                            end = item.endTs?.let { Instant.fromEpochSeconds(it.toLong()) },
                             images = item.images,
+                            targetUserId = item.targetUserId,
                             files = item.files.map {
                                 FileVS(
                                     id = it.key,
                                     url = it.value,
                                     name = Paths.get(it.value).fileName.toString()
                                 )
-                            }
-                        )
+                            })
                     }
                 }
             }
@@ -90,8 +92,7 @@ class ItemDetailsViewModel(
     fun updateDescription(description: String) =
         _state.update { it.copy(descriptionOverride = description) }
 
-    fun updateUrl(url: String) =
-        _state.update { it.copy(urlOverride = url) }
+    fun updateUrl(url: String) = _state.update { it.copy(urlOverride = url) }
 
     fun deleteImage(imageId: Int) {
 
@@ -119,8 +120,20 @@ class ItemDetailsViewModel(
         _state.update { it.copy(newImages = it.newImages.filter { it.name != imgName }.toList()) }
     }
 
-    fun setTargetUser(it: Int) {
+    fun setTargetUser(targetUserId: Int) {
+        _state.update { it.copy(targetUserIdOverride = targetUserId) }
+    }
 
+    fun updateStartDate(startTs: Int?) {
+        _state.update {
+            it.copy(startOverride = startTs?.let { Instant.fromEpochSeconds(it.toLong()) })
+        }
+    }
+
+    fun updateEndDate(endTs: Int?) {
+        _state.update {
+            it.copy(endOverride = endTs?.let { Instant.fromEpochSeconds(it.toLong()) })
+        }
     }
 
     data class ItemDetailsViewState(
@@ -131,6 +144,9 @@ class ItemDetailsViewModel(
         val images: Map<Int, String> = emptyMap(),
         val newImages: List<MemImg> = emptyList(),
 
+        val targetUserId: Int? = null,
+        val targetUserIdOverride: Int? = null,
+
         val files: List<FileVS> = emptyList(),
         val newFiles: Map<String, String> = emptyMap(),
 
@@ -138,11 +154,15 @@ class ItemDetailsViewModel(
         val name: String = "",
         val description: String = "",
         val url: String = "",
+        val start: Instant? = null,
+        val end: Instant? = null,
 
         val typeOverride: String? = null,
         val nameOverride: String? = null,
         val descriptionOverride: String? = null,
         val urlOverride: String? = null,
+        val startOverride: Instant? = null,
+        val endOverride: Instant? = null,
 
         val nameError: Boolean = false,
 

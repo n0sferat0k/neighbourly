@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,7 +42,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,7 +56,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -68,7 +65,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toSize
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.app_name
 import neighbourly.composeapp.generated.resources.cancel
@@ -88,7 +84,6 @@ data object AppColors {
     val complementary: Color = Color(0xffae605b)
     val complementaryLight: Color = Color(0xFFeedfde)
 }
-
 
 @Composable
 fun Alert(
@@ -168,7 +163,8 @@ fun SwipeToDeleteBox(
 fun BoxHeader(
     modifier: Modifier = Modifier,
     busy: Boolean = false,
-    refresh: (() -> Unit)? = null,
+    title: String = stringResource(Res.string.app_name),
+    refresh: (() -> Unit)? = null
 ) {
     Row(modifier = modifier.padding(start = 10.dp)) {
         Image(
@@ -179,7 +175,7 @@ fun BoxHeader(
         )
         CurlyText(
             modifier = Modifier.align(Alignment.Bottom).padding(start = 5.dp),
-            text = stringResource(Res.string.app_name),
+            text = title,
             fontSize = 24.sp,
         )
 
@@ -246,7 +242,7 @@ fun BoxStaticContent(
     content: @Composable BoxScope.() -> Unit,
 ) {
     Box(modifier.fillMaxWidth()) {
-        Box(Modifier.fillMaxSize()) {
+        Box(Modifier.wrapContentSize()) {
             Box(
                 modifier = Modifier.wrapContentSize().padding(20.dp).align(Alignment.TopCenter),
                 content = content,
@@ -386,15 +382,13 @@ fun HalfCircleHalo(modifier: Modifier = Modifier) {
 
 @Composable
 fun ContentBox(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.alpha(.9f)
+        .fillMaxSize()
+        .padding(20.dp, 20.dp, 20.dp, 100.dp),
     content: @Composable BoxScope.() -> Unit,
 ) {
     Box(
-        modifier =
-        modifier
-            .alpha(.9f)
-            .fillMaxSize()
-            .padding(20.dp, 20.dp, 20.dp, 100.dp),
+        modifier = modifier,
     ) {
         Box(
             modifier =
@@ -412,10 +406,11 @@ fun ContentBox(
 @Composable
 fun AutocompleteOutlinedTextField(
     modifier: Modifier = Modifier, label: @Composable (() -> Unit)? = null,
+    text: String = "",
     entries: Map<Int, String>,
     onSelect: (Int) -> Unit,
 ) {
-    var filterText by remember { mutableStateOf("") }
+    var filterText by remember { mutableStateOf(text) }
     var expanded by remember { mutableStateOf(false) }
 
     var filteredEntries by remember { mutableStateOf(entries.toList()) }
