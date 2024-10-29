@@ -67,13 +67,13 @@ class FilteredItemListViewModel(
 
                 .let { items ->
                     val filteredItems = if (!_state.value.showExpired) {
-                        items.filter { it.endTs == null || it.endTs == 0 || it.endTs > now }
+                        items.filter { it.id != null && (it.endTs == null || it.endTs == 0 || it.endTs > now) }
                     } else items
 
                     _state.update {
                         it.copy(loading = false, items = filteredItems.map {
                             ItemVS(
-                                id = it.id,
+                                id = it.id!!,
                                 name = it.name.orEmpty(),
                                 description = it.description.orEmpty().let {
                                     if (it.length > MAX_DESC_LEN) it.substring(
@@ -143,6 +143,7 @@ class FilteredItemListViewModel(
         ItemType.REQUEST -> REQUEST
         ItemType.SKILLSHARE -> SKILLSHARE
     }
+
     companion object {
         const val MAX_DESC_LEN = 70
         const val MINUTE_IN_SECONDS = 60

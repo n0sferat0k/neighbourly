@@ -75,8 +75,11 @@ import neighbourly.composeapp.generated.resources.add_start
 import neighbourly.composeapp.generated.resources.barter
 import neighbourly.composeapp.generated.resources.bartering
 import neighbourly.composeapp.generated.resources.confirm_deleteing_image
+import neighbourly.composeapp.generated.resources.confirm_deleteing_item
+import neighbourly.composeapp.generated.resources.confirm_deleteing_this_item
 import neighbourly.composeapp.generated.resources.delete
 import neighbourly.composeapp.generated.resources.deleteing_image
+import neighbourly.composeapp.generated.resources.deleteing_item
 import neighbourly.composeapp.generated.resources.donate
 import neighbourly.composeapp.generated.resources.donation
 import neighbourly.composeapp.generated.resources.end_date
@@ -111,11 +114,26 @@ fun ItemDetailsView(
     var showAttachmentFilePicker by remember { mutableStateOf(false) }
     var showStartDatePicker by remember { mutableStateOf(false) }
     var showEndDatePicker by remember { mutableStateOf(false) }
+    var showDeleteAlert by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
     LaunchedEffect(itemId) {
         viewModel.setItem(itemId)
+    }
+
+    if (showDeleteAlert) {
+        Alert(
+            title = stringResource(Res.string.deleteing_item),
+            text = stringResource(Res.string.confirm_deleteing_this_item),
+            ok = {
+                showDeleteAlert = false
+                viewModel.deleteItem()
+            },
+            cancel = {
+                showDeleteAlert = false
+            }
+        )
     }
 
     FilePicker(show = showImageFilePicker, fileExtensions = listOf("jpg", "png")) { file ->
@@ -264,16 +282,6 @@ fun ItemDetailsView(
                     modifier = Modifier.fillMaxWidth(),
                 )
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    CurlyText(text = stringResource(Res.string.images))
-                    CurlyText(modifier = Modifier.clickable {
-                        showImageFilePicker = true
-                    }, text = stringResource(Res.string.add_image), bold = true)
-                }
-
                 OutlinedTextField(
                     value = state.urlOverride ?: state.url,
                     onValueChange = {
@@ -283,6 +291,16 @@ fun ItemDetailsView(
                     label = { Text(stringResource(Res.string.item_url)) },
                     modifier = Modifier.fillMaxWidth(),
                 )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    CurlyText(text = stringResource(Res.string.images))
+                    CurlyText(modifier = Modifier.clickable {
+                        showImageFilePicker = true
+                    }, text = stringResource(Res.string.add_image), bold = true)
+                }
 
                 if (state.images.size > 0 || state.newImages.size > 0) {
                     ImageGrid(
@@ -322,29 +340,32 @@ fun ItemDetailsView(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     CurlyText(text = stringResource(Res.string.start_date))
-                    (state.startOverride ?: state.start)?.let {
-                        CurlyText(
-                            modifier = Modifier.clickable {
-                                showStartDatePicker = true
-                            },
-                            text = it.toLocalDateTime(TimeZone.currentSystemDefault())
-                                .toJavaLocalDateTime().format(formatter),
-                            bold = true
-                        )
-                    }
-                    CurlyText(
-                        modifier = Modifier.clickable {
-                            if ((state.startOverride ?: state.start) == null)
-                                showStartDatePicker = true
-                            else
-                                viewModel.updateStartDate(null)
-                        },
-                        text = if ((state.startOverride ?: state.start) == null)
-                            stringResource(Res.string.add_start)
-                        else
-                            stringResource(Res.string.delete),
-                        bold = true
-                    )
+                    (state.startOverride ?: state.start)?.takeIf { it.epochSeconds > 0 }
+                        .let { startInstance ->
+                            if (startInstance != null) {
+                                CurlyText(
+                                    modifier = Modifier.clickable {
+                                        showStartDatePicker = true
+                                    },
+                                    text = startInstance.toLocalDateTime(TimeZone.currentSystemDefault())
+                                        .toJavaLocalDateTime().format(formatter),
+                                    bold = true
+                                )
+                            }
+                            CurlyText(
+                                modifier = Modifier.clickable {
+                                    if (startInstance == null)
+                                        showStartDatePicker = true
+                                    else
+                                        viewModel.updateStartDate(0)
+                                },
+                                text = if (startInstance == null)
+                                    stringResource(Res.string.add_start)
+                                else
+                                    stringResource(Res.string.delete),
+                                bold = true
+                            )
+                        }
                 }
 
                 Row(
@@ -352,41 +373,51 @@ fun ItemDetailsView(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     CurlyText(text = stringResource(Res.string.end_date))
-                    (state.endOverride ?: state.end)?.let {
-                        CurlyText(
-                            modifier = Modifier.clickable {
-                                showStartDatePicker = true
-                            },
-                            text = it.toLocalDateTime(TimeZone.currentSystemDefault())
-                                .toJavaLocalDateTime().format(formatter),
-                            bold = true
-                        )
-                    }
-                    CurlyText(
-                        modifier = Modifier.clickable {
-                            if ((state.endOverride ?: state.end) == null)
-                                showEndDatePicker = true
-                            else
-                                viewModel.updateEndDate(null)
-                        },
-                        text = if ((state.endOverride ?: state.end) == null)
-                            stringResource(Res.string.add_end)
-                        else
-                            stringResource(Res.string.delete),
-                        bold = true
-                    )
+                    (state.endOverride ?: state.end)?.takeIf { it.epochSeconds > 0 }
+                        .let { endInstance ->
+                            if (endInstance != null) {
+                                CurlyText(
+                                    modifier = Modifier.clickable {
+                                        showStartDatePicker = true
+                                    },
+                                    text = endInstance.toLocalDateTime(TimeZone.currentSystemDefault())
+                                        .toJavaLocalDateTime().format(formatter),
+                                    bold = true
+                                )
+                            }
+                            CurlyText(
+                                modifier = Modifier.clickable {
+                                    if (endInstance == null)
+                                        showEndDatePicker = true
+                                    else
+                                        viewModel.updateEndDate(0)
+                                },
+                                text = if (endInstance == null)
+                                    stringResource(Res.string.add_end)
+                                else
+                                    stringResource(Res.string.delete),
+                                bold = true
+                            )
+                        }
                 }
 
                 CurlyButton(
                     text = stringResource(Res.string.save),
                     loading = state.saving,
                 ) {
-                    viewModel.onSave()
+                    viewModel.save()
                 }
             }
         }
         BoxFooter(modifier = Modifier.align(Alignment.End)) {
-            CurlyText(text = stringResource(Res.string.delete), bold = true)
+            if (state.editable && state.itemId != null) {
+                CurlyText(
+                    modifier = Modifier.clickable {
+                        showDeleteAlert = true
+                    },
+                    text = stringResource(Res.string.delete), bold = true
+                )
+            }
         }
     }
 }

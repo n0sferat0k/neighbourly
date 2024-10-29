@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.c_business.usecase.content.ItemManagementUseCase
+import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.data.ItemType
 import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.SessionStore
+import com.neighbourly.app.loadContentsFromFile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,12 +48,16 @@ class ItemDetailsViewModel(
             viewModelScope.launch {
                 database.getItem(itemId = itemId).let { item ->
                     _state.update {
-                        it.copy(type = item.type.name,
+                        it.copy(
+                            neighbourhoodId = item.neighbourhoodId,
+                            type = item.type.name,
                             name = item.name.orEmpty(),
                             description = item.description.orEmpty(),
                             url = item.url.orEmpty(),
-                            start = item.startTs?.let { Instant.fromEpochSeconds(it.toLong()) },
-                            end = item.endTs?.let { Instant.fromEpochSeconds(it.toLong()) },
+                            start = item.startTs.takeIf { it != null && it > 0 }
+                                ?.let { Instant.fromEpochSeconds(it.toLong()) },
+                            end = item.endTs.takeIf { it != null && it > 0 }
+                                ?.let { Instant.fromEpochSeconds(it.toLong()) },
                             images = item.images,
                             targetUserId = item.targetUserId,
                             files = item.files.map {
@@ -67,6 +73,7 @@ class ItemDetailsViewModel(
         } else {
             _state.update {
                 it.copy(
+                    neighbourhoodId = store.user?.neighbourhoods?.firstOrNull()?.neighbourhoodid,
                     itemId = null,
                     editable = true,
                     type = ItemType.DONATION.name,
@@ -98,8 +105,48 @@ class ItemDetailsViewModel(
 
     }
 
-    fun onSave() {
+    fun deleteItem() {
+        viewModelScope.launch {
+            _state.value.itemId?.let { itemManagementUseCase.delete(it) }
+        }
+    }
 
+
+    fun save() {
+        viewModelScope.launch {
+            if (!_state.value.nameError) {
+                _state.update { it.copy(saving = true) }
+                _state.value.let {
+                    itemManagementUseCase.addOrUpdate(
+                        Item(
+                            id = it.itemId,
+                            type = ItemType.getByName(it.typeOverride ?: it.type),
+                            name = it.nameOverride ?: it.name,
+                            description = it.descriptionOverride ?: it.description,
+                            url = it.urlOverride ?: it.url,
+                            targetUserId = it.targetUserIdOverride ?: it.targetUserId,
+                            startTs = (it.startOverride ?: it.start)?.epochSeconds?.toInt(),
+                            endTs = (it.endOverride ?: it.end)?.epochSeconds?.toInt(),
+                            neighbourhoodId = it.neighbourhoodId,
+                        )
+                    )?.let { newItemId ->
+                        it.newImages.forEach { newImage ->
+                            loadContentsFromFile(newImage.name)?.let { fileContent ->
+                                itemManagementUseCase.addImage(newItemId, fileContent)
+                            }
+                        }
+                        it.newFiles.keys.forEach { newFile ->
+                            loadContentsFromFile(newFile)?.let { fileContent ->
+                                itemManagementUseCase.addFile(newItemId, fileContent)
+                            }
+                        }
+
+                        setItem(newItemId)
+                    }
+                }
+                _state.update { it.copy(saving = true) }
+            }
+        }
     }
 
     fun setType(type: String) {
@@ -124,21 +171,22 @@ class ItemDetailsViewModel(
         _state.update { it.copy(targetUserIdOverride = targetUserId) }
     }
 
-    fun updateStartDate(startTs: Int?) {
+    fun updateStartDate(startTs: Int) {
         _state.update {
-            it.copy(startOverride = startTs?.let { Instant.fromEpochSeconds(it.toLong()) })
+            it.copy(startOverride = startTs.let { Instant.fromEpochSeconds(it.toLong()) })
         }
     }
 
-    fun updateEndDate(endTs: Int?) {
+    fun updateEndDate(endTs: Int) {
         _state.update {
-            it.copy(endOverride = endTs?.let { Instant.fromEpochSeconds(it.toLong()) })
+            it.copy(endOverride = endTs.let { Instant.fromEpochSeconds(it.toLong()) })
         }
     }
 
     data class ItemDetailsViewState(
         val saving: Boolean = false,
         val itemId: Int? = null,
+        val neighbourhoodId: Int? = null,
         val editable: Boolean = false,
 
         val images: Map<Int, String> = emptyMap(),

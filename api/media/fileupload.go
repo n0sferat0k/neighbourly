@@ -13,7 +13,7 @@ import (
 const TARGET_PROFILE = "profile"
 const TARGET_HOUSEHOLD = "household"
 
-func UploadImage(w http.ResponseWriter, r *http.Request) {
+func UploadFile(w http.ResponseWriter, r *http.Request) {
 	var userId string
 	var token string
 

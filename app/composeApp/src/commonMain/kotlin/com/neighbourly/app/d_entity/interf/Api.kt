@@ -2,6 +2,7 @@ package com.neighbourly.app.d_entity.interf
 
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.GpsItem
+import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.data.SyncData
 import com.neighbourly.app.d_entity.data.User
 
@@ -22,6 +23,18 @@ interface Api {
     suspend fun updateProfileImage(
         token: String,
         profileImageFileContents: FileContents,
+    ): String
+
+    suspend fun uploadItemImage(
+        token: String,
+        itemId: Int,
+        imageFileContents: FileContents,
+    ): String
+
+    suspend fun uploadItemFile(
+        token: String,
+        itemId: Int,
+        imageFileContents: FileContents,
     ): String
 
     suspend fun updateHouseholdImage(
@@ -107,4 +120,6 @@ interface Api {
     suspend fun synchronizeContent(token: String, lastSyncTs: Int?): SyncData
 
     suspend fun deleteItem(token: String, itemId: Int)
+
+    suspend fun addOrUpdateItem(token: String, item: Item): Item
 }

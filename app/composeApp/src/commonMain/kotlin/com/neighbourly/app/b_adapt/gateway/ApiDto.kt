@@ -116,7 +116,7 @@ data class NeighbourhoodDTO(
 
 @Serializable
 data class ItemDTO(
-    val id: Int,
+    val id: Int? = null,
     val type: String,
     val name: String? = null,
     val description: String? = null,
@@ -126,7 +126,7 @@ data class ItemDTO(
     val files: Map<Int, String> = emptyMap(),
     val startTs: Int? = null,
     val endTs: Int? = null,
-    val lastModifiedTs: Int,
+    val lastModifiedTs: Int? = null,
     val neighbourhoodId: Int? = null,
     val householdId: Int? = null,
     val userId: Int? = null,

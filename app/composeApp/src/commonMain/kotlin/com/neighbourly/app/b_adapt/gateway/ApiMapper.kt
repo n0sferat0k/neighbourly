@@ -78,6 +78,24 @@ fun ItemDTO.toItem(): Item =
         userId = userId,
     )
 
+fun Item.toItemDTO(): ItemDTO =
+    ItemDTO(
+        id = id,
+        type = type.name,
+        name = name,
+        description = description,
+        url = url,
+        targetUserId = targetUserId,
+        images = images.map { (key, value) -> key to value.prependResourceUrlBase() }.toMap(),
+        files = files.map { (key, value) -> key to value.prependResourceUrlBase() }.toMap(),
+        startTs = startTs,
+        endTs = endTs,
+        lastModifiedTs = lastModifiedTs,
+        neighbourhoodId = neighbourhoodId,
+        householdId = householdId,
+        userId = userId,
+    )
+
 fun String.prependResourceUrlBase() =
     this.takeIf { it.isNotBlank() }?.let { CONTENT_BASE_URL + it } ?: this
 

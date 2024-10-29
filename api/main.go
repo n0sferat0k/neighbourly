@@ -37,7 +37,8 @@ func main() {
 	r.HandleFunc("/profile/addToNeighbourhood", membership.AddToNeighbourhood).Methods("POST")
 	r.HandleFunc("/profile/updateNeighbourhood", neighbourhood.UpdateNeighbourhood).Methods("POST")
 	r.HandleFunc("/profile/leaveNeighbourhood", neighbourhood.LeaveNeighbourhood).Methods("POST")
-	r.HandleFunc("/profile/upload", media.UploadImage).Methods("POST")
+	r.HandleFunc("/files/upload", media.UploadFile).Methods("POST")
+	r.HandleFunc("/files/delete", media.DeleteFile).Methods("GET")
 	r.HandleFunc("/gps/log", household.LogGpsLocation).Methods("POST")
 	r.HandleFunc("/gps/heatmap", household.GetGpsHeatmap).Methods("GET")
 	r.HandleFunc("/gps/candidate", household.GetGpsCandidate).Methods("GET")
@@ -46,6 +47,7 @@ func main() {
 	r.HandleFunc("/gps/acceptCandidate", household.AcceptHouseholdLocation).Methods("POST")
 	r.HandleFunc("/content/sync", content.Synchronise).Methods("GET")
 	r.HandleFunc("/content/delItem", content.DeleteItem).Methods("GET")
+	r.HandleFunc("/content/addOrUpdateItem", content.DeleteItem).Methods("POST")
 	fmt.Println("Starting server on :8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

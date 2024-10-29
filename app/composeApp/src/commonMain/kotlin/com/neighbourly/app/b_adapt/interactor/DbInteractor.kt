@@ -38,22 +38,24 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
     override suspend fun storeItems(items: List<Item>) {
         withContext(Dispatchers.IO) {
             items.forEach {
-                db.itemsQueries.addOrUpdateItem(
-                    id = it.id.toLong(),
-                    type = it.type.name,
-                    name = it.name,
-                    description = it.description,
-                    url = it.url,
-                    targetuserid = it.targetUserId?.toLong(),
-                    images = Json.encodeToString(it.images),
-                    files = Json.encodeToString(it.files),
-                    startts = it.startTs?.toLong(),
-                    endts = it.endTs?.toLong(),
-                    lastmodifiedts = it.lastModifiedTs.toLong(),
-                    neighbourhoodid = it.neighbourhoodId?.toLong(),
-                    householdid = it.householdId?.toLong(),
-                    userid = it.userId?.toLong()
-                )
+                it.id?.let { itemId ->
+                    db.itemsQueries.addOrUpdateItem(
+                        id = itemId.toLong(),
+                        type = it.type.name,
+                        name = it.name,
+                        description = it.description,
+                        url = it.url,
+                        targetuserid = it.targetUserId?.toLong(),
+                        images = Json.encodeToString(it.images),
+                        files = Json.encodeToString(it.files),
+                        startts = it.startTs?.toLong(),
+                        endts = it.endTs?.toLong(),
+                        lastmodifiedts = it.lastModifiedTs?.toLong() ?: 0,
+                        neighbourhoodid = it.neighbourhoodId?.toLong(),
+                        householdid = it.householdId?.toLong(),
+                        userid = it.userId?.toLong()
+                    )
+                }
             }
         }
     }

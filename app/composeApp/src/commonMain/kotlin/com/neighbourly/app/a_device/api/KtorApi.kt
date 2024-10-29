@@ -6,6 +6,7 @@ import com.neighbourly.app.b_adapt.gateway.ApiException
 import com.neighbourly.app.b_adapt.gateway.FetchProfileInput
 import com.neighbourly.app.b_adapt.gateway.GpsItemDTO
 import com.neighbourly.app.b_adapt.gateway.GpsLogInput
+import com.neighbourly.app.b_adapt.gateway.ItemDTO
 import com.neighbourly.app.b_adapt.gateway.LoginInput
 import com.neighbourly.app.b_adapt.gateway.NeighbourhoodDTO
 import com.neighbourly.app.b_adapt.gateway.RegisterInput
@@ -39,38 +40,35 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
 class KtorApi {
-    private val client =
-        HttpClient(httpClientEngine) {
-            install(Logging) {
-                logger =
-                    object : Logger {
-                        override fun log(message: String) {
-                            println("HTTP Client " + message)
-                        }
-                    }
-                level = LogLevel.BODY
+    private val client = HttpClient(httpClientEngine) {
+        install(Logging) {
+            logger = object : Logger {
+                override fun log(message: String) {
+                    println("HTTP Client " + message)
+                }
             }
-            install(ContentNegotiation) {
-                json(
-                    Json {
-                        prettyPrint = true
-                        isLenient = true
-                        ignoreUnknownKeys = true
-                    },
-                    contentType = ContentType.Any,
-                )
-            }
+            level = LogLevel.BODY
         }
+        install(ContentNegotiation) {
+            json(
+                Json {
+                    prettyPrint = true
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                },
+                contentType = ContentType.Any,
+            )
+        }
+    }
 
     suspend fun register(
         baseUrl: String,
         registerInput: RegisterInput,
     ): UserDTO {
-        val response: HttpResponse =
-            client.post(baseUrl + "register") {
-                contentType(ContentType.Application.Json)
-                setBody(registerInput)
-            }
+        val response: HttpResponse = client.post(baseUrl + "register") {
+            contentType(ContentType.Application.Json)
+            setBody(registerInput)
+        }
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
@@ -95,11 +93,10 @@ class KtorApi {
         baseUrl: String,
         loginInput: LoginInput,
     ): UserDTO {
-        val response: HttpResponse =
-            client.post(baseUrl + "login") {
-                contentType(ContentType.Application.Json)
-                setBody(loginInput)
-            }
+        val response: HttpResponse = client.post(baseUrl + "login") {
+            contentType(ContentType.Application.Json)
+            setBody(loginInput)
+        }
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
@@ -112,14 +109,13 @@ class KtorApi {
         token: String,
         updateProfileInput: UpdateProfileInput,
     ): UserDTO {
-        val response: HttpResponse =
-            client.post(baseUrl + "profile/update") {
-                contentType(ContentType.Application.Json)
-                setBody(updateProfileInput)
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+        val response: HttpResponse = client.post(baseUrl + "profile/update") {
+            contentType(ContentType.Application.Json)
+            setBody(updateProfileInput)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
@@ -132,14 +128,13 @@ class KtorApi {
         token: String,
         updateHouseholdInput: UpdateHouseholdInput,
     ): UserDTO {
-        val response: HttpResponse =
-            client.post(baseUrl + "profile/updateHousehold") {
-                contentType(ContentType.Application.Json)
-                setBody(updateHouseholdInput)
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+        val response: HttpResponse = client.post(baseUrl + "profile/updateHousehold") {
+            contentType(ContentType.Application.Json)
+            setBody(updateHouseholdInput)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
@@ -151,13 +146,12 @@ class KtorApi {
         baseUrl: String,
         token: String,
     ): UserDTO {
-        val response: HttpResponse =
-            client.post(baseUrl + "profile/leaveHousehold") {
-                contentType(ContentType.Application.Json)
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+        val response: HttpResponse = client.post(baseUrl + "profile/leaveHousehold") {
+            contentType(ContentType.Application.Json)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
@@ -170,14 +164,13 @@ class KtorApi {
         token: String,
         addMemberToHouseholdInput: AddMemberToHouseholdInput,
     ): UserDTO {
-        val response: HttpResponse =
-            client.post(baseUrl + "profile/addToHousehold") {
-                contentType(ContentType.Application.Json)
-                setBody(addMemberToHouseholdInput)
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+        val response: HttpResponse = client.post(baseUrl + "profile/addToHousehold") {
+            contentType(ContentType.Application.Json)
+            setBody(addMemberToHouseholdInput)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
@@ -190,14 +183,13 @@ class KtorApi {
         token: String,
         addMemberToNeighbourhoodInput: AddMemberToNeighbourhoodInput,
     ) {
-        val response: HttpResponse =
-            client.post(baseUrl + "profile/addToNeighbourhood") {
-                contentType(ContentType.Application.Json)
-                setBody(addMemberToNeighbourhoodInput)
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+        val response: HttpResponse = client.post(baseUrl + "profile/addToNeighbourhood") {
+            contentType(ContentType.Application.Json)
+            setBody(addMemberToNeighbourhoodInput)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
         if (response.status.value != 200) {
             throw ApiException(response.bodyAsText())
         }
@@ -208,14 +200,13 @@ class KtorApi {
         token: String,
         updateNeighbourhoodInput: UpdateNeighbourhoodInput,
     ): UserDTO {
-        val response: HttpResponse =
-            client.post(baseUrl + "profile/updateNeighbourhood") {
-                contentType(ContentType.Application.Json)
-                setBody(updateNeighbourhoodInput)
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+        val response: HttpResponse = client.post(baseUrl + "profile/updateNeighbourhood") {
+            contentType(ContentType.Application.Json)
+            setBody(updateNeighbourhoodInput)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
@@ -228,14 +219,13 @@ class KtorApi {
         token: String,
         neighbourhoodId: Int,
     ): UserDTO {
-        val response: HttpResponse =
-            client.post(baseUrl + "profile/leaveNeighbourhood") {
-                contentType(ContentType.Application.Json)
-                setBody(NeighbourhoodDTO(neighbourhoodid = neighbourhoodId))
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+        val response: HttpResponse = client.post(baseUrl + "profile/leaveNeighbourhood") {
+            contentType(ContentType.Application.Json)
+            setBody(NeighbourhoodDTO(neighbourhoodid = neighbourhoodId))
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
@@ -248,12 +238,11 @@ class KtorApi {
         baseUrl: String,
         token: String,
     ): UserDTO {
-        val response: HttpResponse =
-            client.post(baseUrl + "profile/refresh") {
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+        val response: HttpResponse = client.post(baseUrl + "profile/refresh") {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
@@ -266,14 +255,13 @@ class KtorApi {
         token: String,
         fetchProfileInput: FetchProfileInput,
     ): UserDTO {
-        val response: HttpResponse =
-            client.post(baseUrl + "profile/fetch") {
-                contentType(ContentType.Application.Json)
-                setBody(fetchProfileInput)
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+        val response: HttpResponse = client.post(baseUrl + "profile/fetch") {
+            contentType(ContentType.Application.Json)
+            setBody(fetchProfileInput)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
@@ -281,34 +269,33 @@ class KtorApi {
         }
     }
 
-    suspend fun uploadImage(
+    suspend fun uploadFile(
         baseUrl: String,
         token: String,
         target: String,
+        targetId: String = "",
         fileContents: FileContents,
     ): String {
-        val response: HttpResponse =
-            client.submitFormWithBinaryData(
-                url = baseUrl + "profile/upload?target=" + target,
-                formData =
-                    formData {
+        val response: HttpResponse = client.submitFormWithBinaryData(
+            url = baseUrl + "files/upload?target=" + target + "&targetId=" + targetId,
+            formData = formData {
+                append(
+                    "image",
+                    fileContents.content,
+                    Headers.build {
+                        append(HttpHeaders.ContentType, fileContents.type)
                         append(
-                            "image",
-                            fileContents.content,
-                            Headers.build {
-                                append(HttpHeaders.ContentType, fileContents.type)
-                                append(
-                                    HttpHeaders.ContentDisposition,
-                                    "filename=\"${fileContents.name}\"",
-                                )
-                            },
+                            HttpHeaders.ContentDisposition,
+                            "filename=\"${fileContents.name}\"",
                         )
                     },
-            ) {
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+                )
+            },
+        ) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
 
         if (response.status.value == 201) {
             return response.bodyAsText()
@@ -322,14 +309,13 @@ class KtorApi {
         token: String,
         gpsLogInput: GpsLogInput,
     ) {
-        val response =
-            client.post(baseUrl + "gps/log") {
-                contentType(ContentType.Application.Json)
-                setBody(gpsLogInput)
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+        val response = client.post(baseUrl + "gps/log") {
+            contentType(ContentType.Application.Json)
+            setBody(gpsLogInput)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
         if (response.status.value != 200) {
             throw ApiException(response.bodyAsText())
         }
@@ -339,12 +325,11 @@ class KtorApi {
         baseUrl: String,
         token: String,
     ): List<GpsItemDTO>? {
-        val response =
-            client.get(baseUrl + "gps/heatmap?onlyNight=false") {
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+        val response = client.get(baseUrl + "gps/heatmap?onlyNight=false") {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
 
         if (response.status.value == 200) {
             return response.body<List<GpsItemDTO>?>()
@@ -357,12 +342,11 @@ class KtorApi {
         baseUrl: String,
         token: String,
     ): GpsItemDTO {
-        val response =
-            client.get(baseUrl + "gps/candidate") {
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+        val response = client.get(baseUrl + "gps/candidate") {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
         if (response.status.value == 200) {
             return response.body<GpsItemDTO>()
         } else {
@@ -374,12 +358,11 @@ class KtorApi {
         baseUrl: String,
         token: String,
     ): GpsItemDTO {
-        val response =
-            client.post(baseUrl + "gps/acceptCandidate") {
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+        val response = client.post(baseUrl + "gps/acceptCandidate") {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
         if (response.status.value == 200) {
             return response.body<GpsItemDTO>()
         } else {
@@ -391,12 +374,11 @@ class KtorApi {
         baseUrl: String,
         token: String,
     ) {
-        val response =
-            client.get(baseUrl + "gps/clear") {
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+        val response = client.get(baseUrl + "gps/clear") {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
         if (response.status.value != 200) {
             throw ApiException(response.bodyAsText())
         }
@@ -406,12 +388,11 @@ class KtorApi {
         baseUrl: String,
         token: String,
     ) {
-        val response =
-            client.get(baseUrl + "gps/resetHouseholdLocation") {
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+        val response = client.get(baseUrl + "gps/resetHouseholdLocation") {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
         if (response.status.value != 200) {
             throw ApiException(response.bodyAsText())
         }
@@ -421,14 +402,13 @@ class KtorApi {
         baseUrl: String,
         token: String,
         lastSyncTs: Int,
-    ):SyncResponseDTO {
-        val response =
-            client.get(baseUrl + "content/sync") {
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                    append(HttpHeaders.IfModifiedSince, lastSyncTs.toString())
-                }
+    ): SyncResponseDTO {
+        val response = client.get(baseUrl + "content/sync") {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
+                append(HttpHeaders.IfModifiedSince, lastSyncTs.toString())
             }
+        }
         if (response.status.value == 200) {
             return response.body<SyncResponseDTO>()
         } else {
@@ -436,16 +416,32 @@ class KtorApi {
         }
     }
 
-    suspend fun deleteItem( baseUrl: String,
-                            token: String,
-                            itemId: Int) {
-        val response =
-            client.get(baseUrl + "content/delItem?itemId=" + itemId) {
-                headers {
-                    append(HttpHeaders.Authorization, "Bearer " + token)
-                }
+    suspend fun deleteItem(
+        baseUrl: String, token: String, itemId: Int
+    ) {
+        val response = client.get(baseUrl + "content/delItem?itemId=" + itemId) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
             }
+        }
         if (response.status.value != 200) {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun addOrUpdateItem(
+        baseUrl: String, token: String, item: ItemDTO
+    ): ItemDTO {
+        val response = client.get(baseUrl + "content/addOrUpdateItem") {
+            contentType(ContentType.Application.Json)
+            setBody(item)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
+            }
+        }
+        if (response.status.value == 200) {
+            return response.body<ItemDTO>()
+        } else {
             throw ApiException(response.bodyAsText())
         }
     }

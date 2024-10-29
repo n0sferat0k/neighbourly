@@ -3,6 +3,7 @@ package com.neighbourly.app.b_adapt.gateway
 import com.neighbourly.app.a_device.api.KtorApi
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.GpsItem
+import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.data.SyncData
 import com.neighbourly.app.d_entity.data.User
@@ -29,7 +30,46 @@ class ApiGateway(
     ): String =
         runContextCatchTranslateThrow {
             api
-                .uploadImage(API_BASE_URL, token, TARGET_PROFILE, imageFileContents)
+                .uploadFile(
+                    baseUrl = API_BASE_URL,
+                    token = token,
+                    target = TARGET_PROFILE,
+                    fileContents = imageFileContents
+                )
+                .prependResourceUrlBase()
+        }
+
+    override suspend fun uploadItemImage(
+        token: String,
+        itemId: Int,
+        imageFileContents: FileContents
+    ): String =
+        runContextCatchTranslateThrow {
+            api
+                .uploadFile(
+                    baseUrl = API_BASE_URL,
+                    token = token,
+                    target = TARGET_ITEM_IMAGE,
+                    targetId = itemId.toString(),
+                    fileContents = imageFileContents
+                )
+                .prependResourceUrlBase()
+        }
+
+    override suspend fun uploadItemFile(
+        token: String,
+        itemId: Int,
+        imageFileContents: FileContents
+    ): String =
+        runContextCatchTranslateThrow {
+            api
+                .uploadFile(
+                    baseUrl = API_BASE_URL,
+                    token = token,
+                    target = TARGET_ITEM_FILE,
+                    targetId = itemId.toString(),
+                    fileContents = imageFileContents
+                )
                 .prependResourceUrlBase()
         }
 
@@ -39,7 +79,12 @@ class ApiGateway(
     ): String =
         runContextCatchTranslateThrow {
             api
-                .uploadImage(API_BASE_URL, token, TARGET_HOUSEHOLD, imageFileContents)
+                .uploadFile(
+                    baseUrl = API_BASE_URL,
+                    token = token,
+                    target = TARGET_HOUSEHOLD,
+                    fileContents = imageFileContents
+                )
                 .prependResourceUrlBase()
         }
 
@@ -266,15 +311,21 @@ class ApiGateway(
             }
         }
 
-    override suspend fun deleteItem(token: String, itemId: Int) {
+    override suspend fun deleteItem(token: String, itemId: Int) =
         runContextCatchTranslateThrow {
             api.deleteItem(API_BASE_URL, token, itemId)
         }
-    }
+
+    override suspend fun addOrUpdateItem(token: String, item: Item): Item =
+        runContextCatchTranslateThrow {
+            api.addOrUpdateItem(API_BASE_URL, token, item.toItemDTO()).toItem()
+        }
 
     companion object {
         const val API_BASE_URL = "http://neighbourly.go.ro:8080/"
         const val TARGET_PROFILE = "profile"
+        const val TARGET_ITEM_IMAGE = "itemImage"
+        const val TARGET_ITEM_FILE = "itemFile"
         const val TARGET_HOUSEHOLD = "household"
     }
 
