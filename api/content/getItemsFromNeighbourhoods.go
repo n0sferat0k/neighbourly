@@ -22,6 +22,7 @@ func GetItemsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]enti
 		return nil, nil, err
 	}
 	var itemIds []int
+
 	defer itemRows.Close()
 	for itemRows.Next() {
 		var itemId int
@@ -29,8 +30,18 @@ func GetItemsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]enti
 		itemIds = append(itemIds, itemId)
 	}
 
+	items, err := GetItems(itemIds, sinceTs)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return items, itemIds, nil
+}
+
+func GetItems(itemIds []int, sinceTs string) ([]entity.Item, error) {
+
 	//get all the items from the neighbourhoods
-	sql = `SELECT 
+	sql := `SELECT 
 						I.items_id, 
 						I.items_add_strings_0 AS type,
 						I.items_titlu_EN,
@@ -50,15 +61,15 @@ func GetItemsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]enti
 					ON 
 						NHU.neighbourhood_household_users_id = I.items_add_numerics_0
 					WHERE 
-						NHU.neighbourhood_household_users_add_numerics_0 IN (?)`
+						I.items_id IN (?)`
 
 	// If we have a valid sinceTs, we only get the items that have been modified since then
 	if sinceTs != "" {
 		sql += " AND I.items_data > " + sinceTs
 	}
-	itemRows, err = utility.DB.Query(sql, neighbourhoodids)
+	itemRows, err := utility.DB.Query(sql, utility.IntArrayToCommaSeparatedString(itemIds))
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	var items []entity.Item
@@ -81,7 +92,7 @@ func GetItemsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]enti
 
 		imagesRows, err := utility.DB.Query("SELECT items_IMGS_id, items_IMGS_pic FROM items_imgs WHERE items_id = ?", item.Itemid)
 		if err != nil {
-			return nil, nil, err
+			return nil, err
 		}
 		defer imagesRows.Close()
 		item.Images = make(map[int64]string)
@@ -94,7 +105,7 @@ func GetItemsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]enti
 
 		filesRows, err := utility.DB.Query("SELECT items_FILES_id, items_FILES_file FROM items_files WHERE items_id = ?", item.Itemid)
 		if err != nil {
-			return nil, nil, err
+			return nil, err
 		}
 		defer filesRows.Close()
 		item.Files = make(map[int64]string)
@@ -108,5 +119,5 @@ func GetItemsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]enti
 		items = append(items, item)
 	}
 
-	return items, itemIds, nil
+	return items, nil
 }

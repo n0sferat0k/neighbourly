@@ -47,7 +47,7 @@ func main() {
 	r.HandleFunc("/gps/acceptCandidate", household.AcceptHouseholdLocation).Methods("POST")
 	r.HandleFunc("/content/sync", content.Synchronise).Methods("GET")
 	r.HandleFunc("/content/delItem", content.DeleteItem).Methods("GET")
-	r.HandleFunc("/content/addOrUpdateItem", content.DeleteItem).Methods("POST")
+	r.HandleFunc("/content/addOrUpdateItem", content.AddOrUpdateItem).Methods("POST")
 	fmt.Println("Starting server on :8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

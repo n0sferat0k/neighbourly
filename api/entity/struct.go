@@ -55,7 +55,7 @@ type AddToNeighbourhoodRequest struct {
 }
 
 type Item struct {
-	Itemid          *int64           `json:"id"`
+	Itemid          *int64           `json:"id,omitempty"`
 	Type            *string          `json:"type,omitempty"`
 	Name            *string          `json:"name,omitempty"`
 	Description     *string          `json:"description,omitempty"`
