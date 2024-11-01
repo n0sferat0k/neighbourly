@@ -32,13 +32,13 @@ func GenerageRandomToken(length int64) (string, error) {
 }
 
 // IntArrayToCommaSeparatedString converts an array of integers to a comma-separated string
-func IntArrayToCommaSeparatedString(intArray []int) string {
+func IntArrayToCommaSeparatedString(intArray []int64) string {
 	// Create a slice to hold the string representations of the integers
 	strArray := make([]string, len(intArray))
 
 	// Convert each integer to a string
 	for i, num := range intArray {
-		strArray[i] = strconv.Itoa(num)
+		strArray[i] = strconv.FormatInt(num, 10)
 	}
 
 	// Join the string representations with a comma

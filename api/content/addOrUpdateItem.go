@@ -4,6 +4,7 @@ import (
 	"api/entity"
 	"api/utility"
 	"context"
+	"encoding/json"
 	"net/http"
 )
 
@@ -40,7 +41,7 @@ func AddOrUpdateItem(w http.ResponseWriter, r *http.Request) {
 	var itemId int64
 
 	if item.Itemid == nil {
-		insertResult, err = utility.DB.Exec(`INSERT INTO 
+		insertResult, err := utility.DB.Exec(`INSERT INTO 
 									items 
 									(
 										items_text_EN,
@@ -54,12 +55,12 @@ func AddOrUpdateItem(w http.ResponseWriter, r *http.Request) {
 										items_link,
 									) 
 									VALUES (?, ?, UNIX_TIMESTAMP(), ?, ?, ?, ?, ?, ?)`,
-										item.Name, item.Description, nhuId, item.TargetUserid, item.StartTs, item.EndTs, item.Type, item.Url)
+			item.Name, item.Description, nhuId, item.TargetUserid, item.StartTs, item.EndTs, item.Type, item.Url)
 		if err != nil {
 			http.Error(w, "Failed to get insert item "+err.Error(), http.StatusInternalServerError)
 			return
 		}
-		itemId, err := insertResult.LastInsertId()
+		itemId, err = insertResult.LastInsertId()
 		if err != nil {
 			http.Error(w, "Failed to get inserted item "+err.Error(), http.StatusInternalServerError)
 			return
@@ -80,21 +81,21 @@ func AddOrUpdateItem(w http.ResponseWriter, r *http.Request) {
 							items_id = ? 
 						AND 
 							items_add_numerics_0 = ?`,
-			item.Name, item.Description, item.TargetUserid, item.StartTs, item.EndTs, item.Type, item.Url, item.Itemid, nhuId
-		)
+			item.Name, item.Description, item.TargetUserid, item.StartTs, item.EndTs, item.Type, item.Url, item.Itemid, nhuId)
+
 		if err != nil {
 			http.Error(w, "Failed to get update item "+err.Error(), http.StatusInternalServerError)
 			return
 		}
-		itemId = item.Itemid
+		itemId = *item.Itemid
 	}
-		
-	upToDateItem, err = GetItems([]int{itemId}, "")[0]
+
+	upToDateItem, err := GetItems([]int64{itemId}, "")
 	if err != nil {
 		http.Error(w, "Failed to get up to date item "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(upToDateItem)
 }

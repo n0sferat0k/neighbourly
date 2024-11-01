@@ -73,9 +73,9 @@ type Item struct {
 
 type SyncResponse struct {
 	Items        []Item      `json:"items,omitempty"`
-	Itemids      []int       `json:"itemIds,omitempty"`
+	Itemids      []int64     `json:"itemIds,omitempty"`
 	Users        []User      `json:"users,omitempty"`
-	Userids      []int       `json:"userIds,omitempty"`
+	Userids      []int64     `json:"userIds,omitempty"`
 	Households   []Household `json:"households,omitempty"`
-	Householdids []int       `json:"householdIds,omitempty"`
+	Householdids []int64     `json:"householdIds,omitempty"`
 }

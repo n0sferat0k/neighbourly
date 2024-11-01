@@ -5,7 +5,7 @@ import (
 	"api/utility"
 )
 
-func GetUsrersFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]entity.User, []int, error) {
+func GetUsrersFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]entity.User, []int64, error) {
 	//get all the user ids that still exist from the neighbourhoods
 	sql := `SELECT 
 				U.users_id
@@ -25,10 +25,10 @@ func GetUsrersFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]ent
 	if err != nil {
 		return nil, nil, err
 	}
-	var userIds []int
+	var userIds []int64
 	defer userRows.Close()
 	for userRows.Next() {
-		var userId int
+		var userId int64
 		userRows.Scan(&userId)
 		userIds = append(userIds, userId)
 	}

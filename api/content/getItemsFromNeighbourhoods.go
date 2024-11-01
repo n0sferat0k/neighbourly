@@ -5,7 +5,7 @@ import (
 	"api/utility"
 )
 
-func GetItemsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]entity.Item, []int, error) {
+func GetItemsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]entity.Item, []int64, error) {
 	//get all the item ids that still exist from the neighbourhoods
 	sql := `SELECT 
 				I.items_id 
@@ -21,11 +21,11 @@ func GetItemsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]enti
 	if err != nil {
 		return nil, nil, err
 	}
-	var itemIds []int
+	var itemIds []int64
 
 	defer itemRows.Close()
 	for itemRows.Next() {
-		var itemId int
+		var itemId int64
 		itemRows.Scan(&itemId)
 		itemIds = append(itemIds, itemId)
 	}
@@ -38,7 +38,7 @@ func GetItemsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]enti
 	return items, itemIds, nil
 }
 
-func GetItems(itemIds []int, sinceTs string) ([]entity.Item, error) {
+func GetItems(itemIds []int64, sinceTs string) ([]entity.Item, error) {
 
 	//get all the items from the neighbourhoods
 	sql := `SELECT 
