@@ -13,6 +13,9 @@ import (
 const TARGET_PROFILE = "profile"
 const TARGET_HOUSEHOLD = "household"
 
+const TARGET_ITEM_FILE = "itemFile"
+const TARGET_ITEM_IMAGE = "itemImage"
+
 func UploadFile(w http.ResponseWriter, r *http.Request) {
 	var userId string
 	var token string
@@ -42,6 +45,40 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 		targetFilePrefix = "household_" + householdId
 		utility.DB.QueryRow("SELECT households_pic FROM households WHERE households_id = ?", householdId).Scan(&oldUserImg)
 		updateQuery = "UPDATE households SET households_data = UNIX_TIMESTAMP(), households_pic = ? WHERE households_id = " + householdId
+	} else if target == TARGET_ITEM_IMAGE {
+		var itemId string
+		err := utility.DB.QueryRow(`SELECT 
+								items_id 
+							FROM items I
+							LEFT JOIN neighbourhood_household_users NHU
+								ON I.add_numerics_0 = NHU.neighbourhood_household_users_id
+							WHERE 
+								NHU.neighbourhood_household_users_add_numerics_2 = ?
+							LIMIT 1`, userId).Scan(&itemId)
+		if err != nil {
+			http.Error(w, "No access to modify this item", http.StatusBadRequest)
+			return
+		}
+		targetFolder = "itemsIMGS"
+		targetFilePrefix = "item_image_" + itemId
+		updateQuery = "INSERT INTO items_imgs (items_IMGS_pic, items_id) VALUES (?," + itemId + ")"
+	} else if target == TARGET_ITEM_FILE {
+		var itemId string
+		err := utility.DB.QueryRow(`SELECT 
+								items_id 
+							FROM items I
+							LEFT JOIN neighbourhood_household_users NHU
+								ON I.add_numerics_0 = NHU.neighbourhood_household_users_id
+							WHERE 
+								NHU.neighbourhood_household_users_add_numerics_2 = ?
+							LIMIT 1`, userId).Scan(&itemId)
+		if err != nil {
+			http.Error(w, "No access to modify this item", http.StatusBadRequest)
+			return
+		}
+		targetFolder = "itemsFILES"
+		targetFilePrefix = "item_file_" + itemId
+		updateQuery = "INSERT INTO items_files (items_FILES_file, items_id) VALUES (?," + itemId + ")"
 	}
 
 	// Parse the multipart form data
@@ -101,7 +138,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if _, err = utility.DB.Exec(updateQuery, dbFilePath); err != nil {
-			http.Error(w, "Failed to update target with image", http.StatusInternalServerError)
+			http.Error(w, "Failed to add file ref to DB"+err.Error(), http.StatusInternalServerError)
 			return
 		}
 
