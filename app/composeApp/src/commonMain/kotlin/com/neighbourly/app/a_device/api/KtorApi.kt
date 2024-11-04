@@ -304,6 +304,22 @@ class KtorApi {
         }
     }
 
+    suspend fun deleteFile(
+        baseUrl: String,
+        token: String,
+        target: String,
+        targetId: String = "",
+    ) {
+        val response = client.get(baseUrl + "files/delete?target=" + target + "&targetId=" + targetId) {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
+            }
+        }
+        if (response.status.value != 200) {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
     suspend fun gpsLog(
         baseUrl: String,
         token: String,
@@ -432,7 +448,7 @@ class KtorApi {
     suspend fun addOrUpdateItem(
         baseUrl: String, token: String, item: ItemDTO
     ): ItemDTO {
-        val response = client.get(baseUrl + "content/addOrUpdateItem") {
+        val response = client.post(baseUrl + "content/addOrUpdateItem") {
             contentType(ContentType.Application.Json)
             setBody(item)
             headers {

@@ -73,6 +73,32 @@ class ApiGateway(
                 .prependResourceUrlBase()
         }
 
+    override suspend fun deleteItemImage(
+        token: String,
+        itemImageId: Int
+    ) =
+        runContextCatchTranslateThrow {
+            api.deleteFile(
+                baseUrl = API_BASE_URL,
+                token = token,
+                target = TARGET_ITEM_IMAGE,
+                targetId = itemImageId.toString()
+            )
+        }
+
+    override suspend fun deleteItemFile(
+        token: String,
+        itemFileId: Int
+    ) =
+        runContextCatchTranslateThrow {
+            api.deleteFile(
+                baseUrl = API_BASE_URL,
+                token = token,
+                target = TARGET_ITEM_IMAGE,
+                targetId = itemFileId.toString()
+            )
+        }
+
     override suspend fun updateHouseholdImage(
         token: String,
         imageFileContents: FileContents,

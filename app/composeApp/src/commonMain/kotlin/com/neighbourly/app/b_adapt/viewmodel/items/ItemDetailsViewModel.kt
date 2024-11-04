@@ -125,8 +125,8 @@ class ItemDetailsViewModel(
                             description = it.descriptionOverride ?: it.description,
                             url = it.urlOverride ?: it.url,
                             targetUserId = it.targetUserIdOverride ?: it.targetUserId,
-                            startTs = (it.startOverride ?: it.start)?.epochSeconds?.toInt(),
-                            endTs = (it.endOverride ?: it.end)?.epochSeconds?.toInt(),
+                            startTs = (it.startOverride ?: it.start)?.epochSeconds?.toInt() ?: 0,
+                            endTs = (it.endOverride ?: it.end)?.epochSeconds?.toInt() ?: 0,
                             neighbourhoodId = it.neighbourhoodId,
                         )
                     )?.let { newItemId ->
@@ -144,7 +144,7 @@ class ItemDetailsViewModel(
                         setItem(newItemId)
                     }
                 }
-                _state.update { it.copy(saving = true) }
+                _state.update { it.copy(saving = false) }
             }
         }
     }

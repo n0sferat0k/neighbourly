@@ -10,12 +10,6 @@ import (
 	"path/filepath"
 )
 
-const TARGET_PROFILE = "profile"
-const TARGET_HOUSEHOLD = "household"
-
-const TARGET_ITEM_FILE = "itemFile"
-const TARGET_ITEM_IMAGE = "itemImage"
-
 func UploadFile(w http.ResponseWriter, r *http.Request) {
 	var userId string
 	var token string
@@ -32,53 +26,58 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	var targetFilePrefix string
 	var oldUserImg string
 	var updateQuery string
+	var auxQuery string = ""
 
-	if target == TARGET_PROFILE {
+	if target == utility.TARGET_PROFILE {
 		targetFolder = "usersIMGS"
 		targetFilePrefix = "profile_" + userId
 		utility.DB.QueryRow("SELECT users_pic FROM users WHERE users_id = ?", userId).Scan(&oldUserImg)
 		updateQuery = "UPDATE users SET users_data = UNIX_TIMESTAMP(), users_pic = ? WHERE users_id = " + userId
-	} else if target == TARGET_HOUSEHOLD {
+	} else if target == utility.TARGET_HOUSEHOLD {
 		var householdId string
 		utility.DB.QueryRow("SELECT users_add_numerics_0 FROM users WHERE users_id = ?", userId).Scan(&householdId)
 		targetFolder = "householdsIMGS"
 		targetFilePrefix = "household_" + householdId
 		utility.DB.QueryRow("SELECT households_pic FROM households WHERE households_id = ?", householdId).Scan(&oldUserImg)
 		updateQuery = "UPDATE households SET households_data = UNIX_TIMESTAMP(), households_pic = ? WHERE households_id = " + householdId
-	} else if target == TARGET_ITEM_IMAGE {
+	} else if target == utility.TARGET_ITEM_IMAGE {
 		var itemId string
 		err := utility.DB.QueryRow(`SELECT 
 								items_id 
 							FROM items I
 							LEFT JOIN neighbourhood_household_users NHU
-								ON I.add_numerics_0 = NHU.neighbourhood_household_users_id
+								ON I.items_add_numerics_0 = NHU.neighbourhood_household_users_id
 							WHERE 
 								NHU.neighbourhood_household_users_add_numerics_2 = ?
 							LIMIT 1`, userId).Scan(&itemId)
 		if err != nil {
-			http.Error(w, "No access to modify this item", http.StatusBadRequest)
+			http.Error(w, "No access to modify this item "+err.Error(), http.StatusBadRequest)
 			return
 		}
 		targetFolder = "itemsIMGS"
 		targetFilePrefix = "item_image_" + itemId
+
 		updateQuery = "INSERT INTO items_imgs (items_IMGS_pic, items_id) VALUES (?," + itemId + ")"
-	} else if target == TARGET_ITEM_FILE {
+		auxQuery = "UPDATE items SET items_data = UNIX_TIMESTAMP() WHERE items_id = " + itemId
+	} else if target == utility.TARGET_ITEM_FILE {
 		var itemId string
 		err := utility.DB.QueryRow(`SELECT 
 								items_id 
 							FROM items I
 							LEFT JOIN neighbourhood_household_users NHU
-								ON I.add_numerics_0 = NHU.neighbourhood_household_users_id
+								ON I.items_add_numerics_0 = NHU.neighbourhood_household_users_id
 							WHERE 
 								NHU.neighbourhood_household_users_add_numerics_2 = ?
 							LIMIT 1`, userId).Scan(&itemId)
 		if err != nil {
-			http.Error(w, "No access to modify this item", http.StatusBadRequest)
+			http.Error(w, "No access to modify this item "+err.Error(), http.StatusBadRequest)
 			return
 		}
 		targetFolder = "itemsFILES"
 		targetFilePrefix = "item_file_" + itemId
+
 		updateQuery = "INSERT INTO items_files (items_FILES_file, items_id) VALUES (?," + itemId + ")"
+		auxQuery = "UPDATE items SET items_data = UNIX_TIMESTAMP() WHERE items_id = " + itemId
 	}
 
 	// Parse the multipart form data
@@ -138,8 +137,15 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if _, err = utility.DB.Exec(updateQuery, dbFilePath); err != nil {
-			http.Error(w, "Failed to add file ref to DB"+err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Failed to add file ref to DB "+err.Error(), http.StatusInternalServerError)
 			return
+		}
+
+		if auxQuery != "" {
+			if _, err = utility.DB.Exec(auxQuery); err != nil {
+				http.Error(w, "Failed to run DB query "+err.Error(), http.StatusInternalServerError)
+				return
+			}
 		}
 
 		fmt.Println("File uploaded successfully:", handler.Filename)
