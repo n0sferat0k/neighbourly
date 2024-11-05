@@ -3,11 +3,17 @@ package media
 import (
 	"api/utility"
 	"context"
+	"encoding/json"
 	"fmt"
+	"image"
+	"image/jpeg"
+	"image/png"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/nfnt/resize"
 )
 
 func UploadFile(w http.ResponseWriter, r *http.Request) {
@@ -22,10 +28,14 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	target := r.URL.Query().Get("target")
+	targetId := r.URL.Query().Get("targetId")
+
 	var targetFolder string
 	var targetFilePrefix string
 	var oldUserImg string
-	var updateQuery string
+	var updateQuery string = ""
+	var insertQuery string = ""
+	var auxQueryWithId string = ""
 	var auxQuery string = ""
 
 	if target == utility.TARGET_PROFILE {
@@ -43,13 +53,16 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	} else if target == utility.TARGET_ITEM_IMAGE {
 		var itemId string
 		err := utility.DB.QueryRow(`SELECT 
-								items_id 
-							FROM items I
-							LEFT JOIN neighbourhood_household_users NHU
-								ON I.items_add_numerics_0 = NHU.neighbourhood_household_users_id
-							WHERE 
-								NHU.neighbourhood_household_users_add_numerics_2 = ?
-							LIMIT 1`, userId).Scan(&itemId)
+										I.items_id 
+									FROM 
+										items I
+									LEFT JOIN neighbourhood_household_users NHU
+										ON I.items_add_numerics_0 = NHU.neighbourhood_household_users_id
+									WHERE 
+										I.items_id = ?
+									AND
+										NHU.neighbourhood_household_users_add_numerics_2 = ?
+									LIMIT 1`, targetId, userId).Scan(&itemId)
 		if err != nil {
 			http.Error(w, "No access to modify this item "+err.Error(), http.StatusBadRequest)
 			return
@@ -57,18 +70,20 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 		targetFolder = "itemsIMGS"
 		targetFilePrefix = "item_image_" + itemId
 
-		updateQuery = "INSERT INTO items_imgs (items_IMGS_pic, items_id) VALUES (?," + itemId + ")"
-		auxQuery = "UPDATE items SET items_data = UNIX_TIMESTAMP() WHERE items_id = " + itemId
+		insertQuery = "INSERT INTO items_imgs (items_IMGS_pic, items_id) VALUES (?," + itemId + ")"
+		auxQueryWithId = "UPDATE items SET items_data = UNIX_TIMESTAMP(), items_pic = ? WHERE items_id = " + itemId
 	} else if target == utility.TARGET_ITEM_FILE {
 		var itemId string
 		err := utility.DB.QueryRow(`SELECT 
-								items_id 
-							FROM items I
-							LEFT JOIN neighbourhood_household_users NHU
-								ON I.items_add_numerics_0 = NHU.neighbourhood_household_users_id
-							WHERE 
-								NHU.neighbourhood_household_users_add_numerics_2 = ?
-							LIMIT 1`, userId).Scan(&itemId)
+										I.items_id 
+									FROM items I
+									LEFT JOIN neighbourhood_household_users NHU
+										ON I.items_add_numerics_0 = NHU.neighbourhood_household_users_id
+									WHERE 
+										I.items_id = ?
+									AND
+										NHU.neighbourhood_household_users_add_numerics_2 = ?
+									LIMIT 1`, targetId, userId).Scan(&itemId)
 		if err != nil {
 			http.Error(w, "No access to modify this item "+err.Error(), http.StatusBadRequest)
 			return
@@ -76,7 +91,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 		targetFolder = "itemsFILES"
 		targetFilePrefix = "item_file_" + itemId
 
-		updateQuery = "INSERT INTO items_files (items_FILES_file, items_id) VALUES (?," + itemId + ")"
+		insertQuery = "INSERT INTO items_files (items_FILES_file, items_id) VALUES (?," + itemId + ")"
 		auxQuery = "UPDATE items SET items_data = UNIX_TIMESTAMP() WHERE items_id = " + itemId
 	}
 
@@ -93,6 +108,13 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer file.Close()
+
+	// Decode the image
+	img, format, err := image.Decode(file)
+	if err != nil {
+		http.Error(w, "Error decoding the image: "+err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	wwwRelativeFolder := targetFolder
 	apiRelativeFolder := "../www/"
@@ -121,36 +143,87 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 		if err := os.Remove(delFile); err != nil {
 			fmt.Println("Failed to delete file:", err)
 		}
+
 		// Create the destination file
-
-		dst, err := os.Create(filepath.Join(saveFolder, destinationFileName))
+		outputPath := filepath.Join(saveFolder, destinationFileName)
+		outputFile, err := os.Create(outputPath)
 		if err != nil {
-			fmt.Println("Failed to create file:", err)
+			http.Error(w, "Error creating the output file: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
-		defer dst.Close()
+		defer outputFile.Close()
 
-		// Copy the uploaded file to the destination file
-		if _, err := io.Copy(dst, file); err != nil {
-			fmt.Println("Failed to save file:", err)
-			return
-		}
-
-		if _, err = utility.DB.Exec(updateQuery, dbFilePath); err != nil {
-			http.Error(w, "Failed to add file ref to DB "+err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		if auxQuery != "" {
-			if _, err = utility.DB.Exec(auxQuery); err != nil {
-				http.Error(w, "Failed to run DB query "+err.Error(), http.StatusInternalServerError)
+		if target == utility.TARGET_ITEM_FILE {
+			// Copy the uploaded file to the destination file
+			if _, err := io.Copy(outputFile, file); err != nil {
+				fmt.Println("Failed to save file:", err)
 				return
 			}
+		} else {
+			// Define the maximum width and height
+
+			// Resize the image
+			resizedImg := resize.Thumbnail(utility.MAX_IMG_SIZE, utility.MAX_IMG_SIZE, img, resize.Lanczos3)
+
+			// Encode and save the resized image
+			switch format {
+			case "jpeg":
+				err = jpeg.Encode(outputFile, resizedImg, nil)
+			case "png":
+				err = png.Encode(outputFile, resizedImg)
+			default:
+				http.Error(w, "Unsupported image format: "+format, http.StatusBadRequest)
+				return
+			}
+
+			if err != nil {
+				http.Error(w, "Error encoding the resized image: "+err.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			// Respond with the path to the resized image
+			w.Write([]byte("Resized image saved to " + outputPath))
 		}
 
 		fmt.Println("File uploaded successfully:", handler.Filename)
 	}()
 
+	var response map[int64]string = make(map[int64]string)
+
+	if updateQuery != "" {
+		if _, err = utility.DB.Exec(updateQuery, dbFilePath); err != nil {
+			http.Error(w, "Failed to add file ref to DB "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		response[-1] = dbFilePath
+	}
+	if insertQuery != "" {
+		if insertResult, err := utility.DB.Exec(insertQuery, dbFilePath); err != nil {
+			http.Error(w, "Failed to add file ref to DB "+err.Error(), http.StatusInternalServerError)
+			return
+		} else {
+			insertedId, err := insertResult.LastInsertId()
+			if err != nil {
+				http.Error(w, "Failed to insert file ref "+err.Error(), http.StatusInternalServerError)
+				return
+			}
+			response[insertedId] = dbFilePath
+			if auxQuery != "" {
+				if _, err = utility.DB.Exec(auxQuery); err != nil {
+					http.Error(w, "Failed to run DB query "+err.Error(), http.StatusInternalServerError)
+					return
+				}
+			}
+			if auxQueryWithId != "" {
+				if _, err = utility.DB.Exec(auxQueryWithId, insertedId); err != nil {
+					http.Error(w, "Failed to run DB query "+err.Error(), http.StatusInternalServerError)
+					return
+				}
+			}
+		}
+	}
+
 	w.WriteHeader(http.StatusCreated)
-	fmt.Fprintln(w, dbFilePath)
+	json.NewEncoder(w).Encode(response)
 }

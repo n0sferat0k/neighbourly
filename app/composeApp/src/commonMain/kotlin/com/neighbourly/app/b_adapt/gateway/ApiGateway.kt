@@ -35,7 +35,7 @@ class ApiGateway(
                     token = token,
                     target = TARGET_PROFILE,
                     fileContents = imageFileContents
-                )
+                ).values.first()
                 .prependResourceUrlBase()
         }
 
@@ -43,7 +43,7 @@ class ApiGateway(
         token: String,
         itemId: Int,
         imageFileContents: FileContents
-    ): String =
+    ): Pair<Int, String> =
         runContextCatchTranslateThrow {
             api
                 .uploadFile(
@@ -52,15 +52,18 @@ class ApiGateway(
                     target = TARGET_ITEM_IMAGE,
                     targetId = itemId.toString(),
                     fileContents = imageFileContents
-                )
-                .prependResourceUrlBase()
+                ).entries.first().let {
+                    Pair(
+                        it.key, it.value.prependResourceUrlBase()
+                    )
+                }
         }
 
     override suspend fun uploadItemFile(
         token: String,
         itemId: Int,
         imageFileContents: FileContents
-    ): String =
+    ): Pair<Int, String> =
         runContextCatchTranslateThrow {
             api
                 .uploadFile(
@@ -69,8 +72,11 @@ class ApiGateway(
                     target = TARGET_ITEM_FILE,
                     targetId = itemId.toString(),
                     fileContents = imageFileContents
-                )
-                .prependResourceUrlBase()
+                ).entries.first().let {
+                    Pair(
+                        it.key, it.value.prependResourceUrlBase()
+                    )
+                }
         }
 
     override suspend fun deleteItemImage(
@@ -110,7 +116,7 @@ class ApiGateway(
                     token = token,
                     target = TARGET_HOUSEHOLD,
                     fileContents = imageFileContents
-                )
+                ).values.first()
                 .prependResourceUrlBase()
         }
 

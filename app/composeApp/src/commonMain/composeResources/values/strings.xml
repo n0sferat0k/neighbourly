@@ -78,8 +78,10 @@
     <string name="end_date">Ends:</string>
 
     <string name="now">Now</string>
-    <string name="in_10_min">In 10 min</string>
-    <string name="in_an_hour">In 1 hour</string>
+    <string name="in_10_minutes">10 m</string>
+    <string name="in_one_hour">1 H</string>
+    <string name="in_two_hours">2 H</string>
+    <string name="in_eight_hours">8 H</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="next_week">Next week</string>
 

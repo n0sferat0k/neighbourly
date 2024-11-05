@@ -8,6 +8,9 @@ import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.c_business.usecase.content.ItemManagementUseCase
 import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.data.ItemType
+import com.neighbourly.app.d_entity.data.ItemType.NEED
+import com.neighbourly.app.d_entity.data.ItemType.REQUEST
+import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.SessionStore
 import com.neighbourly.app.loadContentsFromFile
@@ -42,7 +45,14 @@ class ItemDetailsViewModel(
     }
 
     fun setItem(itemId: Int?) {
-
+        _state.update {
+            it.copy(
+                newImages = emptyList(),
+                newFiles = emptyMap(),
+                saving = false,
+                error = ""
+            )
+        }
         if (itemId != null) {
             _state.update { it.copy(itemId = itemId) }
             viewModelScope.launch {
@@ -102,55 +112,110 @@ class ItemDetailsViewModel(
     fun updateUrl(url: String) = _state.update { it.copy(urlOverride = url) }
 
     fun deleteImage(imageId: Int) {
+        viewModelScope.launch {
+            try {
+                _state.update { it.copy(error = "", saving = true) }
+                itemManagementUseCase.delImage(_state.value.itemId, imageId)
+                _state.update {
+                    it.copy(
+                        error = "",
+                        saving = false,
+                        images = it.images.filter { it.key != imageId }.toMap()
+                    )
+                }
+            } catch (e: OpException) {
+                _state.update { it.copy(error = e.msg, saving = false) }
+            }
+        }
+    }
 
+    fun deleteFile(fileId: Int) {
+        viewModelScope.launch {
+            try {
+                _state.update { it.copy(error = "", saving = true) }
+                itemManagementUseCase.delFile(_state.value.itemId, fileId)
+                _state.update {
+                    it.copy(
+                        error = "",
+                        saving = true,
+                        files = it.files.filter { it.id != fileId }
+                    )
+                }
+            } catch (e: OpException) {
+                _state.update { it.copy(error = e.msg, saving = false) }
+            }
+        }
     }
 
     fun deleteItem() {
         viewModelScope.launch {
-            _state.value.itemId?.let { itemManagementUseCase.delete(it) }
+            try {
+                _state.update { it.copy(error = "", saving = true) }
+                _state.value.itemId?.let { itemManagementUseCase.delete(it) }
+                _state.update { it.copy(error = "", saving = true) }
+            } catch (e: OpException) {
+                _state.update { it.copy(error = e.msg, saving = false) }
+            }
         }
     }
-
 
     fun save() {
         viewModelScope.launch {
             if (!_state.value.nameError) {
-                _state.update { it.copy(saving = true) }
                 _state.value.let {
-                    itemManagementUseCase.addOrUpdate(
-                        Item(
-                            id = it.itemId,
-                            type = ItemType.getByName(it.typeOverride ?: it.type),
-                            name = it.nameOverride ?: it.name,
-                            description = it.descriptionOverride ?: it.description,
-                            url = it.urlOverride ?: it.url,
-                            targetUserId = it.targetUserIdOverride ?: it.targetUserId,
-                            startTs = (it.startOverride ?: it.start)?.epochSeconds?.toInt() ?: 0,
-                            endTs = (it.endOverride ?: it.end)?.epochSeconds?.toInt() ?: 0,
-                            neighbourhoodId = it.neighbourhoodId,
-                        )
-                    )?.let { newItemId ->
-                        it.newImages.forEach { newImage ->
-                            loadContentsFromFile(newImage.name)?.let { fileContent ->
-                                itemManagementUseCase.addImage(newItemId, fileContent)
+                    try {
+                        _state.update { it.copy(saving = true) }
+
+                        itemManagementUseCase.addOrUpdate(
+                            Item(
+                                id = it.itemId,
+                                type = ItemType.getByName(it.typeOverride ?: it.type),
+                                name = it.nameOverride ?: it.name,
+                                description = it.descriptionOverride ?: it.description,
+                                url = it.urlOverride ?: it.url,
+                                targetUserId = it.targetUserIdOverride ?: it.targetUserId ?: -1,
+                                startTs = (it.startOverride ?: it.start)?.epochSeconds?.toInt()
+                                    ?: 0,
+                                endTs = (it.endOverride ?: it.end)?.epochSeconds?.toInt() ?: 0,
+                                neighbourhoodId = it.neighbourhoodId,
+                            )
+                        )?.let { newItemId ->
+                            it.newImages.forEach { newImage ->
+                                loadContentsFromFile(newImage.name)?.let { fileContent ->
+                                    itemManagementUseCase.addImage(newItemId, fileContent)
+                                }
                             }
-                        }
-                        it.newFiles.keys.forEach { newFile ->
-                            loadContentsFromFile(newFile)?.let { fileContent ->
-                                itemManagementUseCase.addFile(newItemId, fileContent)
+                            it.newFiles.keys.forEach { newFile ->
+                                loadContentsFromFile(newFile)?.let { fileContent ->
+                                    itemManagementUseCase.addFile(newItemId, fileContent)
+                                }
                             }
+
+                            setItem(newItemId)
                         }
 
-                        setItem(newItemId)
+                        _state.update { it.copy(saving = false) }
+
+                    } catch (e: OpException) {
+                        _state.update { it.copy(error = e.msg, saving = false) }
                     }
                 }
-                _state.update { it.copy(saving = false) }
             }
         }
     }
 
     fun setType(type: String) {
-        _state.update { it.copy(typeOverride = type) }
+
+        _state.update {
+            it.copy(
+                typeOverride = type,
+                targetUserIdOverride = if (listOf(
+                        NEED.name,
+                        REQUEST.name
+                    ).contains(type)
+                ) it.targetUserIdOverride else -1
+            )
+        }
     }
 
     fun onAddImage(file: String, img: BitmapPainter) {
@@ -185,6 +250,7 @@ class ItemDetailsViewModel(
 
     data class ItemDetailsViewState(
         val saving: Boolean = false,
+        val error: String = "",
         val itemId: Int? = null,
         val neighbourhoodId: Int? = null,
         val editable: Boolean = false,

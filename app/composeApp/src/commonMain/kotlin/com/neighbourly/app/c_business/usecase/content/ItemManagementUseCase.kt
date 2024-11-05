@@ -34,8 +34,10 @@ class ItemManagementUseCase(
         val token = sessionStore.user?.authtoken
 
         token?.let {
-            apiGw.uploadItemImage(it, itemId, imageFileContents).let { imgUrl ->
-
+            apiGw.uploadItemImage(it, itemId, imageFileContents).let { img ->
+                dbInteractor.getItem(itemId).let {
+                    dbInteractor.storeItems(listOf(it.copy(images = it.images + img)))
+                }
             }
         }
     }
@@ -44,11 +46,35 @@ class ItemManagementUseCase(
         val token = sessionStore.user?.authtoken
 
         token?.let {
-            apiGw.uploadItemFile(it, itemId, fileContents).let { imgUrl ->
-
+            apiGw.uploadItemFile(it, itemId, fileContents).let { file ->
+                dbInteractor.getItem(itemId).let {
+                    dbInteractor.storeItems(listOf(it.copy(files = it.files + file)))
+                }
             }
         }
     }
 
+    suspend fun delImage(itemId: Int?, imageId: Int) {
+        val token = sessionStore.user?.authtoken
+        token?.let {
+            apiGw.deleteItemImage(it, imageId)
+            itemId?.let {
+                dbInteractor.getItem(itemId).let {
+                    dbInteractor.storeItems(listOf(it.copy(images = it.images.filter { it.key != imageId })))
+                }
+            }
+        }
+    }
 
+    suspend fun delFile(itemId: Int?, fileId: Int) {
+        val token = sessionStore.user?.authtoken
+        token?.let {
+            apiGw.deleteItemFile(it, fileId)
+            itemId?.let {
+                dbInteractor.getItem(itemId).let {
+                    dbInteractor.storeItems(listOf(it.copy(files = it.files.filter { it.key != fileId })))
+                }
+            }
+        }
+    }
 }

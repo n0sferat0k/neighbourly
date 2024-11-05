@@ -77,8 +77,8 @@ func AddOrUpdateItem(w http.ResponseWriter, r *http.Request) {
 		_, err = utility.DB.Exec(`UPDATE 
 									items 
 								SET		
-									items_text_EN = ?,
-									items_titlu_EN = ?,
+									items_titlu_EN = ?,	
+									items_text_EN = ?,									
 									items_data = UNIX_TIMESTAMP(),							
 									items_add_numerics_1 = ?,
 									items_add_numerics_2 = ?,

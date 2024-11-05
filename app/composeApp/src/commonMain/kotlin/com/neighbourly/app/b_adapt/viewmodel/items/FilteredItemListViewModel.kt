@@ -64,10 +64,9 @@ class FilteredItemListViewModel(
             val myHouseholdId = store.user?.household?.householdid
 
             database.filterItems(_state.value.type, _state.value.householdId)
-
                 .let { items ->
                     val filteredItems = if (!_state.value.showExpired) {
-                        items.filter { it.id != null && (it.endTs == null || it.endTs == 0 || it.endTs > now) }
+                        items.filter { it.id != null && (it.endTs == 0 || it.endTs > now) }
                     } else items
 
                     _state.update {

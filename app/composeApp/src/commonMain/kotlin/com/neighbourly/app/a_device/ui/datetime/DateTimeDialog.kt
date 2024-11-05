@@ -34,8 +34,10 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import neighbourly.composeapp.generated.resources.Res
-import neighbourly.composeapp.generated.resources.in_10_min
-import neighbourly.composeapp.generated.resources.in_an_hour
+import neighbourly.composeapp.generated.resources.in_10_minutes
+import neighbourly.composeapp.generated.resources.in_eight_hours
+import neighbourly.composeapp.generated.resources.in_one_hour
+import neighbourly.composeapp.generated.resources.in_two_hours
 import neighbourly.composeapp.generated.resources.next_week
 import neighbourly.composeapp.generated.resources.now
 import neighbourly.composeapp.generated.resources.ok
@@ -68,11 +70,17 @@ fun DateTimeDialog(title: String, instant: Instant, onTimestamp: (Int?) -> Unit)
                             CurlyButton(text = stringResource(Res.string.now)) {
                                 selectedInstant = Clock.System.now()
                             }
-                            CurlyButton(text = stringResource(Res.string.in_10_min)) {
+                            CurlyButton(text = stringResource(Res.string.in_10_minutes)) {
                                 selectedInstant = Clock.System.now().plus(10.minutes)
                             }
-                            CurlyButton(text = stringResource(Res.string.in_an_hour)) {
+                            CurlyButton(text = stringResource(Res.string.in_one_hour)) {
                                 selectedInstant = Clock.System.now().plus(1.hours)
+                            }
+                            CurlyButton(text = stringResource(Res.string.in_two_hours)) {
+                                selectedInstant = Clock.System.now().plus(2.hours)
+                            }
+                            CurlyButton(text = stringResource(Res.string.in_eight_hours)) {
+                                selectedInstant = Clock.System.now().plus(8.hours)
                             }
                             CurlyButton(text = stringResource(Res.string.tomorrow)) {
                                 selectedInstant = Clock.System.now().plus(1.days).let {

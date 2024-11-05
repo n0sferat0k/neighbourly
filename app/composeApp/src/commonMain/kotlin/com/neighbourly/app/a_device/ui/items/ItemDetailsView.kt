@@ -48,6 +48,7 @@ import com.neighbourly.app.a_device.ui.BoxHeader
 import com.neighbourly.app.a_device.ui.BoxScrollableContent
 import com.neighbourly.app.a_device.ui.CurlyButton
 import com.neighbourly.app.a_device.ui.CurlyText
+import com.neighbourly.app.a_device.ui.ErrorText
 import com.neighbourly.app.a_device.ui.SwipeToDeleteBox
 import com.neighbourly.app.a_device.ui.datetime.DateTimeDialog
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel
@@ -407,6 +408,10 @@ fun ItemDetailsView(
                 ) {
                     viewModel.save()
                 }
+
+                if (state.error.isNotEmpty()) {
+                    ErrorText(state.error)
+                }
             }
         }
         BoxFooter(modifier = Modifier.align(Alignment.End)) {
@@ -459,8 +464,8 @@ fun ImageGrid(
             title = stringResource(Res.string.deleteing_image),
             text = stringResource(Res.string.confirm_deleteing_image),
             ok = {
-                showRemoveAlertForId = -1
                 delete(showRemoveAlertForId)
+                showRemoveAlertForId = -1
             },
             cancel = {
                 showRemoveAlertForId = -1

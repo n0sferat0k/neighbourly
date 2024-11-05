@@ -30,7 +30,7 @@ func DeleteFile(w http.ResponseWriter, r *http.Request) {
 		var itemImgId string
 
 		err := utility.DB.QueryRow(`SELECT 
-										items_id, items_IMGS_id, items_IMGS_pic
+										II.items_id, II.items_IMGS_id, II.items_IMGS_pic
 									FROM 
 										items_imgs II 
                                     LEFT JOIN items I ON II.items_id = I.items_id 
@@ -48,7 +48,7 @@ func DeleteFile(w http.ResponseWriter, r *http.Request) {
 		var itemFileId string
 
 		err := utility.DB.QueryRow(`SELECT 
-										items_FILES_id, items_FILES_file
+										IF.items_id, IF.items_FILES_id, IF.items_FILES_file
 									FROM 
 										items_files IF 
 									LEFT JOIN items I ON IF.items_id = I.items_id 

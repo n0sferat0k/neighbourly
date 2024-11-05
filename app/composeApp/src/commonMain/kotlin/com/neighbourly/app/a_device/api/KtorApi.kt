@@ -275,7 +275,7 @@ class KtorApi {
         target: String,
         targetId: String = "",
         fileContents: FileContents,
-    ): String {
+    ): Map<Int, String> {
         val response: HttpResponse = client.submitFormWithBinaryData(
             url = baseUrl + "files/upload?target=" + target + "&targetId=" + targetId,
             formData = formData {
@@ -298,7 +298,7 @@ class KtorApi {
         }
 
         if (response.status.value == 201) {
-            return response.bodyAsText()
+            return response.body<Map<Int, String>>()
         } else {
             throw ApiException(response.bodyAsText())
         }
@@ -310,11 +310,12 @@ class KtorApi {
         target: String,
         targetId: String = "",
     ) {
-        val response = client.get(baseUrl + "files/delete?target=" + target + "&targetId=" + targetId) {
-            headers {
-                append(HttpHeaders.Authorization, "Bearer " + token)
+        val response =
+            client.get(baseUrl + "files/delete?target=" + target + "&targetId=" + targetId) {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
             }
-        }
         if (response.status.value != 200) {
             throw ApiException(response.bodyAsText())
         }

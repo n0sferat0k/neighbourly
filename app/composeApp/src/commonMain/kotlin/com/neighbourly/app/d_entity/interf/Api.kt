@@ -31,13 +31,13 @@ interface Api {
         token: String,
         itemId: Int,
         imageFileContents: FileContents,
-    ): String
+    ): Pair<Int, String>
 
     suspend fun uploadItemFile(
         token: String,
         itemId: Int,
         imageFileContents: FileContents,
-    ): String
+    ): Pair<Int, String>
 
     suspend fun deleteItemImage(
         token: String,
