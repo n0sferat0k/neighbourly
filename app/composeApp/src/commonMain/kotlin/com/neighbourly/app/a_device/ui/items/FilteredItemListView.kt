@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.Alert
+import com.neighbourly.app.a_device.ui.AlertDialog
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.BoxFooter
 import com.neighbourly.app.a_device.ui.BoxHeader
@@ -109,7 +109,7 @@ fun FilteredItemListView(
                 items(items = state.items) { item ->
 
                     if (showRemoveAlertForId == item.id) {
-                        Alert(
+                        AlertDialog(
                             title = stringResource(Res.string.deleteing_item),
                             text = stringResource(Res.string.confirm_deleteing_item) + " " + item.name,
                             ok = {

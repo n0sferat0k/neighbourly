@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.Alert
+import com.neighbourly.app.a_device.ui.AlertDialog
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.CurlyButton
 import com.neighbourly.app.a_device.ui.CurlyText
@@ -226,7 +226,7 @@ fun HouseholdInfoEditView(
                 }
 
                 if (showRemoveAlert) {
-                    Alert(
+                    AlertDialog(
                         title = stringResource(Res.string.leaving) + " " + state.name,
                         text = stringResource(Res.string.confirm_leaving_household),
                         ok = {

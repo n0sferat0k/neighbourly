@@ -61,13 +61,14 @@ func GetItems(itemIds []int64, sinceTs string) ([]entity.Item, error) {
 					ON 
 						NHU.neighbourhood_household_users_id = I.items_add_numerics_0
 					WHERE 
-						I.items_id IN (?)`
+						I.items_id IN (` + utility.IntArrayToCommaSeparatedString(itemIds) + `)`
 
 	// If we have a valid sinceTs, we only get the items that have been modified since then
 	if sinceTs != "" {
 		sql += " AND I.items_data > " + sinceTs
 	}
-	itemRows, err := utility.DB.Query(sql, utility.IntArrayToCommaSeparatedString(itemIds))
+
+	itemRows, err := utility.DB.Query(sql)
 	if err != nil {
 		return nil, err
 	}

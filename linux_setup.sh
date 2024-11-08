@@ -84,3 +84,24 @@ sudo systemctl daemon-reload
 sudo systemctl enable api.service
 sudo systemctl start api.service
 sudo systemctl status api.service
+
+//INSTALL MQTT
+sudo apt-get update
+sudo apt-get install -y mosquitto mosquitto-clients
+sudo systemctl enable mosquitto
+sudo systemctl start mosquitto
+sudo mosquitto_passwd -c /etc/mosquitto/passwd neighbourly
+	password: Tizenegy11
+sudo nano /etc/mosquitto/acl
+	user neighbourly
+	topic readwrite #
+sudo nano /etc/mosquitto/mosquitto.conf
+	persistence true
+	persistence_location /media/neighbourly/ExtremeSSD/neighbourly/mqtt/
+	allow_anonymous false
+	password_file /etc/mosquitto/passwd
+	acl_file /etc/mosquitto/acl
+	listener 1883
+sudo systemctl restart mosquitto
+sudo chown -R mosquitto:mosquitto /media/neighbourly/ExtremeSSD/neighbourly/mqtt/
+sudo chmod -R 755 /media/neighbourly/ExtremeSSD/neighbourly/mqtt/

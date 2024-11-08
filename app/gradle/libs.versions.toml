@@ -6,11 +6,9 @@ android-minSdk = "26"
 android-targetSdk = "34"
 androidx-activityCompose = "1.9.3"
 androidx-lifecycle = "2.8.3"
-cameraCamera2 = "1.4.0-rc04"
-cameraLifecycle = "1.4.0-rc04"
-cameraView = "1.4.0-rc04"
+camera= "1.4.0"
 barcodeScanning = "17.3.0"
-compose-plugin = "1.6.11"
+compose = "1.7.0"
 composeWebviewMultiplatform = "1.9.20"
 core = "3.5.1"
 javase = "3.4.1"
@@ -33,9 +31,9 @@ roomRuntimeAndroid = "2.7.0-alpha10"
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanning" }
-androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraView" }
-androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraLifecycle" }
-androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCamera2" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "camera" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camera" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camera" }
 compose-webview-multiplatform = { module = "io.github.kevinnzou:compose-webview-multiplatform", version.ref = "composeWebviewMultiplatform" }
 core = { module = "com.google.zxing:core", version.ref = "core" }
 javase = { module = "com.google.zxing:javase", version.ref = "javase" }
@@ -70,7 +68,7 @@ androidx-room-runtime-android = { group = "androidx.room", name = "room-runtime-
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinxSerialization= { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization" }

@@ -30,7 +30,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
@@ -65,6 +64,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.app_name
 import neighbourly.composeapp.generated.resources.cancel
@@ -83,36 +84,6 @@ data object AppColors {
     val primaryLight: Color = Color(0xFFdeedee)
     val complementary: Color = Color(0xffae605b)
     val complementaryLight: Color = Color(0xFFeedfde)
-}
-
-@Composable
-fun Alert(
-    title: String,
-    text: String,
-    ok: (() -> Unit)? = null,
-    cancel: (() -> Unit)? = null,
-) {
-    AlertDialog(
-        onDismissRequest = { cancel?.invoke() },
-        title = { CurlyText(text = title) },
-        text = { CurlyText(text = text) },
-        confirmButton = {
-            CurlyButton(
-                text = stringResource(Res.string.confirm),
-                modifier = Modifier.padding(5.dp)
-            ) {
-                ok?.invoke()
-            }
-        },
-        dismissButton = {
-            CurlyButton(
-                text = stringResource(Res.string.cancel),
-                modifier = Modifier.padding(5.dp)
-            ) {
-                cancel?.invoke()
-            }
-        }
-    )
 }
 
 @Composable

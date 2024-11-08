@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -40,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.Alert
+import com.neighbourly.app.a_device.ui.AlertDialog
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.AutocompleteOutlinedTextField
 import com.neighbourly.app.a_device.ui.BoxFooter
@@ -76,7 +78,6 @@ import neighbourly.composeapp.generated.resources.add_start
 import neighbourly.composeapp.generated.resources.barter
 import neighbourly.composeapp.generated.resources.bartering
 import neighbourly.composeapp.generated.resources.confirm_deleteing_image
-import neighbourly.composeapp.generated.resources.confirm_deleteing_item
 import neighbourly.composeapp.generated.resources.confirm_deleteing_this_item
 import neighbourly.composeapp.generated.resources.delete
 import neighbourly.composeapp.generated.resources.deleteing_image
@@ -91,6 +92,7 @@ import neighbourly.composeapp.generated.resources.item_description
 import neighbourly.composeapp.generated.resources.item_name
 import neighbourly.composeapp.generated.resources.item_url
 import neighbourly.composeapp.generated.resources.need
+import neighbourly.composeapp.generated.resources.newbadge
 import neighbourly.composeapp.generated.resources.request
 import neighbourly.composeapp.generated.resources.sale
 import neighbourly.composeapp.generated.resources.save
@@ -124,7 +126,7 @@ fun ItemDetailsView(
     }
 
     if (showDeleteAlert) {
-        Alert(
+        AlertDialog(
             title = stringResource(Res.string.deleteing_item),
             text = stringResource(Res.string.confirm_deleteing_this_item),
             ok = {
@@ -458,9 +460,9 @@ fun ImageGrid(
     delete: (Int) -> Unit
 ) {
     var showRemoveAlertForId by remember { mutableStateOf(-1) }
-
+    val badge = painterResource(Res.drawable.newbadge)
     if (showRemoveAlertForId != -1) {
-        Alert(
+        AlertDialog(
             title = stringResource(Res.string.deleteing_image),
             text = stringResource(Res.string.confirm_deleteing_image),
             ok = {
@@ -515,12 +517,22 @@ fun ImageGrid(
                     shape = RoundedCornerShape(4.dp),
                     elevation = 4.dp
                 ) {
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        painter = memImg.img,
-                        contentDescription = "Item Image",
-                        contentScale = ContentScale.Crop,
-                    )
+                    Box(modifier = Modifier.fillMaxSize(),) {
+                        Image(
+                            modifier = Modifier.fillMaxSize(),
+                            painter = memImg.img,
+                            contentDescription = "Item Image",
+                            contentScale = ContentScale.Crop,
+                        )
+                        Image(
+                            modifier = Modifier.size(24.dp).padding(4.dp)
+                                .align(Alignment.BottomEnd),
+                            painter = badge,
+                            contentScale = ContentScale.FillBounds,
+                            contentDescription = "Item Image New Badge",
+                            colorFilter = ColorFilter.tint(AppColors.complementary),
+                        )
+                    }
                 }
             }
         }
