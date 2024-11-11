@@ -15,10 +15,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -105,6 +103,16 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import java.time.format.DateTimeFormatter
 
+val TYPE_ASSOC = mapOf(
+    DONATION.name to Pair(Res.drawable.donate, Res.string.donation),
+    BARTER.name to Pair(Res.drawable.barter, Res.string.bartering),
+    SALE.name to Pair(Res.drawable.sale, Res.string.sale),
+    EVENT.name to Pair(Res.drawable.event, Res.string.event),
+    NEED.name to Pair(Res.drawable.need, Res.string.need),
+    REQUEST.name to Pair(Res.drawable.request, Res.string.request),
+    SKILLSHARE.name to Pair(Res.drawable.skillshare, Res.string.skillshare),
+)
+
 @Composable
 fun ItemDetailsView(
     itemId: Int? = null,
@@ -113,6 +121,164 @@ fun ItemDetailsView(
 ) {
     val state by viewModel.state.collectAsState()
     val navigation by navigationViewModel.state.collectAsState()
+
+    LaunchedEffect(itemId) {
+        viewModel.setItem(itemId)
+    }
+
+    if (state.editable) {
+        EditableItemDetailsView(viewModel, state)
+    } else {
+        StaticItemDetailsView(state)
+    }
+}
+
+@Composable
+fun StaticItemDetailsView(state: ItemDetailsViewModel.ItemDetailsViewState) {
+    val uriHandler = LocalUriHandler.current
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        BoxHeader(Modifier.align(Alignment.Start))
+
+        BoxScrollableContent(modifier = Modifier.weight(1f)) {
+            Column(
+                modifier = Modifier.padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    CurlyText(text = stringResource(Res.string.type), bold = true)
+                    CurlyText(
+                        text = stringResource(
+                            TYPE_ASSOC.get(state.type)?.second ?: Res.string.unknown
+                        ),
+                    )
+                    TypeOption(
+                        icon = painterResource(
+                            TYPE_ASSOC.get(state.type)?.first ?: Res.drawable.newbadge
+                        ),
+                        selected = true,
+                        contentDesc = state.type,
+                    ) {}
+                }
+
+                if (listOf(NEED.name, REQUEST.name).contains(state.type)
+                    && state.targetUserId != null
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        CurlyText(text = stringResource(Res.string.target_user), bold = true)
+                        CurlyText(text = state.users.getOrDefault(state.targetUserId, ""))
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    CurlyText(text = stringResource(Res.string.item_name), bold = true)
+                    CurlyText(text = state.name)
+                }
+                if (state.description.isNotEmpty()) {
+                    CurlyText(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(Res.string.item_description), bold = true
+                    )
+                    CurlyText(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = state.description
+                    )
+                }
+
+                if (state.url.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        CurlyText(text = stringResource(Res.string.item_url), bold = true)
+                        CurlyText(modifier = Modifier.clickable {
+                            uriHandler.openUri(state.url)
+                        }, text = state.url)
+                    }
+                }
+
+                if (!state.images.isEmpty()) {
+                    CurlyText(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(Res.string.images),
+                        bold = true
+                    )
+
+                    if (state.images.size > 0 || state.newImages.size > 0) {
+                        ImageGrid(
+                            images = state.images,
+                            newImages = state.newImages
+                        )
+                    }
+                }
+
+                if (!state.files.isEmpty()) {
+                    CurlyText(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(Res.string.files),
+                        bold = true
+                    )
+
+                    state.files.onEach {
+                        CurlyText(
+                            modifier = Modifier.fillMaxWidth()
+                                .clickable {
+                                    uriHandler.openUri(it.url)
+                                },
+                            text = it.name, bold = true
+                        )
+                    }
+                }
+
+                if (state.start != null && state.start.epochSeconds > 0) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        CurlyText(text = stringResource(Res.string.start_date))
+                        CurlyText(
+                            text = state.start.toLocalDateTime(TimeZone.currentSystemDefault())
+                                .toJavaLocalDateTime().format(formatter),
+                            bold = true
+                        )
+                    }
+                }
+
+                if (state.end != null && state.end.epochSeconds > 0) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        CurlyText(text = stringResource(Res.string.end_date))
+                        CurlyText(
+                            text = state.end.toLocalDateTime(TimeZone.currentSystemDefault())
+                                .toJavaLocalDateTime().format(formatter),
+                            bold = true
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun EditableItemDetailsView(
+    viewModel: ItemDetailsViewModel,
+    state: ItemDetailsViewModel.ItemDetailsViewState
+) {
     var showImageFilePicker by remember { mutableStateOf(false) }
     var showAttachmentFilePicker by remember { mutableStateOf(false) }
     var showStartDatePicker by remember { mutableStateOf(false) }
@@ -120,10 +286,6 @@ fun ItemDetailsView(
     var showDeleteAlert by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-
-    LaunchedEffect(itemId) {
-        viewModel.setItem(itemId)
-    }
 
     if (showDeleteAlert) {
         AlertDialog(
@@ -207,18 +369,8 @@ fun ItemDetailsView(
 
                     CurlyText(
                         text = stringResource(
-                            when (state.typeOverride ?: state.type) {
-                                DONATION.name -> Res.string.donation
-                                BARTER.name -> Res.string.bartering
-                                SALE.name -> Res.string.sale
-                                EVENT.name -> Res.string.event
-                                NEED.name -> Res.string.need
-                                REQUEST.name -> Res.string.request
-                                SKILLSHARE.name -> Res.string.skillshare
-                                else -> {
-                                    Res.string.unknown
-                                }
-                            }
+                            TYPE_ASSOC.get(state.typeOverride ?: state.type)?.second
+                                ?: Res.string.unknown
                         ),
                         bold = true,
                     )
@@ -229,17 +381,9 @@ fun ItemDetailsView(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     horizontalArrangement = Arrangement.Start,
                 ) {
-                    mapOf(
-                        DONATION.name to painterResource(Res.drawable.donate),
-                        BARTER.name to painterResource(Res.drawable.barter),
-                        SALE.name to painterResource(Res.drawable.sale),
-                        EVENT.name to painterResource(Res.drawable.event),
-                        NEED.name to painterResource(Res.drawable.need),
-                        REQUEST.name to painterResource(Res.drawable.request),
-                        SKILLSHARE.name to painterResource(Res.drawable.skillshare)
-                    ).forEach { (typeId, icon) ->
+                    TYPE_ASSOC.forEach { (typeId, iconNamePair) ->
                         TypeOption(
-                            icon = icon,
+                            icon = painterResource(iconNamePair.first),
                             selected = (state.typeOverride ?: state.type) == typeId,
                             contentDesc = typeId,
                         ) {
@@ -456,8 +600,8 @@ fun TypeOption(selected: Boolean = false, icon: Painter, contentDesc: String, on
 fun ImageGrid(
     images: Map<Int, String>,
     newImages: List<MemImg>,
-    deleteNew: (MemImg) -> Unit,
-    delete: (Int) -> Unit
+    deleteNew: ((MemImg) -> Unit)? = null,
+    delete: ((Int) -> Unit)? = null
 ) {
     var showRemoveAlertForId by remember { mutableStateOf(-1) }
     val badge = painterResource(Res.drawable.newbadge)
@@ -466,7 +610,7 @@ fun ImageGrid(
             title = stringResource(Res.string.deleteing_image),
             text = stringResource(Res.string.confirm_deleteing_image),
             ok = {
-                delete(showRemoveAlertForId)
+                delete?.invoke(showRemoveAlertForId)
                 showRemoveAlertForId = -1
             },
             cancel = {
@@ -481,9 +625,13 @@ fun ImageGrid(
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         images.forEach { (key, imageUrl) ->
-            SwipeToDeleteBox(modifier = Modifier.size(84.dp), onDelete = {
-                showRemoveAlertForId = key
-            }) {
+            SwipeToDeleteBox(
+                modifier = Modifier.size(84.dp),
+                onDelete = delete?.let {
+                    {
+                        showRemoveAlertForId = key
+                    }
+                }) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -507,9 +655,14 @@ fun ImageGrid(
             }
         }
         newImages.forEach { memImg ->
-            SwipeToDeleteBox(modifier = Modifier.size(84.dp), onDelete = {
-                deleteNew(memImg)
-            }) {
+            SwipeToDeleteBox(
+                modifier = Modifier.size(84.dp),
+                onDelete = deleteNew?.let {
+                    {
+                        it.invoke(memImg)
+                    }
+                }
+            ) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -517,7 +670,7 @@ fun ImageGrid(
                     shape = RoundedCornerShape(4.dp),
                     elevation = 4.dp
                 ) {
-                    Box(modifier = Modifier.fillMaxSize(),) {
+                    Box(modifier = Modifier.fillMaxSize()) {
                         Image(
                             modifier = Modifier.fillMaxSize(),
                             painter = memImg.img,
@@ -525,12 +678,12 @@ fun ImageGrid(
                             contentScale = ContentScale.Crop,
                         )
                         Image(
-                            modifier = Modifier.size(24.dp).padding(4.dp)
+                            modifier = Modifier.size(36.dp).padding(4.dp)
                                 .align(Alignment.BottomEnd),
                             painter = badge,
                             contentScale = ContentScale.FillBounds,
                             contentDescription = "Item Image New Badge",
-                            colorFilter = ColorFilter.tint(AppColors.complementary),
+                            colorFilter = ColorFilter.tint(AppColors.primary),
                         )
                     }
                 }

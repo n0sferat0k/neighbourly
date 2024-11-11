@@ -69,10 +69,10 @@
     <string name="skillshare">Skillshare</string>
     <string name="unknown">Unknown</string>
 
-    <string name="item_name">Item name</string>
-    <string name="item_description">Item description</string>
-    <string name="item_url">Item url</string>
-    <string name="target_user">Target user</string>
+    <string name="item_name">Item name:</string>
+    <string name="item_description">Item description:</string>
+    <string name="item_url">Item url:</string>
+    <string name="target_user">Target user:</string>
 
     <string name="start_date">Starts:</string>
     <string name="end_date">Ends:</string>

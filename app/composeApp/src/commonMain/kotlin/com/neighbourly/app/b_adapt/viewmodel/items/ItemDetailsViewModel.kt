@@ -59,6 +59,7 @@ class ItemDetailsViewModel(
                 database.getItem(itemId = itemId).let { item ->
                     _state.update {
                         it.copy(
+                            editable = item.householdId == store.user?.household?.householdid,
                             neighbourhoodId = item.neighbourhoodId,
                             type = item.type.name,
                             name = item.name.orEmpty(),
@@ -249,11 +250,12 @@ class ItemDetailsViewModel(
     }
 
     data class ItemDetailsViewState(
+        val editable: Boolean = false,
+
         val saving: Boolean = false,
         val error: String = "",
         val itemId: Int? = null,
         val neighbourhoodId: Int? = null,
-        val editable: Boolean = false,
 
         val images: Map<Int, String> = emptyMap(),
         val newImages: List<MemImg> = emptyList(),

@@ -89,40 +89,44 @@ data object AppColors {
 @Composable
 fun SwipeToDeleteBox(
     modifier: Modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
-    onDelete: () -> Unit,
+    onDelete: (() -> Unit)? = null,
     content: @Composable (BoxScope.() -> Unit)
 ) {
     var offsetX by remember { mutableStateOf(0f) }
     Box(modifier = modifier) {
         // Background delete icon
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.delete),
-                contentDescription = "Delete",
-                tint = AppColors.complementary,
-                modifier = Modifier.size(48.dp)
-            )
+        if(onDelete != null) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.delete),
+                    contentDescription = "Delete",
+                    tint = AppColors.complementary,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
         }
         // Draggable content
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .pointerInput(Unit) {
-                    detectHorizontalDragGestures(
-                        onDragEnd = {
-                            if (offsetX.absoluteValue > 100) {
-                                onDelete()
+                    if(onDelete != null) {
+                        detectHorizontalDragGestures(
+                            onDragEnd = {
+                                if (offsetX.absoluteValue > 100) {
+                                    onDelete()
+                                }
+                                offsetX = 0f
+                            },
+                            onHorizontalDrag = { change, dragAmount ->
+                                offsetX += dragAmount.toDp().value
+                                change.consume()
                             }
-                            offsetX = 0f
-                        },
-                        onHorizontalDrag = { change, dragAmount ->
-                            offsetX += dragAmount.toDp().value
-                            change.consume()
-                        }
-                    )
+                        )
+                    }
                 }
                 .offset(x = offsetX.dp),
             content = content
