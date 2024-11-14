@@ -60,6 +60,9 @@
             var mapLoaded = false;
             var lat = 0;
             var lng = 0;
+            var centerDot = false;
+            var dotLat = 0;
+            var dotLng = 0;
             var households = [];
             var neighbourhoods = [];            
             var markers = []; 
@@ -87,13 +90,13 @@
                 
                 callNative({mapReady:true});
                         
-                updateHouseholds([
-                    {'longitude':23.6685, 'latitude':47.653, 'id':1, 'donations':3, 'skillshare':5,'name':'Fam. Krucz', 'floatName':true, 'address':'Catinei 21','description':'This is our little house on the hill. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a massa at est malesuada faucibus. Donec ultricies, velit a aliquet pulvinar, sapien nibh mollis ante, sed egestas est arcu sed mi. Nullam facilisis efficitur libero vitae vulputate. Mauris nec mauris malesuada, mattis risus eu, pharetra urna. Etiam ac tincidunt tellus, ac commodo urna. Phasellus blandit elit at blandit auctor. Nulla facilisi. Suspendisse potenti. Aliquam diam arcu, aliquet non elementum ut, sollicitudin quis massa. Aliquam erat volutpat. Donec tortor est, blandit nec pellentesque sit amet, placerat quis nisi. Nulla nec facilisis diam. Phasellus convallis hendrerit est a auctor. Praesent vitae mauris convallis, tristique lacus at, porttitor orci. Integer consectetur nec dui vel dictum. Vestibulum sit amet purus sit amet lacus blandit semper vitae ac est. ', 'imageurl':''},
-                    {'longitude':23.6695, 'latitude':47.653, 'id':2, 'name':'Some other household', 'floatName':false, 'address':'Catinei 13', 'description':"caca"}
-                ]);
+                // updateHouseholds([
+                //     {'longitude':23.6685, 'latitude':47.653, 'id':1, 'donations':3, 'skillshare':5,'name':'Fam. Krucz', 'floatName':true, 'address':'Catinei 21','description':'This is our little house on the hill. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a massa at est malesuada faucibus. Donec ultricies, velit a aliquet pulvinar, sapien nibh mollis ante, sed egestas est arcu sed mi. Nullam facilisis efficitur libero vitae vulputate. Mauris nec mauris malesuada, mattis risus eu, pharetra urna. Etiam ac tincidunt tellus, ac commodo urna. Phasellus blandit elit at blandit auctor. Nulla facilisi. Suspendisse potenti. Aliquam diam arcu, aliquet non elementum ut, sollicitudin quis massa. Aliquam erat volutpat. Donec tortor est, blandit nec pellentesque sit amet, placerat quis nisi. Nulla nec facilisis diam. Phasellus convallis hendrerit est a auctor. Praesent vitae mauris convallis, tristique lacus at, porttitor orci. Integer consectetur nec dui vel dictum. Vestibulum sit amet purus sit amet lacus blandit semper vitae ac est. ', 'imageurl':''},
+                //     {'longitude':23.6695, 'latitude':47.653, 'id':2, 'name':'Some other household', 'floatName':false, 'address':'Catinei 13', 'description':"caca"}
+                // ]);
                 // addOrUpdateMarker("garbage_1", "#5BA9AE", 23.6685, 47.653, "There is A LOOOOT of garbage here");                
                 // addOrUpdateMarker("garbage_2", "#5BA9AE", 23.6695, 47.653, "There is A LOOOOT of garbage here");                
-                center(23.6684, 47.6531, 15);
+                // center(23.6684, 47.6531, 15);
 
                 // updateHouseholds([
                 //                     {'longitude':23.6684, 'latitude':47.6531, 'id':1, 'name':"Krucz House", 'imageurl':'http://localhost/householdsIMGS/boiling-frog.png'},
@@ -115,14 +118,14 @@
 
                 //setDot(23.6684, 47.6531, 'current');                                
                 //clearHouseholds();
-                                                               
+                                                                
                 
                 if (lat != 0 && lng != 0) {
                     setDot(lng, lat, 'current');
                     center(lng, lat, 21);
                 }
             });
-               
+                
             function addOrUpdateMarker(id, markerColor, longitude, latitude, message) {             
                 if(markers[id] == undefined) {
                     markers[id] = new maplibregl.Marker({color: markerColor})
@@ -297,9 +300,17 @@
                 }
             }    
     
+            function centerToDot() {
+                if(dotLat != 0 || dotLng != 0) {
+                    center(dotLng, dotLat, 15);
+                } else {
+                    centerDot = true;
+                }                    
+            }
+    
             function center(longitude, latitude, zoom) {
                 if (mapLoaded) {
-                    map.flyTo({
+                    map.jumpTo({
                         center: [longitude, latitude],
                         zoom: zoom
                     });
@@ -456,7 +467,14 @@
                 }
             }
                 
-            function setDot(longitude, latitude, id) {
+            function setDot(longitude, latitude, id) {                    
+                if(dotLat == 0 && dotLng == 0 && centerDot) {
+                    center(longitude, latitude, 15);
+                } 
+                
+                dotLng = longitude;
+                dotLat = latitude; 
+                                        
                 if (mapLoaded) {
                     if (map.getSource(id) !== undefined) {
                         map.getSource(id).setData({
@@ -481,10 +499,7 @@
                             }
                         });
                     }
-                } else {
-                    lng = longitude;
-                    lat = latitude;                    
-                }
+                } 
             }
         </script>
     </body>

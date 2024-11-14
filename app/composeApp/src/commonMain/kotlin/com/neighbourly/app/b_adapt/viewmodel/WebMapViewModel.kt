@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MapViewModel(
+class WebMapViewModel(
     val sessionStore: SessionStore,
     val database: Db,
     val householdLocalizeUseCase: HouseholdLocalizeUseCase,
@@ -117,6 +117,13 @@ class MapViewModel(
                     }
                 }
             }
+        }
+    }
+    fun clearMapContent() {
+        _state.update {
+            it.copy(
+                otherHouseholds = emptyList()
+            )
         }
     }
 

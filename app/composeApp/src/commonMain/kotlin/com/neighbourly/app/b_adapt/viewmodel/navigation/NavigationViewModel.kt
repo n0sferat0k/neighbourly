@@ -2,18 +2,23 @@ package com.neighbourly.app.b_adapt.viewmodel.navigation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.MainMenu
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ManageProfile
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ShowItemDetails
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdAddMember
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdInfoEdit
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdLocalize
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdScanMember
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.NeighbourhoodAddMemberHousehold
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.NeighbourhoodInfoEdit
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.NeighbourhoodScanMember
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.ProfileInfoEdit
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.MainMenu
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ManageProfile
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ShowItemDetails
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavPages.HideMenu
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavPages.ShowMenuAndReset
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdAddMember
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdInfoEdit
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdLocalize
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdScanMember
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.NeighbourhoodAddMemberHousehold
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.NeighbourhoodInfoEdit
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.NeighbourhoodScanMember
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.ProfileInfoEdit
+import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebGallery
+import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebMap
 import com.neighbourly.app.d_entity.data.ItemType
+import com.neighbourly.app.d_entity.interf.ConfigProvider
 import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,11 +26,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import java.util.Stack
 
 public class NavigationViewModel(
     val sessionStore: SessionStore,
+    val configProvider: ConfigProvider
 ) : ViewModel() {
     private val _state = MutableStateFlow(NavigationViewState())
+    private val _stateStack = Stack<NavigationViewState>()
     val state: StateFlow<NavigationViewState> = _state.asStateFlow()
 
     init {
@@ -51,29 +59,19 @@ public class NavigationViewModel(
                     }
                 }
             }.launchIn(viewModelScope)
-    }
 
-    fun setDisableMainContentToggle(disableMainToggle: Boolean) {
-        _state.update {
-            it.copy(
-                disableMainToggle = disableMainToggle,
-                mainContentVisible = if (it.disableMainToggle) true else it.mainContentVisible,
-            )
-        }
+        configProvider.wideScreenFlow.onEach { wideScreen ->
+            _state.update {
+                it.copy(disableMainToggle = wideScreen)
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun toggleMainContent() {
-        if (_state.value.mainContentVisible) {
-            _state.update {
-                it.copy(
-                    mainContentVisible = it.disableMainToggle,
-                    mainContent = MainMenu,
-                    profileContent = ProfileInfoEdit,
-                    addingNewHousehold = false,
-                )
-            }
+        if(_state.value.disableMainToggle || !_state.value.mainContentVisible) {
+            _state.updateAndClearStack(ShowMenuAndReset.updater)
         } else {
-            _state.update { it.copy(mainContentVisible = true) }
+            _state.update(HideMenu.updater)
         }
     }
 
@@ -210,8 +208,16 @@ public class NavigationViewModel(
     }
 
     fun goToMap() {
-        _state.update {
-            it.copy(mainContentVisible = if (it.disableMainToggle) true else false)
+        val updater: (NavigationViewState) -> NavigationViewState = {
+            it.copy(
+                mainContentVisible = if (it.disableMainToggle) true else false,
+                webContent = WebMap,
+            )
+        }
+        if (_state.value.disableMainToggle) {
+            _state.update(updater)
+        } else {
+            _state.updateAndStack(updater)
         }
     }
 
@@ -224,55 +230,41 @@ public class NavigationViewModel(
         }
     }
 
-    data class NavigationViewState(
-        val userLoggedIn: Boolean = false,
-        val disableMainToggle: Boolean = false,
-        val restrictedContent: Boolean = true,
-        val mainContentVisible: Boolean = true,
-        val addingNewHousehold: Boolean = false,
-        val mainContent: MainContent = MainMenu,
-        val profileContent: ProfileContent = ProfileInfoEdit,
-    )
-
-    sealed interface MainContent {
-        object MainMenu : MainContent
-
-        object ManageProfile : MainContent
-        object ManageMyStuff : MainContent
-        object PublishStuff : MainContent
-
-        data class ShowItemDetails(val itemId: Int) : MainContent
-
-        data class FindItems(
-            val type: ItemType? = null,
-            val householdId: Int? = null
-        ) : MainContent
+    fun goToGallery(itemId: Int, imageId: Int) {
+        val updater: (NavigationViewState) -> NavigationViewState = {
+            it.copy(
+                mainContentVisible = if (it.disableMainToggle) true else false,
+                webContent = WebGallery(itemId, imageId)
+            )
+        }
+        if (_state.value.disableMainToggle) {
+            _state.update(updater)
+        } else {
+            _state.updateAndStack(updater)
+        }
     }
 
-    sealed class ProfileContent {
-        object ProfileInfoEdit : ProfileContent()
+    fun goBack(): Boolean =
+        _state.popStack()
 
-        object HouseholdScanMember : ProfileContent()
+    private fun MutableStateFlow<NavigationViewState>.updateAndClearStack(updater: (NavigationViewState) -> NavigationViewState) =
+        this.update {
+            _stateStack.clear()
+            updater(it)
+        }
 
-        data class NeighbourhoodScanMember(
-            val neighbourhoodid: Int,
-        ) : ProfileContent()
+    private fun MutableStateFlow<NavigationViewState>.updateAndStack(updater: (NavigationViewState) -> NavigationViewState) =
+        this.update {
+            _stateStack.push(it)
+            updater(it)
+        }
 
-        data class HouseholdAddMember(
-            val id: Int,
-            val username: String,
-        ) : ProfileContent()
+    private fun MutableStateFlow<NavigationViewState>.popStack() =
+        _stateStack.pop()?.let { previousState ->
+            this.update {
+                previousState
+            }
+            true
+        } ?: false
 
-        data class NeighbourhoodAddMemberHousehold(
-            val neighbourhoodid: Int,
-            val id: Int,
-            val username: String,
-        ) : ProfileContent()
-
-        object HouseholdInfoEdit : ProfileContent()
-
-        object HouseholdLocalize : ProfileContent()
-
-        object NeighbourhoodInfoEdit : ProfileContent()
-    }
 }

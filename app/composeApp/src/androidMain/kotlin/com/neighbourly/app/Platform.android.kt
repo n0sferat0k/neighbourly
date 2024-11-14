@@ -10,7 +10,9 @@ import android.Manifest.permission.READ_PHONE_NUMBERS
 import android.Manifest.permission.READ_PHONE_STATE
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.ComponentCallbacks
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Looper
@@ -34,9 +36,14 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.neighbourly.app.NeighbourlyApp.Companion.locationProvider
 import com.neighbourly.app.d_entity.data.FileContents
+import com.neighbourly.app.d_entity.interf.ConfigProvider
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.okhttp.OkHttp
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.update
 import java.nio.file.Paths
 import kotlin.math.ceil
 import kotlin.math.max
@@ -121,7 +128,7 @@ actual fun loadImageFromFile(file: String, maxSizePx: Int): BitmapPainter? {
 
     // Calculate inSampleSize
     val maxDim = max(options.outHeight, options.outWidth)
-    if(maxDim > maxSizePx) {
+    if (maxDim > maxSizePx) {
         options.inSampleSize = ceil(maxDim.toDouble() / maxSizePx.toDouble()).toInt()
     }
 
@@ -200,3 +207,22 @@ actual class PlatformBitmap actual constructor(width: Int, height: Int) {
 
 actual val databaseDriver: SqlDriver
     get() = AndroidSqliteDriver(NeighbourlyDB.Schema, NeighbourlyApp.appContext, "neighbourly.db")
+
+actual val configProvider: ConfigProvider
+    get() = object : ConfigProvider {
+        init {
+            NeighbourlyApp.appContext.registerComponentCallbacks(object : ComponentCallbacks {
+                override fun onConfigurationChanged(newConfig: Configuration) {
+                    _wideScreenFlow.update { wideScreen() }
+                }
+
+                override fun onLowMemory() {}
+            })
+        }
+
+        private fun wideScreen() = NeighbourlyApp.appContext.resources.getBoolean(R.bool.widescreen)
+        private val _wideScreenFlow = MutableStateFlow(wideScreen())
+        override val wideScreenFlow: Flow<Boolean>
+            get() = _wideScreenFlow.asSharedFlow()
+
+    }

@@ -11,13 +11,13 @@ import com.neighbourly.app.a_device.ui.items.FilteredItemListView
 import com.neighbourly.app.a_device.ui.items.ItemDetailsView
 import com.neighbourly.app.a_device.ui.profile.Profile
 import com.neighbourly.app.b_adapt.viewmodel.items.MainContentViewModel
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.FindItems
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.MainMenu
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ManageMyStuff
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ManageProfile
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.PublishStuff
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ShowItemDetails
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.FindItems
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.MainMenu
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ManageMyStuff
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ManageProfile
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.PublishStuff
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ShowItemDetails
 
 @Composable
 fun MainContent(

@@ -75,7 +75,7 @@ class ItemDetailsViewModel(
                                 FileVS(
                                     id = it.key,
                                     url = it.value,
-                                    name = Paths.get(it.value).fileName.toString()
+                                    name = it.value.split("/").last()
                                 )
                             })
                     }

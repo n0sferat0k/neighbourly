@@ -15,9 +15,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.menu.LeftMenuItemBox
 import com.neighbourly.app.a_device.ui.menu.RightMenuItemBox
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ManageMyStuff
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.PublishStuff
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.ManageMyStuff
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.MainContent.PublishStuff
+
 import com.neighbourly.app.d_entity.data.ItemType
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.barter

@@ -31,7 +31,7 @@ import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.ErrorText
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileMenuViewModel
 import com.neighbourly.app.loadContentsFromFile
 import io.kamel.image.KamelImage

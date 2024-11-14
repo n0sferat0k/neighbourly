@@ -120,21 +120,23 @@ fun ItemDetailsView(
     navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }
 ) {
     val state by viewModel.state.collectAsState()
-    val navigation by navigationViewModel.state.collectAsState()
 
     LaunchedEffect(itemId) {
         viewModel.setItem(itemId)
     }
 
     if (state.editable) {
-        EditableItemDetailsView(viewModel, state)
+        EditableItemDetailsView(viewModel, navigationViewModel, state)
     } else {
-        StaticItemDetailsView(state)
+        StaticItemDetailsView(state, navigationViewModel)
     }
 }
 
 @Composable
-fun StaticItemDetailsView(state: ItemDetailsViewModel.ItemDetailsViewState) {
+fun StaticItemDetailsView(
+    state: ItemDetailsViewModel.ItemDetailsViewState,
+    navigationViewModel: NavigationViewModel
+) {
     val uriHandler = LocalUriHandler.current
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
@@ -198,15 +200,13 @@ fun StaticItemDetailsView(state: ItemDetailsViewModel.ItemDetailsViewState) {
                 }
 
                 if (state.url.isNotEmpty()) {
-                    Row(
+                    CurlyText(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        CurlyText(text = stringResource(Res.string.item_url), bold = true)
-                        CurlyText(modifier = Modifier.clickable {
-                            uriHandler.openUri(state.url)
-                        }, text = state.url)
-                    }
+                        text = stringResource(Res.string.item_url), bold = true
+                    )
+                    CurlyText(modifier = Modifier.clickable {
+                        uriHandler.openUri(state.url)
+                    }, text = state.url)
                 }
 
                 if (!state.images.isEmpty()) {
@@ -220,7 +220,9 @@ fun StaticItemDetailsView(state: ItemDetailsViewModel.ItemDetailsViewState) {
                         ImageGrid(
                             images = state.images,
                             newImages = state.newImages
-                        )
+                        ) { imageId ->
+                            state.itemId?.let { navigationViewModel.goToGallery(it, imageId) }
+                        }
                     }
                 }
 
@@ -277,6 +279,7 @@ fun StaticItemDetailsView(state: ItemDetailsViewModel.ItemDetailsViewState) {
 @Composable
 fun EditableItemDetailsView(
     viewModel: ItemDetailsViewModel,
+    navigationViewModel: NavigationViewModel,
     state: ItemDetailsViewModel.ItemDetailsViewState
 ) {
     var showImageFilePicker by remember { mutableStateOf(false) }
@@ -459,7 +462,9 @@ fun EditableItemDetailsView(
                         delete = {
                             viewModel.deleteImage(it)
                         }
-                    )
+                    ) { imageId ->
+                        state.itemId?.let { navigationViewModel.goToGallery(it, imageId) }
+                    }
                 }
 
                 Row(
@@ -601,7 +606,8 @@ fun ImageGrid(
     images: Map<Int, String>,
     newImages: List<MemImg>,
     deleteNew: ((MemImg) -> Unit)? = null,
-    delete: ((Int) -> Unit)? = null
+    delete: ((Int) -> Unit)? = null,
+    select: ((Int) -> Unit)? = null
 ) {
     var showRemoveAlertForId by remember { mutableStateOf(-1) }
     val badge = painterResource(Res.drawable.newbadge)
@@ -640,7 +646,9 @@ fun ImageGrid(
                     elevation = 4.dp
                 ) {
                     KamelImage(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize().clickable {
+                            select?.invoke(key)
+                        },
                         resource = asyncPainterResource(data = imageUrl),
                         contentDescription = "Item Image",
                         contentScale = ContentScale.Crop,

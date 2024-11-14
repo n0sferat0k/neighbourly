@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.neighbourly.app.a_device.ui.AppColors
-import com.neighbourly.app.a_device.ui.Map
+import com.neighbourly.app.a_device.ui.web.WebContentView
 import dev.datlag.kcef.KCEF
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -93,7 +93,7 @@ fun DesktopMap() {
         Text(text = "Restart required.")
     } else {
         if (initialized) {
-            Map(modifier = Modifier.fillMaxSize())
+            WebContentView(modifier = Modifier.fillMaxSize())
         } else {
             Text(text = "Downloading $downloading%")
         }

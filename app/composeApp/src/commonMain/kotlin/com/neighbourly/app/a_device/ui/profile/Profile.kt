@@ -18,14 +18,14 @@ import com.neighbourly.app.a_device.ui.BoxFooter
 import com.neighbourly.app.a_device.ui.BoxHeader
 import com.neighbourly.app.a_device.ui.BoxScrollableContent
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdAddMember
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdInfoEdit
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdLocalize
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.HouseholdScanMember
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.NeighbourhoodAddMemberHousehold
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.NeighbourhoodInfoEdit
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.NeighbourhoodScanMember
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel.ProfileContent.ProfileInfoEdit
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdAddMember
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdInfoEdit
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdLocalize
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdScanMember
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.NeighbourhoodAddMemberHousehold
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.NeighbourhoodInfoEdit
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.NeighbourhoodScanMember
+import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.ProfileInfoEdit
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileViewModel
 
 @Composable
@@ -64,7 +64,11 @@ fun Profile(
                         is HouseholdAddMember -> HouseholdAddMemberView(it.id, it.username)
                         HouseholdScanMember -> HouseholdBarcodeScannerView()
                         is NeighbourhoodScanMember -> NeighbourhoodBarcodeScannerView(it.neighbourhoodid)
-                        is NeighbourhoodAddMemberHousehold -> NeighbourhoodAddMemberView(it.neighbourhoodid, it.id, it.username)
+                        is NeighbourhoodAddMemberHousehold -> NeighbourhoodAddMemberView(
+                            it.neighbourhoodid,
+                            it.id,
+                            it.username
+                        )
                     }
                 }
             }

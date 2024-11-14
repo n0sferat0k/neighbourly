@@ -1,183 +1,7 @@
-package com.neighbourly.app.a_device.ui
+package com.neighbourly.app.a_device.ui.web
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.multiplatform.webview.jsbridge.IJsMessageHandler
-import com.multiplatform.webview.jsbridge.JsMessage
-import com.multiplatform.webview.jsbridge.rememberWebViewJsBridge
-import com.multiplatform.webview.web.WebView
-import com.multiplatform.webview.web.WebViewNavigator
-import com.multiplatform.webview.web.rememberWebViewNavigator
-import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
-import com.neighbourly.app.GeoLocationCallback
-import com.neighbourly.app.GetLocation
-import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.b_adapt.viewmodel.MapViewModel
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
-import com.neighbourly.app.d_entity.data.ItemType
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
-@Composable
-fun Map(
-    viewModel: MapViewModel = viewModel { KoinProvider.KOIN.get<MapViewModel>() },
-    navigation: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() },
-    modifier: Modifier,
-    onDrawn: (() -> Unit)? = null,
-) {
-    val state by viewModel.state.collectAsState()
-
-    val webViewState =
-        rememberWebViewStateWithHTMLData(data = html).apply {
-            webSettings.isJavaScriptEnabled = true
-        }
-    val navigator = rememberWebViewNavigator()
-    val jsBridge = rememberWebViewJsBridge()
-    var firstGps by remember { mutableStateOf(true) }
-    var mapReady by remember { mutableStateOf(false) }
-
-    LaunchedEffect(jsBridge) {
-        jsBridge.register(
-            object : IJsMessageHandler {
-                override fun methodName(): String = "MapFeedback"
-
-                override fun handle(
-                    message: JsMessage,
-                    navigator: WebViewNavigator?,
-                    callback: (String) -> Unit,
-                ) {
-                    val params = Json.decodeFromString<MapFeedbackModel>(message.params)
-                    params.householdid?.let {
-                        navigation.goToFindItems(ItemType.getByName(params.type), it)
-                    }
-                    if (params.mapReady == true) {
-                        mapReady = true
-                    }
-                    if (params.drawData != null) {
-                        viewModel.onDrawn(params.drawData)
-                        onDrawn?.let { it() }
-                    }
-                }
-            },
-        )
-    }
-
-    val callback: GeoLocationCallback = { lat, lng, acc ->
-        navigator.evaluateJavaScript("setDot($lng, $lat, 'current');")
-        if (firstGps) {
-            navigator.evaluateJavaScript("center($lng, $lat, 15);")
-            firstGps = false
-        }
-    }
-
-    DisposableEffect(mapReady) {
-        if (mapReady) {
-            GetLocation.addCallback(callback)
-            viewModel.refreshMapContent()
-        }
-        onDispose {
-            GetLocation.removeCallback(callback)
-        }
-    }
-
-    LaunchedEffect(mapReady, state.lastSyncTs) {
-        if (state.lastSyncTs > 0) {
-            viewModel.refreshMapContent()
-        }
-    }
-
-    LaunchedEffect(mapReady, state.drawing) {
-        if (state.drawing) {
-            navigator.evaluateJavaScript("enableDraw()")
-        } else {
-            navigator.evaluateJavaScript("disableDraw()")
-        }
-    }
-
-    LaunchedEffect(mapReady, state.otherHouseholds, state.myHousehold, state.candidate) {
-        if (mapReady) {
-            val housesToShow = state.otherHouseholds.toMutableList()
-
-            state.myHousehold?.let { household ->
-                housesToShow.add(household)
-                if (firstGps) {
-                    navigator.evaluateJavaScript("center(${household.location.longitude}, ${household.location.latitude}, 15);")
-                    firstGps = false
-                }
-            }
-
-            if (housesToShow.isEmpty()) {
-                navigator.evaluateJavaScript("clearHouseholds()")
-            } else {
-                val js = housesToShow.map {
-                    "{" +
-                            "'longitude':${it.location.longitude}, " +
-                            "'latitude':${it.location.latitude}, " +
-                            "'id':${it.id}, " +
-                            "'name':'${it.name}', " +
-                            "'floatName':'${it.floatName}', " +
-                            "'address':'${it.address}', " +
-                            "'description':'${it.description}', " +
-                            "'donations':${it.donations}, " +
-                            "'barterings':${it.barterings}, " +
-                            "'sales':${it.sales}, " +
-                            "'events':${it.events}, " +
-                            "'needs':${it.needs}, " +
-                            "'requests':${it.requests}, " +
-                            "'skillshare':${it.skillshare}, " +
-                            "'imageurl':'${it.imageurl ?: ""}'" +
-                            "}"
-                }.joinToString(separator = ",", prefix = "updateHouseholds([", postfix = "]);")
-                navigator.evaluateJavaScript(js)
-            }
-        }
-    }
-
-    LaunchedEffect(mapReady, state.neighbourhoods) {
-        if (mapReady) {
-            if (state.neighbourhoods.isEmpty()) {
-                navigator.evaluateJavaScript("clearNeighbourhoods()")
-            } else {
-                state.neighbourhoods.forEach {
-                    navigator.evaluateJavaScript("addNeighbourhood('${it.id}', ${it.geofence})")
-                }
-            }
-        }
-    }
-
-    LaunchedEffect(mapReady, state.heatmap) {
-        if (mapReady) {
-            state.heatmap.takeIf { !it.isNullOrEmpty() }?.let {
-                val js = it.map { heatmapItem ->
-                    "{'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [${heatmapItem.longitude}, ${heatmapItem.latitude}]},'properties': {'frequency': ${heatmapItem.frequency} }}"
-                }.joinToString(
-                    separator = ",",
-                    prefix = "addLocationHeatMap('heatmap', [",
-                    postfix = "])"
-                )
-
-                navigator.evaluateJavaScript(js)
-            } ?: run {
-                navigator.evaluateJavaScript("clearLocationHeatMap('heatmap')")
-            }
-        }
-    }
-
-    WebView(
-        state = webViewState,
-        modifier = modifier,
-        navigator = navigator,
-        webViewJsBridge = jsBridge,
-    )
-}
 
 @Serializable
 data class MapFeedbackModel(
@@ -187,7 +11,7 @@ data class MapFeedbackModel(
     val type: String? = null,
 )
 
-val html =
+val mapHtml =
     """
         <!DOCTYPE html>
         <html lang="en">
@@ -251,6 +75,9 @@ val html =
                 var mapLoaded = false;
                 var lat = 0;
                 var lng = 0;
+                var centerDot = false;
+                var dotLat = 0;
+                var dotLng = 0;
                 var households = [];
                 var neighbourhoods = [];            
                 var markers = []; 
@@ -488,9 +315,17 @@ val html =
                     }
                 }    
         
+                function centerToDot() {
+                    if(dotLat != 0 || dotLng != 0) {
+                        center(dotLng, dotLat, 15);
+                    } else {
+                        centerDot = true;
+                    }                    
+                }
+        
                 function center(longitude, latitude, zoom) {
                     if (mapLoaded) {
-                        map.flyTo({
+                        map.jumpTo({
                             center: [longitude, latitude],
                             zoom: zoom
                         });
@@ -647,7 +482,14 @@ val html =
                     }
                 }
                     
-                function setDot(longitude, latitude, id) {
+                function setDot(longitude, latitude, id) {                    
+                    if(dotLat == 0 && dotLng == 0 && centerDot) {
+                        center(longitude, latitude, 15);
+                    } 
+                    
+                    dotLng = longitude;
+                    dotLat = latitude; 
+                                            
                     if (mapLoaded) {
                         if (map.getSource(id) !== undefined) {
                             map.getSource(id).setData({
@@ -672,10 +514,7 @@ val html =
                                 }
                             });
                         }
-                    } else {
-                        lng = longitude;
-                        lat = latitude;                    
-                    }
+                    } 
                 }
             </script>
         </body>

@@ -4,7 +4,7 @@ import com.neighbourly.app.a_device.api.KtorApi
 import com.neighbourly.app.a_device.store.SessionHybridStore
 import com.neighbourly.app.b_adapt.gateway.ApiGateway
 import com.neighbourly.app.b_adapt.interactor.DbInteractor
-import com.neighbourly.app.b_adapt.viewmodel.MapViewModel
+import com.neighbourly.app.b_adapt.viewmodel.WebMapViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
@@ -33,6 +33,7 @@ import com.neighbourly.app.c_business.usecase.profile.ProfileImageUpdateUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileUpdateUseCase
 import com.neighbourly.app.d_entity.interf.Api
+import com.neighbourly.app.d_entity.interf.ConfigProvider
 import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import com.neighbourly.app.d_entity.interf.SessionStore
@@ -68,6 +69,9 @@ val deviceModule =
         single<KeyValueRegistry> {
             keyValueRegistry
         }
+        single<ConfigProvider> {
+            configProvider
+        }
     }
 val adapterModule =
     module {
@@ -78,7 +82,7 @@ val adapterModule =
             DbInteractor(createDatabase())
         }
         single {
-            NavigationViewModel(get())
+            NavigationViewModel(get(), get())
         }
         factory {
             LoginViewModel(get())
@@ -102,7 +106,7 @@ val adapterModule =
             LoginViewModel(get())
         }
         factory {
-            MapViewModel(get(), get(), get(), get())
+            WebMapViewModel(get(), get(), get(), get())
         }
         factory {
             HouseholdLocalizeViewModel(get(), get())

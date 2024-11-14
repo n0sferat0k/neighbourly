@@ -20,7 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.HalfCircleHalo
 import com.neighbourly.app.a_device.ui.MainContent
-import com.neighbourly.app.a_device.ui.Map
+import com.neighbourly.app.a_device.ui.web.WebContentView
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.houses
@@ -34,16 +34,12 @@ fun App(
     includeMap: Boolean = true,
 ) {
     val navigation by navigationViewModel.state.collectAsState()
-    LaunchedEffect(includeMap) {
-        navigationViewModel.setDisableMainContentToggle(!includeMap)
-    }
 
     MaterialTheme {
         requestPermissions()
         if (includeMap) {
-            Map(
+            WebContentView(
                 modifier = Modifier.fillMaxSize(),
-                onDrawn = { navigationViewModel.goToNeighbourhoodInfoEdit() },
             )
         }
 
