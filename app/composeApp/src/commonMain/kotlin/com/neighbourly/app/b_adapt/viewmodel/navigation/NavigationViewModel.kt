@@ -17,6 +17,7 @@ import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.Neighbour
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.ProfileInfoEdit
 import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebGallery
 import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebMap
+import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebPage
 import com.neighbourly.app.d_entity.data.ItemType
 import com.neighbourly.app.d_entity.interf.ConfigProvider
 import com.neighbourly.app.d_entity.interf.SessionStore
@@ -235,6 +236,20 @@ public class NavigationViewModel(
             it.copy(
                 mainContentVisible = if (it.disableMainToggle) true else false,
                 webContent = WebGallery(itemId, imageId)
+            )
+        }
+        if (_state.value.disableMainToggle) {
+            _state.update(updater)
+        } else {
+            _state.updateAndStack(updater)
+        }
+    }
+
+    fun goToWebPage(url: String) {
+        val updater: (NavigationViewState) -> NavigationViewState = {
+            it.copy(
+                mainContentVisible = if (it.disableMainToggle) true else false,
+                webContent = WebPage(url)
             )
         }
         if (_state.value.disableMainToggle) {

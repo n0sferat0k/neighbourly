@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
+import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent
 import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebGallery
 import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebMap
 
@@ -25,6 +26,8 @@ fun WebContentView(
                 itemId = it.itemId,
                 imageId = it.imageId
             )
+
+            is WebContent.WebPage -> WebPageView(modifier, it.url)
         }
     }
 }

@@ -49,6 +49,7 @@ import com.neighbourly.app.a_device.ui.BoxScrollableContent
 import com.neighbourly.app.a_device.ui.CurlyButton
 import com.neighbourly.app.a_device.ui.CurlyText
 import com.neighbourly.app.a_device.ui.ErrorText
+import com.neighbourly.app.a_device.ui.StraightText
 import com.neighbourly.app.a_device.ui.SwipeToDeleteBox
 import com.neighbourly.app.a_device.ui.datetime.DateTimeDialog
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel
@@ -113,6 +114,9 @@ val TYPE_ASSOC = mapOf(
     SKILLSHARE.name to Pair(Res.drawable.skillshare, Res.string.skillshare),
 )
 
+val LOCALLY_ALLOWED_SITES =
+    listOf("youtube.com", "youtu.be", "facebook", "pinterest", "goo.gl/photos")
+
 @Composable
 fun ItemDetailsView(
     itemId: Int? = null,
@@ -156,7 +160,7 @@ fun StaticItemDetailsView(
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     CurlyText(text = stringResource(Res.string.type), bold = true)
-                    CurlyText(
+                    StraightText(
                         text = stringResource(
                             TYPE_ASSOC.get(state.type)?.second ?: Res.string.unknown
                         ),
@@ -178,7 +182,7 @@ fun StaticItemDetailsView(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         CurlyText(text = stringResource(Res.string.target_user), bold = true)
-                        CurlyText(text = state.users.getOrDefault(state.targetUserId, ""))
+                        StraightText(text = state.users.getOrDefault(state.targetUserId, ""))
                     }
                 }
                 Row(
@@ -186,14 +190,14 @@ fun StaticItemDetailsView(
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     CurlyText(text = stringResource(Res.string.item_name), bold = true)
-                    CurlyText(text = state.name)
+                    StraightText(text = state.name)
                 }
                 if (state.description.isNotEmpty()) {
                     CurlyText(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(Res.string.item_description), bold = true
                     )
-                    CurlyText(
+                    StraightText(
                         modifier = Modifier.fillMaxWidth(),
                         text = state.description
                     )
@@ -204,8 +208,12 @@ fun StaticItemDetailsView(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(Res.string.item_url), bold = true
                     )
-                    CurlyText(modifier = Modifier.clickable {
-                        uriHandler.openUri(state.url)
+                    StraightText(modifier = Modifier.clickable {
+                        if (LOCALLY_ALLOWED_SITES.any { state.url.contains(it) }) {
+                            navigationViewModel.goToWebPage(state.url)
+                        } else {
+                            uriHandler.openUri(state.url)
+                        }
                     }, text = state.url)
                 }
 
@@ -234,7 +242,7 @@ fun StaticItemDetailsView(
                     )
 
                     state.files.onEach {
-                        CurlyText(
+                        StraightText(
                             modifier = Modifier.fillMaxWidth()
                                 .clickable {
                                     uriHandler.openUri(it.url)
@@ -250,7 +258,7 @@ fun StaticItemDetailsView(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         CurlyText(text = stringResource(Res.string.start_date))
-                        CurlyText(
+                        StraightText(
                             text = state.start.toLocalDateTime(TimeZone.currentSystemDefault())
                                 .toJavaLocalDateTime().format(formatter),
                             bold = true
@@ -264,7 +272,7 @@ fun StaticItemDetailsView(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         CurlyText(text = stringResource(Res.string.end_date))
-                        CurlyText(
+                        StraightText(
                             text = state.end.toLocalDateTime(TimeZone.currentSystemDefault())
                                 .toJavaLocalDateTime().format(formatter),
                             bold = true

@@ -283,6 +283,24 @@ fun CurlyText(
 }
 
 @Composable
+fun StraightText(
+    modifier: Modifier = Modifier,
+    text: String,
+    bold: Boolean = false,
+    fontSize: TextUnit = 20.sp,
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style =
+        TextStyle(
+            fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
+            fontSize = fontSize,
+        ),
+    )
+}
+
+@Composable
 fun CurlyButton(
     modifier: Modifier = Modifier,
     text: String,
