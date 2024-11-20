@@ -1,5 +1,6 @@
 package com.neighbourly.app.d_entity.interf
 
+import com.neighbourly.app.d_entity.data.Credentials
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.LocalizationProgress
 import com.neighbourly.app.d_entity.data.User
@@ -7,6 +8,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface SessionStore {
     suspend fun storeUser(user: User)
+
+    suspend fun storeCredentials(credentials: Credentials? = null)
 
     suspend fun clear()
 
@@ -18,6 +21,7 @@ interface SessionStore {
     val localizationFlow: Flow<LocalizationProgress>
 
     val user: User?
+    val credentials: Credentials?
 
     val isLoggedInFlow: Flow<Boolean>
     var lastSyncTs : Int?

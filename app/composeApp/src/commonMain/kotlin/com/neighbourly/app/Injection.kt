@@ -90,7 +90,7 @@ val adapterModule =
             NavigationViewModel(get(), get())
         }
         factory {
-            LoginViewModel(get())
+            LoginViewModel(get(), get())
         }
         factory {
             RegisterViewModel(get(), get())
@@ -108,7 +108,7 @@ val adapterModule =
             ProfileFooterViewModel(get())
         }
         factory {
-            LoginViewModel(get())
+            LoginViewModel(get(), get())
         }
         factory {
             WebMapViewModel(get(), get(), get(), get())

@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,6 +15,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -33,6 +36,7 @@ import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.AppColors
 import com.neighbourly.app.a_device.ui.utils.CurlyButton
+import com.neighbourly.app.a_device.ui.utils.CurlyText
 import com.neighbourly.app.a_device.ui.utils.ErrorText
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
 import com.neighbourly.app.d_entity.data.FileContents
@@ -47,6 +51,7 @@ import neighbourly.composeapp.generated.resources.password
 import neighbourly.composeapp.generated.resources.phone
 import neighbourly.composeapp.generated.resources.profile
 import neighbourly.composeapp.generated.resources.register
+import neighbourly.composeapp.generated.resources.remember_me
 import neighbourly.composeapp.generated.resources.username
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -65,6 +70,7 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
     var profileImage by remember { mutableStateOf<Painter?>(null) }
     var profileFile by remember { mutableStateOf<FileContents?>(null) }
     var showFilePicker by remember { mutableStateOf(false) }
+    var remember by remember { mutableStateOf(true) }
 
     FilePicker(show = showFilePicker, fileExtensions = listOf("jpg", "png")) { file ->
         showFilePicker = false
@@ -201,6 +207,20 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
 
         Spacer(modifier = Modifier.height(16.dp))
 
+        Row {
+            CurlyText(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                text = stringResource(Res.string.remember_me)
+            )
+            Checkbox(
+                checked = remember,
+                onCheckedChange = { remember = it },
+                colors = CheckboxDefaults.colors(checkedColor = AppColors.primary)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         CurlyButton(text = stringResource(Res.string.register), loading = state.loading) {
             viewModel.onRegister(
                 username,
@@ -210,6 +230,7 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
                 email,
                 phoneNumber,
                 profileFile,
+                remember
             )
         }
 

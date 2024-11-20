@@ -8,6 +8,7 @@
     <string name="phone">Phone Number</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
+    <string name="remember_me">Remember Me</string>
     <string name="logout">Logout</string>
     <string name="save">Save</string>
     <string name="here">Here</string>

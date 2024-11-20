@@ -1,5 +1,6 @@
 package com.neighbourly.app.a_device.store
 
+import com.neighbourly.app.d_entity.data.Credentials
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.LocalizationProgress
 import com.neighbourly.app.d_entity.data.User
@@ -21,6 +22,8 @@ class SessionHybridStore(
 ) : SessionStore {
     private var userState = MutableStateFlow<User?>(null)
     private var localizationState = MutableStateFlow(LocalizationProgress())
+    private var _credentials: Credentials? = null
+    override val credentials: Credentials? get() = _credentials?.copy()
 
     override val userFlow = userState.asSharedFlow()
     override val localizationFlow = localizationState.asSharedFlow()
@@ -43,11 +46,29 @@ class SessionHybridStore(
                 loadFromStore()
             }
         }
+        if (keyValueRegistry.contains(KEY_REM_USER)) {
+            _credentials = Credentials(
+                keyValueRegistry.getString(KEY_REM_USER, ""),
+                keyValueRegistry.getString(KEY_REM_PASS, "")
+            )
+        }
     }
 
     override suspend fun storeUser(user: User) {
         userState.emit(user)
         saveToStore()
+    }
+
+    override suspend fun storeCredentials(credentials: Credentials?) {
+        this._credentials = credentials
+
+        if (credentials != null) {
+            keyValueRegistry.putString(KEY_REM_USER, credentials.username)
+            keyValueRegistry.putString(KEY_REM_PASS, credentials.password)
+        } else {
+            keyValueRegistry.remove(KEY_REM_USER)
+            keyValueRegistry.remove(KEY_REM_PASS)
+        }
     }
 
     override suspend fun updateUser(updater: (User?) -> User?) {
@@ -86,5 +107,7 @@ class SessionHybridStore(
         const val STORE_VERSION = "1"
         const val KEY_STORE_VERSION = "key.store.version"
         const val KEY_USER = "key.user"
+        const val KEY_REM_USER = "key.remembered.user"
+        const val KEY_REM_PASS = "key.remembered.pass"
     }
 }

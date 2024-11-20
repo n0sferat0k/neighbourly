@@ -12,10 +12,14 @@ import com.neighbourly.app.a_device.ui.utils.generateQrCode
 @Composable
 fun BackendInfoView() {
     Image(
-        painter = BitmapPainter(generateQrCode("http://neighbourly.go.ro/releases/neighbourly-1.0.0.apk", 400)),
+        painter = BitmapPainter(
+            generateQrCode(
+                "http://neighbourly.go.ro/releases/neighbourly-1.0.0.apk",
+                400
+            )
+        ),
         contentDescription = "QR Code",
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
     )

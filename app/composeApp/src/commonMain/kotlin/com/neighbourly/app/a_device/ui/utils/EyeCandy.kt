@@ -373,7 +373,7 @@ fun HalfCircleHalo(modifier: Modifier = Modifier) {
 fun ContentBox(
     modifier: Modifier = Modifier.alpha(.9f)
         .fillMaxSize()
-        .padding(20.dp, 20.dp, 20.dp, 100.dp),
+        .padding(start = 20.dp, top = 48.dp, end = 20.dp, bottom = 100.dp),
     content: @Composable BoxScope.() -> Unit,
 ) {
     Box(

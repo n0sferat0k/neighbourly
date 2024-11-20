@@ -42,6 +42,7 @@ class RegisterViewModel(
         email: String,
         phone: String,
         profileImageFileContents: FileContents?,
+        remember: Boolean,
     ) {
         validateUsername(username)
         validatePassword(password, confirmPassword)
@@ -67,7 +68,7 @@ class RegisterViewModel(
         }
         viewModelScope.launch {
             try {
-                registerUseCase.execute(username, password, fullname, email, phone)
+                registerUseCase.execute(username, password, fullname, email, phone, remember)
                 profileImageFileContents?.let {
                     profileUpdateUseCase.execute(profileImageFileContents)
                 }
