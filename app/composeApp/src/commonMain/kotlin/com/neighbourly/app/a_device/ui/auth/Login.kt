@@ -20,8 +20,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.CurlyButton
-import com.neighbourly.app.a_device.ui.ErrorText
+import com.neighbourly.app.a_device.ui.utils.CurlyButton
+import com.neighbourly.app.a_device.ui.utils.ErrorText
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.login

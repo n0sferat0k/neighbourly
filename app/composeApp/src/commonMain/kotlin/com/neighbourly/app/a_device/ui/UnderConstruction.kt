@@ -13,6 +13,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
+import com.neighbourly.app.a_device.ui.utils.BoxHeader
+import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
+import com.neighbourly.app.a_device.ui.utils.CurlyText
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileViewModel
 import neighbourly.composeapp.generated.resources.Res

@@ -29,6 +29,8 @@ sealed interface MainContent {
     object ManageMyStuff : MainContent
     object PublishStuff : MainContent
 
+    object BackendInfo : MainContent
+
     data class ShowItemDetails(val itemId: Int) : MainContent
 
     data class FindItems(

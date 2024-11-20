@@ -17,10 +17,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.neighbourly.app.a_device.ui.AppColors
-import com.neighbourly.app.a_device.ui.BoxHeader
-import com.neighbourly.app.a_device.ui.BoxScrollableContent
-import com.neighbourly.app.a_device.ui.font
+import com.neighbourly.app.a_device.ui.utils.AppColors
+import com.neighbourly.app.a_device.ui.utils.BoxHeader
+import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
+import com.neighbourly.app.a_device.ui.utils.font
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.login
 import neighbourly.composeapp.generated.resources.register

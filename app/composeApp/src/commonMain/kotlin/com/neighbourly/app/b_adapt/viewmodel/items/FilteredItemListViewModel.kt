@@ -35,7 +35,7 @@ class FilteredItemListViewModel(
 
     fun setFilters(type: ItemType?, householdId: Int?, showExpired: Boolean) {
         _state.update { it.copy(type = type, householdId = householdId, showExpired = showExpired) }
-        refilter()
+        refresh()
     }
 
     fun refresh(force: Boolean = false) {

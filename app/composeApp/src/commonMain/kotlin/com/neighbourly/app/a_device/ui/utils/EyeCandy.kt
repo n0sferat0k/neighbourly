@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui
+package com.neighbourly.app.a_device.ui.utils
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
@@ -64,12 +64,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.app_name
-import neighbourly.composeapp.generated.resources.cancel
-import neighbourly.composeapp.generated.resources.confirm
 import neighbourly.composeapp.generated.resources.curlzmt
 import neighbourly.composeapp.generated.resources.delete
 import neighbourly.composeapp.generated.resources.houses
@@ -287,7 +283,7 @@ fun StraightText(
     modifier: Modifier = Modifier,
     text: String,
     bold: Boolean = false,
-    fontSize: TextUnit = 20.sp,
+    fontSize: TextUnit = 18.sp,
 ) {
     Text(
         modifier = modifier,

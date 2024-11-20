@@ -29,10 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.AlertDialog
-import com.neighbourly.app.a_device.ui.AppColors
-import com.neighbourly.app.a_device.ui.CurlyButton
-import com.neighbourly.app.a_device.ui.CurlyText
+import com.neighbourly.app.a_device.ui.utils.AlertDialog
+import com.neighbourly.app.a_device.ui.utils.AppColors
+import com.neighbourly.app.a_device.ui.utils.CurlyButton
+import com.neighbourly.app.a_device.ui.utils.CurlyText
 import com.neighbourly.app.a_device.ui.utils.generateQrCode
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.NeighbourhoodInfoViewModel

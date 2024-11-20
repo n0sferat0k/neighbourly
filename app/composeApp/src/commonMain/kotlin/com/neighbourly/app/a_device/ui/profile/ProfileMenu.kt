@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.AppColors
-import com.neighbourly.app.a_device.ui.ErrorText
+import com.neighbourly.app.a_device.ui.utils.AppColors
+import com.neighbourly.app.a_device.ui.utils.ErrorText
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileMenuViewModel

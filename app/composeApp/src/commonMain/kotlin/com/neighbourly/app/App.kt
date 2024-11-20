@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -17,9 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.neighbourly.app.a_device.ui.AppColors
-import com.neighbourly.app.a_device.ui.HalfCircleHalo
+import com.neighbourly.app.a_device.ui.utils.AppColors
+import com.neighbourly.app.a_device.ui.utils.HalfCircleHalo
 import com.neighbourly.app.a_device.ui.MainContent
+import com.neighbourly.app.a_device.ui.SignalView
 import com.neighbourly.app.a_device.ui.web.WebContentView
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import neighbourly.composeapp.generated.resources.Res
@@ -37,10 +37,18 @@ fun App(
 
     MaterialTheme {
         requestPermissions()
+
         if (includeMap) {
             WebContentView(
                 modifier = Modifier.fillMaxSize(),
             )
+        }
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.TopCenter,
+        ) {
+            SignalView()
         }
 
         Box(

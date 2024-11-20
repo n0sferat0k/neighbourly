@@ -8,8 +8,9 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.toComposeImageBitmap
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
+import com.neighbourly.app.a_device.store.StatusMemoryStore
 import com.neighbourly.app.d_entity.data.FileContents
-import com.neighbourly.app.d_entity.interf.ConfigProvider
+import com.neighbourly.app.d_entity.interf.ConfigStatusSource
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
@@ -107,8 +108,7 @@ actual class PlatformBitmap actual constructor(width: Int, height: Int) {
 actual val databaseDriver: SqlDriver
     get() = JdbcSqliteDriver("jdbc:sqlite:neighbourly.db").also { NeighbourlyDB.Schema.create(it) }
 
-actual val configProvider: ConfigProvider
-    get() = object : ConfigProvider {
+actual val statusConfigSource  = object : StatusMemoryStore() {
         override val wideScreenFlow: Flow<Boolean>
             get() = listOf(true).asFlow()
     }

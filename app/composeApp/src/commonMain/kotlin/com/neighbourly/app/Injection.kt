@@ -4,6 +4,7 @@ import com.neighbourly.app.a_device.api.KtorApi
 import com.neighbourly.app.a_device.store.SessionHybridStore
 import com.neighbourly.app.b_adapt.gateway.ApiGateway
 import com.neighbourly.app.b_adapt.interactor.DbInteractor
+import com.neighbourly.app.b_adapt.viewmodel.SignalViewModel
 import com.neighbourly.app.b_adapt.viewmodel.WebMapViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
@@ -33,10 +34,11 @@ import com.neighbourly.app.c_business.usecase.profile.ProfileImageUpdateUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileUpdateUseCase
 import com.neighbourly.app.d_entity.interf.Api
-import com.neighbourly.app.d_entity.interf.ConfigProvider
+import com.neighbourly.app.d_entity.interf.ConfigStatusSource
 import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import com.neighbourly.app.d_entity.interf.SessionStore
+import com.neighbourly.app.d_entity.interf.StatusUpdater
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
@@ -69,14 +71,17 @@ val deviceModule =
         single<KeyValueRegistry> {
             keyValueRegistry
         }
-        single<ConfigProvider> {
-            configProvider
+        single<ConfigStatusSource> {
+            statusConfigSource
+        }
+        single<StatusUpdater> {
+            statusConfigSource
         }
     }
 val adapterModule =
     module {
         single<Api> {
-            ApiGateway(KtorApi())
+            ApiGateway(KtorApi, get())
         }
         single<Db> {
             DbInteractor(createDatabase())
@@ -131,6 +136,9 @@ val adapterModule =
         }
         factory {
             ItemDetailsViewModel(get(), get(), get(), get())
+        }
+        factory {
+            SignalViewModel(get())
         }
     }
 

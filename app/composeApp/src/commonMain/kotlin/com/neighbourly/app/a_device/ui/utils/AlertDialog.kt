@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui
+package com.neighbourly.app.a_device.ui.utils
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

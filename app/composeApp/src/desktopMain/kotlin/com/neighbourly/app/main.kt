@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.utils.AppColors
 import com.neighbourly.app.a_device.ui.web.WebContentView
 import dev.datlag.kcef.KCEF
 import kotlinx.coroutines.Dispatchers

@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import com.neighbourly.app.a_device.ui.utils.AppColors
 
 @ExperimentalLensFacing
 @ExperimentalGetImage

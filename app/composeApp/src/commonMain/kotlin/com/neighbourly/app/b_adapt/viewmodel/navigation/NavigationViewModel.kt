@@ -2,7 +2,7 @@ package com.neighbourly.app.b_adapt.viewmodel.navigation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.MainMenu
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BackendInfo
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ManageProfile
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ShowItemDetails
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavPages.HideMenu
@@ -19,7 +19,7 @@ import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebGallery
 import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebMap
 import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebPage
 import com.neighbourly.app.d_entity.data.ItemType
-import com.neighbourly.app.d_entity.interf.ConfigProvider
+import com.neighbourly.app.d_entity.interf.ConfigStatusSource
 import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,7 +31,7 @@ import java.util.Stack
 
 public class NavigationViewModel(
     val sessionStore: SessionStore,
-    val configProvider: ConfigProvider
+    val configProvider: ConfigStatusSource
 ) : ViewModel() {
     private val _state = MutableStateFlow(NavigationViewState())
     private val _stateStack = Stack<NavigationViewState>()
@@ -100,6 +100,15 @@ public class NavigationViewModel(
             it.copy(
                 mainContentVisible = true,
                 mainContent = MainContent.FindItems(itemType, householdId),
+            )
+        }
+    }
+
+    fun goToBackendInfo() {
+        _state.update {
+            it.copy(
+                mainContentVisible = true,
+                mainContent = BackendInfo,
             )
         }
     }

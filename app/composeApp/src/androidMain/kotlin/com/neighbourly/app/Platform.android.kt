@@ -35,8 +35,9 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.neighbourly.app.NeighbourlyApp.Companion.locationProvider
+import com.neighbourly.app.a_device.store.StatusMemoryStore
 import com.neighbourly.app.d_entity.data.FileContents
-import com.neighbourly.app.d_entity.interf.ConfigProvider
+import com.neighbourly.app.d_entity.interf.ConfigStatusSource
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.okhttp.OkHttp
@@ -208,8 +209,7 @@ actual class PlatformBitmap actual constructor(width: Int, height: Int) {
 actual val databaseDriver: SqlDriver
     get() = AndroidSqliteDriver(NeighbourlyDB.Schema, NeighbourlyApp.appContext, "neighbourly.db")
 
-actual val configProvider: ConfigProvider
-    get() = object : ConfigProvider {
+actual val statusConfigSource = object : StatusMemoryStore() {
         init {
             NeighbourlyApp.appContext.registerComponentCallbacks(object : ComponentCallbacks {
                 override fun onConfigurationChanged(newConfig: Configuration) {

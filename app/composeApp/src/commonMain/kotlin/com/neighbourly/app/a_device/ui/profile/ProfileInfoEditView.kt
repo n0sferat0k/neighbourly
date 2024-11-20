@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.CurlyButton
-import com.neighbourly.app.a_device.ui.ErrorText
+import com.neighbourly.app.a_device.ui.utils.CurlyButton
+import com.neighbourly.app.a_device.ui.utils.ErrorText
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileInfoEditViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.about

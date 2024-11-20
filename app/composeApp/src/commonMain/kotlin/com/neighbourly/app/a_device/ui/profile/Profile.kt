@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.BoxFooter
-import com.neighbourly.app.a_device.ui.BoxHeader
-import com.neighbourly.app.a_device.ui.BoxScrollableContent
+import com.neighbourly.app.a_device.ui.utils.BoxFooter
+import com.neighbourly.app.a_device.ui.utils.BoxHeader
+import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdAddMember
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdInfoEdit

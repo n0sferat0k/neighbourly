@@ -6,8 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import app.cash.sqldelight.db.SqlDriver
+import com.neighbourly.app.a_device.store.StatusMemoryStore
 import com.neighbourly.app.d_entity.data.FileContents
-import com.neighbourly.app.d_entity.interf.ConfigProvider
+import com.neighbourly.app.d_entity.interf.ConfigStatusSource
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
 
@@ -34,7 +35,7 @@ expect val httpClientEngine: HttpClientEngine
 
 expect val keyValueRegistry: KeyValueRegistry
 
-expect val configProvider: ConfigProvider
+expect val statusConfigSource: StatusMemoryStore
 
 expect class PlatformBitmap(width: Int, height: Int) {
     fun setPixel(x: Int, y: Int, value: Int)

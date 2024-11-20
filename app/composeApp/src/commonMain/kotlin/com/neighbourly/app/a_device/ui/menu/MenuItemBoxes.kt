@@ -32,8 +32,8 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.neighbourly.app.a_device.ui.AppColors
-import com.neighbourly.app.a_device.ui.CurlyText
+import com.neighbourly.app.a_device.ui.utils.AppColors
+import com.neighbourly.app.a_device.ui.utils.CurlyText
 import kotlinx.coroutines.delay
 
 @Composable

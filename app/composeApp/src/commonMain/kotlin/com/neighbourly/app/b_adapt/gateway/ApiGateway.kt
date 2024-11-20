@@ -8,14 +8,17 @@ import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.data.SyncData
 import com.neighbourly.app.d_entity.data.User
 import com.neighbourly.app.d_entity.interf.Api
+import com.neighbourly.app.d_entity.interf.StatusUpdater
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.IOException
+import java.util.concurrent.TimeoutException
 
 class ApiGateway(
     val api: KtorApi,
+    val statusUpdater: StatusUpdater,
 ) : Api {
     override suspend fun logout(
         token: String,
@@ -367,6 +370,11 @@ class ApiGateway(
                 block.invoke()
             }
         }.let {
+            val networkError = (it.isFailure && (it.exceptionOrNull()
+                ?.let { it is IOException || it is TimeoutException } ?: false))
+
+            statusUpdater.setOnline(!networkError)
+
             when {
                 it.isSuccess -> it.getOrElse { throw OpException("Unknown Error") }
                 it.isFailure ->

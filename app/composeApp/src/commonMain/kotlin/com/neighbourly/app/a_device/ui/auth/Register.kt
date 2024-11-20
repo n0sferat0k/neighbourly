@@ -31,9 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.AppColors
-import com.neighbourly.app.a_device.ui.CurlyButton
-import com.neighbourly.app.a_device.ui.ErrorText
+import com.neighbourly.app.a_device.ui.utils.AppColors
+import com.neighbourly.app.a_device.ui.utils.CurlyButton
+import com.neighbourly.app.a_device.ui.utils.ErrorText
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.getPhoneNumber
