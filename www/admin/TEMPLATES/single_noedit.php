@@ -39,10 +39,13 @@ $TEMPLATE_FILE_TAGS['imagefileINP'] = 'tag';
 $TEMPLATE_FILE_TAGS['files_null_text'] = 'tag';
 $TEMPLATE_FILE_TAGS['auxform4_onsubmit'] = 'tag';
 $TEMPLATE_FILE_TAGS['auxform4_param1'] = 'tag';
+$TEMPLATE_FILE_TAGS['lable_delfile'] = 'tag';
 $TEMPLATE_FILE_TAGS['lable_file'] = 'tag';
 $TEMPLATE_FILE_TAGS['filehasnameBOOL'] = 'tag';
 $TEMPLATE_FILE_TAGS['lable_addfile'] = 'tag';
 $TEMPLATE_FILE_TAGS['needs_auxform'] = 'if';
+$TEMPLATE_FILE_TAGS['has_add_numerics'] = 'if';
+$TEMPLATE_FILE_TAGS['has_add_strings'] = 'if';
 $TEMPLATE_FILE_TAGS['has_title'] = 'if';
 $TEMPLATE_FILE_TAGS['title_iseditable'] = 'if';
 $TEMPLATE_FILE_TAGS['has_date'] = 'if';
@@ -70,21 +73,12 @@ $TEMPLATE_FILE_TAGS['multifile'] = 'if';
 $TEMPLATE_FILE_TAGS['zindexes'] = 'loop';
 $TEMPLATE_FILE_TAGS['images'] = 'loop';
 $TEMPLATE_FILE_TAGS['files'] = 'loop';
-if($DISPLAY_TEMPLATE_BODY) { ?>
-<link rel="stylesheet" type="text/css" href="CSS/TPL_single_1.css" />
+$TEMPLATE_FILE_TAGS['add_numerics'] = 'cloop';
+$TEMPLATE_FILE_TAGS['add_strings'] = 'cloop';
+if($DISPLAY_TEMPLATE_BODY) {?>
+<link rel="stylesheet" type="text/css" href="CSS/TPL_single.css" />
 <script src="javascripts/POPUP_V3.js" type="text/javascript"></script>
 <script src="javascripts/GENERAL.js" type="text/javascript"></script>
-<script language="javascript" type="text/javascript">
-	tinyMCE.init({
-					mode : "textareas",
-					theme : "advanced",
-                    convert_urls : false,
-                    document_base_url : "/",
-                    relative_urls : true,
-					plugins : "safari,spellchecker,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,imagemanager,filemanager"
-
-				});
-</script>
 
 <?php if($needs_auxform) { ?>
 <!-******************************************************************************** AUXILIAR FORM FOR DELETING PICTURE-->
@@ -122,7 +116,51 @@ if($DISPLAY_TEMPLATE_BODY) { ?>
 		<input type="hidden" name="param1" value="<?php echo $mainform_param1; ?>" />
 		<input type="hidden" name="<?php echo $keyname; ?>" value="<?php echo $keyvalue; ?>" />
 		<div class="PAGE">
-			<div class="PAGE_LEFT">							
+			<div class="PAGE_LEFT">	
+				<?php if($has_add_numerics) { ?>				
+					
+					<?php for($add_numerics_counter=0;$add_numerics_counter < countOrZero($add_numerics);$add_numerics_counter ++) { switch($add_numerics[$add_numerics_counter]['case']){
+			  			case 'editable': ?>
+					    	<div class="LABLE">	
+								<?php echo $add_numerics[$add_numerics_counter]['add_numericsVAR']; ?>	
+							</div>					
+							<div class="POSITIONER">
+								<input type="text" name="<?php echo $add_numerics[$add_numerics_counter]['add_numericsINP']; ?>" value="<?php echo $add_numerics[$add_numerics_counter]['add_numericsVAL']; ?>" class="INPUT_TEXT"/>
+							</div>													
+					  	<?php break;
+					  	case 'static': ?>
+					  		<div class="LABLE">	
+							  	<?php echo $add_numerics[$add_numerics_counter]['add_numericsVAR']; ?>	
+							</div>
+					    	<div class="POSITIONER">
+								<input type="text" name="<?php echo $add_numerics[$add_numerics_counter]['add_numericsINP']; ?>" value="<?php echo $add_numerics[$add_numerics_counter]['add_numericsVAL']; ?>" class="INPUT_TEXT" readonly="readonly"/>
+							</div>
+					  	<?php break;					  
+					}} ?>
+					
+				<?php }                                    
+                                ?>
+				<?php if($has_add_strings) { ?>
+					<?php for($add_strings_counter=0;$add_strings_counter < countOrZero($add_strings);$add_strings_counter ++) { switch($add_strings[$add_strings_counter]['case']){
+			  			case 'editable': ?>
+					    	<div class="LABLE">	
+								<?php echo $add_strings[$add_strings_counter]['add_stringsVAR']; ?>	
+							</div>					
+							<div class="POSITIONER">							
+								<input type="text" name="<?php echo $add_strings[$add_strings_counter]['add_stringsINP']; ?>" value="<?php echo $add_strings[$add_strings_counter]['add_stringsVAL']; ?>" class="INPUT_TEXT"/>
+							</div>	
+					  	<?php break;
+					  	case 'static': ?>
+					    	<div class="LABLE">	
+							  	<?php echo $add_numerics[$add_numerics_counter]['add_numericsVAR']; ?>	
+							</div>
+					    	<div class="POSITIONER">
+								<input type="text" name="<?php echo $add_strings[$add_strings_counter]['add_stringsINP']; ?>" value="<?php echo $add_strings[$add_strings_counter]['add_stringsVAL']; ?>" class="INPUT_TEXT" readonly="readonly"/>
+							</div>
+					  	<?php break;					  
+					}} ?>
+				<?php } ?>
+									
 				<?php if($has_title) { ?>	
 					<div class="LABLE">				
 						<?php echo $lable_title; ?>
@@ -185,8 +223,8 @@ if($DISPLAY_TEMPLATE_BODY) { ?>
 					</div>
 					<div class="POSITIONER">
 						<select name="<?php echo $zindexselectINP; ?>" class="INPUT_SELECT">
-							<?php if(isset($zindexes))for($zindexes_counter=0;$zindexes_counter < count($zindexes);$zindexes_counter ++) { ?>
-								<option value="<?php echo $zindexes[$zindexes_counter]['val']; ?>" <?php if(isset($zindexes[$zindexes_counter]['selected']))for($selected_counter=0;$selected_counter < count($zindexes[$zindexes_counter]['selected']);$selected_counter ++) { ?> selected="selected" <?php } ?> >
+							<?php for($zindexes_counter=0;$zindexes_counter < countOrZero($zindexes);$zindexes_counter ++) { ?>
+								<option value="<?php echo $zindexes[$zindexes_counter]['val']; ?>" <?php for($selected_counter=0;$selected_counter < countOrZero($zindexes[$zindexes_counter]['selected']);$selected_counter ++) { ?> selected="selected" <?php } ?> >
 									<?php echo $zindexes[$zindexes_counter]['text']; ?>
 								</option>
 							<?php } ?>
@@ -273,7 +311,7 @@ if($DISPLAY_TEMPLATE_BODY) { ?>
 										<?php if($multipic) { ?>											
 											<div class="FRAME_INNER_<?php echo $VIEW_HIDE_IMGS; ?>" id="IMG_view" name="containers">
 												<?php echo $images_null_text; ?>
-												<?php if(isset($images))for($images_counter=0;$images_counter < count($images);$images_counter ++) { ?>	
+												<?php for($images_counter=0;$images_counter < countOrZero($images);$images_counter ++) { ?>	
 													<div class="IMAGE_CONTAINER <?php echo $images[$images_counter]['selected']; ?>">
 														<div class="IMAGE_INNER">													
 															<div class="IMAGE_PIC" style="background-image:url('thumb.php?img_tip=0&img_url=<?php echo $images[$images_counter]['pic_src']; ?>')">
@@ -288,15 +326,15 @@ if($DISPLAY_TEMPLATE_BODY) { ?>
 															<div class="OP_DEFAULT" onclick="doop('<?php echo $auxform_id; ?>','','<?php echo $auxform3_param1; ?>','<?php echo $images[$images_counter]['keyname']; ?>','<?php echo $images[$images_counter]['keyvalue']; ?>')">
 																<?php echo $lable_defpic; ?>
 															</div>
-                                                            
 															<?php if($pichasname) { ?>											
 																<input class="OP_RENAME" type="text" id="<?php echo $images[$images_counter]['keyname']; ?>_<?php echo $images[$images_counter]['keyvalue']; ?>" value="<?php echo $images[$images_counter]['picname']; ?>" onchange="doop('<?php echo $auxform_id; ?>','','setpicname','<?php echo $images[$images_counter]['keyname']; ?>','<?php echo $images[$images_counter]['keyvalue']; ?>','<?php echo $images[$images_counter]['namename']; ?>',document.getElementById('<?php echo $images[$images_counter]['keyname']; ?>_<?php echo $images[$images_counter]['keyvalue']; ?>').value)" />
 															<?php } else { ?>
-															<?php } ?>
+                                                            <?php } ?>
                                                             
                                                             <div class="OP_GETURL">
 																<input type="text" class="OP_GETURL_INPUT" onclick="this.focus();this.select();" value="<?php echo $images[$images_counter]['pic_rel_url'];?>">
-															</div>
+															</div>                                                           
+															
 														</div>
 													</div>
 												<?php } ?>
@@ -336,16 +374,17 @@ if($DISPLAY_TEMPLATE_BODY) { ?>
 													<div class="IMAGE_INNER">
 														<div class="IMAGE_PIC" style="background-image:url('thumb.php?img_tip=0&img_url=<?php echo $pic_src; ?>')">
 														</div>
-														<?php if($pic_isdeletable) { ?>
+														<?php if($pic_isdeleteable) { ?>
 															<div class="OP_DELETE" onclick="if(document.getElementById('<?php echo $auxform_id; ?>').onsubmit()) document.getElementById('<?php echo $auxform_id; ?>').submit()">
 																<?php echo $lable_delpic; ?>
 															</div>
 														<?php } else { ?>
-														<?php } ?>
+                                                        <?php } ?>
                                                         
                                                         <div class="OP_GETURL">
 															<input type="text" class="OP_GETURL_INPUT" onclick="this.focus();this.select();" value="<?php echo $pic_rel_url;?>">
-														</div>
+														</div>                                                       
+														
 													</div>
 												</div>										
 											</div>	
@@ -365,25 +404,32 @@ if($DISPLAY_TEMPLATE_BODY) { ?>
 									<?php if($has_file2) { ?>
 										<div class="FRAME_INNER_<?php echo $VIEW_HIDE_FILES; ?>" id="FILE_view" name="containers">
 											<?php echo $files_null_text; ?>
-											<?php if(isset($files))for($files_counter=0;$files_counter < count($files);$files_counter ++) { ?>
-												<div class="FILE_CONTAINER">													
-													<div class="FILE_PATH">
-														<a href="<?php echo $files[$files_counter]['filefullpath']; ?>"><?php echo $files[$files_counter]['filepath']; ?></a>
-													</div>
-													<?php if($file_isdeleteable) { ?>				
-														<div class="OP_DELETE" onclick="doop('<?php echo $auxform_id; ?>','<?php echo $auxform4_onsubmit; ?>','<?php echo $auxform4_param1; ?>','<?php echo $files[$files_counter]['keyname']; ?>','<?php echo $files[$files_counter]['keyvalue']; ?>')">															
+											<?php for($files_counter=0;$files_counter < countOrZero($files);$files_counter ++) { ?>
+												<div class="FILE_CONTAINER">
+													<div class="IMAGE_INNER">													
+														<div class="FILE_PIC" style="background-image:url(thumb.php?img_tip=3&img_url=<?php echo $files[$files_counter]['filepic_src']; ?>)" />																	
 														</div>
-													<?php } else { ?>
-													<?php } ?>																
-													<div class="OP_RENAME" onclick="createIdSourcedPopupFromObjectOverlapped('container_<?php echo $files[$files_counter]['keyvalue']; ?>',document.getElementById('position_reference_for_popup'),100,-100)">														
-													</div>	
-													<div class="OP_RENAME_DIV" id="container_<?php echo $files[$files_counter]['keyvalue']; ?>">
-														<div class="OP_RENAME_DIV_CLOSE" onclick="destroyPopup()"></div>																											
-														<?php if($filehasname) { ?>																								
-															<input class="OP_RENAME_INPUT" type="text" id="<?php echo $files[$files_counter]['keyname']; ?>_<?php echo $files[$files_counter]['keyvalue']; ?>" value="<?php echo $files[$files_counter]['filename']; ?>"  />
-															<input type="button" class="BUTTON" onclick="doop('<?php echo $auxform_id; ?>','','setfilename','<?php echo $files[$files_counter]['keyname']; ?>','<?php echo $files[$files_counter]['keyvalue']; ?>','<?php echo $files[$files_counter]['namename']; ?>',document.getElementById('<?php echo $files[$files_counter]['keyname']; ?>_<?php echo $files[$files_counter]['keyvalue']; ?>').value)" value="<?php echo $submitbuttonlable; ?>">
+														<div class="FILE_PATH">
+															<?php echo $files[$files_counter]['filepath']; ?>
+														</div>
+														<?php if($file_isdeleteable) { ?>				
+															<div class="OP_DELETE" onclick="doop('<?php echo $auxform_id; ?>','<?php echo $auxform4_onsubmit; ?>','<?php echo $auxform4_param1; ?>','<?php echo $files[$files_counter]['keyname']; ?>','<?php echo $files[$files_counter]['keyvalue']; ?>')">
+																<?php echo $lable_delfile; ?>
+															</div>
+														<?php } else { ?>
+														<?php } ?>	
+															
+														<?php if($filehasname) { ?>		
+															<div class="OP_RENAME" onclick="createIdSourcedPopupFromObjectOverlapped('container_<?php echo $files[$files_counter]['keyvalue']; ?>',document.getElementById('position_reference_for_popup'),100,-100)">
+																<?php echo $files[$files_counter]['filename_lable']; ?>
+															</div>	
+															<div class="OP_RENAME_DIV" id="container_<?php echo $files[$files_counter]['keyvalue']; ?>">
+																<div class="OP_RENAME_DIV_CLOSE" onclick="destroyPopup()"></div>								
+																<input class="OP_RENAME_INPUT" type="text" id="<?php echo $files[$files_counter]['keyname']; ?>_<?php echo $files[$files_counter]['keyvalue']; ?>" value="<?php echo $files[$files_counter]['filename']; ?>"  />
+																<input type="button" class="BUTTON" onclick="doop('<?php echo $auxform_id; ?>','','setfilename','<?php echo $files[$files_counter]['keyname']; ?>','<?php echo $files[$files_counter]['keyvalue']; ?>','<?php echo $files[$files_counter]['namename']; ?>',document.getElementById('<?php echo $files[$files_counter]['keyname']; ?>_<?php echo $files[$files_counter]['keyvalue']; ?>').value)" value="<?php echo $submitbuttonlable; ?>">															
+															</div>
 														<?php } else { ?>															
-														<?php } ?>														
+														<?php } ?>
 													</div>
 												</div>													
 											<?php } ?>

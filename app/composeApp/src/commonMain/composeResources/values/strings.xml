@@ -43,6 +43,7 @@
     <string name="profile">Profile</string>
     <string name="mystuff">My Stuff</string>
     <string name="publish">Publish</string>
+    <string name="box">Box</string>
 
     <string name="type">Type:</string>
     <string name="images">Images:</string>
@@ -122,5 +123,8 @@
     <string name="cannot_add_to_neighbourhood_member">Only people with established households can be added to neighbourhoods !</string>
 
     <string name="list_household_members">Your household has the following member(s):</string>
+
+    <string name="no_boxes">Your household doesn't have any boxes !</string>
+    <string name="add_box">Add Box</string>
 
 </resources>

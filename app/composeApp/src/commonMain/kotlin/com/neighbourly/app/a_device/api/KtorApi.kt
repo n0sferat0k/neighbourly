@@ -3,6 +3,7 @@ package com.neighbourly.app.a_device.api
 import com.neighbourly.app.b_adapt.gateway.AddMemberToHouseholdInput
 import com.neighbourly.app.b_adapt.gateway.AddMemberToNeighbourhoodInput
 import com.neighbourly.app.b_adapt.gateway.ApiException
+import com.neighbourly.app.b_adapt.gateway.BoxDTO
 import com.neighbourly.app.b_adapt.gateway.FetchProfileInput
 import com.neighbourly.app.b_adapt.gateway.GpsItemDTO
 import com.neighbourly.app.b_adapt.gateway.GpsLogInput
@@ -459,6 +460,19 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<ItemDTO>()
         } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun boxOp(baseUrl: String, token: String, box: BoxDTO) {
+        val response = client.post(baseUrl + "box/opBox") {
+            contentType(ContentType.Application.Json)
+            setBody(box)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
+            }
+        }
+        if (response.status.value != 200) {
             throw ApiException(response.bodyAsText())
         }
     }

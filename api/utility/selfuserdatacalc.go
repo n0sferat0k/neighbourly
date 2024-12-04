@@ -14,6 +14,7 @@ func RetreiveSessionUserData(userId string) (*entity.User, error) {
 		U.users_add_strings_0 AS Username,		
 		U.users_add_strings_2 AS Phone,
 		U.users_add_strings_3 AS Email, 
+		U.users_add_numerics_0 AS householdid,
 
 		H.households_id,
 		H.households_titlu_EN,
@@ -42,6 +43,7 @@ func RetreiveSessionUserData(userId string) (*entity.User, error) {
 		&existingUser.Username,
 		&existingUser.Phone,
 		&existingUser.Email,
+		&existingUser.Householdid,
 
 		&existingHousehold.Householdid,
 		&existingHousehold.Name,
@@ -80,7 +82,7 @@ func RetreiveSessionUserData(userId string) (*entity.User, error) {
 			return nil, err
 		}
 
-		rows, err := DB.Query(`SELECT 	
+		memberRows, err := DB.Query(`SELECT 	
 									U.users_id AS userid,
 									U.users_text_EN AS userabout,
 									U.users_titlu_EN AS fullname,
@@ -97,12 +99,12 @@ func RetreiveSessionUserData(userId string) (*entity.User, error) {
 			return nil, err
 		}
 
-		defer rows.Close()
+		defer memberRows.Close()
 
 		var houseMembers []entity.User
-		for rows.Next() {
+		for memberRows.Next() {
 			var houseMember entity.User
-			err := rows.Scan(
+			err := memberRows.Scan(
 				&houseMember.Userid,
 				&houseMember.Userabout,
 				&houseMember.Fullname,
@@ -117,8 +119,37 @@ func RetreiveSessionUserData(userId string) (*entity.User, error) {
 
 			houseMembers = append(houseMembers, houseMember)
 		}
-
 		existingHousehold.Members = houseMembers
+
+		boxRows, err := DB.Query(`SELECT 	
+									B.boxes_titlu_EN AS name,
+									B.boxes_text_EN AS id
+								FROM 
+									boxes B 
+								WHERE 
+									B.boxes_add_numerics_0 = ?`, existingHousehold.Householdid)
+
+		if err != nil {
+			return nil, err
+		}
+
+		defer boxRows.Close()
+
+		var houseBoxes []entity.Box
+		for boxRows.Next() {
+			var houseBox entity.Box
+			err := boxRows.Scan(
+				&houseBox.Name,
+				&houseBox.Id,
+			)
+			if err != nil {
+				return nil, err
+			}
+
+			houseBoxes = append(houseBoxes, houseBox)
+		}
+		existingHousehold.Boxes = houseBoxes
+
 		existingUser.Household = &existingHousehold
 	}
 

@@ -22,6 +22,7 @@ type Household struct {
 	GpsProgress    *float64 `json:"gpsprogress,omitempty"`
 	LastModifiedTs *int64   `json:"lastModifiedTs,omitempty"`
 	Members        []User   `json:"members,omitempty"`
+	Boxes          []Box    `json:"boxes,omitempty"`
 }
 
 type User struct {
@@ -78,4 +79,10 @@ type SyncResponse struct {
 	Userids      []int64     `json:"userIds,omitempty"`
 	Households   []Household `json:"households,omitempty"`
 	Householdids []int64     `json:"householdIds,omitempty"`
+}
+
+type Box struct {
+	Name    *string `json:"name,omitempty"`
+	Id      *string `json:"id,omitempty"`
+	Command *string `json:"command,omitempty"`
 }

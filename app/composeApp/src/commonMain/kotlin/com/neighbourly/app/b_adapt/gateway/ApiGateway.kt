@@ -356,12 +356,33 @@ class ApiGateway(
             api.addOrUpdateItem(API_BASE_URL, token, item.toItemDTO()).toItem()
         }
 
+    override suspend fun lockBox(token: String, boxId: String) {
+        runContextCatchTranslateThrow {
+            api.boxOp(API_BASE_URL, token, BoxDTO(id = boxId, command = BOX_CMD_LOCK))
+        }
+    }
+
+    override suspend fun unlockBox(token: String, boxId: String) {
+        runContextCatchTranslateThrow {
+            api.boxOp(API_BASE_URL, token, BoxDTO(id = boxId, command = BOX_CMD_UNLOCK))
+        }
+    }
+
+    override suspend fun openBox(token: String, boxId: String) {
+        runContextCatchTranslateThrow {
+            api.boxOp(API_BASE_URL, token, BoxDTO(id = boxId, command = BOX_CMD_OPEN))
+        }
+    }
+
     companion object {
         const val API_BASE_URL = "http://neighbourly.go.ro:8080/"
         const val TARGET_PROFILE = "profile"
         const val TARGET_ITEM_IMAGE = "itemImage"
         const val TARGET_ITEM_FILE = "itemFile"
         const val TARGET_HOUSEHOLD = "household"
+        const val BOX_CMD_LOCK ="LOCK"
+        const val BOX_CMD_UNLOCK ="UNLOCK"
+        const val BOX_CMD_OPEN ="OPEN"
     }
 
     suspend inline fun <R> runContextCatchTranslateThrow(crossinline block: suspend () -> R): R =

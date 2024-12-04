@@ -1,5 +1,6 @@
 package com.neighbourly.app.a_device.store
 
+import com.neighbourly.app.d_entity.data.Box
 import com.neighbourly.app.d_entity.data.Household
 import com.neighbourly.app.d_entity.data.Neighbourhood
 import com.neighbourly.app.d_entity.data.User
@@ -55,6 +56,7 @@ fun StoreHousehold.toHousehold(): Household =
         address = this.address,
         lastModifiedTs = this.lastModifiedTs,
         members = members?.map { it.toUser() },
+        boxes = boxes?.map { it.toBox() }
     )
 
 fun Household.toStoreHousehold(): StoreHousehold =
@@ -69,6 +71,19 @@ fun Household.toStoreHousehold(): StoreHousehold =
         address = this.address,
         lastModifiedTs = this.lastModifiedTs,
         members = members?.map { it.toStoreUser() },
+        boxes = boxes?.map { it.toStoreBox() }
+    )
+
+fun Box.toStoreBox(): StoreBox =
+    StoreBox(
+        name = this.name,
+        id = this.id,
+    )
+
+fun StoreBox.toBox(): Box =
+    Box(
+        name = this.name,
+        id = this.id,
     )
 
 fun Neighbourhood.toStoreNeighbourhood(): StoreNeighbourhood =
@@ -107,6 +122,12 @@ data class StoreUser(
 )
 
 @Serializable
+data class StoreBox(
+    val name: String,
+    val id: String,
+)
+
+@Serializable
 data class StoreHousehold(
     val householdid: Int,
     val name: String,
@@ -119,6 +140,7 @@ data class StoreHousehold(
     val lastModifiedTs: Int = 0,
     val gpsprogress: Float? = null,
     val members: List<StoreUser>? = null,
+    val boxes: List<StoreBox>? = null,
 )
 
 @Serializable

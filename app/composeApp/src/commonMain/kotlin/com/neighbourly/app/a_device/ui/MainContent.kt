@@ -8,12 +8,14 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.auth.LoginOrRegister
+import com.neighbourly.app.a_device.ui.box.BoxManagementView
 import com.neighbourly.app.a_device.ui.items.FilteredItemListView
 import com.neighbourly.app.a_device.ui.items.ItemDetailsView
 import com.neighbourly.app.a_device.ui.profile.Profile
 import com.neighbourly.app.a_device.ui.utils.ContentBox
 import com.neighbourly.app.b_adapt.viewmodel.items.MainContentViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BackendInfo
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BoxManage
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.FindItems
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.MainMenu
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ManageMyStuff
@@ -71,12 +73,17 @@ fun MainContent(
                             ItemDetailsView(null)
                         }
 
+                        BoxManage -> ContentBox {
+                            BoxManagementView()
+                        }
+
                         is ShowItemDetails -> ContentBox {
                             ItemDetailsView(it.itemId)
                         }
 
                         BackendInfo -> ContentBox { BackendInfoView() }
                         MainMenu -> TODO()
+
                         else -> ContentBox { UnderConstruction() }
                     }
                 }

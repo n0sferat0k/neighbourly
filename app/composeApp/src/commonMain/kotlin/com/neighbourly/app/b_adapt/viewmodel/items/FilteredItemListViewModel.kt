@@ -47,6 +47,7 @@ class FilteredItemListViewModel(
             } catch (e: OpException) {
                 _state.update { it.copy(loading = false) }
             }
+            _state.update { it.copy(loading = false) }
         }
     }
 

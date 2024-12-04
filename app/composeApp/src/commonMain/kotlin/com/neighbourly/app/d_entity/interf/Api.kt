@@ -1,7 +1,5 @@
 package com.neighbourly.app.d_entity.interf
 
-import com.neighbourly.app.b_adapt.gateway.ApiGateway.Companion.API_BASE_URL
-import com.neighbourly.app.b_adapt.gateway.ApiGateway.Companion.TARGET_ITEM_IMAGE
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.Item
@@ -134,4 +132,10 @@ interface Api {
     suspend fun deleteItem(token: String, itemId: Int)
 
     suspend fun addOrUpdateItem(token: String, item: Item): Item
+
+    suspend fun lockBox(token: String, boxId: String)
+
+    suspend fun unlockBox(token: String, boxId: String)
+
+    suspend fun openBox(token: String, boxId: String)
 }

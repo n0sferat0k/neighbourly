@@ -1,5 +1,6 @@
 package com.neighbourly.app.b_adapt.gateway
 
+import com.neighbourly.app.d_entity.data.Box
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.Household
 import com.neighbourly.app.d_entity.data.Item
@@ -42,7 +43,13 @@ fun HouseholdDTO.toHousehold(): Household =
         gpsprogress = gpsprogress,
         lastModifiedTs = lastModifiedTs,
         members = members?.map { it.toUser() },
+        boxes = boxes?.map { it.toBox() }
     )
+
+fun BoxDTO.toBox(): Box = Box(
+    name = name,
+    id = id,
+)
 
 fun NeighbourhoodDTO.toNeighbourhood(): Neighbourhood =
     Neighbourhood(

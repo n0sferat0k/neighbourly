@@ -84,6 +84,19 @@ data class UserDTO(
 )
 
 @Serializable
+data class BoxDTO(
+    val name: String = "",
+    val id: String,
+    val command: String,
+)
+
+@Serializable
+data class BoxCommandInputDTO(
+    val id: String,
+    val command: String,
+)
+
+@Serializable
 data class GpsItemDTO(
     val latitude: Float,
     val longitude: Float,
@@ -103,6 +116,7 @@ data class HouseholdDTO(
     val gpsprogress: Float? = null,
     val lastModifiedTs: Int = 0,
     val members: List<UserDTO>? = null,
+    val boxes: List<BoxDTO>? = null,
 )
 
 @Serializable
@@ -135,9 +149,9 @@ data class ItemDTO(
 @Serializable
 data class SyncResponseDTO(
     val items: List<ItemDTO> = emptyList(),
-    val itemIds:List<Int> = emptyList(),
+    val itemIds: List<Int> = emptyList(),
     val users: List<UserDTO> = emptyList(),
-    val userIds:List<Int> = emptyList(),
+    val userIds: List<Int> = emptyList(),
     val households: List<HouseholdDTO> = emptyList(),
-    val householdIds:List<Int> = emptyList(),
+    val householdIds: List<Int> = emptyList(),
 )

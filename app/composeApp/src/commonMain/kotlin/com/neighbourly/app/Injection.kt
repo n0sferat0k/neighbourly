@@ -8,6 +8,7 @@ import com.neighbourly.app.b_adapt.viewmodel.SignalViewModel
 import com.neighbourly.app.b_adapt.viewmodel.WebMapViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
+import com.neighbourly.app.b_adapt.viewmodel.box.BoxManagementViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.MainContentViewModel
@@ -24,6 +25,7 @@ import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileViewModel
 import com.neighbourly.app.c_business.usecase.auth.LoginUseCase
 import com.neighbourly.app.c_business.usecase.auth.LogoutUseCase
 import com.neighbourly.app.c_business.usecase.auth.RegisterUseCase
+import com.neighbourly.app.c_business.usecase.box.BoxOpsUseCase
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.c_business.usecase.content.ItemManagementUseCase
 import com.neighbourly.app.c_business.usecase.profile.FetchProfileUseCase
@@ -140,6 +142,9 @@ val adapterModule =
         factory {
             SignalViewModel(get())
         }
+        factory {
+            BoxManagementViewModel(get(), get())
+        }
     }
 
 val useCaseModule =
@@ -179,5 +184,8 @@ val useCaseModule =
         }
         factory {
             ItemManagementUseCase(get(), get(), get())
+        }
+        factory {
+            BoxOpsUseCase(get(), get())
         }
     }

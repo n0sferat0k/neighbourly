@@ -23,6 +23,7 @@ import com.neighbourly.app.d_entity.data.ItemType
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.barter
 import neighbourly.composeapp.generated.resources.barterings
+import neighbourly.composeapp.generated.resources.box
 import neighbourly.composeapp.generated.resources.donate
 import neighbourly.composeapp.generated.resources.donations
 import neighbourly.composeapp.generated.resources.event
@@ -76,6 +77,15 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 delayMs = 300
             ) {
                 navigationViewModel.goToMainPage(PublishStuff)
+            }
+
+            LeftMenuItemBox(
+                modifier = Modifier.align(Alignment.Start),
+                text = stringResource(Res.string.box),
+                image = painterResource(Res.drawable.box),
+                delayMs = 400
+            ) {
+                navigationViewModel.goToMainPage(com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BoxManage)
             }
         }
 

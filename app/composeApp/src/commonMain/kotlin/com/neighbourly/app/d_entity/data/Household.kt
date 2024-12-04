@@ -11,4 +11,5 @@ data class Household(
     val gpsprogress: Float? = null,
     val lastModifiedTs: Int,
     val members: List<User>? = null,
+    val boxes: List<Box>? = null,
 )

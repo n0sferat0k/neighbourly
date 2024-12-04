@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"api/box"
 	"api/content"
 	"api/household"
 	"api/media"
@@ -22,6 +23,9 @@ func main() {
 
 	utility.ConnectDB()
 	defer utility.DB.Close()
+
+	utility.ConnectMQTT()
+	defer utility.MqttClient.Disconnect(250)
 
 	//request handlers
 	r := mux.NewRouter()
@@ -48,6 +52,9 @@ func main() {
 	r.HandleFunc("/content/sync", content.Synchronise).Methods("GET")
 	r.HandleFunc("/content/delItem", content.DeleteItem).Methods("GET")
 	r.HandleFunc("/content/addOrUpdateItem", content.AddOrUpdateItem).Methods("POST")
+	r.HandleFunc("/box/addBox", box.AddBox).Methods("POST")
+	r.HandleFunc("/box/delBox", box.DelBox).Methods("POST")
+	r.HandleFunc("/box/opBox", box.OpBox).Methods("POST")
 	fmt.Println("Starting server on :8080")
 
 	log.Fatal(http.ListenAndServe(":8080", r))

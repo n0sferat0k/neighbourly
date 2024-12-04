@@ -65,9 +65,9 @@ class ItemDetailsViewModel(
                             name = item.name.orEmpty(),
                             description = item.description.orEmpty(),
                             url = item.url.orEmpty(),
-                            start = item.startTs.takeIf { it != null && it > 0 }
+                            start = item.startTs.takeIf { it > 0 }
                                 ?.let { Instant.fromEpochSeconds(it.toLong()) },
-                            end = item.endTs.takeIf { it != null && it > 0 }
+                            end = item.endTs.takeIf { it > 0 }
                                 ?.let { Instant.fromEpochSeconds(it.toLong()) },
                             images = item.images,
                             targetUserId = item.targetUserId,

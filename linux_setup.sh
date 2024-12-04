@@ -61,6 +61,7 @@ sudo go mod init main
 sudo go get github.com/go-sql-driver/mysql
 sudo go get github.com/gorilla/mux
 sudo go get golang.org/x/crypto/bcrypt
+sudo go get github.com/eclipse/paho.mqtt.golang
 sudo go build -o api
 
 sudo nano /etc/systemd/system/api.service
@@ -90,7 +91,7 @@ sudo apt-get update
 sudo apt-get install -y mosquitto mosquitto-clients
 sudo systemctl enable mosquitto
 sudo systemctl start mosquitto
-sudo mosquitto_passwd -c /etc/mosquitto/passwd neighbourly
+sudo mosquitto_passwd -c /etc/mosquitto/passwd neighbourly	//leave out the -c for additional users
 	password: Tizenegy11
 sudo nano /etc/mosquitto/acl
 	user neighbourly
