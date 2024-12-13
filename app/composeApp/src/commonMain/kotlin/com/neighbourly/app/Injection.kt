@@ -12,6 +12,7 @@ import com.neighbourly.app.b_adapt.viewmodel.box.BoxManagementViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.MainContentViewModel
+import com.neighbourly.app.b_adapt.viewmodel.items.RemindersViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdAddMemberViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdInfoEditViewModel
@@ -134,7 +135,7 @@ val adapterModule =
             FilteredItemListViewModel(get(), get(), get(), get())
         }
         factory {
-            MainContentViewModel(get())
+            MainContentViewModel(get(), get())
         }
         factory {
             ItemDetailsViewModel(get(), get(), get(), get())
@@ -144,6 +145,9 @@ val adapterModule =
         }
         factory {
             BoxManagementViewModel(get(), get())
+        }
+        factory {
+            RemindersViewModel(get())
         }
     }
 

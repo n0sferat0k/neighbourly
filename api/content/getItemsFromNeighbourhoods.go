@@ -3,6 +3,7 @@ package content
 import (
 	"api/entity"
 	"api/utility"
+	"fmt"
 )
 
 func GetItemsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]entity.Item, []int64, error) {
@@ -30,12 +31,18 @@ func GetItemsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]enti
 		itemIds = append(itemIds, itemId)
 	}
 
-	items, err := GetItems(itemIds, sinceTs)
-	if err != nil {
-		return nil, nil, err
-	}
+	var items []entity.Item
 
-	return items, itemIds, nil
+	if len(itemIds) == 0 {
+		return items, itemIds, nil
+	} else {
+		items, err = GetItems(itemIds, sinceTs)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		return items, itemIds, nil
+	}
 }
 
 func GetItems(itemIds []int64, sinceTs string) ([]entity.Item, error) {
@@ -70,7 +77,8 @@ func GetItems(itemIds []int64, sinceTs string) ([]entity.Item, error) {
 
 	itemRows, err := utility.DB.Query(sql)
 	if err != nil {
-		return nil, err
+		//return custom error
+		return nil, fmt.Errorf(sql)
 	}
 
 	var items []entity.Item

@@ -6,33 +6,21 @@ import com.neighbourly.app.d_entity.data.LocalizationProgress
 import com.neighbourly.app.d_entity.data.User
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import com.neighbourly.app.d_entity.interf.SessionStore
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class SessionHybridStore(
     val keyValueRegistry: KeyValueRegistry,
 ) : SessionStore {
-    private var userState = MutableStateFlow<User?>(null)
-    private var localizationState = MutableStateFlow(LocalizationProgress())
-    private var _credentials: Credentials? = null
-    override val credentials: Credentials? get() = _credentials?.copy()
-
-    override val userFlow = userState.asSharedFlow()
-    override val localizationFlow = localizationState.asSharedFlow()
-    override val isLoggedInFlow = userFlow.map { it != null }
-
+    private lateinit var userState: MutableStateFlow<User?>
+    override val userFlow by lazy { userState.asSharedFlow() }
+    override val isLoggedInFlow by lazy { userFlow.map { it != null } }
     override val user: User?
         get() = userState.value
-    override val drawing: List<GpsItem>?
-        get() = localizationState.value.drawingPoints
     override var lastSyncTs: Int?
         get() = userState.value?.lastSyncTs
         set(value) {
@@ -40,11 +28,18 @@ class SessionHybridStore(
             saveToStore()
         }
 
+
+    private var localizationState = MutableStateFlow(LocalizationProgress())
+    override val localizationFlow = localizationState.asSharedFlow()
+    override val drawing: List<GpsItem>?
+        get() = localizationState.value.drawingPoints
+
+    private var _credentials: Credentials? = null
+    override val credentials: Credentials? get() = _credentials?.copy()
+
     init {
         if (STORE_VERSION == keyValueRegistry.getString(KEY_STORE_VERSION)) {
-            MainScope().launch {
-                loadFromStore()
-            }
+            loadFromStore()
         }
         if (keyValueRegistry.contains(KEY_REM_USER)) {
             _credentials = Credentials(
@@ -86,10 +81,18 @@ class SessionHybridStore(
         saveToStore()
     }
 
-    private suspend fun loadFromStore() {
-        withContext(Dispatchers.IO) {
+    private fun loadFromStore() {
+        userState = MutableStateFlow(
             keyValueRegistry.getString(KEY_USER)?.let {
-                userState.emit(Json.decodeFromString<StoreUser>(it).toUser())
+                Json.decodeFromString<StoreUser>(it).toUser()
+            }
+        )
+
+        keyValueRegistry.let {
+            it.getString(KEY_REM_USER)?.let { user ->
+                it.getString(KEY_REM_PASS)?.let { pass ->
+                    _credentials = Credentials(user, pass)
+                }
             }
         }
     }

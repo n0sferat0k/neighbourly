@@ -136,6 +136,7 @@ if($DISPLAY_TEMPLATE_BODY) {?>
 												<option value="NEED" <?php if($add_strings[$add_strings_counter]['add_stringsVAL'] == "NEED") echo 'selected="selected"'?> >Need</option>
 												<option value="REQUEST" <?php if($add_strings[$add_strings_counter]['add_stringsVAL'] == "REQUEST") echo 'selected="selected"'?> >Request</option>
 												<option value="SKILLSHARE" <?php if($add_strings[$add_strings_counter]['add_stringsVAL'] == "SKILLSHARE") echo 'selected="selected"'?> >Skillshare</option>
+												<option value="REMINDER" <?php if($add_strings[$add_strings_counter]['add_stringsVAL'] == "REMINDER") echo 'selected="selected"'?> >Reminder</option>
 											</select>
 										<?php
 									} else {

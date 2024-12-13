@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui
+package com.neighbourly.app.a_device.ui.menu
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,12 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.menu.LeftMenuItemBox
-import com.neighbourly.app.a_device.ui.menu.RightMenuItemBox
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BoxManage
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ManageMyStuff
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.PublishStuff
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.Reminders
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
-
 import com.neighbourly.app.d_entity.data.ItemType
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.barter
@@ -35,6 +34,8 @@ import neighbourly.composeapp.generated.resources.needs
 import neighbourly.composeapp.generated.resources.onboard
 import neighbourly.composeapp.generated.resources.profile
 import neighbourly.composeapp.generated.resources.publish
+import neighbourly.composeapp.generated.resources.reminder
+import neighbourly.composeapp.generated.resources.reminders
 import neighbourly.composeapp.generated.resources.request
 import neighbourly.composeapp.generated.resources.requests
 import neighbourly.composeapp.generated.resources.sale
@@ -81,11 +82,20 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
 
             LeftMenuItemBox(
                 modifier = Modifier.align(Alignment.Start),
+                text = stringResource(Res.string.reminders),
+                image = painterResource(Res.drawable.reminder),
+                delayMs = 500
+            ) {
+                navigationViewModel.goToMainPage(Reminders)
+            }
+
+            LeftMenuItemBox(
+                modifier = Modifier.align(Alignment.Start),
                 text = stringResource(Res.string.box),
                 image = painterResource(Res.drawable.box),
                 delayMs = 400
             ) {
-                navigationViewModel.goToMainPage(com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BoxManage)
+                navigationViewModel.goToMainPage(BoxManage)
             }
         }
 

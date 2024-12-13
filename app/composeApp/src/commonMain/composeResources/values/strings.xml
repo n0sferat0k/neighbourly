@@ -126,5 +126,6 @@
 
     <string name="no_boxes">Your household doesn't have any boxes !</string>
     <string name="add_box">Add Box</string>
+    <string name="reminders">Reminders</string>
 
 </resources>

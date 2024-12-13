@@ -29,6 +29,7 @@ sealed interface MainContent {
     object ManageMyStuff : MainContent
     object PublishStuff : MainContent
     object BoxManage : MainContent
+    object Reminders : MainContent
 
     object BackendInfo : MainContent
 

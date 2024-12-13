@@ -4,13 +4,17 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.auth.LoginOrRegister
 import com.neighbourly.app.a_device.ui.box.BoxManagementView
 import com.neighbourly.app.a_device.ui.items.FilteredItemListView
 import com.neighbourly.app.a_device.ui.items.ItemDetailsView
+import com.neighbourly.app.a_device.ui.items.RemidersView
+import com.neighbourly.app.a_device.ui.menu.FullMenuContent
+import com.neighbourly.app.a_device.ui.misc.BackendInfoView
+import com.neighbourly.app.a_device.ui.misc.LandingView
+import com.neighbourly.app.a_device.ui.misc.UnderConstruction
 import com.neighbourly.app.a_device.ui.profile.Profile
 import com.neighbourly.app.a_device.ui.utils.ContentBox
 import com.neighbourly.app.b_adapt.viewmodel.items.MainContentViewModel
@@ -21,6 +25,7 @@ import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.MainMenu
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ManageMyStuff
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ManageProfile
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.PublishStuff
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.Reminders
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ShowItemDetails
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 
@@ -31,8 +36,9 @@ fun MainContent(
 ) {
     val state by viewModel.state.collectAsState()
     val navigation by navigationViewModel.state.collectAsState()
-
-    if (navigation.restrictedContent) {
+    if (state.landing) {
+        LandingView()
+    } else if (navigation.restrictedContent) {
         AnimatedVisibility(navigation.mainContentVisible) {
             ContentBox {
                 if (navigation.userLoggedIn) {
@@ -82,7 +88,8 @@ fun MainContent(
                         }
 
                         BackendInfo -> ContentBox { BackendInfoView() }
-                        MainMenu -> TODO()
+
+                        Reminders -> ContentBox { RemidersView() }
 
                         else -> ContentBox { UnderConstruction() }
                     }

@@ -25,7 +25,8 @@ enum class ItemType {
     EVENT,
     NEED,
     REQUEST,
-    SKILLSHARE, ;
+    SKILLSHARE,
+    REMINDER;
 
     companion object {
         fun getByName(type: String?): ItemType =

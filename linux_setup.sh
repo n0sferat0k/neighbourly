@@ -37,7 +37,7 @@ sudo nano 000-default.conf
 sudo systemctl restart apache2
 //copy files over before running chown
 sudo chown -R www-data:www-data /home/neighbourly/server/www
-sudo chmod -R 755 /home
+sudo chmod -R 777 /home
 
 //INSTALL MQTT
 sudo apt-get install -y mosquitto mosquitto-clients
@@ -56,7 +56,7 @@ sudo nano /etc/mosquitto/mosquitto.conf
 	acl_file /etc/mosquitto/acl
 	listener 1883
 sudo chown -R mosquitto:mosquitto /home/neighbourly/server/mqtt/
-sudo chmod -R 755 /home
+sudo chmod -R 777 /home
 sudo systemctl restart mosquitto
 
 

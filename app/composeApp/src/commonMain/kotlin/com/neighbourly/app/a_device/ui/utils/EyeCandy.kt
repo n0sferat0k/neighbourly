@@ -292,6 +292,7 @@ fun StraightText(
         TextStyle(
             fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
             fontSize = fontSize,
+            color = AppColors.primary
         ),
     )
 }

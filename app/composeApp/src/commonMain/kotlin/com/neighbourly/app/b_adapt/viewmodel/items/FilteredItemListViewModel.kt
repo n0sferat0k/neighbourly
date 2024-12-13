@@ -7,6 +7,7 @@ import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.Ite
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.EVENT
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.INFO
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.NEED
+import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.REMINDER
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.REQUEST
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.SALE
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.SKILLSHARE
@@ -130,7 +131,7 @@ class FilteredItemListViewModel(
 
 
     enum class ItemTypeVS {
-        INFO, DONATION, BARTER, SALE, EVENT, NEED, REQUEST, SKILLSHARE;
+        INFO, DONATION, BARTER, SALE, EVENT, NEED, REQUEST, SKILLSHARE, REMINDER;
     }
 
     fun ItemType.toItemTypeVS() = when (this) {
@@ -142,6 +143,7 @@ class FilteredItemListViewModel(
         ItemType.NEED -> NEED
         ItemType.REQUEST -> REQUEST
         ItemType.SKILLSHARE -> SKILLSHARE
+        ItemType.REMINDER -> REMINDER
     }
 
     companion object {

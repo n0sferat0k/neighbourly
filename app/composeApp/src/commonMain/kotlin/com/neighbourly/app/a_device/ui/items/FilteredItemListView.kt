@@ -55,6 +55,7 @@ import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.Ite
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.EVENT
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.INFO
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.NEED
+import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.REMINDER
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.REQUEST
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.SALE
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.SKILLSHARE
@@ -75,6 +76,7 @@ import neighbourly.composeapp.generated.resources.hourglass
 import neighbourly.composeapp.generated.resources.image
 import neighbourly.composeapp.generated.resources.info
 import neighbourly.composeapp.generated.resources.need
+import neighbourly.composeapp.generated.resources.reminder
 import neighbourly.composeapp.generated.resources.request
 import neighbourly.composeapp.generated.resources.sale
 import neighbourly.composeapp.generated.resources.skillshare
@@ -160,11 +162,12 @@ fun ItemCard(
         NEED -> painterResource(Res.drawable.need)
         REQUEST -> painterResource(Res.drawable.request)
         SKILLSHARE -> painterResource(Res.drawable.skillshare)
+        REMINDER -> painterResource(Res.drawable.reminder)
     }
 
     Card(
         modifier = Modifier.fillMaxWidth().clickable {
-                navigationViewModel.goToItemDetails(item.id)
+            navigationViewModel.goToItemDetails(item.id)
         },
         shape = RoundedCornerShape(8.dp),
         elevation = 4.dp
