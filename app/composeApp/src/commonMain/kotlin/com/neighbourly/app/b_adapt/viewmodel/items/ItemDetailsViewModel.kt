@@ -9,6 +9,7 @@ import com.neighbourly.app.c_business.usecase.content.ItemManagementUseCase
 import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.data.ItemType
 import com.neighbourly.app.d_entity.data.ItemType.NEED
+import com.neighbourly.app.d_entity.data.ItemType.REMINDER
 import com.neighbourly.app.d_entity.data.ItemType.REQUEST
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.interf.Db
@@ -60,10 +61,17 @@ class ItemDetailsViewModel(
                     _state.update {
                         it.copy(
                             editable = item.householdId == store.user?.household?.householdid,
+                            admin = store.user?.neighbourhoods?.firstOrNull { it.neighbourhoodid == item.neighbourhoodId }?.access?.let { it >= 499 }
+                                ?: false,
                             neighbourhoodId = item.neighbourhoodId,
                             type = item.type.name,
                             name = item.name.orEmpty(),
                             description = item.description.orEmpty(),
+                            dates = if (item.type == REMINDER) (
+                                    item.description?.split(",")
+                                        ?.map { Instant.fromEpochSeconds(it.toLong()) }
+                                        ?: emptyList()
+                                    ) else emptyList(),
                             url = item.url.orEmpty(),
                             start = item.startTs.takeIf { it > 0 }
                                 ?.let { Instant.fromEpochSeconds(it.toLong()) },
@@ -249,8 +257,13 @@ class ItemDetailsViewModel(
         }
     }
 
+    fun addOrUpdateDate(ts: Int) {
+
+    }
+
     data class ItemDetailsViewState(
         val editable: Boolean = false,
+        val admin: Boolean = false,
 
         val saving: Boolean = false,
         val error: String = "",
@@ -269,6 +282,7 @@ class ItemDetailsViewModel(
         val type: String = ItemType.DONATION.name,
         val name: String = "",
         val description: String = "",
+        val dates: List<Instant> = emptyList(),
         val url: String = "",
         val start: Instant? = null,
         val end: Instant? = null,

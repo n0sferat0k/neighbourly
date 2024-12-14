@@ -128,4 +128,6 @@
     <string name="add_box">Add Box</string>
     <string name="reminders">Reminders</string>
 
+    <string name="dates">Dates</string>
+    <string name="add_date">Add Date</string>
 </resources>
