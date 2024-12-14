@@ -67,12 +67,13 @@ func AddToHousehold(w http.ResponseWriter, r *http.Request) {
 		}
 
 		_, err = utility.DB.Exec(`INSERT INTO neighbourhood_household_users (
+							neighbourhood_household_users_data,
 							neighbourhood_household_users_add_numerics_0, 
 							neighbourhood_household_users_add_numerics_1, 
 							neighbourhood_household_users_add_numerics_2, 
 							neighbourhood_household_users_add_numerics_3,
 							neighbourhood_household_users_add_numerics_4) 
-						VALUES (?,?,?,?,?)`,
+						VALUES (UNIX_TIMESTAMP(), ?,?,?,?,?)`,
 			neighbourhoodId, householdId, familyMember.Userid, access-1, userId)
 		if err != nil {
 			http.Error(w, "Failed to add user to neighbourhoods "+err.Error(), http.StatusInternalServerError)
