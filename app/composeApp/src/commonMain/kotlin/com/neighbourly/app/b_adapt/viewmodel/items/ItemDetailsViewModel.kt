@@ -174,13 +174,17 @@ class ItemDetailsViewModel(
                 _state.value.let {
                     try {
                         _state.update { it.copy(saving = true) }
+                        val type = ItemType.getByName(it.typeOverride ?: it.type)
 
                         itemManagementUseCase.addOrUpdate(
                             Item(
                                 id = it.itemId,
-                                type = ItemType.getByName(it.typeOverride ?: it.type),
+                                type = type,
                                 name = it.nameOverride ?: it.name,
-                                description = it.descriptionOverride ?: it.description,
+                                description = if (type == REMINDER)
+                                    it.dates.map { it.epochSeconds.toString() }.joinToString(",")
+                                else
+                                    it.descriptionOverride ?: it.description,
                                 url = it.urlOverride ?: it.url,
                                 targetUserId = it.targetUserIdOverride ?: it.targetUserId ?: -1,
                                 startTs = (it.startOverride ?: it.start)?.epochSeconds?.toInt()
@@ -257,8 +261,19 @@ class ItemDetailsViewModel(
         }
     }
 
-    fun addOrUpdateDate(ts: Int) {
-
+    fun addOrUpdateDate(ts: Int, index: Int) {
+        if (index == -1) {
+            _state.update {
+                it.copy(dates = (it.dates + Instant.fromEpochSeconds(ts.toLong())).sorted())
+            }
+        } else {
+            _state.update {
+                it.copy(
+                    dates = it.dates.toMutableList()
+                        .also { it[index] = Instant.fromEpochSeconds(ts.toLong()) }.sorted()
+                )
+            }
+        }
     }
 
     data class ItemDetailsViewState(
