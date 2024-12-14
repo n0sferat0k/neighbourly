@@ -28,7 +28,6 @@ class SessionHybridStore(
             saveToStore()
         }
 
-
     private var localizationState = MutableStateFlow(LocalizationProgress())
     override val localizationFlow = localizationState.asSharedFlow()
     override val drawing: List<GpsItem>?
@@ -40,12 +39,8 @@ class SessionHybridStore(
     init {
         if (STORE_VERSION == keyValueRegistry.getString(KEY_STORE_VERSION)) {
             loadFromStore()
-        }
-        if (keyValueRegistry.contains(KEY_REM_USER)) {
-            _credentials = Credentials(
-                keyValueRegistry.getString(KEY_REM_USER, ""),
-                keyValueRegistry.getString(KEY_REM_PASS, "")
-            )
+        } else {
+            userState = MutableStateFlow(null)
         }
     }
 
@@ -82,6 +77,7 @@ class SessionHybridStore(
     }
 
     private fun loadFromStore() {
+
         userState = MutableStateFlow(
             keyValueRegistry.getString(KEY_USER)?.let {
                 Json.decodeFromString<StoreUser>(it).toUser()
