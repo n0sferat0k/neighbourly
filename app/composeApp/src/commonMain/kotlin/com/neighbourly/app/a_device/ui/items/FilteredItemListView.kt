@@ -47,7 +47,7 @@ import com.neighbourly.app.a_device.ui.utils.AppColors
 import com.neighbourly.app.a_device.ui.utils.BoxFooter
 import com.neighbourly.app.a_device.ui.utils.BoxHeader
 import com.neighbourly.app.a_device.ui.utils.BoxStaticContent
-import com.neighbourly.app.a_device.ui.utils.CurlyText
+import com.neighbourly.app.a_device.ui.utils.FriendlyText
 import com.neighbourly.app.a_device.ui.utils.SwipeToDeleteBox
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.BARTER
@@ -139,7 +139,7 @@ fun FilteredItemListView(
             }
         }
         BoxFooter(modifier = Modifier.align(Alignment.End)) {
-            CurlyText(text = stringResource(Res.string.filter), bold = true)
+            FriendlyText(text = stringResource(Res.string.filter), bold = true)
         }
     }
 }

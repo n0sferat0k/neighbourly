@@ -18,9 +18,9 @@ class SignalViewModel(
 
     init {
         configSource.isOnlineFlow.onEach { isOnline ->
-            _state.update { it.copy(isOnline = isOnline) }
+            _state.update { it.copy(isOnline = isOnline.first, lastError = isOnline.second) }
         }.launchIn(viewModelScope)
     }
 
-    data class SignalViewState(val isOnline: Boolean = false)
+    data class SignalViewState(val isOnline: Boolean = false, val lastError: String? = null)
 }

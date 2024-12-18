@@ -24,8 +24,8 @@ import com.neighbourly.app.a_device.ui.utils.AppColors
 import com.neighbourly.app.a_device.ui.utils.BoxFooter
 import com.neighbourly.app.a_device.ui.utils.BoxHeader
 import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
-import com.neighbourly.app.a_device.ui.utils.CurlyText
-import com.neighbourly.app.a_device.ui.utils.ErrorText
+import com.neighbourly.app.a_device.ui.utils.FriendlyText
+import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
 import com.neighbourly.app.b_adapt.viewmodel.box.BoxManagementViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.add_box
@@ -56,7 +56,7 @@ fun BoxManagementView(viewModel: BoxManagementViewModel = viewModel { KoinProvid
                     }
                 } else {
                     if (state.boxes.isNullOrEmpty()) {
-                        CurlyText(text = stringResource(Res.string.no_boxes))
+                        FriendlyText(text = stringResource(Res.string.no_boxes))
                     } else {
                         state.boxes?.entries?.forEach { (id, name) ->
                             Row(
@@ -64,7 +64,7 @@ fun BoxManagementView(viewModel: BoxManagementViewModel = viewModel { KoinProvid
                                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                CurlyText(text = name, bold = true, fontSize = 24.sp)
+                                FriendlyText(text = name, bold = true, fontSize = 22.sp)
                                 Image(
                                     painter = painterResource(Res.drawable.openbox),
                                     contentDescription = "Open box",
@@ -89,13 +89,13 @@ fun BoxManagementView(viewModel: BoxManagementViewModel = viewModel { KoinProvid
                 }
 
                 if (state.error.isNotEmpty()) {
-                    ErrorText(state.error)
+                    FriendlyErrorText(state.error)
                 }
             }
         }
 
         BoxFooter(modifier = Modifier.align(Alignment.End)) {
-            CurlyText(
+            FriendlyText(
                 modifier = Modifier.clickable {
                     viewModel.addBox()
                 },

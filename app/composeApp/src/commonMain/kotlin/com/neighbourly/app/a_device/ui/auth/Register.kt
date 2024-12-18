@@ -36,8 +36,8 @@ import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.AppColors
 import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.CurlyText
-import com.neighbourly.app.a_device.ui.utils.ErrorText
+import com.neighbourly.app.a_device.ui.utils.FriendlyText
+import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.getPhoneNumber
@@ -208,7 +208,7 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
         Spacer(modifier = Modifier.height(16.dp))
 
         Row {
-            CurlyText(
+            FriendlyText(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 text = stringResource(Res.string.remember_me)
             )
@@ -235,7 +235,7 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
         }
 
         if (state.error.isNotEmpty()) {
-            ErrorText(state.error)
+            FriendlyErrorText(state.error)
         }
     }
 }

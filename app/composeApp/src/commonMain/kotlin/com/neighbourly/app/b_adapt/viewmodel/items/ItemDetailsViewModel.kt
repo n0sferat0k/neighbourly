@@ -48,10 +48,26 @@ class ItemDetailsViewModel(
     fun setItem(itemId: Int?) {
         _state.update {
             it.copy(
+                deleted = false,
+                name = "",
+                description = "",
+                url = "",
+                images = emptyMap(),
+                files = emptyList(),
                 newImages = emptyList(),
                 newFiles = emptyMap(),
+                start = null,
+                end = null,
                 saving = false,
-                error = ""
+                error = "",
+                nameError = false,
+                targetUserIdOverride = null,
+                typeOverride = null,
+                nameOverride = null,
+                descriptionOverride = null,
+                urlOverride = null,
+                startOverride = null,
+                endOverride = null,
             )
         }
         if (itemId != null) {
@@ -67,11 +83,13 @@ class ItemDetailsViewModel(
                             type = item.type.name,
                             name = item.name.orEmpty(),
                             description = item.description.orEmpty(),
-                            dates = if (item.type == REMINDER) (
+                            dates = if (item.type == REMINDER) {
+                                kotlin.runCatching {
                                     item.description?.split(",")
                                         ?.map { Instant.fromEpochSeconds(it.toLong()) }
                                         ?: emptyList()
-                                    ) else emptyList(),
+                                }.getOrNull() ?: emptyList()
+                            } else emptyList(),
                             url = item.url.orEmpty(),
                             start = item.startTs.takeIf { it > 0 }
                                 ?.let { Instant.fromEpochSeconds(it.toLong()) },
@@ -85,7 +103,8 @@ class ItemDetailsViewModel(
                                     url = it.value,
                                     name = it.value.split("/").last()
                                 )
-                            })
+                            },
+                        )
                     }
                 }
             }
@@ -95,18 +114,9 @@ class ItemDetailsViewModel(
                     neighbourhoodId = store.user?.neighbourhoods?.firstOrNull()?.neighbourhoodid,
                     itemId = null,
                     editable = true,
+                    admin = store.user?.neighbourhoods?.firstOrNull()?.access?.let { it >= 499 }
+                        ?: false,
                     type = ItemType.DONATION.name,
-                    typeOverride = null,
-                    name = "",
-                    nameOverride = null,
-                    description = "",
-                    descriptionOverride = null,
-                    url = "",
-                    urlOverride = null,
-                    images = emptyMap(),
-                    files = emptyList(),
-                    newImages = emptyList(),
-                    newFiles = emptyMap(),
                 )
             }
         }
@@ -161,7 +171,7 @@ class ItemDetailsViewModel(
             try {
                 _state.update { it.copy(error = "", saving = true) }
                 _state.value.itemId?.let { itemManagementUseCase.delete(it) }
-                _state.update { it.copy(error = "", saving = true) }
+                _state.update { it.copy(error = "", saving = false, deleted = true) }
             } catch (e: OpException) {
                 _state.update { it.copy(error = e.msg, saving = false) }
             }
@@ -175,9 +185,18 @@ class ItemDetailsViewModel(
                     try {
                         _state.update { it.copy(saving = true) }
                         val type = ItemType.getByName(it.typeOverride ?: it.type)
+                        val item = when (type) {
+                            REMINDER -> Item(
+                                id = it.itemId,
+                                type = type,
+                                name = it.nameOverride ?: it.name,
+                                description = it.dates.map { it.epochSeconds.toString() }
+                                    .joinToString(","),
+                                url = "",
+                                neighbourhoodId = it.neighbourhoodId,
+                            )
 
-                        itemManagementUseCase.addOrUpdate(
-                            Item(
+                            else -> Item(
                                 id = it.itemId,
                                 type = type,
                                 name = it.nameOverride ?: it.name,
@@ -192,6 +211,10 @@ class ItemDetailsViewModel(
                                 endTs = (it.endOverride ?: it.end)?.epochSeconds?.toInt() ?: 0,
                                 neighbourhoodId = it.neighbourhoodId,
                             )
+                        }
+
+                        itemManagementUseCase.addOrUpdate(
+                            item
                         )?.let { newItemId ->
                             it.newImages.forEach { newImage ->
                                 loadContentsFromFile(newImage.name)?.let { fileContent ->
@@ -276,7 +299,12 @@ class ItemDetailsViewModel(
         }
     }
 
+    fun deleteItemAck() {
+        _state.update { it.copy(deleted = false) }
+    }
+
     data class ItemDetailsViewState(
+        val deleted: Boolean = false,
         val editable: Boolean = false,
         val admin: Boolean = false,
 

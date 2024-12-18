@@ -380,9 +380,9 @@ class ApiGateway(
         const val TARGET_ITEM_IMAGE = "itemImage"
         const val TARGET_ITEM_FILE = "itemFile"
         const val TARGET_HOUSEHOLD = "household"
-        const val BOX_CMD_LOCK ="LOCK"
-        const val BOX_CMD_UNLOCK ="UNLOCK"
-        const val BOX_CMD_OPEN ="OPEN"
+        const val BOX_CMD_LOCK = "LOCK"
+        const val BOX_CMD_UNLOCK = "UNLOCK"
+        const val BOX_CMD_OPEN = "OPEN"
     }
 
     suspend inline fun <R> runContextCatchTranslateThrow(crossinline block: suspend () -> R): R =
@@ -391,24 +391,31 @@ class ApiGateway(
                 block.invoke()
             }
         }.let {
-            val networkError = (it.isFailure && (it.exceptionOrNull()
-                ?.let { it is IOException || it is TimeoutException } ?: false))
-
-            statusUpdater.setOnline(!networkError)
-
             when {
-                it.isSuccess -> it.getOrElse { throw OpException("Unknown Error") }
-                it.isFailure ->
-                    it.exceptionOrNull().let {
+                it.isSuccess -> {
+                    statusUpdater.setOnline(true, null)
+                    it.getOrElse { throw OpException("Unknown Error") }
+                }
+
+                it.isFailure -> {
+                    val networkError = (it.exceptionOrNull()?.let { it is IOException || it is TimeoutException } ?: false)
+
+                    val messgae = it.exceptionOrNull().let {
                         when (it) {
-                            is ApiException -> throw OpException(it.msg)
-                            is IOException -> throw OpException(it.message ?: it.toString())
-                            else -> throw OpException("Unknown Error")
+                            is ApiException -> it.msg
+                            is IOException -> it.message ?: it.toString()
+                            else -> "Unknown Error"
                         }
                     }
 
+                    statusUpdater.setOnline(!networkError, messgae)
+                    throw OpException(messgae)
+                }
+
                 else -> throw OpException("Unknown Error")
             }
+
+
         }
 }
 

@@ -79,6 +79,8 @@
                 center: [0, 0],
                 zoom: 1
             });
+
+            map.addControl(new maplibregl.NavigationControl());
     
             function callNative(obj) {
                 //alert(JSON.stringify(obj));

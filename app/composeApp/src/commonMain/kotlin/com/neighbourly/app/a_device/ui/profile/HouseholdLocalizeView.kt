@@ -19,7 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.AppColors
 import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.CurlyText
+import com.neighbourly.app.a_device.ui.utils.FriendlyText
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdLocalizeViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.accept
@@ -42,24 +42,24 @@ fun HouseholdLocalizeView(viewModel: HouseholdLocalizeViewModel = viewModel { Ko
     val state by viewModel.state.collectAsState()
 
     if (!state.hasHouse) {
-        CurlyText(text = stringResource(Res.string.need_to_create_household))
+        FriendlyText(text = stringResource(Res.string.need_to_create_household))
     } else {
         if (state.localized) {
-            CurlyText(text = stringResource(Res.string.household_localized))
+            FriendlyText(text = stringResource(Res.string.household_localized))
             if (state.editableHousehold) {
-                CurlyText(text = stringResource(Res.string.household_relocate))
+                FriendlyText(text = stringResource(Res.string.household_relocate))
                 Spacer(modifier = Modifier.height(16.dp))
                 CurlyButton(text = stringResource(Res.string.relocate)) {
                     viewModel.onRelocate()
                 }
             } else {
-                CurlyText(text = stringResource(Res.string.household_cannot_relocate))
+                FriendlyText(text = stringResource(Res.string.household_cannot_relocate))
             }
         } else {
             if (state.editableHousehold) {
                 if (state.localizing) {
                     if (state.gpsprogress >= 1) {
-                        CurlyText(text = stringResource(Res.string.localize_completed))
+                        FriendlyText(text = stringResource(Res.string.localize_completed))
 
                         Spacer(modifier = Modifier.height(16.dp))
 
@@ -75,12 +75,12 @@ fun HouseholdLocalizeView(viewModel: HouseholdLocalizeViewModel = viewModel { Ko
                             }
                         }
                     } else {
-                        CurlyText(text = stringResource(Res.string.localize_progress))
+                        FriendlyText(text = stringResource(Res.string.localize_progress))
 
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Box(modifier = Modifier.size(150.dp)) {
-                            CurlyText(
+                            FriendlyText(
                                 modifier = Modifier.align(Alignment.Center),
                                 text =
                                     (minOf(1f, state.gpsprogress) * 100)
@@ -105,7 +105,7 @@ fun HouseholdLocalizeView(viewModel: HouseholdLocalizeViewModel = viewModel { Ko
                         }
                     }
                 } else {
-                    CurlyText(text = stringResource(Res.string.need_to_localize))
+                    FriendlyText(text = stringResource(Res.string.need_to_localize))
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -114,8 +114,8 @@ fun HouseholdLocalizeView(viewModel: HouseholdLocalizeViewModel = viewModel { Ko
                     }
                 }
             } else {
-                CurlyText(text = stringResource(Res.string.household_not_localized))
-                CurlyText(text = stringResource(Res.string.household_cannot_relocate))
+                FriendlyText(text = stringResource(Res.string.household_not_localized))
+                FriendlyText(text = stringResource(Res.string.household_cannot_relocate))
             }
         }
     }

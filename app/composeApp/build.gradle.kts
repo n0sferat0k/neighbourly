@@ -75,7 +75,7 @@ kotlin {
 
             implementation(libs.sqldelight.runtime)
 
-            implementation("io.github.epicarchitect:epic-calendar-compose:1.0.8")
+            implementation(libs.epic.calendar.compose)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -112,7 +112,7 @@ android {
             libs.versions.android.targetSdk
                 .get()
                 .toInt()
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
     }
     packaging {
@@ -162,7 +162,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "com.neighbourly.app"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0.2"
             includeAllModules = true
         }
     }

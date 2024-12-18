@@ -69,7 +69,7 @@ public class NavigationViewModel(
     }
 
     fun toggleMainContent() {
-        if(_state.value.disableMainToggle || !_state.value.mainContentVisible) {
+        if (_state.value.disableMainToggle || !_state.value.mainContentVisible) {
             _state.updateAndClearStack(ShowMenuAndReset.updater)
         } else {
             _state.update(HideMenu.updater)
@@ -224,6 +224,7 @@ public class NavigationViewModel(
                 webContent = WebMap,
             )
         }
+
         if (_state.value.disableMainToggle) {
             _state.update(updater)
         } else {
@@ -231,8 +232,16 @@ public class NavigationViewModel(
         }
     }
 
+    fun goHome() =
+        _state.updateAndClearStack {
+            it.copy(
+                mainContentVisible = if (it.disableMainToggle) true else false,
+                webContent = WebMap,
+            )
+        }
+
     fun goToItemDetails(itemId: Int) {
-        _state.update {
+        _state.updateAndStack {
             it.copy(
                 mainContentVisible = true,
                 mainContent = ShowItemDetails(itemId)
@@ -284,11 +293,16 @@ public class NavigationViewModel(
         }
 
     private fun MutableStateFlow<NavigationViewState>.popStack() =
-        _stateStack.pop()?.let { previousState ->
-            this.update {
-                previousState
-            }
+        if (_stateStack.empty()) {
+            goHome()
             true
-        } ?: false
+        } else {
+            _stateStack.pop().let { previousState ->
+                this.update {
+                    previousState
+                }
+                true
+            }
+        }
 
 }

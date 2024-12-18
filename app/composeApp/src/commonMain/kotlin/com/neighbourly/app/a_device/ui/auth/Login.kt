@@ -20,15 +20,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.AppColors
 import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.CurlyText
-import com.neighbourly.app.a_device.ui.utils.ErrorText
+import com.neighbourly.app.a_device.ui.utils.FriendlyText
+import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.login
@@ -76,7 +75,7 @@ fun Login(
         Spacer(modifier = Modifier.height(16.dp))
 
         Row {
-            CurlyText(
+            FriendlyText(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 text = stringResource(Res.string.remember_me)
             )
@@ -94,7 +93,7 @@ fun Login(
         }
 
         if (state.error.isNotEmpty()) {
-            ErrorText(state.error)
+            FriendlyErrorText(state.error)
         }
     }
 }

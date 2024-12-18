@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -48,9 +49,8 @@ import com.neighbourly.app.a_device.ui.utils.BoxFooter
 import com.neighbourly.app.a_device.ui.utils.BoxHeader
 import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
 import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.CurlyText
-import com.neighbourly.app.a_device.ui.utils.ErrorText
-import com.neighbourly.app.a_device.ui.utils.StraightText
+import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
+import com.neighbourly.app.a_device.ui.utils.FriendlyText
 import com.neighbourly.app.a_device.ui.utils.SwipeToDeleteBox
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel.MemImg
@@ -120,7 +120,7 @@ val TYPE_ASSOC = mapOf(
     SKILLSHARE.name to Pair(Res.drawable.skillshare, Res.string.skillshare),
 )
 val TYPE_ASSOC_ADMIN = TYPE_ASSOC + mapOf(
-    SKILLSHARE.name to Pair(Res.drawable.reminder, Res.string.reminders),
+    REMINDER.name to Pair(Res.drawable.reminder, Res.string.reminders),
 )
 
 val LOCALLY_ALLOWED_SITES =
@@ -136,6 +136,13 @@ fun ItemDetailsView(
 
     LaunchedEffect(itemId) {
         viewModel.setItem(itemId)
+    }
+
+    LaunchedEffect(state.deleted) {
+        if (state.deleted) {
+            viewModel.deleteItemAck()
+            navigationViewModel.goBack()
+        }
     }
 
     if (state.editable) {
@@ -168,8 +175,8 @@ fun StaticItemDetailsView(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    CurlyText(text = stringResource(Res.string.type), bold = true)
-                    StraightText(
+                    FriendlyText(text = stringResource(Res.string.type), bold = true)
+                    FriendlyText(
                         text = stringResource(
                             TYPE_ASSOC.get(state.type)?.second ?: Res.string.unknown
                         ),
@@ -190,34 +197,34 @@ fun StaticItemDetailsView(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        CurlyText(text = stringResource(Res.string.target_user), bold = true)
-                        StraightText(text = state.users.getOrDefault(state.targetUserId, ""))
+                        FriendlyText(text = stringResource(Res.string.target_user), bold = true)
+                        FriendlyText(text = state.users.getOrDefault(state.targetUserId, ""))
                     }
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    CurlyText(text = stringResource(Res.string.item_name), bold = true)
-                    StraightText(text = state.name)
+                    FriendlyText(text = stringResource(Res.string.item_name), bold = true)
+                    FriendlyText(text = state.name)
                 }
                 if (state.description.isNotEmpty()) {
-                    CurlyText(
+                    FriendlyText(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(Res.string.item_description), bold = true
                     )
-                    StraightText(
+                    FriendlyText(
                         modifier = Modifier.fillMaxWidth(),
                         text = state.description
                     )
                 }
 
                 if (state.url.isNotEmpty()) {
-                    CurlyText(
+                    FriendlyText(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(Res.string.item_url), bold = true
                     )
-                    StraightText(modifier = Modifier.clickable {
+                    FriendlyText(modifier = Modifier.clickable {
                         if (LOCALLY_ALLOWED_SITES.any { state.url.contains(it) }) {
                             navigationViewModel.goToWebPage(state.url)
                         } else {
@@ -227,7 +234,7 @@ fun StaticItemDetailsView(
                 }
 
                 if (!state.images.isEmpty()) {
-                    CurlyText(
+                    FriendlyText(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(Res.string.images),
                         bold = true
@@ -244,14 +251,14 @@ fun StaticItemDetailsView(
                 }
 
                 if (!state.files.isEmpty()) {
-                    CurlyText(
+                    FriendlyText(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(Res.string.files),
                         bold = true
                     )
 
                     state.files.onEach {
-                        StraightText(
+                        FriendlyText(
                             modifier = Modifier.fillMaxWidth()
                                 .clickable {
                                     uriHandler.openUri(it.url)
@@ -266,8 +273,8 @@ fun StaticItemDetailsView(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        CurlyText(text = stringResource(Res.string.start_date))
-                        StraightText(
+                        FriendlyText(text = stringResource(Res.string.start_date))
+                        FriendlyText(
                             text = state.start.toLocalDateTime(TimeZone.currentSystemDefault())
                                 .toJavaLocalDateTime().format(formatter),
                             bold = true
@@ -280,8 +287,8 @@ fun StaticItemDetailsView(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        CurlyText(text = stringResource(Res.string.end_date))
-                        StraightText(
+                        FriendlyText(text = stringResource(Res.string.end_date))
+                        FriendlyText(
                             text = state.end.toLocalDateTime(TimeZone.currentSystemDefault())
                                 .toJavaLocalDateTime().format(formatter),
                             bold = true
@@ -307,6 +314,7 @@ fun EditableItemDetailsView(
     var showDatePickerIndex by remember { mutableStateOf(-1) }
     var showDeleteAlert by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
+    val focusManager = LocalFocusManager.current
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
     if (showDeleteAlert) {
@@ -395,9 +403,9 @@ fun EditableItemDetailsView(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    CurlyText(text = stringResource(Res.string.type))
+                    FriendlyText(text = stringResource(Res.string.type))
 
-                    CurlyText(
+                    FriendlyText(
                         text = stringResource(
                             TYPE_ASSOC_ADMIN.get(state.typeOverride ?: state.type)?.second
                                 ?: Res.string.unknown
@@ -458,15 +466,15 @@ fun EditableItemDetailsView(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            CurlyText(text = stringResource(Res.string.dates))
-                            CurlyText(modifier = Modifier.clickable {
+                            FriendlyText(text = stringResource(Res.string.dates))
+                            FriendlyText(modifier = Modifier.clickable {
                                 showDatePickerIndex = -1
                                 showDatePickerInstant = now()
                             }, text = stringResource(Res.string.add_date), bold = true)
                         }
 
                         state.dates.forEachIndexed { index, date ->
-                            CurlyText(
+                            FriendlyText(
                                 modifier = Modifier.clickable {
                                     showDatePickerIndex = index
                                     showDatePickerInstant = date
@@ -499,7 +507,6 @@ fun EditableItemDetailsView(
                             onValueChange = {
                                 viewModel.updateUrl(it)
                             },
-                            isError = state.nameError,
                             label = { Text(stringResource(Res.string.item_url)) },
                             modifier = Modifier.fillMaxWidth(),
                         )
@@ -508,8 +515,9 @@ fun EditableItemDetailsView(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            CurlyText(text = stringResource(Res.string.images))
-                            CurlyText(modifier = Modifier.clickable {
+                            FriendlyText(text = stringResource(Res.string.images))
+                            FriendlyText(modifier = Modifier.clickable {
+                                focusManager.clearFocus(true)
                                 showImageFilePicker = true
                             }, text = stringResource(Res.string.add_image), bold = true)
                         }
@@ -533,14 +541,15 @@ fun EditableItemDetailsView(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            CurlyText(text = stringResource(Res.string.files))
-                            CurlyText(modifier = Modifier.clickable {
+                            FriendlyText(text = stringResource(Res.string.files))
+                            FriendlyText(modifier = Modifier.clickable {
+                                focusManager.clearFocus(true)
                                 showAttachmentFilePicker = true
                             }, text = stringResource(Res.string.add_file), bold = true)
                         }
 
                         state.files.onEach {
-                            CurlyText(
+                            FriendlyText(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable {
@@ -553,12 +562,13 @@ fun EditableItemDetailsView(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            CurlyText(text = stringResource(Res.string.start_date))
+                            FriendlyText(text = stringResource(Res.string.start_date))
                             (state.startOverride ?: state.start)?.takeIf { it.epochSeconds > 0 }
                                 .let { startInstance ->
                                     if (startInstance != null) {
-                                        CurlyText(
+                                        FriendlyText(
                                             modifier = Modifier.clickable {
+                                                focusManager.clearFocus(true)
                                                 showStartDatePicker = true
                                             },
                                             text = startInstance.toLocalDateTime(TimeZone.currentSystemDefault())
@@ -566,11 +576,12 @@ fun EditableItemDetailsView(
                                             bold = true
                                         )
                                     }
-                                    CurlyText(
+                                    FriendlyText(
                                         modifier = Modifier.clickable {
-                                            if (startInstance == null)
+                                            if (startInstance == null) {
+                                                focusManager.clearFocus(true)
                                                 showStartDatePicker = true
-                                            else
+                                            } else
                                                 viewModel.updateStartDate(0)
                                         },
                                         text = if (startInstance == null)
@@ -586,12 +597,13 @@ fun EditableItemDetailsView(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            CurlyText(text = stringResource(Res.string.end_date))
+                            FriendlyText(text = stringResource(Res.string.end_date))
                             (state.endOverride ?: state.end)?.takeIf { it.epochSeconds > 0 }
                                 .let { endInstance ->
                                     if (endInstance != null) {
-                                        CurlyText(
+                                        FriendlyText(
                                             modifier = Modifier.clickable {
+                                                focusManager.clearFocus(true)
                                                 showStartDatePicker = true
                                             },
                                             text = endInstance.toLocalDateTime(TimeZone.currentSystemDefault())
@@ -599,11 +611,12 @@ fun EditableItemDetailsView(
                                             bold = true
                                         )
                                     }
-                                    CurlyText(
+                                    FriendlyText(
                                         modifier = Modifier.clickable {
-                                            if (endInstance == null)
+                                            if (endInstance == null) {
+                                                focusManager.clearFocus(true)
                                                 showEndDatePicker = true
-                                            else
+                                            } else
                                                 viewModel.updateEndDate(0)
                                         },
                                         text = if (endInstance == null)
@@ -625,13 +638,13 @@ fun EditableItemDetailsView(
                 }
 
                 if (state.error.isNotEmpty()) {
-                    ErrorText(state.error)
+                    FriendlyErrorText(state.error)
                 }
             }
         }
         BoxFooter(modifier = Modifier.align(Alignment.End)) {
             if (state.editable && state.itemId != null) {
-                CurlyText(
+                FriendlyText(
                     modifier = Modifier.clickable {
                         showDeleteAlert = true
                     },

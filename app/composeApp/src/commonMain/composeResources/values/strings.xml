@@ -124,6 +124,10 @@
 
     <string name="list_household_members">Your household has the following member(s):</string>
 
+    <string name="scan_qr_for_app_install">Scan the below QR code to download and install Neighbourly on the device of a friend or family member.</string>
+
+    <string name="last_error">Last Error encountered on API:</string>
+
     <string name="no_boxes">Your household doesn't have any boxes !</string>
     <string name="add_box">Add Box</string>
     <string name="reminders">Reminders</string>

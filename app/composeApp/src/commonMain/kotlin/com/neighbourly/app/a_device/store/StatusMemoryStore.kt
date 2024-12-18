@@ -9,12 +9,15 @@ import kotlinx.coroutines.flow.update
 
 abstract class StatusMemoryStore : ConfigStatusSource, StatusUpdater {
     private val _state = MutableStateFlow(StatusMemoryStoreState())
-    override val isOnlineFlow: Flow<Boolean> = _state.map { it.isOnline }
+    override val isOnlineFlow: Flow<Pair<Boolean, String?>> =
+        _state.map { Pair(it.isOnline, it.lastError) }
 
-    override fun setOnline(isOnline: Boolean) {
-        _state.update { it.copy(isOnline = isOnline) }
+    override fun setOnline(isOnline: Boolean, lastError: String?) {
+        _state.update { it.copy(isOnline = isOnline, lastError = lastError) }
     }
 
-
-    private data class StatusMemoryStoreState(val isOnline: Boolean = true)
+    private data class StatusMemoryStoreState(
+        val isOnline: Boolean = true,
+        val lastError: String? = null
+    )
 }

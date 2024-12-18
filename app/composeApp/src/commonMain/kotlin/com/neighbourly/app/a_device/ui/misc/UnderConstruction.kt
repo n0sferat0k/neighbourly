@@ -15,7 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.BoxHeader
 import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
-import com.neighbourly.app.a_device.ui.utils.CurlyText
+import com.neighbourly.app.a_device.ui.utils.FriendlyText
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileViewModel
 import neighbourly.composeapp.generated.resources.Res
@@ -42,10 +42,10 @@ fun UnderConstruction(
         }
 
         BoxScrollableContent(modifier = Modifier.weight(1f)) {
-            CurlyText(
+            FriendlyText(
                 modifier = Modifier.padding(start = 10.dp),
                 text = stringResource(Res.string.under_construction),
-                fontSize = 24.sp,
+                fontSize = 22.sp,
             )
         }
     }

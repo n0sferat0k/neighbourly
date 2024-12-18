@@ -29,8 +29,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.AppColors
 import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.CurlyText
-import com.neighbourly.app.a_device.ui.utils.ErrorText
+import com.neighbourly.app.a_device.ui.utils.FriendlyText
+import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.NeighbourhoodAddMemberViewModel
 import io.kamel.image.KamelImage
@@ -70,7 +70,7 @@ fun NeighbourhoodAddMemberView(
     }
 
     if (!state.hasEstablishedHousehold) {
-        CurlyText(text = stringResource(Res.string.cannot_add_to_neighbourhood_member))
+        FriendlyText(text = stringResource(Res.string.cannot_add_to_neighbourhood_member))
     } else {
         Column {
             Spacer(modifier = Modifier.height(8.dp))
@@ -169,7 +169,7 @@ fun NeighbourhoodAddMemberView(
             Spacer(modifier = Modifier.height(8.dp))
 
             if (!state.personsAndAcc.isNullOrEmpty()) {
-                CurlyText(text = stringResource(Res.string.neighbourhood_acc))
+                FriendlyText(text = stringResource(Res.string.neighbourhood_acc))
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -196,7 +196,7 @@ fun NeighbourhoodAddMemberView(
             }
 
             if (state.error.isNotEmpty()) {
-                ErrorText(state.error)
+                FriendlyErrorText(state.error)
             }
         }
     }

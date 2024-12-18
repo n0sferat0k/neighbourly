@@ -29,8 +29,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.AppColors
 import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.CurlyText
-import com.neighbourly.app.a_device.ui.utils.ErrorText
+import com.neighbourly.app.a_device.ui.utils.FriendlyText
+import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdAddMemberViewModel
 import io.kamel.image.KamelImage
@@ -69,7 +69,7 @@ fun HouseholdAddMemberView(
     }
 
     Column {
-        CurlyText(text = stringResource(Res.string.attempting_to_add_household_member))
+        FriendlyText(text = stringResource(Res.string.attempting_to_add_household_member))
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -167,7 +167,7 @@ fun HouseholdAddMemberView(
         Spacer(modifier = Modifier.height(8.dp))
 
         if (state.neighbourhoodsAndAcc.size > 0) {
-            CurlyText(text = stringResource(Res.string.neighbourhood_acc))
+            FriendlyText(text = stringResource(Res.string.neighbourhood_acc))
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -194,7 +194,7 @@ fun HouseholdAddMemberView(
         }
 
         if (state.error.isNotEmpty()) {
-            ErrorText(state.error)
+            FriendlyErrorText(state.error)
         }
     }
 }

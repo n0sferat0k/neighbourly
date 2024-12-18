@@ -94,7 +94,8 @@ val mapHtml =
                     center: [0, 0],
                     zoom: 1
                 });
-        
+                map.addControl(new maplibregl.NavigationControl());
+                        
                 function callNative(obj) {
                     //alert(JSON.stringify(obj));
                     window.kmpJsBridge.callNative("MapFeedback", JSON.stringify(obj), function (data) { });
@@ -404,7 +405,7 @@ val mapHtml =
     
                         var popupHtml = `
                                         <div style="display: flex; flex-direction: column; align-items: left;">
-                                            <span style="padding:3px;text-align:left;font-size:10px;line-height:10px;">` +  house.name + `</span>
+                                            <span style="padding:3px;text-align:left;font-size:10px;font-weight:bold;line-height:10px;">` +  house.name + `</span>
                                             <span style="padding:3px;text-align:left;font-size:10px;line-height:10px;">` +  house.address + `</span>
                                             <span style="padding:3px;text-align:left;font-size:10px;line-height:10px;">` +  house.description + `</span>
                                             <div style="display: flex; flex-direction: row; align-items: center;justify-content: space-around;">                                            

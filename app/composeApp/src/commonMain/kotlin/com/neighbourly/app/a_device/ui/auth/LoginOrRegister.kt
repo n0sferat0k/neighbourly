@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.utils.AppColors
 import com.neighbourly.app.a_device.ui.utils.BoxHeader
 import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
-import com.neighbourly.app.a_device.ui.utils.font
+import com.neighbourly.app.a_device.ui.utils.curlyFont
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.login
 import neighbourly.composeapp.generated.resources.register
@@ -54,7 +54,7 @@ fun LoginOrRegister() {
                 style =
                     TextStyle(
                         fontWeight = if (index == 0) FontWeight.Bold else FontWeight.Normal,
-                        fontFamily = font(),
+                        fontFamily = curlyFont(),
                         fontSize = 20.sp,
                         color = AppColors.primary,
                     ),
@@ -70,7 +70,7 @@ fun LoginOrRegister() {
                 style =
                     TextStyle(
                         fontWeight = if (index == 1) FontWeight.Bold else FontWeight.Normal,
-                        fontFamily = font(),
+                        fontFamily = curlyFont(),
                         fontSize = 20.sp,
                         color = AppColors.primary,
                     ),

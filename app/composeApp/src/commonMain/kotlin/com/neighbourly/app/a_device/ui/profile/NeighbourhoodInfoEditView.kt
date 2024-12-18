@@ -32,7 +32,7 @@ import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.AlertDialog
 import com.neighbourly.app.a_device.ui.utils.AppColors
 import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.CurlyText
+import com.neighbourly.app.a_device.ui.utils.FriendlyText
 import com.neighbourly.app.a_device.ui.utils.generateQrCode
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.NeighbourhoodInfoViewModel
@@ -64,7 +64,7 @@ fun NeighbourhoodInfoEditView(
     var showRemoveAlertForId by remember { mutableStateOf(-1) }
 
     if (state.drawing) {
-        CurlyText(text = stringResource(Res.string.draw_neighbourhood))
+        FriendlyText(text = stringResource(Res.string.draw_neighbourhood))
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -90,18 +90,18 @@ fun NeighbourhoodInfoEditView(
             }
         }
     } else if (!state.hasLocalizedHouse) {
-        CurlyText(text = stringResource(Res.string.need_to_have_household))
+        FriendlyText(text = stringResource(Res.string.need_to_have_household))
     } else {
         if (state.hasNeighbourhoods) {
             Column {
                 Spacer(modifier = Modifier.height(8.dp))
 
-                CurlyText(text = stringResource(Res.string.list_neighbourhoods))
+                FriendlyText(text = stringResource(Res.string.list_neighbourhoods))
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 state.neighbourhoods.toList().forEach { neighbourhood ->
-                    CurlyText(
+                    FriendlyText(
                         modifier = Modifier.align(Alignment.Start),
                         text = "${neighbourhood.name} [Acc: ${neighbourhood.acc}]",
                         fontSize = 24.sp,
@@ -156,12 +156,12 @@ fun NeighbourhoodInfoEditView(
                 }
             }
         } else {
-            CurlyText(text = stringResource(Res.string.no_neighbourhood))
+            FriendlyText(text = stringResource(Res.string.no_neighbourhood))
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        CurlyText(text = stringResource(Res.string.join_neighbourhood))
+        FriendlyText(text = stringResource(Res.string.join_neighbourhood))
 
         state.userQr.takeIf { !it.isNullOrBlank() }?.let {
             Image(
@@ -174,7 +174,7 @@ fun NeighbourhoodInfoEditView(
             )
         }
         if (state.isHouseholdHead) {
-            CurlyText(text = stringResource(Res.string.create_neighbourhood))
+            FriendlyText(text = stringResource(Res.string.create_neighbourhood))
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -183,7 +183,7 @@ fun NeighbourhoodInfoEditView(
                 navigationViewModel.goToMap()
             }
         } else {
-            CurlyText(text = stringResource(Res.string.cannot_create_neighbourhood))
+            FriendlyText(text = stringResource(Res.string.cannot_create_neighbourhood))
         }
     }
 }

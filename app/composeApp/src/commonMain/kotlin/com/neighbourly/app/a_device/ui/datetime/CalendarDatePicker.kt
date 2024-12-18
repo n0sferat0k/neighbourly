@@ -6,7 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.neighbourly.app.a_device.ui.utils.AppColors
-import com.neighbourly.app.a_device.ui.utils.CurlyText
+import com.neighbourly.app.a_device.ui.utils.FriendlyText
 import epicarchitect.calendar.compose.basis.EpicMonth
 import epicarchitect.calendar.compose.basis.config.rememberMutableBasisEpicCalendarConfig
 import epicarchitect.calendar.compose.datepicker.EpicDatePicker
@@ -46,7 +46,7 @@ fun CalendarDatePicker(modifier: Modifier, instant: Instant, onChange: (Int, Int
     }
 
     Column(modifier = modifier) {
-        CurlyText(
+        FriendlyText(
             modifier.align(Alignment.CenterHorizontally),
             text = state.pagerState.currentMonth.month.name + " " + state.pagerState.currentMonth.year
         )

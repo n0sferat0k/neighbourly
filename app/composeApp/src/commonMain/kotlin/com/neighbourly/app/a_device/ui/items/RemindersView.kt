@@ -15,8 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.BoxHeader
 import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
-import com.neighbourly.app.a_device.ui.utils.CurlyText
-import com.neighbourly.app.a_device.ui.utils.StraightText
+import com.neighbourly.app.a_device.ui.utils.FriendlyText
 import com.neighbourly.app.b_adapt.viewmodel.items.RemindersViewModel
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
@@ -40,9 +39,9 @@ fun RemidersView(viewModel: RemindersViewModel = viewModel { KoinProvider.KOIN.g
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 state.reminders.forEach {
-                    CurlyText(text = it.name, bold = true)
+                    FriendlyText(text = it.name, bold = true)
                     it.times.forEach {
-                        StraightText(
+                        FriendlyText(
                             modifier = Modifier.padding(start = 10.dp),
                             text = it.toLocalDateTime(TimeZone.currentSystemDefault())
                                 .toJavaLocalDateTime().format(formatter),

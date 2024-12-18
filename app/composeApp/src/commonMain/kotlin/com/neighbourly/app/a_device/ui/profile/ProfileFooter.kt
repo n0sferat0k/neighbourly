@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.AppColors
-import com.neighbourly.app.a_device.ui.utils.CurlyText
+import com.neighbourly.app.a_device.ui.utils.FriendlyText
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileFooterViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.everywhere
@@ -35,8 +35,8 @@ fun ProfileFooter(viewModel: ProfileFooterViewModel = viewModel { KoinProvider.K
                 color = AppColors.primary,
             )
         }
-        CurlyText(text = stringResource(Res.string.logout) + ":")
-        CurlyText(
+        FriendlyText(text = stringResource(Res.string.logout) + ":")
+        FriendlyText(
             modifier =
                 Modifier
                     .padding(start = 15.dp, end = 5.dp)
@@ -46,8 +46,8 @@ fun ProfileFooter(viewModel: ProfileFooterViewModel = viewModel { KoinProvider.K
             text = stringResource(Res.string.here),
             bold = true,
         )
-        CurlyText(text = "/")
-        CurlyText(
+        FriendlyText(text = "/")
+        FriendlyText(
             modifier =
                 Modifier
                     .padding(start = 5.dp)

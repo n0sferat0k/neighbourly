@@ -69,6 +69,7 @@ import neighbourly.composeapp.generated.resources.app_name
 import neighbourly.composeapp.generated.resources.curlzmt
 import neighbourly.composeapp.generated.resources.delete
 import neighbourly.composeapp.generated.resources.houses
+import neighbourly.composeapp.generated.resources.lato
 import neighbourly.composeapp.generated.resources.refresh
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
@@ -249,7 +250,7 @@ fun BoxFooter(
 }
 
 @Composable
-fun font() =
+fun curlyFont() =
     FontFamily(
         Font(
             Res.font.curlzmt,
@@ -257,6 +258,36 @@ fun font() =
             FontStyle.Normal,
         ),
     )
+
+@Composable
+fun friendlyFont() =
+    FontFamily(
+        Font(
+            Res.font.lato,
+            FontWeight.Normal,
+            FontStyle.Normal,
+        ),
+    )
+
+@Composable
+fun FriendlyText(
+    modifier: Modifier = Modifier,
+    text: String,
+    bold: Boolean = false,
+    fontSize: TextUnit = 18.sp,
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        style =
+        TextStyle(
+            fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
+            fontFamily = friendlyFont(),
+            fontSize = fontSize,
+            color = AppColors.primary,
+        ),
+    )
+}
 
 @Composable
 fun CurlyText(
@@ -271,28 +302,9 @@ fun CurlyText(
         style =
         TextStyle(
             fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
-            fontFamily = font(),
+            fontFamily = curlyFont(),
             fontSize = fontSize,
             color = AppColors.primary,
-        ),
-    )
-}
-
-@Composable
-fun StraightText(
-    modifier: Modifier = Modifier,
-    text: String,
-    bold: Boolean = false,
-    fontSize: TextUnit = 18.sp,
-) {
-    Text(
-        modifier = modifier,
-        text = text,
-        style =
-        TextStyle(
-            fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
-            fontSize = fontSize,
-            color = AppColors.primary
         ),
     )
 }
@@ -328,7 +340,7 @@ fun CurlyButton(
             color = Color.White,
             style =
             TextStyle(
-                fontFamily = font(),
+                fontFamily = curlyFont(),
                 fontSize = 18.sp,
                 color = AppColors.primary,
             ),
@@ -337,13 +349,13 @@ fun CurlyButton(
 }
 
 @Composable
-fun ErrorText(errMsg: String) {
+fun FriendlyErrorText(errMsg: String) {
     Text(
         text = errMsg,
         color = Color.Red,
         style =
         TextStyle(
-            fontFamily = font(),
+            fontFamily = friendlyFont(),
             fontSize = 18.sp,
         ),
     )

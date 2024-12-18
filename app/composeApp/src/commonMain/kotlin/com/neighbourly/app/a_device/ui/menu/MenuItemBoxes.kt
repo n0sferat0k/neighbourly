@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.utils.AppColors
-import com.neighbourly.app.a_device.ui.utils.CurlyText
+import com.neighbourly.app.a_device.ui.utils.FriendlyText
 import kotlinx.coroutines.delay
 
 @Composable
@@ -73,11 +73,11 @@ fun MenuItemBox(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    CurlyText(
+                    FriendlyText(
                         modifier = Modifier.padding(start = 10.dp)
                             .align(Alignment.CenterVertically),
                         text = text,
-                        fontSize = 24.sp,
+                        fontSize = 22.sp,
                     )
                     Image(
                         modifier = Modifier.size(48.dp).padding(end = 10.dp),

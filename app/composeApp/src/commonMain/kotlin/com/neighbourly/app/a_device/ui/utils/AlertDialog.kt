@@ -78,8 +78,8 @@ fun AlertDialog(
                         }
                     }
                 },
-                title = { CurlyText(text = title) },
-                text = { CurlyText(text = text) },
+                title = { FriendlyText(text = title) },
+                text = { FriendlyText(text = text) },
             )
         }
     }

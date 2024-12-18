@@ -36,8 +36,8 @@ import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.AlertDialog
 import com.neighbourly.app.a_device.ui.utils.AppColors
 import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.CurlyText
-import com.neighbourly.app.a_device.ui.utils.ErrorText
+import com.neighbourly.app.a_device.ui.utils.FriendlyText
+import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
 import com.neighbourly.app.a_device.ui.utils.generateQrCode
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdInfoEditViewModel
@@ -74,7 +74,7 @@ fun HouseholdInfoEditView(
 
     if (!state.hasHousehold && !navigation.addingNewHousehold) {
         Column {
-            CurlyText(text = stringResource(Res.string.invite_or_create_household))
+            FriendlyText(text = stringResource(Res.string.invite_or_create_household))
 
             state.userQr.takeIf { !it.isNullOrBlank() }?.let {
                 Image(
@@ -87,7 +87,7 @@ fun HouseholdInfoEditView(
                 )
             }
 
-            CurlyText(
+            FriendlyText(
                 modifier =
                 Modifier.clickable {
                     navigationViewModel.goToAddHousehold()
@@ -207,14 +207,14 @@ fun HouseholdInfoEditView(
                 }
 
                 if (state.error.isNotEmpty()) {
-                    ErrorText(state.error)
+                    FriendlyErrorText(state.error)
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
             }
             Box(modifier = Modifier.fillMaxWidth()) {
                 if (state.editableHousehold) {
-                    CurlyText(
+                    FriendlyText(
                         modifier =
                         Modifier
                             .clickable {
@@ -239,7 +239,7 @@ fun HouseholdInfoEditView(
                     )
                 }
 
-                CurlyText(
+                FriendlyText(
                     modifier =
                     Modifier
                         .clickable {
@@ -253,10 +253,10 @@ fun HouseholdInfoEditView(
             if (state.members != null) {
                 Spacer(modifier = Modifier.height(8.dp))
 
-                CurlyText(text = stringResource(Res.string.list_household_members))
+                FriendlyText(text = stringResource(Res.string.list_household_members))
 
                 state.members?.forEach {
-                    CurlyText(text = "* " + it, bold = true)
+                    FriendlyText(text = "* " + it, bold = true)
                 }
             }
         }
