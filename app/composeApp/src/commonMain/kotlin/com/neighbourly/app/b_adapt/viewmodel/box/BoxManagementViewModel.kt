@@ -76,7 +76,7 @@ class BoxManagementViewModel(
     }
 
     fun clearBox() {
-        _state.update { it.copy(newBoxId = "", newBoxName = "", newBoxNameError = false, error = "") }
+        _state.update { it.copy(newBoxId = "", newBoxName = "", newBoxNameError = true, error = "") }
     }
 
     fun saveBox() {
@@ -97,12 +97,25 @@ class BoxManagementViewModel(
         _state.update { it.copy(newBoxName = boxName, newBoxNameError = boxName.isBlank()) }
     }
 
+    fun removeBox(boxId: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(loading = true, error = "") }
+            try {
+                boxOpsUseCase.removeBox(boxId)
+                profileRefreshUseCase.execute()
+                _state.update { it.copy(loading = false) }
+            } catch (e: OpException) {
+                _state.update { it.copy(loading = false, error = e.msg) }
+            }
+        }
+    }
+
     data class BoxManagementViewState(
         val saving: Boolean = false,
         val loading: Boolean = false,
         val newBoxId: String = "",
         val newBoxName: String = "",
-        val newBoxNameError: Boolean = false,
+        val newBoxNameError: Boolean = true,
         val error: String = "",
         val boxes: Map<String, String>? = null
     )

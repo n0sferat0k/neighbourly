@@ -43,6 +43,9 @@
     <string name="deleteing_image">Deleteing Image</string>
     <string name="confirm_deleteing_image">Are you sure you want to permanently delete this image?</string>
 
+    <string name="deleteing_box">Deleteing Box</string>
+    <string name="confirm_deleteing_box">Are you sure you want to remove this Box from your household?</string>
+
     <string name="profile">Profile</string>
     <string name="mystuff">My Stuff</string>
     <string name="publish">Publish</string>

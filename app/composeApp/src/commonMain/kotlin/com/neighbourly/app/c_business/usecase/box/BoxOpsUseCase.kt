@@ -30,4 +30,12 @@ class BoxOpsUseCase(
             apiGw.addBox(token, boxId, boxName)
         }
     }
+
+    suspend fun removeBox(boxId: String) {
+        val token = sessionStore.user?.authtoken
+
+        token?.let {
+            apiGw.removeBox(token, boxId)
+        }
+    }
 }

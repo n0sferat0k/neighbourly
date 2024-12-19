@@ -135,6 +135,8 @@ interface Api {
 
     suspend fun addBox(token: String, boxId: String, boxName: String)
 
+    suspend fun removeBox(token: String, boxId: String)
+
     suspend fun lockBox(token: String, boxId: String)
 
     suspend fun unlockBox(token: String, boxId: String)

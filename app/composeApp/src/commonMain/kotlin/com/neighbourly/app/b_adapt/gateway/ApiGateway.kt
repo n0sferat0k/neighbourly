@@ -362,6 +362,12 @@ class ApiGateway(
         }
     }
 
+    override suspend fun removeBox(token: String, boxId: String) {
+        runContextCatchTranslateThrow {
+            api.boxDel(API_BASE_URL, token, BoxDTO(id = boxId))
+        }
+    }
+
     override suspend fun lockBox(token: String, boxId: String) {
         runContextCatchTranslateThrow {
             api.boxOp(API_BASE_URL, token, BoxDTO(id = boxId, command = BOX_CMD_LOCK))

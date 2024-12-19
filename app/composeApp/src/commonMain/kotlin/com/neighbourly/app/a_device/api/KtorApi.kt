@@ -477,6 +477,19 @@ object KtorApi {
         }
     }
 
+    suspend fun boxDel(baseUrl: String, token: String, box: BoxDTO) {
+        val response = client.post(baseUrl + "box/delBox") {
+            contentType(ContentType.Application.Json)
+            setBody(box)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
+            }
+        }
+        if (response.status.value != 200) {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
     suspend fun boxOp(baseUrl: String, token: String, box: BoxDTO) {
         val response = client.post(baseUrl + "box/opBox") {
             contentType(ContentType.Application.Json)

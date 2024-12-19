@@ -3,13 +3,19 @@ package com.neighbourly.app.a_device.ui.box
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.BarcodeScanner
+import com.neighbourly.app.a_device.ui.utils.AlertDialog
 import com.neighbourly.app.a_device.ui.utils.AppColors
 import com.neighbourly.app.a_device.ui.utils.BoxFooter
 import com.neighbourly.app.a_device.ui.utils.BoxHeader
@@ -34,12 +41,15 @@ import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
 import com.neighbourly.app.a_device.ui.utils.CurlyButton
 import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
 import com.neighbourly.app.a_device.ui.utils.FriendlyText
+import com.neighbourly.app.a_device.ui.utils.SwipeToDeleteBox
 import com.neighbourly.app.b_adapt.viewmodel.box.BoxManagementViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.add_box
 import neighbourly.composeapp.generated.resources.box_id
 import neighbourly.composeapp.generated.resources.box_name
 import neighbourly.composeapp.generated.resources.cancel
+import neighbourly.composeapp.generated.resources.confirm_deleteing_box
+import neighbourly.composeapp.generated.resources.deleteing_box
 import neighbourly.composeapp.generated.resources.no_boxes
 import neighbourly.composeapp.generated.resources.openbox
 import neighbourly.composeapp.generated.resources.save
@@ -47,11 +57,27 @@ import neighbourly.composeapp.generated.resources.unlockbox
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BoxManagementView(viewModel: BoxManagementViewModel = viewModel { KoinProvider.KOIN.get<BoxManagementViewModel>() }) {
     val state by viewModel.state.collectAsState()
 
     var showBoxScanner by remember { mutableStateOf(false) }
+    var showRemoveAlertForId by remember { mutableStateOf("") }
+
+    if (showRemoveAlertForId.isNotBlank()) {
+        AlertDialog(
+            title = stringResource(Res.string.deleteing_box),
+            text = stringResource(Res.string.confirm_deleteing_box),
+            ok = {
+                viewModel.removeBox(showRemoveAlertForId)
+                showRemoveAlertForId = ""
+            },
+            cancel = {
+                showRemoveAlertForId = ""
+            }
+        )
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -115,30 +141,45 @@ fun BoxManagementView(viewModel: BoxManagementViewModel = viewModel { KoinProvid
                         FriendlyText(text = stringResource(Res.string.no_boxes))
                     } else {
                         state.boxes?.entries?.forEach { (id, name) ->
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                FriendlyText(text = name, bold = true, fontSize = 22.sp)
-                                Image(
-                                    painter = painterResource(Res.drawable.openbox),
-                                    contentDescription = "Open box",
-                                    contentScale = ContentScale.FillBounds,
-                                    colorFilter = ColorFilter.tint(AppColors.primary),
-                                    modifier = Modifier.size(48.dp).clickable {
-                                        viewModel.openBox(id)
-                                    },
-                                )
-                                Image(
-                                    painter = painterResource(Res.drawable.unlockbox),
-                                    contentDescription = "Unlock box",
-                                    contentScale = ContentScale.FillBounds,
-                                    colorFilter = ColorFilter.tint(AppColors.primary),
-                                    modifier = Modifier.size(48.dp).clickable {
-                                        viewModel.unlockBox(id)
-                                    },
-                                )
+                            SwipeToDeleteBox(
+                                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                onDelete = {
+                                    showRemoveAlertForId = id
+                                }) {
+                                Card(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(4.dp),
+                                    elevation = 4.dp
+                                ) {
+                                    FlowRow(
+                                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                                    ) {
+                                        Box(modifier = Modifier.height(48.dp), contentAlignment = Alignment.CenterStart) {
+                                            FriendlyText(text = name, bold = true, fontSize = 22.sp)
+                                        }
+
+                                        Image(
+                                            painter = painterResource(Res.drawable.openbox),
+                                            contentDescription = "Open box",
+                                            contentScale = ContentScale.FillBounds,
+                                            colorFilter = ColorFilter.tint(AppColors.primary),
+                                            modifier = Modifier.size(48.dp).clickable {
+                                                viewModel.openBox(id)
+                                            },
+                                        )
+                                        Image(
+                                            painter = painterResource(Res.drawable.unlockbox),
+                                            contentDescription = "Unlock box",
+                                            contentScale = ContentScale.FillBounds,
+                                            colorFilter = ColorFilter.tint(AppColors.primary),
+                                            modifier = Modifier.size(48.dp).clickable {
+                                                viewModel.unlockBox(id)
+                                            },
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
