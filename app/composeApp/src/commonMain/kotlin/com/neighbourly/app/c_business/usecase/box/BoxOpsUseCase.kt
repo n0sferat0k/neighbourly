@@ -22,4 +22,12 @@ class BoxOpsUseCase(
             apiGw.openBox(token, boxId)
         }
     }
+
+    suspend fun addBox(boxId: String, boxName: String) {
+        val token = sessionStore.user?.authtoken
+
+        token?.let {
+            apiGw.addBox(token, boxId, boxName)
+        }
+    }
 }

@@ -30,16 +30,16 @@ func AddBox(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var boxHouseholdId int64
-	err = utility.DB.QueryRow(`SELECT * FROM boxes WHERE boxes_text_EN = ? LIMIT 1`, box.Id).Scan(&boxHouseholdId)
+	err = utility.DB.QueryRow(`SELECT boxes_add_numerics_0 FROM boxes WHERE boxes_text_EN = ? LIMIT 1`, box.Id).Scan(&boxHouseholdId)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			_, err = utility.DB.Exec(`INSERT INTO boxes (boxes_titlu_EN, boxes_text_EN, boxes_add_numerics_0) VALUES (?, ?, ?)`, box.Name, box.Id, householdId)
 			if err != nil {
-				http.Error(w, "Failed to add box"+err.Error(), http.StatusInternalServerError)
+				http.Error(w, "Failed to add box "+err.Error(), http.StatusInternalServerError)
 				return
 			}
 		} else {
-			http.Error(w, "Failed to add box"+err.Error(), http.StatusInternalServerError)
+			http.Error(w, "Failed to add box "+err.Error(), http.StatusInternalServerError)
 			return
 		}
 		//return success

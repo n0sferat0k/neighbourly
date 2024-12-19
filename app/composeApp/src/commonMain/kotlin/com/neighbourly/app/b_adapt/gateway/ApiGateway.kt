@@ -356,6 +356,12 @@ class ApiGateway(
             api.addOrUpdateItem(API_BASE_URL, token, item.toItemDTO()).toItem()
         }
 
+    override suspend fun addBox(token: String, boxId: String, boxName: String) {
+        runContextCatchTranslateThrow {
+            api.boxAdd(API_BASE_URL, token, BoxDTO(id = boxId, name = boxName))
+        }
+    }
+
     override suspend fun lockBox(token: String, boxId: String) {
         runContextCatchTranslateThrow {
             api.boxOp(API_BASE_URL, token, BoxDTO(id = boxId, command = BOX_CMD_LOCK))
@@ -398,7 +404,9 @@ class ApiGateway(
                 }
 
                 it.isFailure -> {
-                    val networkError = (it.exceptionOrNull()?.let { it is IOException || it is TimeoutException } ?: false)
+                    val networkError =
+                        (it.exceptionOrNull()?.let { it is IOException || it is TimeoutException }
+                            ?: false)
 
                     val messgae = it.exceptionOrNull().let {
                         when (it) {

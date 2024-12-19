@@ -133,6 +133,8 @@ interface Api {
 
     suspend fun addOrUpdateItem(token: String, item: Item): Item
 
+    suspend fun addBox(token: String, boxId: String, boxName: String)
+
     suspend fun lockBox(token: String, boxId: String)
 
     suspend fun unlockBox(token: String, boxId: String)

@@ -14,7 +14,7 @@ func ConnectMQTT() {
 	opts.AddBroker("tcp://neighbourly.go.ro:1883")
 	opts.SetClientID("go_mqtt_client")
 	opts.SetUsername("neighbourly")
-	opts.SetPassword("Tizenegy11")
+	opts.SetPassword("localpass")
 
 	// Create an MQTT client
 	MqttClient = mqtt.NewClient(opts)

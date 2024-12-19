@@ -144,7 +144,7 @@ val adapterModule =
             SignalViewModel(get())
         }
         factory {
-            BoxManagementViewModel(get(), get())
+            BoxManagementViewModel(get(), get(), get())
         }
         factory {
             RemindersViewModel(get())

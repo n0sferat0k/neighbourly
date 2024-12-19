@@ -87,7 +87,7 @@ data class UserDTO(
 data class BoxDTO(
     val name: String = "",
     val id: String,
-    val command: String,
+    val command: String? = null,
 )
 
 @Serializable
