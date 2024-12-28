@@ -74,15 +74,18 @@ sudo nano /etc/systemd/system/api.service
 	[Unit]
 	Description=Neighbourly Go Api
 	After=network.target
+	mariadb.service
+	Requires=mariadb.service
 
-	[Service]
-	ExecStartPre=/bin/sleep 10
+	[Service]	
+	ExecStartPre=/bin/sleep 20
 	ExecStart=/home/neighbourly/server/api/api
 	WorkingDirectory=/home/neighbourly/server/api
 	StandardOutput=inherit
 	StandardError=inherit
 	Restart=always
 	User=neighbourly
+	Group=neighbourly
 
 	[Install]
 	WantedBy=multi-user.target

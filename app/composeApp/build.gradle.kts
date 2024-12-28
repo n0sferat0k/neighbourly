@@ -76,6 +76,8 @@ kotlin {
             implementation(libs.sqldelight.runtime)
 
             implementation(libs.epic.calendar.compose)
+
+            implementation(libs.org.eclipse.paho.client.mqttv3)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

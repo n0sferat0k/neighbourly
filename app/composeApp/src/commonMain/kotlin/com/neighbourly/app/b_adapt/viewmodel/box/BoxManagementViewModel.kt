@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.c_business.usecase.box.BoxOpsUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
 import com.neighbourly.app.d_entity.data.OpException
+import com.neighbourly.app.d_entity.interf.Iot
 import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 
 class BoxManagementViewModel(
     val sessionStore: SessionStore,
+    val iotComm: Iot,
     val boxOpsUseCase: BoxOpsUseCase,
     val profileRefreshUseCase: ProfileRefreshUseCase,
 ) : ViewModel() {
@@ -76,7 +78,14 @@ class BoxManagementViewModel(
     }
 
     fun clearBox() {
-        _state.update { it.copy(newBoxId = "", newBoxName = "", newBoxNameError = true, error = "") }
+        _state.update {
+            it.copy(
+                newBoxId = "",
+                newBoxName = "",
+                newBoxNameError = true,
+                error = ""
+            )
+        }
     }
 
     fun saveBox() {

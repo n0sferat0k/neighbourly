@@ -86,7 +86,7 @@ actual fun loadContentsFromFile(file: String): FileContents? {
     )
 }
 
-actual fun getPhoneNumber(): String = ""
+actual fun getPhoneNumber(): String? = null
 
 actual val httpClientEngine: HttpClientEngine = CIO.create()
 

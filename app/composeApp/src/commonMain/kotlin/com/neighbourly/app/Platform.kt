@@ -29,7 +29,7 @@ expect fun loadImageFromFile(file: String, maxSizePx: Int): BitmapPainter?
 
 expect fun loadContentsFromFile(file: String): FileContents?
 
-expect fun getPhoneNumber(): String
+expect fun getPhoneNumber(): String?
 
 expect val httpClientEngine: HttpClientEngine
 

@@ -66,7 +66,7 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
     var confirmPassword by remember { mutableStateOf("nosfi") }
     var fullName by remember { mutableStateOf("nos fi") }
     var email by remember { mutableStateOf("nos@fi.com") }
-    var phoneNumber by remember { mutableStateOf(getPhoneNumber()) }
+    var phoneNumber by remember { mutableStateOf(getPhoneNumber().orEmpty()) }
     var profileImage by remember { mutableStateOf<Painter?>(null) }
     var profileFile by remember { mutableStateOf<FileContents?>(null) }
     var showFilePicker by remember { mutableStateOf(false) }

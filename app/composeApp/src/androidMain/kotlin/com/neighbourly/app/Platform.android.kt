@@ -37,7 +37,6 @@ import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.neighbourly.app.NeighbourlyApp.Companion.locationProvider
 import com.neighbourly.app.a_device.store.StatusMemoryStore
 import com.neighbourly.app.d_entity.data.FileContents
-import com.neighbourly.app.d_entity.interf.ConfigStatusSource
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.okhttp.OkHttp
@@ -178,11 +177,13 @@ actual fun loadContentsFromFile(file: String): FileContents? {
 }
 
 @SuppressLint("MissingPermission")
-actual fun getPhoneNumber(): String {
-    val subscriptionManager =
-        NeighbourlyApp.appContext.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-    return subscriptionManager.getPhoneNumber(DEFAULT_SUBSCRIPTION_ID)
-}
+actual fun getPhoneNumber(): String? =
+    runCatching {
+        (NeighbourlyApp.appContext.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager).getPhoneNumber(
+            DEFAULT_SUBSCRIPTION_ID
+        )
+    }.getOrNull()
+
 
 actual val httpClientEngine: HttpClientEngine = OkHttp.create()
 actual val keyValueRegistry: KeyValueRegistry =
@@ -210,19 +211,19 @@ actual val databaseDriver: SqlDriver
     get() = AndroidSqliteDriver(NeighbourlyDB.Schema, NeighbourlyApp.appContext, "neighbourly.db")
 
 actual val statusConfigSource = object : StatusMemoryStore() {
-        init {
-            NeighbourlyApp.appContext.registerComponentCallbacks(object : ComponentCallbacks {
-                override fun onConfigurationChanged(newConfig: Configuration) {
-                    _wideScreenFlow.update { wideScreen() }
-                }
+    init {
+        NeighbourlyApp.appContext.registerComponentCallbacks(object : ComponentCallbacks {
+            override fun onConfigurationChanged(newConfig: Configuration) {
+                _wideScreenFlow.update { wideScreen() }
+            }
 
-                override fun onLowMemory() {}
-            })
-        }
-
-        private fun wideScreen() = NeighbourlyApp.appContext.resources.getBoolean(R.bool.widescreen)
-        private val _wideScreenFlow = MutableStateFlow(wideScreen())
-        override val wideScreenFlow: Flow<Boolean>
-            get() = _wideScreenFlow.asSharedFlow()
-
+            override fun onLowMemory() {}
+        })
     }
+
+    private fun wideScreen() = NeighbourlyApp.appContext.resources.getBoolean(R.bool.widescreen)
+    private val _wideScreenFlow = MutableStateFlow(wideScreen())
+    override val wideScreenFlow: Flow<Boolean>
+        get() = _wideScreenFlow.asSharedFlow()
+
+}
