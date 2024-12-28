@@ -457,6 +457,57 @@ fun EditableItemDetailsView(
                     modifier = Modifier.fillMaxWidth(),
                 )
 
+                AnimatedVisibility((state.typeOverride ?: state.type) != REMINDER.name) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = state.descriptionOverride ?: state.description,
+                            onValueChange = {
+                                viewModel.updateDescription(it)
+                            },
+                            maxLines = 5,
+                            label = { Text(stringResource(Res.string.item_description)) },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+
+                        OutlinedTextField(
+                            value = state.urlOverride ?: state.url,
+                            onValueChange = {
+                                viewModel.updateUrl(it)
+                            },
+                            label = { Text(stringResource(Res.string.item_url)) },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    FriendlyText(text = stringResource(Res.string.images))
+                    FriendlyText(modifier = Modifier.clickable {
+                        focusManager.clearFocus(true)
+                        showImageFilePicker = true
+                    }, text = stringResource(Res.string.add_image), bold = true)
+                }
+
+                if (state.images.size > 0 || state.newImages.size > 0) {
+                    ImageGrid(
+                        images = state.images,
+                        newImages = state.newImages,
+                        deleteNew = {
+                            viewModel.deleteNewImage(it.name)
+                        },
+                        delete = {
+                            viewModel.deleteImage(it)
+                        }
+                    ) { imageId ->
+                        state.itemId?.let { navigationViewModel.goToGallery(it, imageId) }
+                    }
+                }
+
                 AnimatedVisibility((state.typeOverride ?: state.type) == REMINDER.name) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -492,51 +543,6 @@ fun EditableItemDetailsView(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        OutlinedTextField(
-                            value = state.descriptionOverride ?: state.description,
-                            onValueChange = {
-                                viewModel.updateDescription(it)
-                            },
-                            maxLines = 5,
-                            label = { Text(stringResource(Res.string.item_description)) },
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-
-                        OutlinedTextField(
-                            value = state.urlOverride ?: state.url,
-                            onValueChange = {
-                                viewModel.updateUrl(it)
-                            },
-                            label = { Text(stringResource(Res.string.item_url)) },
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            FriendlyText(text = stringResource(Res.string.images))
-                            FriendlyText(modifier = Modifier.clickable {
-                                focusManager.clearFocus(true)
-                                showImageFilePicker = true
-                            }, text = stringResource(Res.string.add_image), bold = true)
-                        }
-
-                        if (state.images.size > 0 || state.newImages.size > 0) {
-                            ImageGrid(
-                                images = state.images,
-                                newImages = state.newImages,
-                                deleteNew = {
-                                    viewModel.deleteNewImage(it.name)
-                                },
-                                delete = {
-                                    viewModel.deleteImage(it)
-                                }
-                            ) { imageId ->
-                                state.itemId?.let { navigationViewModel.goToGallery(it, imageId) }
-                            }
-                        }
-
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -582,7 +588,7 @@ fun EditableItemDetailsView(
                                                 focusManager.clearFocus(true)
                                                 showStartDatePicker = true
                                             } else
-                                                viewModel.updateStartDate(0)
+                                                viewModel.updateStartDate(null)
                                         },
                                         text = if (startInstance == null)
                                             stringResource(Res.string.add_start)
@@ -617,7 +623,7 @@ fun EditableItemDetailsView(
                                                 focusManager.clearFocus(true)
                                                 showEndDatePicker = true
                                             } else
-                                                viewModel.updateEndDate(0)
+                                                viewModel.updateEndDate(null)
                                         },
                                         text = if (endInstance == null)
                                             stringResource(Res.string.add_end)
@@ -630,11 +636,13 @@ fun EditableItemDetailsView(
                     }
                 }
 
-                CurlyButton(
-                    text = stringResource(Res.string.save),
-                    loading = state.saving,
-                ) {
-                    viewModel.save()
+                if(state.hasChanged) {
+                    CurlyButton(
+                        text = stringResource(Res.string.save),
+                        loading = state.saving,
+                    ) {
+                        viewModel.save()
+                    }
                 }
 
                 if (state.error.isNotEmpty()) {

@@ -1,6 +1,7 @@
 package com.neighbourly.app
 
 import com.neighbourly.app.a_device.api.KtorApi
+import com.neighbourly.app.a_device.remote.PahoMqttIot
 import com.neighbourly.app.a_device.store.SessionHybridStore
 import com.neighbourly.app.b_adapt.gateway.ApiGateway
 import com.neighbourly.app.b_adapt.interactor.DbInteractor
@@ -39,6 +40,7 @@ import com.neighbourly.app.c_business.usecase.profile.ProfileUpdateUseCase
 import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.ConfigStatusSource
 import com.neighbourly.app.d_entity.interf.Db
+import com.neighbourly.app.d_entity.interf.Iot
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import com.neighbourly.app.d_entity.interf.SessionStore
 import com.neighbourly.app.d_entity.interf.StatusUpdater
@@ -85,6 +87,9 @@ val adapterModule =
     module {
         single<Api> {
             ApiGateway(KtorApi, get())
+        }
+        single<Iot> {
+            PahoMqttIot()
         }
         single<Db> {
             DbInteractor(createDatabase())

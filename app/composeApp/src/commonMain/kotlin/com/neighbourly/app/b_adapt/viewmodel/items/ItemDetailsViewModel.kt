@@ -59,6 +59,7 @@ class ItemDetailsViewModel(
                 start = null,
                 end = null,
                 saving = false,
+                hasChanged = false,
                 error = "",
                 nameError = false,
                 targetUserIdOverride = null,
@@ -123,12 +124,12 @@ class ItemDetailsViewModel(
     }
 
     fun updateName(name: String) =
-        _state.update { it.copy(nameOverride = name, nameError = name.isBlank()) }
+        _state.update { it.copy(nameOverride = name, nameError = name.isBlank(), hasChanged = true) }
 
     fun updateDescription(description: String) =
-        _state.update { it.copy(descriptionOverride = description) }
+        _state.update { it.copy(descriptionOverride = description, hasChanged = true) }
 
-    fun updateUrl(url: String) = _state.update { it.copy(urlOverride = url) }
+    fun updateUrl(url: String) = _state.update { it.copy(urlOverride = url, hasChanged = true) }
 
     fun deleteImage(imageId: Int) {
         viewModelScope.launch {
@@ -139,7 +140,7 @@ class ItemDetailsViewModel(
                     it.copy(
                         error = "",
                         saving = false,
-                        images = it.images.filter { it.key != imageId }.toMap()
+                        images = it.images.filter { it.key != imageId }.toMap(),
                     )
                 }
             } catch (e: OpException) {
@@ -176,6 +177,70 @@ class ItemDetailsViewModel(
                 _state.update { it.copy(error = e.msg, saving = false) }
             }
         }
+    }
+
+    fun setType(type: String) {
+
+        _state.update {
+            it.copy(
+                typeOverride = type,
+                targetUserIdOverride = if (listOf(
+                        NEED.name,
+                        REQUEST.name
+                    ).contains(type)
+                ) it.targetUserIdOverride else -1,
+                hasChanged = true
+            )
+        }
+    }
+
+    fun onAddImage(file: String, img: BitmapPainter) {
+        _state.update { it.copy(newImages = it.newImages + MemImg(file, img), hasChanged = true) }
+    }
+
+    fun onAddFile(file: String) {
+        val name = Paths.get(file).fileName.toString()
+
+        _state.update { it.copy(newFiles = it.newFiles + (file to name), hasChanged = true) }
+    }
+
+    fun deleteNewImage(imgName: String) {
+        _state.update { it.copy(newImages = it.newImages.filter { it.name != imgName }.toList()) }
+    }
+
+    fun setTargetUser(targetUserId: Int) {
+        _state.update { it.copy(targetUserIdOverride = targetUserId, hasChanged = true) }
+    }
+
+    fun updateStartDate(startTs: Int?) {
+        _state.update {
+            it.copy(startOverride = startTs?.let { Instant.fromEpochSeconds(it.toLong()) }, hasChanged = true)
+        }
+    }
+
+    fun updateEndDate(endTs: Int?) {
+        _state.update {
+            it.copy(endOverride = endTs?.let { Instant.fromEpochSeconds(it.toLong()) }, hasChanged = true)
+        }
+    }
+
+    fun addOrUpdateDate(ts: Int, index: Int) {
+        if (index == -1) {
+            _state.update {
+                it.copy(dates = (it.dates + Instant.fromEpochSeconds(ts.toLong())).sorted(), hasChanged = true)
+            }
+        } else {
+            _state.update {
+                it.copy(
+                    dates = it.dates.toMutableList()
+                        .also { it[index] = Instant.fromEpochSeconds(ts.toLong()) }.sorted(), hasChanged = true
+                )
+            }
+        }
+    }
+
+    fun deleteItemAck() {
+        _state.update { it.copy(deleted = false) }
     }
 
     fun save() {
@@ -230,7 +295,7 @@ class ItemDetailsViewModel(
                             setItem(newItemId)
                         }
 
-                        _state.update { it.copy(saving = false) }
+                        _state.update { it.copy(saving = false, hasChanged = false) }
 
                     } catch (e: OpException) {
                         _state.update { it.copy(error = e.msg, saving = false) }
@@ -240,74 +305,12 @@ class ItemDetailsViewModel(
         }
     }
 
-    fun setType(type: String) {
-
-        _state.update {
-            it.copy(
-                typeOverride = type,
-                targetUserIdOverride = if (listOf(
-                        NEED.name,
-                        REQUEST.name
-                    ).contains(type)
-                ) it.targetUserIdOverride else -1
-            )
-        }
-    }
-
-    fun onAddImage(file: String, img: BitmapPainter) {
-        _state.update { it.copy(newImages = it.newImages + MemImg(file, img)) }
-    }
-
-    fun onAddFile(file: String) {
-        val name = Paths.get(file).fileName.toString()
-
-        _state.update { it.copy(newFiles = it.newFiles + (file to name)) }
-    }
-
-    fun deleteNewImage(imgName: String) {
-        _state.update { it.copy(newImages = it.newImages.filter { it.name != imgName }.toList()) }
-    }
-
-    fun setTargetUser(targetUserId: Int) {
-        _state.update { it.copy(targetUserIdOverride = targetUserId) }
-    }
-
-    fun updateStartDate(startTs: Int) {
-        _state.update {
-            it.copy(startOverride = startTs.let { Instant.fromEpochSeconds(it.toLong()) })
-        }
-    }
-
-    fun updateEndDate(endTs: Int) {
-        _state.update {
-            it.copy(endOverride = endTs.let { Instant.fromEpochSeconds(it.toLong()) })
-        }
-    }
-
-    fun addOrUpdateDate(ts: Int, index: Int) {
-        if (index == -1) {
-            _state.update {
-                it.copy(dates = (it.dates + Instant.fromEpochSeconds(ts.toLong())).sorted())
-            }
-        } else {
-            _state.update {
-                it.copy(
-                    dates = it.dates.toMutableList()
-                        .also { it[index] = Instant.fromEpochSeconds(ts.toLong()) }.sorted()
-                )
-            }
-        }
-    }
-
-    fun deleteItemAck() {
-        _state.update { it.copy(deleted = false) }
-    }
-
     data class ItemDetailsViewState(
         val deleted: Boolean = false,
         val editable: Boolean = false,
         val admin: Boolean = false,
 
+        val hasChanged: Boolean = false,
         val saving: Boolean = false,
         val error: String = "",
         val itemId: Int? = null,
