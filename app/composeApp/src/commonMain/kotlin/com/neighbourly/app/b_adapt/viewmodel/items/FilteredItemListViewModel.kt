@@ -45,17 +45,23 @@ class FilteredItemListViewModel(
             try {
                 syncItemsUseCase.execute(force)
                 refilter()
+                _state.update { it.copy(loading = false) }
             } catch (e: OpException) {
                 _state.update { it.copy(loading = false) }
             }
-            _state.update { it.copy(loading = false) }
         }
     }
 
     fun onDeleteItem(itemId: Int) {
         viewModelScope.launch {
-            itemManagementUseCase.delete(itemId)
-            refilter()
+            _state.update { it.copy(loading = true) }
+            try {
+                itemManagementUseCase.delete(itemId)
+                refilter()
+                _state.update { it.copy(loading = false) }
+            } catch (e: OpException) {
+                _state.update { it.copy(loading = false) }
+            }
         }
     }
 

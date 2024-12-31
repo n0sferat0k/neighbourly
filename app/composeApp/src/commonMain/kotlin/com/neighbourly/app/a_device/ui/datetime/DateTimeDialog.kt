@@ -111,14 +111,14 @@ fun DateTimeDialog(title: String, instant: Instant, onTimestamp: (Int?) -> Unit)
                             CalendarDatePicker(
                                 Modifier.padding(4.dp),
                                 selectedInstant
-                            ) { year, month ->
+                            ) { year, month, day ->
                                 val timezone = TimeZone.currentSystemDefault()
                                 val localDateTime = selectedInstant.toLocalDateTime(timezone)
 
                                 val adjustedDateTime = LocalDateTime(
                                     year = year,
                                     month = Month(month),
-                                    dayOfMonth = localDateTime.dayOfMonth,
+                                    dayOfMonth = day,
                                     hour = localDateTime.hour,
                                     minute = localDateTime.minute
                                 )

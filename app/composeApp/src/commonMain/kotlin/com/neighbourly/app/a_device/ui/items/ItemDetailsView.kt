@@ -367,7 +367,7 @@ fun EditableItemDetailsView(
     if (showStartDatePicker) {
         DateTimeDialog(
             title = stringResource(Res.string.start_date),
-            instant = state.start ?: state.startOverride ?: now()
+            instant = state.startOverride ?: state.start ?: now()
         ) {
             it?.let { viewModel.updateStartDate(it) }
             showStartDatePicker = false
@@ -376,7 +376,7 @@ fun EditableItemDetailsView(
     if (showEndDatePicker) {
         DateTimeDialog(
             title = stringResource(Res.string.end_date),
-            instant = state.end ?: state.endOverride ?: now()
+            instant = state.endOverride ?: state.end ?: now()
         ) {
             it?.let { viewModel.updateEndDate(it) }
             showEndDatePicker = false
@@ -511,7 +511,7 @@ fun EditableItemDetailsView(
                 AnimatedVisibility((state.typeOverride ?: state.type) == REMINDER.name) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -520,20 +520,32 @@ fun EditableItemDetailsView(
                             FriendlyText(text = stringResource(Res.string.dates))
                             FriendlyText(modifier = Modifier.clickable {
                                 showDatePickerIndex = -1
-                                showDatePickerInstant = now()
+                                showDatePickerInstant = state.dates.lastOrNull() ?: now()
                             }, text = stringResource(Res.string.add_date), bold = true)
                         }
 
                         state.dates.forEachIndexed { index, date ->
-                            FriendlyText(
-                                modifier = Modifier.clickable {
-                                    showDatePickerIndex = index
-                                    showDatePickerInstant = date
-                                },
-                                text = date.toLocalDateTime(TimeZone.currentSystemDefault())
-                                    .toJavaLocalDateTime().format(formatter),
-                                bold = true
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                FriendlyText(
+                                    modifier = Modifier.clickable {
+                                        showDatePickerIndex = index
+                                        showDatePickerInstant = date
+                                    },
+                                    text = date.toLocalDateTime(TimeZone.currentSystemDefault())
+                                        .toJavaLocalDateTime().format(formatter),
+                                    bold = true
+                                )
+                                FriendlyText(
+                                    modifier = Modifier.clickable {
+                                        viewModel.addOrUpdateDate(null, index)
+                                    },
+                                    text = stringResource(Res.string.delete),
+                                    bold = true
+                                )
+                            }
                         }
                     }
                 }
@@ -610,7 +622,7 @@ fun EditableItemDetailsView(
                                         FriendlyText(
                                             modifier = Modifier.clickable {
                                                 focusManager.clearFocus(true)
-                                                showStartDatePicker = true
+                                                showEndDatePicker = true
                                             },
                                             text = endInstance.toLocalDateTime(TimeZone.currentSystemDefault())
                                                 .toJavaLocalDateTime().format(formatter),
@@ -636,7 +648,7 @@ fun EditableItemDetailsView(
                     }
                 }
 
-                if(state.hasChanged) {
+                if (state.hasChanged) {
                     CurlyButton(
                         text = stringResource(Res.string.save),
                         loading = state.saving,

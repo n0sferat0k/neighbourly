@@ -22,7 +22,7 @@ import kotlinx.datetime.toLocalDateTime
 
 
 @Composable
-fun CalendarDatePicker(modifier: Modifier, instant: Instant, onChange: (Int, Int) -> Unit) {
+fun CalendarDatePicker(modifier: Modifier, instant: Instant, onChange: (Int, Int, Int) -> Unit) {
 
     val dateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
 
@@ -39,9 +39,9 @@ fun CalendarDatePicker(modifier: Modifier, instant: Instant, onChange: (Int, Int
         )
     )
 
-    LaunchedEffect(state.pagerState.currentMonth) {
-        state.pagerState.currentMonth.let {
-            onChange(it.year, it.month.number)
+    LaunchedEffect(state.selectedDates) {
+        state.selectedDates.firstOrNull()?.let {
+            onChange(it.year, it.month.number, it.dayOfMonth)
         }
     }
 

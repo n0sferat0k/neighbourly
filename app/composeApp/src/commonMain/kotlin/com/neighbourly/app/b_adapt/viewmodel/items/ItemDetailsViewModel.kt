@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
+import kotlinx.datetime.Instant.Companion.fromEpochSeconds
 import java.nio.file.Paths
 
 class ItemDetailsViewModel(
@@ -87,15 +88,15 @@ class ItemDetailsViewModel(
                             dates = if (item.type == REMINDER) {
                                 kotlin.runCatching {
                                     item.description?.split(",")
-                                        ?.map { Instant.fromEpochSeconds(it.toLong()) }
+                                        ?.map { fromEpochSeconds(it.toLong()) }
                                         ?: emptyList()
                                 }.getOrNull() ?: emptyList()
                             } else emptyList(),
                             url = item.url.orEmpty(),
                             start = item.startTs.takeIf { it > 0 }
-                                ?.let { Instant.fromEpochSeconds(it.toLong()) },
+                                ?.let { fromEpochSeconds(it.toLong()) },
                             end = item.endTs.takeIf { it > 0 }
-                                ?.let { Instant.fromEpochSeconds(it.toLong()) },
+                                ?.let { fromEpochSeconds(it.toLong()) },
                             images = item.images,
                             targetUserId = item.targetUserId,
                             files = item.files.map {
@@ -124,7 +125,13 @@ class ItemDetailsViewModel(
     }
 
     fun updateName(name: String) =
-        _state.update { it.copy(nameOverride = name, nameError = name.isBlank(), hasChanged = true) }
+        _state.update {
+            it.copy(
+                nameOverride = name,
+                nameError = name.isBlank(),
+                hasChanged = true
+            )
+        }
 
     fun updateDescription(description: String) =
         _state.update { it.copy(descriptionOverride = description, hasChanged = true) }
@@ -214,26 +221,46 @@ class ItemDetailsViewModel(
 
     fun updateStartDate(startTs: Int?) {
         _state.update {
-            it.copy(startOverride = startTs?.let { Instant.fromEpochSeconds(it.toLong()) }, hasChanged = true)
+            it.copy(
+                startOverride = startTs.let { fromEpochSeconds(it?.toLong() ?: 0) },
+                hasChanged = true
+            )
         }
     }
 
     fun updateEndDate(endTs: Int?) {
         _state.update {
-            it.copy(endOverride = endTs?.let { Instant.fromEpochSeconds(it.toLong()) }, hasChanged = true)
+            it.copy(
+                endOverride = endTs.let { fromEpochSeconds(it?.toLong() ?: 0) },
+                hasChanged = true
+            )
         }
     }
 
-    fun addOrUpdateDate(ts: Int, index: Int) {
-        if (index == -1) {
+    fun addOrUpdateDate(ts: Int?, index: Int) {
+        if (index == -1 && ts != null) {
             _state.update {
-                it.copy(dates = (it.dates + Instant.fromEpochSeconds(ts.toLong())).sorted(), hasChanged = true)
+                it.copy(
+                    dates = (it.dates + fromEpochSeconds(ts.toLong())).sorted(),
+                    hasChanged = true
+                )
             }
-        } else {
+        }
+        if (index > -1 && ts == null) {
+            _state.update {
+                it.copy(
+                    dates = it.dates.toMutableList().apply { removeAt(index) },
+                    hasChanged = true
+                )
+            }
+        }
+        if (index > -1 && ts != null) {
             _state.update {
                 it.copy(
                     dates = it.dates.toMutableList()
-                        .also { it[index] = Instant.fromEpochSeconds(ts.toLong()) }.sorted(), hasChanged = true
+                        .apply { this[index] = fromEpochSeconds(ts.toLong()) }
+                        .sorted(),
+                    hasChanged = true
                 )
             }
         }
@@ -245,7 +272,7 @@ class ItemDetailsViewModel(
 
     fun save() {
         viewModelScope.launch {
-            if (!_state.value.nameError) {
+            if (!_state.value.nameError && !_state.value.saving) {
                 _state.value.let {
                     try {
                         _state.update { it.copy(saving = true) }

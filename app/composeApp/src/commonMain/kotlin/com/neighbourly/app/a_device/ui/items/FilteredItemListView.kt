@@ -97,6 +97,22 @@ fun FilteredItemListView(
         viewModel.setFilters(type, householdId, showExpired)
     }
 
+    if (showRemoveAlertForId != -1) {
+        state.items.firstOrNull { it.id == showRemoveAlertForId }?.let { item ->
+            AlertDialog(
+                title = stringResource(Res.string.deleteing_item),
+                text = stringResource(Res.string.confirm_deleteing_item) + " " + item.name,
+                ok = {
+                    showRemoveAlertForId = -1
+                    viewModel.onDeleteItem(item.id)
+                },
+                cancel = {
+                    showRemoveAlertForId = -1
+                }
+            )
+        }
+    }
+
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -109,21 +125,6 @@ fun FilteredItemListView(
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(items = state.items) { item ->
-
-                    if (showRemoveAlertForId == item.id) {
-                        AlertDialog(
-                            title = stringResource(Res.string.deleteing_item),
-                            text = stringResource(Res.string.confirm_deleteing_item) + " " + item.name,
-                            ok = {
-                                showRemoveAlertForId = -1
-                                viewModel.onDeleteItem(item.id)
-                            },
-                            cancel = {
-                                showRemoveAlertForId = -1
-                            }
-                        )
-                    }
-
                     if (item.deletable) {
                         SwipeToDeleteBox(onDelete = {
                             showRemoveAlertForId = item.id
@@ -133,7 +134,6 @@ fun FilteredItemListView(
                     } else {
                         ItemCard(item)
                     }
-
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
