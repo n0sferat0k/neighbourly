@@ -63,11 +63,13 @@ fun AlertDialog(
                             mainAxisSpacing = 8.dp,
                             crossAxisSpacing = 12.dp
                         ) {
-                            CurlyButton(
-                                text = stringResource(Res.string.cancel),
-                                modifier = Modifier.padding(5.dp)
-                            ) {
-                                cancel?.invoke()
+                            if(cancel != null) {
+                                CurlyButton(
+                                    text = stringResource(Res.string.cancel),
+                                    modifier = Modifier.padding(5.dp)
+                                ) {
+                                    cancel.invoke()
+                                }
                             }
                             CurlyButton(
                                 text = stringResource(Res.string.confirm),

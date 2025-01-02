@@ -81,6 +81,8 @@ import neighbourly.composeapp.generated.resources.barter
 import neighbourly.composeapp.generated.resources.bartering
 import neighbourly.composeapp.generated.resources.confirm_deleteing_image
 import neighbourly.composeapp.generated.resources.confirm_deleteing_this_item
+import neighbourly.composeapp.generated.resources.confirm_new_file
+import neighbourly.composeapp.generated.resources.confirm_new_image
 import neighbourly.composeapp.generated.resources.dates
 import neighbourly.composeapp.generated.resources.delete
 import neighbourly.composeapp.generated.resources.deleteing_image
@@ -95,6 +97,8 @@ import neighbourly.composeapp.generated.resources.item_description
 import neighbourly.composeapp.generated.resources.item_name
 import neighbourly.composeapp.generated.resources.item_url
 import neighbourly.composeapp.generated.resources.need
+import neighbourly.composeapp.generated.resources.new_file
+import neighbourly.composeapp.generated.resources.new_image
 import neighbourly.composeapp.generated.resources.newbadge
 import neighbourly.composeapp.generated.resources.reminder
 import neighbourly.composeapp.generated.resources.reminders
@@ -308,6 +312,7 @@ fun EditableItemDetailsView(
 ) {
     var showImageFilePicker by remember { mutableStateOf(false) }
     var showAttachmentFilePicker by remember { mutableStateOf(false) }
+    var showNewFileAlert by remember { mutableStateOf(false) }
     var showStartDatePicker by remember { mutableStateOf(false) }
     var showEndDatePicker by remember { mutableStateOf(false) }
     var showDatePickerInstant by remember { mutableStateOf<Instant?>(null) }
@@ -316,6 +321,7 @@ fun EditableItemDetailsView(
     val uriHandler = LocalUriHandler.current
     val focusManager = LocalFocusManager.current
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+    val badge = painterResource(Res.drawable.newbadge)
 
     if (showDeleteAlert) {
         AlertDialog(
@@ -328,6 +334,16 @@ fun EditableItemDetailsView(
             cancel = {
                 showDeleteAlert = false
             }
+        )
+    }
+
+    if (showNewFileAlert) {
+        AlertDialog(
+            title = stringResource(Res.string.new_file),
+            text = stringResource(Res.string.confirm_new_file),
+            ok = {
+                showNewFileAlert = false
+            },
         )
     }
 
@@ -477,6 +493,7 @@ fun EditableItemDetailsView(
                             onValueChange = {
                                 viewModel.updateUrl(it)
                             },
+                            isError = state.urlError,
                             label = { Text(stringResource(Res.string.item_url)) },
                             modifier = Modifier.fillMaxWidth(),
                         )
@@ -574,6 +591,26 @@ fun EditableItemDetailsView(
                                         uriHandler.openUri(it.url)
                                     }, text = it.name, bold = true
                             )
+                        }
+
+                        state.newFiles.onEach {
+                            Row( modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween) {
+                                FriendlyText(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            showNewFileAlert = true
+                                        }, text = it.value, bold = true
+                                )
+                                Image(
+                                    modifier = Modifier.size(36.dp),
+                                    painter = badge,
+                                    contentScale = ContentScale.FillBounds,
+                                    contentDescription = "Item File New Badge",
+                                    colorFilter = ColorFilter.tint(AppColors.primary),
+                                )
+                            }
                         }
 
                         Row(
@@ -707,7 +744,19 @@ fun ImageGrid(
     select: ((Int) -> Unit)? = null
 ) {
     var showRemoveAlertForId by remember { mutableStateOf(-1) }
+    var showNewImageAlert by remember { mutableStateOf(false) }
     val badge = painterResource(Res.drawable.newbadge)
+
+    if (showNewImageAlert) {
+        AlertDialog(
+            title = stringResource(Res.string.new_image),
+            text = stringResource(Res.string.confirm_new_image),
+            ok = {
+                showNewImageAlert = false
+            },
+        )
+    }
+
     if (showRemoveAlertForId != -1) {
         AlertDialog(
             title = stringResource(Res.string.deleteing_image),
@@ -777,7 +826,9 @@ fun ImageGrid(
                 ) {
                     Box(modifier = Modifier.fillMaxSize()) {
                         Image(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxSize().clickable {
+                                showNewImageAlert = true
+                            },
                             painter = memImg.img,
                             contentDescription = "Item Image",
                             contentScale = ContentScale.Crop,

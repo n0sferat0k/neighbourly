@@ -14,6 +14,7 @@ import com.neighbourly.app.d_entity.data.ItemType.REQUEST
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.SessionStore
+import com.neighbourly.app.d_entity.util.isValidUrl
 import com.neighbourly.app.loadContentsFromFile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -136,7 +137,13 @@ class ItemDetailsViewModel(
     fun updateDescription(description: String) =
         _state.update { it.copy(descriptionOverride = description, hasChanged = true) }
 
-    fun updateUrl(url: String) = _state.update { it.copy(urlOverride = url, hasChanged = true) }
+    fun updateUrl(url: String) = _state.update {
+        it.copy(
+            urlOverride = url,
+            urlError = !(url.isBlank() || url.isValidUrl()),
+            hasChanged = true
+        )
+    }
 
     fun deleteImage(imageId: Int) {
         viewModelScope.launch {
@@ -187,7 +194,6 @@ class ItemDetailsViewModel(
     }
 
     fun setType(type: String) {
-
         _state.update {
             it.copy(
                 typeOverride = type,
@@ -272,7 +278,7 @@ class ItemDetailsViewModel(
 
     fun save() {
         viewModelScope.launch {
-            if (!_state.value.nameError && !_state.value.saving) {
+            if (!_state.value.nameError && !_state.value.urlError && !_state.value.saving) {
                 _state.value.let {
                     try {
                         _state.update { it.copy(saving = true) }
@@ -368,6 +374,7 @@ class ItemDetailsViewModel(
         val endOverride: Instant? = null,
 
         val nameError: Boolean = false,
+        val urlError: Boolean = false,
 
         val users: Map<Int, String> = emptyMap(),
     )
