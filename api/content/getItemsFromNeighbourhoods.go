@@ -99,31 +99,33 @@ func GetItems(itemIds []int64, sinceTs string) ([]entity.Item, error) {
 			&item.Householdid,
 			&item.Userid)
 
-		imagesRows, err := utility.DB.Query("SELECT items_IMGS_id, items_IMGS_pic FROM items_imgs WHERE items_id = ?", item.Itemid)
+		imagesRows, err := utility.DB.Query("SELECT items_IMGS_id, items_IMGS_pic, items_IMGS_name FROM items_imgs WHERE items_id = ?", item.Itemid)
 		if err != nil {
 			return nil, err
 		}
 		defer imagesRows.Close()
-		item.Images = make(map[int64]string)
-		for imagesRows.Next() {
-			var Imageid int64
-			var Image string
-			imagesRows.Scan(&Imageid, &Image)
-			item.Images[Imageid] = Image
-		}
 
-		filesRows, err := utility.DB.Query("SELECT items_FILES_id, items_FILES_file FROM items_files WHERE items_id = ?", item.Itemid)
+		var images []entity.Attachment
+		for imagesRows.Next() {
+			var image entity.Attachment
+			imagesRows.Scan(&image.Id, &image.Url, &image.Name)
+			images = append(images, image)
+		}
+		item.Images = images
+
+		filesRows, err := utility.DB.Query("SELECT items_FILES_id, items_FILES_file, items_FILES_name FROM items_files WHERE items_id = ?", item.Itemid)
 		if err != nil {
 			return nil, err
 		}
 		defer filesRows.Close()
-		item.Files = make(map[int64]string)
+
+		var files []entity.Attachment
 		for filesRows.Next() {
-			var Fileid int64
-			var File string
-			filesRows.Scan(&Fileid, &File)
-			item.Files[Fileid] = File
+			var file entity.Attachment
+			filesRows.Scan(&file.Id, &file.Url, &file.Name)
+			files = append(files, file)
 		}
+		item.Files = files
 
 		items = append(items, item)
 	}

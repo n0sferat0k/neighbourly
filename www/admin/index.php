@@ -345,8 +345,11 @@ $p['DISPLAYMENUTAB']=true;
 
 $p['PIC']=true;
 $p['MULTIPIC']=true;
+$p['PICHASNAME']=true;
+
 $p['FILE']=true;
 $p['MULTIFILE']=true;
+$p['FILEHASNAME']=true;
 
 $p['DATE']=true;
 $p['TEXT']=true;

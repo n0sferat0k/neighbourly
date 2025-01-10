@@ -136,14 +136,21 @@ data class ItemDTO(
     val description: String? = null,
     val url: String? = null,
     val targetUserId: Int,
-    val images: Map<Int, String> = emptyMap(),
-    val files: Map<Int, String> = emptyMap(),
+    val images: List<AttachmentDTO> = emptyList(),
+    val files: List<AttachmentDTO> = emptyList(),
     val startTs: Int,
     val endTs: Int,
     val lastModifiedTs: Int? = null,
     val neighbourhoodId: Int? = null,
     val householdId: Int? = null,
     val userId: Int? = null,
+)
+
+@Serializable
+data class AttachmentDTO(
+    val id: Int,
+    val url: String,
+    val name: String = "",
 )
 
 @Serializable

@@ -22,8 +22,11 @@ DELETE FROM Households WHERE id NOT IN ?;
 clear:
 DELETE FROM Households WHERE 1;
 
-filterHouseholds:
+getHouseholds:
 SELECT * FROM Households ORDER BY id DESC;
+
+filterHouseholdsByIds:
+SELECT * FROM Households WHERE id IN ? ORDER BY id DESC;
 
 getLastModified:
 SELECT MAX(lastmodifiedts) AS lastModifTs FROM Households;

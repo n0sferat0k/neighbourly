@@ -60,7 +60,7 @@ class ItemManagementUseCase(
             apiGw.deleteItemImage(it, imageId)
             itemId?.let {
                 dbInteractor.getItem(itemId).let {
-                    dbInteractor.storeItems(listOf(it.copy(images = it.images.filter { it.key != imageId })))
+                    dbInteractor.storeItems(listOf(it.copy(images = it.images.filter { it.id != imageId })))
                 }
             }
         }
@@ -72,7 +72,7 @@ class ItemManagementUseCase(
             apiGw.deleteItemFile(it, fileId)
             itemId?.let {
                 dbInteractor.getItem(itemId).let {
-                    dbInteractor.storeItems(listOf(it.copy(files = it.files.filter { it.key != fileId })))
+                    dbInteractor.storeItems(listOf(it.copy(files = it.files.filter { it.id != fileId })))
                 }
             }
         }

@@ -16,6 +16,7 @@ import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.SessionStore
 import com.neighbourly.app.d_entity.util.isValidUrl
 import com.neighbourly.app.loadContentsFromFile
+import com.neighbourly.app.loadNameFromFile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +24,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.datetime.Instant.Companion.fromEpochSeconds
-import java.nio.file.Paths
 
 class ItemDetailsViewModel(
     val database: Db,
@@ -54,7 +54,7 @@ class ItemDetailsViewModel(
                 name = "",
                 description = "",
                 url = "",
-                images = emptyMap(),
+                images = emptyList(),
                 files = emptyList(),
                 newImages = emptyList(),
                 newFiles = emptyMap(),
@@ -98,13 +98,13 @@ class ItemDetailsViewModel(
                                 ?.let { fromEpochSeconds(it.toLong()) },
                             end = item.endTs.takeIf { it > 0 }
                                 ?.let { fromEpochSeconds(it.toLong()) },
-                            images = item.images,
+                            images = item.images.map { AttachmentVS(it.id, it.url, it.name) },
                             targetUserId = item.targetUserId,
                             files = item.files.map {
-                                FileVS(
-                                    id = it.key,
-                                    url = it.value,
-                                    name = it.value.split("/").last()
+                                AttachmentVS(
+                                    id = it.id,
+                                    url = it.url,
+                                    name = it.name,
                                 )
                             },
                         )
@@ -154,7 +154,7 @@ class ItemDetailsViewModel(
                     it.copy(
                         error = "",
                         saving = false,
-                        images = it.images.filter { it.key != imageId }.toMap(),
+                        images = it.images.filter { it.id != imageId },
                     )
                 }
             } catch (e: OpException) {
@@ -212,8 +212,7 @@ class ItemDetailsViewModel(
     }
 
     fun onAddFile(file: String) {
-        val name = Paths.get(file).fileName.toString()
-
+        val name = loadNameFromFile(file)
         _state.update { it.copy(newFiles = it.newFiles + (file to name), hasChanged = true) }
     }
 
@@ -349,13 +348,13 @@ class ItemDetailsViewModel(
         val itemId: Int? = null,
         val neighbourhoodId: Int? = null,
 
-        val images: Map<Int, String> = emptyMap(),
+        val images: List<AttachmentVS> = emptyList(),
         val newImages: List<MemImg> = emptyList(),
 
         val targetUserId: Int? = null,
         val targetUserIdOverride: Int? = null,
 
-        val files: List<FileVS> = emptyList(),
+        val files: List<AttachmentVS> = emptyList(),
         val newFiles: Map<String, String> = emptyMap(),
 
         val type: String = ItemType.DONATION.name,
@@ -379,7 +378,7 @@ class ItemDetailsViewModel(
         val users: Map<Int, String> = emptyMap(),
     )
 
-    data class FileVS(val id: Int, val url: String, val name: String)
+    data class AttachmentVS(val id: Int, val url: String, val name: String)
 
     data class MemImg(val name: String, val img: Painter)
 }

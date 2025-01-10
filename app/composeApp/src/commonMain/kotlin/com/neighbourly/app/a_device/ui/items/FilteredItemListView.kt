@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -37,7 +38,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -73,6 +74,7 @@ import neighbourly.composeapp.generated.resources.event
 import neighbourly.composeapp.generated.resources.file
 import neighbourly.composeapp.generated.resources.filter
 import neighbourly.composeapp.generated.resources.hourglass
+import neighbourly.composeapp.generated.resources.houses
 import neighbourly.composeapp.generated.resources.image
 import neighbourly.composeapp.generated.resources.info
 import neighbourly.composeapp.generated.resources.need
@@ -124,7 +126,7 @@ fun FilteredItemListView(
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(items = state.items) { item ->
+                items(items = state.items, key = { it.id }) { item ->
                     if (item.deletable) {
                         SwipeToDeleteBox(onDelete = {
                             showRemoveAlertForId = item.id
@@ -207,16 +209,15 @@ fun ItemCard(
                     }
                 }
 
-
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Column {
-                    Text(text = item.name, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                    Text(text = item.description, fontSize = 14.sp, lineHeight = 14.sp)
+                    FriendlyText(text = item.name, bold = true, fontSize = 20.sp)
+                    FriendlyText(text = item.description, fontSize = 14.sp)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
                 if (item.imgCount > 0) {
                     Badge(imgTag, item.imgCount.toString())
                 }
@@ -228,7 +229,61 @@ fun ItemCard(
                 if (item.expLabel != null) {
                     Badge(expTag, item.expLabel, AppColors.complementary)
                 }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                HouseholdBadge(item.householdImage, item.householdName)
             }
+        }
+    }
+}
+
+@Composable
+fun HouseholdBadge(householdImage: String?, householdName: String?) {
+    val defaultHouseImg = painterResource(Res.drawable.houses)
+
+    Column(
+        modifier = Modifier.widthIn(max = 72.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier =
+            Modifier
+                .size(36.dp)
+                .border(2.dp, AppColors.primary, CircleShape)
+                .clickable {},
+        ) {
+            householdImage.let {
+                if (!it.isNullOrBlank()) {
+                    KamelImage(
+                        modifier = Modifier.fillMaxSize().clip(CircleShape),
+                        resource = asyncPainterResource(data = it),
+                        contentDescription = "Household Image",
+                        contentScale = ContentScale.Crop,
+                        onLoading = { progress ->
+                            CircularProgressIndicator(
+                                progress = progress,
+                                color = AppColors.primary,
+                            )
+                        },
+                    )
+                } else {
+                    Image(
+                        modifier = Modifier.fillMaxSize().clip(CircleShape),
+                        painter = defaultHouseImg,
+                        contentDescription = "Household Image",
+                        colorFilter = ColorFilter.tint(AppColors.primary),
+                    )
+                }
+            }
+        }
+
+        householdName?.let {
+            FriendlyText(
+                text = it,
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

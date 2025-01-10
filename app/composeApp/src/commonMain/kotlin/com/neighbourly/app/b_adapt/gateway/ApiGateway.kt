@@ -1,6 +1,7 @@
 package com.neighbourly.app.b_adapt.gateway
 
 import com.neighbourly.app.a_device.api.KtorApi
+import com.neighbourly.app.d_entity.data.Attachment
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.Item
@@ -38,15 +39,14 @@ class ApiGateway(
                     token = token,
                     target = TARGET_PROFILE,
                     fileContents = imageFileContents
-                ).values.first()
-                .prependResourceUrlBase()
+                ).toAttachment().url
         }
 
     override suspend fun uploadItemImage(
         token: String,
         itemId: Int,
         imageFileContents: FileContents
-    ): Pair<Int, String> =
+    ): Attachment =
         runContextCatchTranslateThrow {
             api
                 .uploadFile(
@@ -55,18 +55,14 @@ class ApiGateway(
                     target = TARGET_ITEM_IMAGE,
                     targetId = itemId.toString(),
                     fileContents = imageFileContents
-                ).entries.first().let {
-                    Pair(
-                        it.key, it.value.prependResourceUrlBase()
-                    )
-                }
+                ).toAttachment()
         }
 
     override suspend fun uploadItemFile(
         token: String,
         itemId: Int,
         imageFileContents: FileContents
-    ): Pair<Int, String> =
+    ): Attachment =
         runContextCatchTranslateThrow {
             api
                 .uploadFile(
@@ -75,11 +71,7 @@ class ApiGateway(
                     target = TARGET_ITEM_FILE,
                     targetId = itemId.toString(),
                     fileContents = imageFileContents
-                ).entries.first().let {
-                    Pair(
-                        it.key, it.value.prependResourceUrlBase()
-                    )
-                }
+                ).toAttachment()
         }
 
     override suspend fun deleteItemImage(
@@ -103,7 +95,7 @@ class ApiGateway(
             api.deleteFile(
                 baseUrl = API_BASE_URL,
                 token = token,
-                target = TARGET_ITEM_IMAGE,
+                target = TARGET_ITEM_FILE,
                 targetId = itemFileId.toString()
             )
         }
@@ -119,8 +111,7 @@ class ApiGateway(
                     token = token,
                     target = TARGET_HOUSEHOLD,
                     fileContents = imageFileContents
-                ).values.first()
-                .prependResourceUrlBase()
+                ).toAttachment().url
         }
 
     override suspend fun updateProfile(

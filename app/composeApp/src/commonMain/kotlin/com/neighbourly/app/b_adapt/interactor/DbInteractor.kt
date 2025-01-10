@@ -132,6 +132,10 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
         }
     }
 
+    override suspend fun getItemIds(): List<Int> =
+        db.itemsQueries.getItemIds().executeAsList().map { it.toInt() }
+
+
     override suspend fun filterItems(type: ItemType?, householdId: Int?): List<Item> {
         return withContext(Dispatchers.IO) {
 
@@ -148,27 +152,30 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
         }
     }
 
-    override suspend fun filterHouseholds(): List<Household> {
+    override suspend fun filterHouseholds(ids: List<Int>?): List<Household> {
         return withContext(Dispatchers.IO) {
-            db.householdsQueries.filterHouseholds().executeAsList().map {
-                Household(
-                    householdid = it.id.toInt(),
-                    name = it.name,
-                    headid = it.headid.toInt(),
-                    about = it.about,
-                    imageurl = it.image,
-                    location = it.latitude?.let { lat ->
-                        it.longitude?.let { lng ->
-                            Pair(
-                                lat.toFloat(),
-                                lng.toFloat(),
-                            )
-                        }
-                    },
-                    address = it.address,
-                    lastModifiedTs = it.lastmodifiedts.toInt(),
-                )
-            }
+            (ids?.let {
+                db.householdsQueries.filterHouseholdsByIds(ids.map { it.toLong() })
+            } ?: db.householdsQueries.getHouseholds())
+                .executeAsList().map {
+                    Household(
+                        householdid = it.id.toInt(),
+                        name = it.name,
+                        headid = it.headid.toInt(),
+                        about = it.about,
+                        imageurl = it.image,
+                        location = it.latitude?.let { lat ->
+                            it.longitude?.let { lng ->
+                                Pair(
+                                    lat.toFloat(),
+                                    lng.toFloat(),
+                                )
+                            }
+                        },
+                        address = it.address,
+                        lastModifiedTs = it.lastmodifiedts.toInt(),
+                    )
+                }
         }
     }
 }
@@ -194,8 +201,8 @@ private fun Items.toItem(): Item =
         description = description,
         url = url,
         targetUserId = targetuserid?.toInt(),
-        images = images?.let { Json.decodeFromString(it) } ?: emptyMap(),
-        files = files?.let { Json.decodeFromString(it) } ?: emptyMap(),
+        images = images?.let { Json.decodeFromString(it) } ?: emptyList(),
+        files = files?.let { Json.decodeFromString(it) } ?: emptyList(),
         startTs = startts.toInt(),
         endTs = endts.toInt(),
         lastModifiedTs = lastmodifiedts.toInt(),

@@ -1,5 +1,6 @@
 package com.neighbourly.app.d_entity.interf
 
+import com.neighbourly.app.d_entity.data.Attachment
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.Item
@@ -29,13 +30,13 @@ interface Api {
         token: String,
         itemId: Int,
         imageFileContents: FileContents,
-    ): Pair<Int, String>
+    ): Attachment
 
     suspend fun uploadItemFile(
         token: String,
         itemId: Int,
         imageFileContents: FileContents,
-    ): Pair<Int, String>
+    ): Attachment
 
     suspend fun deleteItemImage(
         token: String,

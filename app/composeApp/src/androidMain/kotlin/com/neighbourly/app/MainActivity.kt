@@ -1,8 +1,8 @@
 package com.neighbourly.app
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 
@@ -15,8 +15,21 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onBackPressed() {
-        if(KoinProvider.KOIN.get<NavigationViewModel>().goBack() != true) {
+        if (KoinProvider.KOIN.get<NavigationViewModel>().goBack() != true) {
             super.onBackPressed()
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.hasExtra(EXTRA_ITEM_ID)) {
+            KoinProvider.KOIN.get<NavigationViewModel>()
+                .goToItemDetails(intent.getIntExtra(EXTRA_ITEM_ID, 0))
+        }
+
+    }
+
+    companion object {
+        const val EXTRA_ITEM_ID = "extra.item.id"
     }
 }

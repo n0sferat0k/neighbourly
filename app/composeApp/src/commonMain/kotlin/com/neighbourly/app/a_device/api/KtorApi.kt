@@ -3,6 +3,7 @@ package com.neighbourly.app.a_device.api
 import com.neighbourly.app.b_adapt.gateway.AddMemberToHouseholdInput
 import com.neighbourly.app.b_adapt.gateway.AddMemberToNeighbourhoodInput
 import com.neighbourly.app.b_adapt.gateway.ApiException
+import com.neighbourly.app.b_adapt.gateway.AttachmentDTO
 import com.neighbourly.app.b_adapt.gateway.BoxDTO
 import com.neighbourly.app.b_adapt.gateway.FetchProfileInput
 import com.neighbourly.app.b_adapt.gateway.GpsItemDTO
@@ -276,12 +277,12 @@ object KtorApi {
         target: String,
         targetId: String = "",
         fileContents: FileContents,
-    ): Map<Int, String> {
+    ): AttachmentDTO {
         val response: HttpResponse = client.submitFormWithBinaryData(
             url = baseUrl + "files/upload?target=" + target + "&targetId=" + targetId,
             formData = formData {
                 append(
-                    "image",
+                    "file",
                     fileContents.content,
                     Headers.build {
                         append(HttpHeaders.ContentType, fileContents.type)
@@ -299,7 +300,7 @@ object KtorApi {
         }
 
         if (response.status.value == 201) {
-            return response.body<Map<Int, String>>()
+            return response.body<AttachmentDTO>()
         } else {
             throw ApiException(response.bodyAsText())
         }

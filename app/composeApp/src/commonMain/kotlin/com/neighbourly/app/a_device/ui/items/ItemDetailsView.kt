@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -79,12 +80,14 @@ import neighbourly.composeapp.generated.resources.add_image
 import neighbourly.composeapp.generated.resources.add_start
 import neighbourly.composeapp.generated.resources.barter
 import neighbourly.composeapp.generated.resources.bartering
+import neighbourly.composeapp.generated.resources.confirm_deleteing_file
 import neighbourly.composeapp.generated.resources.confirm_deleteing_image
 import neighbourly.composeapp.generated.resources.confirm_deleteing_this_item
 import neighbourly.composeapp.generated.resources.confirm_new_file
 import neighbourly.composeapp.generated.resources.confirm_new_image
 import neighbourly.composeapp.generated.resources.dates
 import neighbourly.composeapp.generated.resources.delete
+import neighbourly.composeapp.generated.resources.deleteing_file
 import neighbourly.composeapp.generated.resources.deleteing_image
 import neighbourly.composeapp.generated.resources.deleteing_item
 import neighbourly.composeapp.generated.resources.donate
@@ -318,10 +321,25 @@ fun EditableItemDetailsView(
     var showDatePickerInstant by remember { mutableStateOf<Instant?>(null) }
     var showDatePickerIndex by remember { mutableStateOf(-1) }
     var showDeleteAlert by remember { mutableStateOf(false) }
+    var showRemoveAlertForFileId by remember { mutableStateOf(-1) }
     val uriHandler = LocalUriHandler.current
     val focusManager = LocalFocusManager.current
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
     val badge = painterResource(Res.drawable.newbadge)
+
+    if (showRemoveAlertForFileId != -1) {
+        AlertDialog(
+            title = stringResource(Res.string.deleteing_file),
+            text = stringResource(Res.string.confirm_deleteing_file),
+            ok = {
+                viewModel.deleteFile(showRemoveAlertForFileId)
+                showRemoveAlertForFileId = -1
+            },
+            cancel = {
+                showRemoveAlertForFileId = -1
+            }
+        )
+    }
 
     if (showDeleteAlert) {
         AlertDialog(
@@ -584,18 +602,31 @@ fun EditableItemDetailsView(
                         }
 
                         state.files.onEach {
-                            FriendlyText(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                FriendlyText(
+                                    modifier = Modifier.weight(1f).clickable {
                                         uriHandler.openUri(it.url)
                                     }, text = it.name, bold = true
-                            )
+                                )
+
+                                FriendlyText(
+                                    modifier = Modifier.wrapContentWidth().clickable {
+                                        showRemoveAlertForFileId = it.id
+                                    },
+                                    text = stringResource(Res.string.delete),
+                                    bold = true
+                                )
+                            }
                         }
 
                         state.newFiles.onEach {
-                            Row( modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
                                 FriendlyText(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -737,7 +768,7 @@ fun TypeOption(selected: Boolean = false, icon: Painter, contentDesc: String, on
 
 @Composable
 fun ImageGrid(
-    images: Map<Int, String>,
+    images: List<ItemDetailsViewModel.AttachmentVS>,
     newImages: List<MemImg>,
     deleteNew: ((MemImg) -> Unit)? = null,
     delete: ((Int) -> Unit)? = null,
@@ -811,10 +842,8 @@ fun ImageGrid(
         newImages.forEach { memImg ->
             SwipeToDeleteBox(
                 modifier = Modifier.size(84.dp),
-                onDelete = deleteNew?.let {
-                    {
-                        it.invoke(memImg)
-                    }
+                onDelete = {
+                    deleteNew?.invoke(memImg)
                 }
             ) {
                 Card(

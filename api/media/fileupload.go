@@ -1,6 +1,7 @@
 package media
 
 import (
+	"api/entity"
 	"api/utility"
 	"context"
 	"encoding/json"
@@ -70,7 +71,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 		targetFolder = "itemsIMGS"
 		targetFilePrefix = "item_image_" + itemId
 
-		insertQuery = "INSERT INTO items_imgs (items_IMGS_pic, items_id) VALUES (?," + itemId + ")"
+		insertQuery = "INSERT INTO items_imgs (items_IMGS_pic, items_IMGS_name, items_id) VALUES (?,?," + itemId + ")"
 		auxQueryWithId = "UPDATE items SET items_data = UNIX_TIMESTAMP(), items_pic = ? WHERE items_id = " + itemId
 	} else if target == utility.TARGET_ITEM_FILE {
 		var itemId string
@@ -91,7 +92,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 		targetFolder = "itemsFILES"
 		targetFilePrefix = "item_file_" + itemId
 
-		insertQuery = "INSERT INTO items_files (items_FILES_file, items_id) VALUES (?," + itemId + ")"
+		insertQuery = "INSERT INTO items_files (items_FILES_file, items_FILES_name, items_id) VALUES (?,?," + itemId + ")"
 		auxQuery = "UPDATE items SET items_data = UNIX_TIMESTAMP() WHERE items_id = " + itemId
 	}
 
@@ -102,19 +103,12 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Retrieve the file from form data
-	file, handler, err := r.FormFile("image")
+	file, handler, err := r.FormFile("file")
 	if err != nil {
 		http.Error(w, "Failed to retrieve file", http.StatusBadRequest)
 		return
 	}
 	defer file.Close()
-
-	// Decode the image
-	img, format, err := image.Decode(file)
-	if err != nil {
-		http.Error(w, "Error decoding the image: "+err.Error(), http.StatusBadRequest)
-		return
-	}
 
 	wwwRelativeFolder := targetFolder
 	apiRelativeFolder := "../www/"
@@ -125,6 +119,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	}
 	destinationFileName := targetFilePrefix + "_" + randomString + filepath.Ext(handler.Filename)
 	dbFilePath := filepath.Join(wwwRelativeFolder, destinationFileName)
+	dbFileName := handler.Filename
 
 	// Create a Go routine to save the file
 	go func() {
@@ -160,8 +155,14 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		} else {
-			// Define the maximum width and height
+			// Decode the image
+			img, format, err := image.Decode(file)
+			if err != nil {
+				http.Error(w, "Error decoding the image: "+err.Error(), http.StatusBadRequest)
+				return
+			}
 
+			// Define the maximum width and height
 			// Resize the image
 			resizedImg := resize.Thumbnail(utility.MAX_IMG_SIZE, utility.MAX_IMG_SIZE, img, resize.Lanczos3)
 
@@ -188,18 +189,18 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("File uploaded successfully:", handler.Filename)
 	}()
 
-	var response map[int64]string = make(map[int64]string)
+	var response entity.Attachment
+	response.Url = &dbFilePath
+	response.Name = &dbFileName
 
 	if updateQuery != "" {
 		if _, err = utility.DB.Exec(updateQuery, dbFilePath); err != nil {
 			http.Error(w, "Failed to add file ref to DB "+err.Error(), http.StatusInternalServerError)
 			return
 		}
-
-		response[-1] = dbFilePath
 	}
 	if insertQuery != "" {
-		if insertResult, err := utility.DB.Exec(insertQuery, dbFilePath); err != nil {
+		if insertResult, err := utility.DB.Exec(insertQuery, dbFilePath, dbFileName); err != nil {
 			http.Error(w, "Failed to add file ref to DB "+err.Error(), http.StatusInternalServerError)
 			return
 		} else {
@@ -208,7 +209,9 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "Failed to insert file ref "+err.Error(), http.StatusInternalServerError)
 				return
 			}
-			response[insertedId] = dbFilePath
+
+			response.Id = &insertedId
+
 			if auxQuery != "" {
 				if _, err = utility.DB.Exec(auxQuery); err != nil {
 					http.Error(w, "Failed to run DB query "+err.Error(), http.StatusInternalServerError)

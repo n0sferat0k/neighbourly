@@ -56,20 +56,26 @@ type AddToNeighbourhoodRequest struct {
 }
 
 type Item struct {
-	Itemid          *int64           `json:"id,omitempty"`
-	Type            *string          `json:"type,omitempty"`
-	Name            *string          `json:"name,omitempty"`
-	Description     *string          `json:"description,omitempty"`
-	Url             *string          `json:"url,omitempty"`
-	TargetUserid    *int64           `json:"targetUserId,omitempty"`
-	Images          map[int64]string `json:"images,omitempty"`
-	Files           map[int64]string `json:"files,omitempty"`
-	StartTs         *int64           `json:"startTs,omitempty"`
-	EndTs           *int64           `json:"endTs,omitempty"`
-	LastModifiedTs  *int64           `json:"lastModifiedTs,omitempty"`
-	Neighbourhoodid *int64           `json:"neighbourhoodId,omitempty"`
-	Householdid     *int64           `json:"householdId,omitempty"`
-	Userid          *int64           `json:"userId,omitempty"`
+	Itemid          *int64       `json:"id,omitempty"`
+	Type            *string      `json:"type,omitempty"`
+	Name            *string      `json:"name,omitempty"`
+	Description     *string      `json:"description,omitempty"`
+	Url             *string      `json:"url,omitempty"`
+	TargetUserid    *int64       `json:"targetUserId,omitempty"`
+	Images          []Attachment `json:"images,omitempty"`
+	Files           []Attachment `json:"files,omitempty"`
+	StartTs         *int64       `json:"startTs,omitempty"`
+	EndTs           *int64       `json:"endTs,omitempty"`
+	LastModifiedTs  *int64       `json:"lastModifiedTs,omitempty"`
+	Neighbourhoodid *int64       `json:"neighbourhoodId,omitempty"`
+	Householdid     *int64       `json:"householdId,omitempty"`
+	Userid          *int64       `json:"userId,omitempty"`
+}
+
+type Attachment struct {
+	Id   *int64  `json:"id,omitempty"`
+	Url  *string `json:"url,omitempty"`
+	Name *string `json:"name,omitempty"`
 }
 
 type SyncResponse struct {

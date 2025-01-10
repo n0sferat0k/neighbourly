@@ -29,6 +29,7 @@ import com.neighbourly.app.c_business.usecase.auth.LogoutUseCase
 import com.neighbourly.app.c_business.usecase.auth.RegisterUseCase
 import com.neighbourly.app.c_business.usecase.box.BoxOpsUseCase
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
+import com.neighbourly.app.c_business.usecase.content.FilterItemsUseCase
 import com.neighbourly.app.c_business.usecase.content.ItemManagementUseCase
 import com.neighbourly.app.c_business.usecase.profile.FetchProfileUseCase
 import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
@@ -196,5 +197,8 @@ val useCaseModule =
         }
         factory {
             BoxOpsUseCase(get(), get())
+        }
+        factory {
+            FilterItemsUseCase(get())
         }
     }

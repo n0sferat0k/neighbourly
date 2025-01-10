@@ -48,15 +48,15 @@ func DeleteFile(w http.ResponseWriter, r *http.Request) {
 		var itemFileId string
 
 		err := utility.DB.QueryRow(`SELECT 
-										IF.items_id, IF.items_FILES_id, IF.items_FILES_file
+										FF.items_id, FF.items_FILES_id, FF.items_FILES_file
 									FROM 
-										items_files IF 
-									LEFT JOIN items I ON IF.items_id = I.items_id 
+										items_files FF 
+									LEFT JOIN items I ON FF.items_id = I.items_id 
 									LEFT JOIN neighbourhood_household_users NHU ON I.items_add_numerics_0 = NHU.neighbourhood_household_users_id
 									WHERE 
-										IF.items_FILES_id = ? AND NHU.neighbourhood_household_users_add_numerics_2 = ?`, targetId, userId).Scan(&itemId, &itemFileId, &fileUrl)
+										FF.items_FILES_id = ? AND NHU.neighbourhood_household_users_add_numerics_2 = ?`, targetId, userId).Scan(&itemId, &itemFileId, &fileUrl)
 		if err != nil {
-			http.Error(w, "No access to modify this file"+err.Error(), http.StatusBadRequest)
+			http.Error(w, "No access to modify this file "+err.Error(), http.StatusBadRequest)
 			return
 		}
 

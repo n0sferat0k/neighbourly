@@ -1,0 +1,151 @@
+<resources>
+    <string name="app_name">Neighbourly</string>
+    <string name="username">Nume user</string>
+    <string name="password">Parola</string>
+    <string name="confirmpassword">Confirmă parolă</string>
+    <string name="fullname">Nume întreg</string>
+    <string name="email">E-mail</string>
+    <string name="phone">Telefon</string>
+    <string name="register">Înscrie</string>
+    <string name="login">Logare</string>
+    <string name="remember_me">Ține-mă minte</string>
+    <string name="logout">Ieșire</string>
+    <string name="save">Salvează</string>
+    <string name="here">Aici</string>
+    <string name="everywhere">Peste tot</string>
+    <string name="householdName">Nume gospodărie</string>
+    <string name="neighbourhoodName">Nume cartier</string>
+    <string name="address">Adresă</string>
+    <string name="about">Despre</string>
+    <string name="add_member">Adaugă membru</string>
+    <string name="leave_household">Părăsește gospodăria</string>
+    <string name="accept">Acceptă</string>
+    <string name="retry">Reia</string>
+    <string name="relocate">Reloca</string>
+    <string name="create">Creează</string>
+    <string name="add_to_household">Adaugă în gospodărie</string>
+    <string name="add_to_neighbourhood">Adaugă în cartier</string>
+    <string name="neighbourhood_acc">Cartiere acc.:</string>
+
+    <string name="box_id">Box ID:</string>
+    <string name="box_name">Nume Box:</string>
+
+    <string name="confirm">Confirmă</string>
+    <string name="cancel">Renunță</string>
+    <string name="leaving">Plecare</string>
+    <string name="confirm_leaving_neighbourhood">Această acțiune vă scoate pe dvs. și întreaga gospodărie din acest cartier. Dacă sunteți creatorul, îl va moșteni următorul. Continuați?</string>
+    <string name="confirm_leaving_household">Părăsirea gospodăriei vă scoate și din orice cartiere. Sigur continuați?</string>
+
+    <string name="deleteing_item">Ștergere articol</string>
+    <string name="confirm_deleteing_item">Sigur ștergeți definitiv articolul:</string>
+    <string name="confirm_deleteing_this_item">Sigur ștergeți definitiv acest articol?</string>
+
+    <string name="deleteing_image">Ștergere imagine</string>
+    <string name="confirm_deleteing_image">Sigur ștergeți definitiv această imagine?</string>
+    <string name="deleteing_file">Ștergere fișierul</string>
+    <string name="confirm_deleteing_file">Sigur ștergeți definitiv acest fișier?</string>
+
+    <string name="new_image">Imagine nouă</string>
+    <string name="confirm_new_image">Aceasta e o imagine nouă. Salvați articolul înainte să o deschideți în galerie!</string>
+
+    <string name="new_file">Fișier nou</string>
+    <string name="confirm_new_file">Acesta e un fișier nou atașat. Salvați articolul înainte de descărcare și deschidere!</string>
+
+    <string name="deleteing_box">Ștergere Box</string>
+    <string name="confirm_deleteing_box">Sigur eliminați acest Box din gospodărie?</string>
+
+    <string name="profile">Profil</string>
+    <string name="mystuff">Lucrurile Mele</string>
+    <string name="publish">Publică</string>
+    <string name="box">Box</string>
+
+    <string name="type">Tip:</string>
+    <string name="images">Imagini:</string>
+    <string name="files">Fișiere:</string>
+
+    <string name="add_image">Adaugă imagine</string>
+    <string name="add_file">Adaugă fișier</string>
+    <string name="filter">Filtru</string>
+    <string name="delete">Șterge</string>
+
+    <string name="donation">Donație</string>
+    <string name="bartering">Troc</string>
+    <string name="sale">Vânzare</string>
+    <string name="event">Eveniment</string>
+    <string name="need">Nevoie</string>
+    <string name="request">Cerere</string>
+
+    <string name="donations">Donații</string>
+    <string name="barterings">Trocuri</string>
+    <string name="sales">Vânzări</string>
+    <string name="events">Evenimente</string>
+    <string name="needs">Nevoi</string>
+    <string name="requests">Cereri</string>
+
+    <string name="skillshare">Schimb abilități</string>
+    <string name="unknown">Necunoscut</string>
+
+    <string name="item_name">Nume articol:</string>
+    <string name="item_description">Descriere articol:</string>
+    <string name="item_url">URL articol:</string>
+    <string name="target_user">Utilizator țintă:</string>
+
+    <string name="start_date">Începe:</string>
+    <string name="end_date">Se termină:</string>
+
+    <string name="now">Acum</string>
+    <string name="in_10_minutes">10 m</string>
+    <string name="in_one_hour">1 h</string>
+    <string name="in_two_hours">2 h</string>
+    <string name="in_eight_hours">8 h</string>
+    <string name="tomorrow">Mâine</string>
+    <string name="next_week">Săpt. viit.</string>
+
+    <string name="ok">Ok</string>
+
+    <string name="add_start">Adaugă început</string>
+    <string name="add_end">Adaugă final</string>
+
+    <string name="under_construction">În construcție!</string>
+
+    <string name="err_password_mismatch">Cele două parole trebuie să coincidă</string>
+    <string name="invite_or_create_household">Trebuie să definiți o gospodărie. Folosiți QR-ul de mai jos pentru a fi invitat într-o gospodărie existentă sau creați una de la zero!</string>
+    <string name="create_from_scratch">Creați gospodărie de la zero!</string>
+    <string name="need_to_create_household">Trebuie să definiți o gospodărie înainte să-i stabiliți locația!</string>
+    <string name="need_to_localize">Locuința dvs. nu are o locație stabilită! \n\nPentru a crea sau a vă alătura cartierelor, trebuie să permiteți aplicației să vă urmărească GPS-ul o vreme!</string>
+    <string name="track_me">Urmărește-mă!</string>
+    <string name="localize_progress">Vă urmărim locația pentru a stabili baza! \n\nPoate dura câteva zile, fiți răbdători și țineți GPS-ul pornit până progresul atinge 100%!</string>
+    <string name="localize_completed">S-a găsit o locație bună pentru gospodărie! \n\nVerificați harta și apăsați ACCEPTĂ dacă e corect. Dacă nu, apăsați REIA pentru a relua procesul!</string>
+
+    <string name="household_localized">Gospodăria a fost localizată!</string>
+    <string name="household_not_localized">Gospodăria nu a fost încă localizată!</string>
+    <string name="household_relocate">Dacă locația e greșită, puteți RELOCA, dar veți fi scos automat din cartierul în care erați!</string>
+    <string name="household_cannot_relocate">Doar șeful gospodăriei poate localiza sau relocaliza gospodăria!</string>
+
+    <string name="need_to_have_household">Trebuie să aparțineți unei gospodării cu locație stabilită înainte să vă alăturați cartierelor!</string>
+    <string name="no_neighbourhood">Gospodăria dvs. nu aparține niciunui cartier!</string>
+    <string name="list_neighbourhoods">Gospodăria dvs. aparține următoarelor cartiere:</string>
+    <string name="join_neighbourhood">Vă puteți alătura cartierelor existente prin invitație dacă gospodăria intră în zona lor. \n\nFolosiți codul QR de mai jos:</string>
+    <string name="create_neighbourhood">Sau creați un nou cartier, dacă nu se suprapune cu mai mult de 2 cartiere existente.</string>
+    <string name="cannot_create_neighbourhood">Doar șeful gospodăriei poate crea cartiere noi!</string>
+    <string name="draw_neighbourhood">După ce geofence-ul e gata, dați un nume și salvați cartierul.</string>
+
+    <string name="attempting_to_add_household_member">Adăugați această persoană în gospodăria dvs. Astfel, va avea acces la toate cartierele gospodăriei, iar dvs. îi veți fi supervizor.\n\nConfigurați permisiunile mai jos:</string>
+
+    <string name="attempting_to_add_neighbourhood_member">Adăugați această persoană în cartierul dvs. Astfel, gospodăria ei și toți membrii vor avea acces la cartier, iar dvs. le veți fi supervizor.\n\n Configurați permisiunile mai jos:</string>
+
+    <string name="cannot_add_to_neighbourhood_member">Doar persoanele cu gospodărie stabilită pot fi adăugate la cartiere!</string>
+
+    <string name="list_household_members">Gospodăria dvs. are următorii membri:</string>
+
+    <string name="scan_qr_for_app_install">Scanați codul QR de mai jos pentru a descărca și instala „Vecinătate” pe dispozitivul unui prieten sau membru al familiei.</string>
+
+    <string name="last_error">Ultima eroare API:</string>
+
+    <string name="no_boxes">Gospodăria dvs. nu are niciun Box!</string>
+    <string name="add_box">Adaugă Box</string>
+    <string name="reminders">Mementouri</string>
+
+    <string name="dates">Date</string>
+    <string name="add_date">Adaugă dată</string>
+</resources>

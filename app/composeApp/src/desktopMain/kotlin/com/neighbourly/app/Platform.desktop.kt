@@ -75,6 +75,7 @@ actual fun loadImageFromFile(file: String, maxSizePx: Int): BitmapPainter? {
 actual fun loadImageFromFile(file: String): BitmapPainter? =
     ImageIO.read(File(file))?.let { BitmapPainter(it.toComposeImageBitmap()) }
 
+actual fun loadNameFromFile(file: String): String = Paths.get(file).fileName.toString()
 
 actual fun loadContentsFromFile(file: String): FileContents? {
     val path: Path = Paths.get(file)
@@ -112,3 +113,6 @@ actual val statusConfigSource  = object : StatusMemoryStore() {
         override val wideScreenFlow: Flow<Boolean>
             get() = listOf(true).asFlow()
     }
+
+actual fun postSystemNotification(id: Int, title: String, text: String) {
+}

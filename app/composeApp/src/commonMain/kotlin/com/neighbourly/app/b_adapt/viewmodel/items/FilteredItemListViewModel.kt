@@ -12,23 +12,29 @@ import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.Ite
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.SALE
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.SKILLSHARE
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
+import com.neighbourly.app.c_business.usecase.content.FilterItemsUseCase
 import com.neighbourly.app.c_business.usecase.content.ItemManagementUseCase
 import com.neighbourly.app.d_entity.data.ItemType
 import com.neighbourly.app.d_entity.data.OpException
-import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Instant
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.Instant.Companion.fromEpochSeconds
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toLocalDateTime
+import java.time.format.DateTimeFormatter
 
 class FilteredItemListViewModel(
-    val database: Db,
     val store: SessionStore,
     val syncItemsUseCase: ContentSyncUseCase,
     val itemManagementUseCase: ItemManagementUseCase,
+    val filterItemsUseCase: FilterItemsUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(FilteredItemListViewState())
@@ -57,43 +63,57 @@ class FilteredItemListViewModel(
             _state.update { it.copy(loading = true) }
             try {
                 itemManagementUseCase.delete(itemId)
-                refilter()
-                _state.update { it.copy(loading = false) }
+                _state.update {
+                    it.copy(
+                        loading = false,
+                        items = it.items.filter { it.id != itemId })
+                }
             } catch (e: OpException) {
                 _state.update { it.copy(loading = false) }
             }
         }
     }
 
-    fun refilter() {
-        val now = Instant.now().epochSecond.toInt()
+    fun Instant.toDateString() =
+        this.toLocalDateTime(TimeZone.currentSystemDefault())
+            .toJavaLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
 
+    fun refilter() {
         viewModelScope.launch {
             val myHouseholdId = store.user?.household?.householdid
+            val now = Clock.System.now().epochSeconds.toInt()
 
-            database.filterItems(_state.value.type, _state.value.householdId)
-                .let { items ->
-                    val filteredItems = if (!_state.value.showExpired) {
-                        items.filter { it.id != null && (it.endTs == 0 || it.endTs > now) }
-                    } else items
-
+            filterItemsUseCase.filterItems(
+                _state.value.type,
+                _state.value.householdId,
+                _state.value.showExpired
+            )
+                .let { itemsAndHouses ->
                     _state.update {
-                        it.copy(loading = false, items = filteredItems.map {
+                        it.copy(loading = false, items = itemsAndHouses.map { (item, house) ->
                             ItemVS(
-                                id = it.id!!,
-                                name = it.name.orEmpty(),
-                                description = it.description.orEmpty().let {
+                                id = item.id!!,
+                                name = item.name.orEmpty(),
+                                description = when (it.type) {
+                                    ItemType.REMINDER -> kotlin.runCatching {
+                                        item.description?.split(",")
+                                            ?.map { fromEpochSeconds(it.toLong()).toDateString() }
+                                            ?.joinToString(", ").orEmpty()
+                                    }.getOrDefault("")
+
+                                    else -> item.description.orEmpty()
+                                }.let {
                                     if (it.length > MAX_DESC_LEN) it.substring(
                                         0,
                                         MAX_DESC_LEN
                                     ) + "...";
                                     else it
                                 },
-                                imageUrl = it.images.values.randomOrNull(),
-                                type = it.type.toItemTypeVS(),
-                                imgCount = it.images.size,
-                                fileCount = it.files.size,
-                                expLabel = it.endTs?.let {
+                                imageUrl = item.images.randomOrNull()?.url,
+                                type = item.type.toItemTypeVS(),
+                                imgCount = item.images.size,
+                                fileCount = item.files.size,
+                                expLabel = item.endTs.let {
                                     if (it > 0) {
                                         val remainingSeconds = it - now
                                         if (remainingSeconds > MINUTE_IN_SECONDS) {
@@ -107,7 +127,9 @@ class FilteredItemListViewModel(
                                         } else "exp"
                                     } else null
                                 },
-                                deletable = it.householdId == myHouseholdId
+                                deletable = item.householdId == myHouseholdId,
+                                householdImage = house?.imageurl,
+                                householdName = house?.name
                             )
                         })
                     }
@@ -133,6 +155,8 @@ class FilteredItemListViewModel(
         val fileCount: Int = 0,
         val expLabel: String? = null,
         val deletable: Boolean = false,
+        val householdImage: String? = null,
+        val householdName: String? = null
     )
 
 
@@ -153,7 +177,7 @@ class FilteredItemListViewModel(
     }
 
     companion object {
-        const val MAX_DESC_LEN = 70
+        const val MAX_DESC_LEN = 50
         const val MINUTE_IN_SECONDS = 60
         const val HOUR_IN_SECONDS = MINUTE_IN_SECONDS * 60
         const val DAY_IN_SECONDS = HOUR_IN_SECONDS * 24

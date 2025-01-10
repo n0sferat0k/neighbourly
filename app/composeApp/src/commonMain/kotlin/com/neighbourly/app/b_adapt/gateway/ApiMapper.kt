@@ -1,5 +1,6 @@
 package com.neighbourly.app.b_adapt.gateway
 
+import com.neighbourly.app.d_entity.data.Attachment
 import com.neighbourly.app.d_entity.data.Box
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.Household
@@ -75,8 +76,8 @@ fun ItemDTO.toItem(): Item =
         description = description,
         url = url,
         targetUserId = targetUserId,
-        images = images.map { (key, value) -> key to value.prependResourceUrlBase() }.toMap(),
-        files = files.map { (key, value) -> key to value.prependResourceUrlBase() }.toMap(),
+        images = images.map { it.toAttachment() },
+        files = files.map { it.toAttachment() },
         startTs = startTs,
         endTs = endTs,
         lastModifiedTs = lastModifiedTs,
@@ -93,8 +94,8 @@ fun Item.toItemDTO(): ItemDTO =
         description = description,
         url = url,
         targetUserId = targetUserId ?: -1,
-        images = images.map { (key, value) -> key to value.prependResourceUrlBase() }.toMap(),
-        files = files.map { (key, value) -> key to value.prependResourceUrlBase() }.toMap(),
+        images = images.map { it.toAttachmentDTO() },
+        files = files.map { it.toAttachmentDTO() },
         startTs = startTs,
         endTs = endTs,
         lastModifiedTs = lastModifiedTs,
@@ -102,6 +103,18 @@ fun Item.toItemDTO(): ItemDTO =
         householdId = householdId,
         userId = userId,
     )
+
+fun AttachmentDTO.toAttachment(): Attachment = Attachment(
+    id = id,
+    url = url.prependResourceUrlBase(),
+    name = name,
+)
+
+fun Attachment.toAttachmentDTO(): AttachmentDTO = AttachmentDTO(
+    id = id,
+    url = url,
+    name = name,
+)
 
 fun String.prependResourceUrlBase() =
     this.takeIf { it.isNotBlank() }?.let { CONTENT_BASE_URL + it } ?: this

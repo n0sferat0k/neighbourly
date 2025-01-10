@@ -5,13 +5,19 @@ package com.neighbourly.app
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.CAMERA
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_PHONE_NUMBERS
 import android.Manifest.permission.READ_PHONE_STATE
 import android.annotation.SuppressLint
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.NotificationManager.IMPORTANCE_DEFAULT
+import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.content.ComponentCallbacks
 import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -24,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.net.toUri
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
@@ -61,6 +68,7 @@ actual fun requestPermissions() {
                 READ_EXTERNAL_STORAGE,
                 READ_PHONE_STATE,
                 READ_PHONE_NUMBERS,
+                POST_NOTIFICATIONS
             ),
         )
 
@@ -149,10 +157,9 @@ actual fun loadImageFromFile(file: String): BitmapPainter? =
             ).asImageBitmap(),
     )
 
-actual fun loadContentsFromFile(file: String): FileContents? {
-    val fileUri = file.toUri()
+actual fun loadNameFromFile(file: String): String =
     NeighbourlyApp.appContext.contentResolver.let { contentResolver ->
-
+        val fileUri = file.toUri()
         var fileName = Paths.get(file).fileName.toString()
 
         contentResolver
@@ -163,6 +170,14 @@ actual fun loadContentsFromFile(file: String): FileContents? {
                 }
             }
 
+        fileName
+    }
+
+actual fun loadContentsFromFile(file: String): FileContents? {
+    val fileUri = file.toUri()
+    val fileName = loadNameFromFile(file)
+
+    NeighbourlyApp.appContext.contentResolver.let { contentResolver ->
         return contentResolver
             .openInputStream(fileUri)
             ?.readAllBytes()
@@ -226,4 +241,8 @@ actual val statusConfigSource = object : StatusMemoryStore() {
     override val wideScreenFlow: Flow<Boolean>
         get() = _wideScreenFlow.asSharedFlow()
 
+}
+
+actual fun postSystemNotification(id: Int, title: String, text: String) {
+    NeighbourlyApp.appContext.showBasicNotification(id, title, text)
 }

@@ -114,7 +114,7 @@ android {
             libs.versions.android.targetSdk
                 .get()
                 .toInt()
-        versionCode = 3
+        versionCode = 4
         versionName = "1.0"
     }
     packaging {
@@ -164,7 +164,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "com.neighbourly.app"
-            packageVersion = "1.0.3"
+            packageVersion = "1.0.4"
             includeAllModules = true
         }
     }

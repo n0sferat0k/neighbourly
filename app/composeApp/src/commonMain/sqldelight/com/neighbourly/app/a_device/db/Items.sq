@@ -39,6 +39,9 @@ SELECT * FROM Items WHERE id = ?;
 getItems:
 SELECT * FROM Items ORDER BY id DESC;
 
+getItemIds:
+SELECT id FROM Items ORDER BY id ASC;
+
 filterItemsByType:
 SELECT * FROM Items WHERE type = ? ORDER BY id DESC;
 

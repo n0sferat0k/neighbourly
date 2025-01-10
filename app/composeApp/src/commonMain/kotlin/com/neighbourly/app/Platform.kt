@@ -27,9 +27,13 @@ expect fun loadImageFromFile(file: String): BitmapPainter?
 
 expect fun loadImageFromFile(file: String, maxSizePx: Int): BitmapPainter?
 
+expect fun loadNameFromFile(file: String): String
+
 expect fun loadContentsFromFile(file: String): FileContents?
 
 expect fun getPhoneNumber(): String?
+
+expect fun postSystemNotification(id: Int, title: String, text: String)
 
 expect val httpClientEngine: HttpClientEngine
 

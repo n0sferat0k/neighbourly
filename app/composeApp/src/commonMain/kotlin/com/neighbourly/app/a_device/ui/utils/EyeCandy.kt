@@ -61,6 +61,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -92,7 +93,7 @@ fun SwipeToDeleteBox(
     var offsetX by remember { mutableStateOf(0f) }
     Box(modifier = modifier) {
         // Background delete icon
-        if(onDelete != null) {
+        if (onDelete != null) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -110,7 +111,7 @@ fun SwipeToDeleteBox(
             modifier = Modifier
                 .fillMaxWidth()
                 .pointerInput(Unit) {
-                    if(onDelete != null) {
+                    if (onDelete != null) {
                         detectHorizontalDragGestures(
                             onDragEnd = {
                                 if (offsetX.absoluteValue > 100) {
@@ -275,6 +276,7 @@ fun FriendlyText(
     text: String,
     bold: Boolean = false,
     fontSize: TextUnit = 18.sp,
+    textAlign: TextAlign = TextAlign.Start
 ) {
     Text(
         modifier = modifier,
@@ -284,7 +286,9 @@ fun FriendlyText(
             fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal,
             fontFamily = friendlyFont(),
             fontSize = fontSize,
+            lineHeight = fontSize,
             color = AppColors.primary,
+            textAlign = textAlign
         ),
     )
 }

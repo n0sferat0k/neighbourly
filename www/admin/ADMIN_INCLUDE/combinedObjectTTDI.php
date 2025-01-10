@@ -250,8 +250,8 @@ class combinedObjectTTDI //Text Title Date Image
 					$hasname = false;
 					$query = "SELECT * FROM " . $this->params['KEY'] . "_files WHERE 0";
 					$data = mysqli_query($connection, $query);
-					for ($i = 0; $i < mysqli_num_fields($connection, $data); $i++) {
-						if ($this->params['KEY'] . "_FILES_name" == mysqli_field_name($connection, $data, $i))
+					for ($i = 0; $i < mysqli_num_fields($data); $i++) {
+						if ($this->params['KEY'] . "_FILES_name" == mysqli_field_name( $data, $i))
 							$hasname = true;
 					}
 					if (!$hasname) {
