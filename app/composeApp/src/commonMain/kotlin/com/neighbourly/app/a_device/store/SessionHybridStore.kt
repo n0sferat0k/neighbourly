@@ -37,8 +37,10 @@ class SessionHybridStore(
     override val credentials: Credentials? get() = _credentials?.copy()
 
     init {
+        loadRememberedCredentialsFromStore()
+
         if (STORE_VERSION == keyValueRegistry.getString(KEY_STORE_VERSION)) {
-            loadFromStore()
+            loadUserFromStore()
         } else {
             userState = MutableStateFlow(null)
             clear()
@@ -77,13 +79,15 @@ class SessionHybridStore(
         saveToStore()
     }
 
-    private fun loadFromStore() {
+    private fun loadUserFromStore() {
         userState = MutableStateFlow(
             keyValueRegistry.getString(KEY_USER)?.let {
                 Json.decodeFromString<StoreUser>(it).toUser()
             }
         )
+    }
 
+    private fun loadRememberedCredentialsFromStore() {
         keyValueRegistry.let {
             it.getString(KEY_REM_USER)?.let { user ->
                 it.getString(KEY_REM_PASS)?.let { pass ->

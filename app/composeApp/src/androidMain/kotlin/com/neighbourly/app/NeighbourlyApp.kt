@@ -6,6 +6,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.PendingIntent
+import android.app.PendingIntent.*
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -47,11 +48,11 @@ class NeighbourlyApp : Application() {
             .setAutoCancel(true)
             .setTimeoutAfter(NOTIFICATION_TIMEOUT_MS)
             .setContentIntent(
-                PendingIntent.getActivity(
+                getActivity(
                     this,
                     1,
                     actionIntent,
-                    PendingIntent.FLAG_MUTABLE
+                    FLAG_UPDATE_CURRENT or FLAG_MUTABLE
                 )
             )
             .build()
