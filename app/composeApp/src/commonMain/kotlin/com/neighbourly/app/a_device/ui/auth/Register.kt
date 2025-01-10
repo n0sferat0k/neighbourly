@@ -61,11 +61,11 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
     val state by viewModel.state.collectAsState()
 
     val defaultProfile = painterResource(Res.drawable.profile)
-    var username by remember { mutableStateOf("nosfi") }
-    var password by remember { mutableStateOf("nosfi") }
-    var confirmPassword by remember { mutableStateOf("nosfi") }
-    var fullName by remember { mutableStateOf("nos fi") }
-    var email by remember { mutableStateOf("nos@fi.com") }
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var fullName by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf(getPhoneNumber().orEmpty()) }
     var profileImage by remember { mutableStateOf<Painter?>(null) }
     var profileFile by remember { mutableStateOf<FileContents?>(null) }

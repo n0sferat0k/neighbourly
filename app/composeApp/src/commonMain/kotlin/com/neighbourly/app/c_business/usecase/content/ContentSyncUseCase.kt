@@ -19,8 +19,11 @@ class ContentSyncUseCase(
         val token = sessionStore.user?.authtoken
 
         token?.let {
-            val lastSyncTs = sessionStore.lastSyncTs
-            if (force || (currentTs - (lastSyncTs ?: 0)) > SYNC_DEBOUNCE_S) {
+            val lastSyncTs = sessionStore.lastSyncTs ?: 0
+            if(lastSyncTs == 0) {
+                dbInteractor.clear()
+            }
+            if (force || (currentTs - lastSyncTs) > SYNC_DEBOUNCE_S) {
                 val lastModifTs = dbInteractor.getLastModifTs()
                 val knownIds =  dbInteractor.getItemIds()
                 val syncData = apiGw.synchronizeContent(token, lastModifTs)
@@ -34,7 +37,7 @@ class ContentSyncUseCase(
                 dbInteractor.stripUsers(syncData.userIds)
                 dbInteractor.stripHouseholds(syncData.houseIds)
 
-                if((lastSyncTs ?: 0) > 0 && newIds.isNotEmpty()) {
+                if(lastSyncTs  > 0 && newIds.isNotEmpty()) {
                     val newItems = syncData.items.filter{newIds.contains(it.id)}
                     val newItemsHouseholds = dbInteractor.filterHouseholds(newItems.map { it.householdId }.filterNotNull())
 

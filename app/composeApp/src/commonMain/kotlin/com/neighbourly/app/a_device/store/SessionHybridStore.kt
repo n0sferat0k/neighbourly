@@ -41,6 +41,7 @@ class SessionHybridStore(
             loadFromStore()
         } else {
             userState = MutableStateFlow(null)
+            clear()
         }
     }
 
@@ -70,14 +71,13 @@ class SessionHybridStore(
         localizationState.emit(updater(localizationState.value))
     }
 
-    override suspend fun clear() {
-        userState.emit(null)
-        localizationState.emit(LocalizationProgress())
+    override fun clear() {
+        userState.tryEmit(null)
+        localizationState.tryEmit(LocalizationProgress())
         saveToStore()
     }
 
     private fun loadFromStore() {
-
         userState = MutableStateFlow(
             keyValueRegistry.getString(KEY_USER)?.let {
                 Json.decodeFromString<StoreUser>(it).toUser()
@@ -103,7 +103,7 @@ class SessionHybridStore(
     }
 
     companion object {
-        const val STORE_VERSION = "1"
+        const val STORE_VERSION = "2"
         const val KEY_STORE_VERSION = "key.store.version"
         const val KEY_USER = "key.user"
         const val KEY_REM_USER = "key.remembered.user"

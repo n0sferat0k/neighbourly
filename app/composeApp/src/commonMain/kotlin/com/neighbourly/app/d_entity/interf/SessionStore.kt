@@ -11,7 +11,7 @@ interface SessionStore {
 
     suspend fun storeCredentials(credentials: Credentials? = null)
 
-    suspend fun clear()
+    fun clear()
 
     suspend fun updateUser(updater: (User?) -> User?)
 
