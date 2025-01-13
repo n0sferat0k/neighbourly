@@ -152,7 +152,7 @@ compose.desktop {
     application {
         mainClass = "com.neighbourly.app.MainKt"
 
-        jvmArgs("-Dapp.version=${project.property("APP_VERSION_NAME")}")
+        jvmArgs("-Dapp.version=${project.property("APP_VERSION_NAME")}.${project.property("APP_VERSION_CODE")}")
         jvmArgs("--add-opens", "java.desktop/sun.awt=ALL-UNNAMED")
         jvmArgs("--add-opens", "java.desktop/java.awt.peer=ALL-UNNAMED") // recommended but not necessary
 
