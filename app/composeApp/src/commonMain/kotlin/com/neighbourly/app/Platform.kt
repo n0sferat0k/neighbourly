@@ -41,6 +41,8 @@ expect val keyValueRegistry: KeyValueRegistry
 
 expect val statusConfigSource: StatusMemoryStore
 
+expect val appVersionString: String
+
 expect class PlatformBitmap(width: Int, height: Int) {
     fun setPixel(x: Int, y: Int, value: Int)
     fun asImageBitmap(): ImageBitmap

@@ -13,6 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
+import com.neighbourly.app.a_device.ui.atomic.molecule.LateralMenuItem
+import com.neighbourly.app.a_device.ui.atomic.molecule.MenuItemBoxSide.LEFT
+import com.neighbourly.app.a_device.ui.atomic.molecule.MenuItemBoxSide.RIGHT
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BoxManage
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ManageMyStuff
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.PublishStuff
@@ -53,7 +56,8 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
         ) {
             Spacer(modifier = Modifier.height(20.dp))
 
-            LeftMenuItemBox(
+            LateralMenuItem(
+                side = LEFT,
                 modifier = Modifier.align(Alignment.Start),
                 text = stringResource(Res.string.profile),
                 image = painterResource(Res.drawable.onboard),
@@ -62,7 +66,8 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 navigationViewModel.goToProfile()
             }
 
-            LeftMenuItemBox(
+            LateralMenuItem(
+                side = LEFT,
                 modifier = Modifier.align(Alignment.Start),
                 text = stringResource(Res.string.mystuff),
                 image = painterResource(Res.drawable.layers),
@@ -71,7 +76,8 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 navigationViewModel.goToMainPage(ManageMyStuff)
             }
 
-            LeftMenuItemBox(
+            LateralMenuItem(
+                side = LEFT,
                 modifier = Modifier.align(Alignment.Start),
                 text = stringResource(Res.string.publish),
                 image = painterResource(Res.drawable.publish),
@@ -80,7 +86,8 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 navigationViewModel.goToMainPage(PublishStuff)
             }
 
-            LeftMenuItemBox(
+            LateralMenuItem(
+                side = LEFT,
                 modifier = Modifier.align(Alignment.Start),
                 text = stringResource(Res.string.reminders),
                 image = painterResource(Res.drawable.reminder),
@@ -89,7 +96,8 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 navigationViewModel.goToMainPage(Reminders)
             }
 
-            LeftMenuItemBox(
+            LateralMenuItem(
+                side = LEFT,
                 modifier = Modifier.align(Alignment.Start),
                 text = stringResource(Res.string.box),
                 image = painterResource(Res.drawable.box),
@@ -105,7 +113,8 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
         ) {
             Spacer(modifier = Modifier.height(20.dp))
 
-            RightMenuItemBox(
+            LateralMenuItem(
+                side = RIGHT,
                 modifier = Modifier.align(Alignment.End),
                 text = stringResource(Res.string.donations),
                 image = painterResource(Res.drawable.donate),
@@ -113,7 +122,8 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
             ) {
                 navigationViewModel.goToFindItems(ItemType.DONATION)
             }
-            RightMenuItemBox(
+            LateralMenuItem(
+                side = RIGHT,
                 modifier = Modifier.align(Alignment.End),
                 text = stringResource(Res.string.barterings),
                 image = painterResource(Res.drawable.barter),
@@ -121,7 +131,8 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
             ) {
                 navigationViewModel.goToFindItems(ItemType.BARTER)
             }
-            RightMenuItemBox(
+            LateralMenuItem(
+                side = RIGHT,
                 modifier = Modifier.align(Alignment.End),
                 text = stringResource(Res.string.sales),
                 image = painterResource(Res.drawable.sale),
@@ -129,7 +140,8 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
             ) {
                 navigationViewModel.goToFindItems(ItemType.SALE)
             }
-            RightMenuItemBox(
+            LateralMenuItem(
+                side = RIGHT,
                 modifier = Modifier.align(Alignment.End),
                 text = stringResource(Res.string.events),
                 image = painterResource(Res.drawable.event),
@@ -137,7 +149,8 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
             ) {
                 navigationViewModel.goToFindItems(ItemType.EVENT)
             }
-            RightMenuItemBox(
+            LateralMenuItem(
+                side = RIGHT,
                 modifier = Modifier.align(Alignment.End),
                 text = stringResource(Res.string.needs),
                 image = painterResource(Res.drawable.need),
@@ -145,7 +158,8 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
             ) {
                 navigationViewModel.goToFindItems(ItemType.NEED)
             }
-            RightMenuItemBox(
+            LateralMenuItem(
+                side = RIGHT,
                 modifier = Modifier.align(Alignment.End),
                 text = stringResource(Res.string.requests),
                 image = painterResource(Res.drawable.request),
@@ -153,7 +167,8 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
             ) {
                 navigationViewModel.goToFindItems(ItemType.REQUEST)
             }
-            RightMenuItemBox(
+            LateralMenuItem(
+                side = RIGHT,
                 modifier = Modifier.align(Alignment.End),
                 text = stringResource(Res.string.skillshare),
                 image = painterResource(Res.drawable.skillshare),

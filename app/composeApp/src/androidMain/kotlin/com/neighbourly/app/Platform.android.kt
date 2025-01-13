@@ -11,13 +11,8 @@ import android.Manifest.permission.READ_PHONE_NUMBERS
 import android.Manifest.permission.READ_PHONE_STATE
 import android.annotation.SuppressLint
 import android.app.Application
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.NotificationManager.IMPORTANCE_DEFAULT
-import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.content.ComponentCallbacks
 import android.content.Context
-import android.content.Context.NOTIFICATION_SERVICE
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -30,7 +25,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.net.toUri
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
@@ -246,3 +240,6 @@ actual val statusConfigSource = object : StatusMemoryStore() {
 actual fun postSystemNotification(id: Int, title: String, text: String) {
     NeighbourlyApp.appContext.showBasicNotification(id, title, text)
 }
+
+actual val appVersionString: String
+    get() = BuildConfig.appVersion

@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.misc
+package com.neighbourly.app.a_device.ui.atomic.organism
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -13,20 +13,27 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.utils.FriendlyText
-import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.a_device.ui.utils.generateQrCode
-import com.neighbourly.app.b_adapt.viewmodel.SignalViewModel
+import com.neighbourly.app.b_adapt.viewmodel.BackendInfoViewModel
 import neighbourly.composeapp.generated.resources.Res
+import neighbourly.composeapp.generated.resources.app_version
 import neighbourly.composeapp.generated.resources.last_error
 import neighbourly.composeapp.generated.resources.scan_qr_for_app_install
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun BackendInfoView(viewModel: SignalViewModel = androidx.lifecycle.viewmodel.compose.viewModel { KoinProvider.KOIN.get<SignalViewModel>() }) {
+fun BackendInfoView(viewModel: BackendInfoViewModel = androidx.lifecycle.viewmodel.compose.viewModel { KoinProvider.KOIN.get<BackendInfoViewModel>() }) {
     val state by viewModel.state.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize()) {
+
+        FriendlyText(
+            modifier = Modifier.padding(20.dp),
+            text = stringResource(Res.string.app_version, state.appVersion),
+            fontSize = 22.sp,
+        )
 
         FriendlyText(
             modifier = Modifier.padding(20.dp),
@@ -37,8 +44,8 @@ fun BackendInfoView(viewModel: SignalViewModel = androidx.lifecycle.viewmodel.co
         Image(
             painter = BitmapPainter(
                 generateQrCode(
-                    "http://neighbourly.go.ro/releases/neighbourly-1.0.2.apk",
-                    400
+                    "http://neighbourly.go.ro/releases/neighbourly-" + state.appVersion + ".apk",
+                    600
                 )
             ),
             contentDescription = "QR Code",

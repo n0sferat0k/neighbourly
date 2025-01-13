@@ -38,10 +38,11 @@ import com.neighbourly.app.a_device.ui.utils.AppColors
 import com.neighbourly.app.a_device.ui.utils.BoxFooter
 import com.neighbourly.app.a_device.ui.utils.BoxHeader
 import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
-import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
-import com.neighbourly.app.a_device.ui.utils.FriendlyText
-import com.neighbourly.app.a_device.ui.utils.SwipeToDeleteBox
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
+import com.neighbourly.app.a_device.ui.atomic.molecule.SwipeToDeleteContainer
+import com.neighbourly.app.a_device.ui.atomic.atom.RoundedCornerCard
 import com.neighbourly.app.b_adapt.viewmodel.box.BoxManagementViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.add_box
@@ -78,126 +79,134 @@ fun BoxManagementView(viewModel: BoxManagementViewModel = viewModel { KoinProvid
             }
         )
     }
+    RoundedCornerCard {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            BoxHeader(Modifier.align(Alignment.Start), busy = state.loading) {
+                viewModel.refresh()
+            }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        BoxHeader(Modifier.align(Alignment.Start), busy = state.loading) {
-            viewModel.refresh()
-        }
-
-        BoxScrollableContent(modifier = Modifier.weight(1f)) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                if (showBoxScanner) {
-                    BarcodeScanner(modifier = Modifier.fillMaxSize()) { scanString ->
-                        viewModel.addBox(scanString)
-                        showBoxScanner = false
-                    }
-                    CurlyButton(
-                        text = stringResource(Res.string.cancel),
-                    ) {
-                        showBoxScanner = false
-                    }
-                } else if (state.newBoxId.isNotEmpty()) {
-                    OutlinedTextField(
-                        value = state.newBoxName,
-                        onValueChange = {
-                            viewModel.updateName(it)
-                        },
-                        label = { Text(stringResource(Res.string.box_name)) },
-                        isError = state.newBoxNameError,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    OutlinedTextField(
-                        value = state.newBoxId,
-                        enabled = false,
-                        onValueChange = {},
-                        label = { Text(stringResource(Res.string.box_id)) },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        CurlyButton(
-                            text = stringResource(Res.string.save),
-                            loading = state.saving,
-                        ) {
-                            viewModel.saveBox()
+            BoxScrollableContent(modifier = Modifier.weight(1f)) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    if (showBoxScanner) {
+                        BarcodeScanner(modifier = Modifier.fillMaxSize()) { scanString ->
+                            viewModel.addBox(scanString)
+                            showBoxScanner = false
                         }
-                        CurlyButton(
+                        FriendlyButton(
                             text = stringResource(Res.string.cancel),
                         ) {
-                            viewModel.clearBox()
+                            showBoxScanner = false
                         }
-                    }
-                } else {
-                    if (state.boxes.isNullOrEmpty()) {
-                        FriendlyText(text = stringResource(Res.string.no_boxes))
-                    } else {
-                        state.boxes?.entries?.forEach { (id, name) ->
-                            SwipeToDeleteBox(
-                                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                                onDelete = {
-                                    showRemoveAlertForId = id
-                                }) {
-                                Card(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    shape = RoundedCornerShape(4.dp),
-                                    elevation = 4.dp
-                                ) {
-                                    FlowRow(
-                                        modifier = Modifier.fillMaxWidth().padding(8.dp),
-                                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                                    ) {
-                                        Box(modifier = Modifier.height(48.dp), contentAlignment = Alignment.CenterStart) {
-                                            FriendlyText(text = name, bold = true, fontSize = 22.sp)
-                                        }
+                    } else if (state.newBoxId.isNotEmpty()) {
+                        OutlinedTextField(
+                            value = state.newBoxName,
+                            onValueChange = {
+                                viewModel.updateName(it)
+                            },
+                            label = { Text(stringResource(Res.string.box_name)) },
+                            isError = state.newBoxNameError,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
 
-                                        Image(
-                                            painter = painterResource(Res.drawable.openbox),
-                                            contentDescription = "Open box",
-                                            contentScale = ContentScale.FillBounds,
-                                            colorFilter = ColorFilter.tint(AppColors.primary),
-                                            modifier = Modifier.size(48.dp).clickable {
-                                                viewModel.openBox(id)
-                                            },
-                                        )
-                                        Image(
-                                            painter = painterResource(Res.drawable.unlockbox),
-                                            contentDescription = "Unlock box",
-                                            contentScale = ContentScale.FillBounds,
-                                            colorFilter = ColorFilter.tint(AppColors.primary),
-                                            modifier = Modifier.size(48.dp).clickable {
-                                                viewModel.unlockBox(id)
-                                            },
-                                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        OutlinedTextField(
+                            value = state.newBoxId,
+                            enabled = false,
+                            onValueChange = {},
+                            label = { Text(stringResource(Res.string.box_id)) },
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            FriendlyButton(
+                                text = stringResource(Res.string.save),
+                                loading = state.saving,
+                            ) {
+                                viewModel.saveBox()
+                            }
+                            FriendlyButton(
+                                text = stringResource(Res.string.cancel),
+                            ) {
+                                viewModel.clearBox()
+                            }
+                        }
+                    } else {
+                        if (state.boxes.isNullOrEmpty()) {
+                            FriendlyText(text = stringResource(Res.string.no_boxes))
+                        } else {
+                            state.boxes?.entries?.forEach { (id, name) ->
+                                SwipeToDeleteContainer(
+                                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                    onDelete = {
+                                        showRemoveAlertForId = id
+                                    }) {
+                                    Card(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        shape = RoundedCornerShape(4.dp),
+                                        elevation = 4.dp
+                                    ) {
+                                        FlowRow(
+                                            modifier = Modifier.fillMaxWidth().padding(8.dp),
+                                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                                        ) {
+                                            Box(
+                                                modifier = Modifier.height(48.dp),
+                                                contentAlignment = Alignment.CenterStart
+                                            ) {
+                                                FriendlyText(
+                                                    text = name,
+                                                    bold = true,
+                                                    fontSize = 22.sp
+                                                )
+                                            }
+
+                                            Image(
+                                                painter = painterResource(Res.drawable.openbox),
+                                                contentDescription = "Open box",
+                                                contentScale = ContentScale.FillBounds,
+                                                colorFilter = ColorFilter.tint(AppColors.primary),
+                                                modifier = Modifier.size(48.dp).clickable {
+                                                    viewModel.openBox(id)
+                                                },
+                                            )
+                                            Image(
+                                                painter = painterResource(Res.drawable.unlockbox),
+                                                contentDescription = "Unlock box",
+                                                contentScale = ContentScale.FillBounds,
+                                                colorFilter = ColorFilter.tint(AppColors.primary),
+                                                modifier = Modifier.size(48.dp).clickable {
+                                                    viewModel.unlockBox(id)
+                                                },
+                                            )
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
 
-                if (state.error.isNotEmpty()) {
-                    FriendlyErrorText(state.error)
+                    if (state.error.isNotEmpty()) {
+                        FriendlyErrorText(state.error)
+                    }
                 }
             }
-        }
 
-        BoxFooter(modifier = Modifier.align(Alignment.End)) {
-            FriendlyText(
-                modifier = Modifier.clickable {
-                    showBoxScanner = true
-                },
-                text = stringResource(Res.string.add_box), bold = true
-            )
+            BoxFooter(modifier = Modifier.align(Alignment.End)) {
+                FriendlyText(
+                    modifier = Modifier.clickable {
+                        showBoxScanner = true
+                    },
+                    text = stringResource(Res.string.add_box), bold = true
+                )
+            }
         }
     }
 }

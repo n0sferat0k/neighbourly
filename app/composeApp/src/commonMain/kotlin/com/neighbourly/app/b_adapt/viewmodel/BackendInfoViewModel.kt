@@ -10,11 +10,12 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 
-class SignalViewModel(
+class BackendInfoViewModel(
     configSource: ConfigStatusSource
 ) : ViewModel() {
-    private val _state = MutableStateFlow(SignalViewState())
-    val state: StateFlow<SignalViewState> = _state.asStateFlow()
+    private val _state =
+        MutableStateFlow(BackendInfoViewState(appVersion = configSource.appVersion))
+    val state: StateFlow<BackendInfoViewState> = _state.asStateFlow()
 
     init {
         configSource.isOnlineFlow.onEach { isOnline ->
@@ -22,5 +23,9 @@ class SignalViewModel(
         }.launchIn(viewModelScope)
     }
 
-    data class SignalViewState(val isOnline: Boolean = false, val lastError: String? = null)
+    data class BackendInfoViewState(
+        val appVersion: String = "",
+        val isOnline: Boolean = false,
+        val lastError: String? = null
+    )
 }

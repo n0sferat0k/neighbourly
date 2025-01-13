@@ -116,3 +116,6 @@ actual val statusConfigSource  = object : StatusMemoryStore() {
 
 actual fun postSystemNotification(id: Int, title: String, text: String) {
 }
+
+actual val appVersionString: String
+    get() = System.getProperty("app.version") ?: "Unknown"

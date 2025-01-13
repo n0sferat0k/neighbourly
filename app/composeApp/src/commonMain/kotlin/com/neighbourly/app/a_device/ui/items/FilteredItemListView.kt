@@ -48,8 +48,8 @@ import com.neighbourly.app.a_device.ui.utils.AppColors
 import com.neighbourly.app.a_device.ui.utils.BoxFooter
 import com.neighbourly.app.a_device.ui.utils.BoxHeader
 import com.neighbourly.app.a_device.ui.utils.BoxStaticContent
-import com.neighbourly.app.a_device.ui.utils.FriendlyText
-import com.neighbourly.app.a_device.ui.utils.SwipeToDeleteBox
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
+import com.neighbourly.app.a_device.ui.atomic.molecule.SwipeToDeleteContainer
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.BARTER
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.DONATION
@@ -128,7 +128,7 @@ fun FilteredItemListView(
             ) {
                 items(items = state.items, key = { it.id }) { item ->
                     if (item.deletable) {
-                        SwipeToDeleteBox(onDelete = {
+                        SwipeToDeleteContainer(onDelete = {
                             showRemoveAlertForId = item.id
                         }) {
                             ItemCard(item)

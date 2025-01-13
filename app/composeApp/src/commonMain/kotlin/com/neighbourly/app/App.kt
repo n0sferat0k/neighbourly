@@ -17,10 +17,11 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.a_device.ui.utils.AppColors
-import com.neighbourly.app.a_device.ui.utils.HalfCircleHalo
+import com.neighbourly.app.a_device.ui.atomic.atom.HalfCircleHalo
 import com.neighbourly.app.a_device.ui.MainContent
-import com.neighbourly.app.a_device.ui.misc.SignalView
+import com.neighbourly.app.a_device.ui.atomic.molecule.CrownMenuItem
 import com.neighbourly.app.a_device.ui.web.WebContentView
+import com.neighbourly.app.b_adapt.viewmodel.BackendInfoViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.houses
@@ -30,10 +31,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 @Preview
 fun App(
+    backendViewModel: BackendInfoViewModel = viewModel { KoinProvider.KOIN.get<BackendInfoViewModel>() },
     navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() },
     includeMap: Boolean = true,
 ) {
     val navigation by navigationViewModel.state.collectAsState()
+    val backendState by backendViewModel.state.collectAsState()
 
     MaterialTheme {
         requestPermissions()
@@ -48,7 +51,9 @@ fun App(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter,
         ) {
-            SignalView()
+            CrownMenuItem(isOnline = backendState.isOnline) {
+                navigationViewModel.goToBackendInfo()
+            }
         }
 
         Box(

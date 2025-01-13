@@ -35,6 +35,8 @@ import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.cancel
 import neighbourly.composeapp.generated.resources.confirm
@@ -64,14 +66,14 @@ fun AlertDialog(
                             crossAxisSpacing = 12.dp
                         ) {
                             if(cancel != null) {
-                                CurlyButton(
+                                FriendlyButton(
                                     text = stringResource(Res.string.cancel),
                                     modifier = Modifier.padding(5.dp)
                                 ) {
                                     cancel.invoke()
                                 }
                             }
-                            CurlyButton(
+                            FriendlyButton(
                                 text = stringResource(Res.string.confirm),
                                 modifier = Modifier.padding(5.dp)
                             ) {

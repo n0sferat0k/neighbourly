@@ -114,8 +114,10 @@ android {
             libs.versions.android.targetSdk
                 .get()
                 .toInt()
-        versionCode = 4
-        versionName = "1.0"
+        versionCode = project.property("APP_VERSION_CODE").toString().toInt()
+        versionName = project.property("APP_VERSION_NAME").toString()
+
+        buildConfigField("String", "appVersion", "\"${versionName + "." + versionCode}\"")
     }
     packaging {
         resources {
@@ -133,6 +135,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     dependencies {
         debugImplementation(compose.uiTooling)
@@ -149,6 +152,7 @@ compose.desktop {
     application {
         mainClass = "com.neighbourly.app.MainKt"
 
+        jvmArgs("-Dapp.version=${project.property("APP_VERSION_NAME")}")
         jvmArgs("--add-opens", "java.desktop/sun.awt=ALL-UNNAMED")
         jvmArgs("--add-opens", "java.desktop/java.awt.peer=ALL-UNNAMED") // recommended but not necessary
 

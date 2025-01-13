@@ -12,11 +12,11 @@ import com.neighbourly.app.a_device.ui.items.FilteredItemListView
 import com.neighbourly.app.a_device.ui.items.ItemDetailsView
 import com.neighbourly.app.a_device.ui.items.RemidersView
 import com.neighbourly.app.a_device.ui.menu.FullMenuContent
-import com.neighbourly.app.a_device.ui.misc.BackendInfoView
+import com.neighbourly.app.a_device.ui.atomic.organism.BackendInfoView
 import com.neighbourly.app.a_device.ui.misc.LandingView
-import com.neighbourly.app.a_device.ui.misc.UnderConstruction
+import com.neighbourly.app.a_device.ui.atomic.organism.UnderConstructionView
 import com.neighbourly.app.a_device.ui.profile.Profile
-import com.neighbourly.app.a_device.ui.utils.ContentBox
+import com.neighbourly.app.a_device.ui.atomic.atom.RoundedCornerCard
 import com.neighbourly.app.b_adapt.viewmodel.items.MainContentViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BackendInfo
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BoxManage
@@ -40,7 +40,7 @@ fun MainContent(
         LandingView()
     } else if (navigation.restrictedContent) {
         AnimatedVisibility(navigation.mainContentVisible) {
-            ContentBox {
+            RoundedCornerCard {
                 if (navigation.userLoggedIn) {
                     Profile()
                 } else {
@@ -55,7 +55,7 @@ fun MainContent(
             AnimatedVisibility(navigation.mainContent != MainMenu) {
                 navigation.mainContent.let {
                     when (it) {
-                        is FindItems -> ContentBox {
+                        is FindItems -> RoundedCornerCard {
                             (navigation.mainContent as FindItems).let {
                                 FilteredItemListView(
                                     type = it.type,
@@ -65,7 +65,7 @@ fun MainContent(
                             }
                         }
 
-                        ManageMyStuff -> ContentBox {
+                        ManageMyStuff -> RoundedCornerCard {
                             FilteredItemListView(
                                 type = null,
                                 householdId = state.householdId,
@@ -73,25 +73,23 @@ fun MainContent(
                             )
                         }
 
-                        ManageProfile -> ContentBox { Profile() }
+                        ManageProfile -> RoundedCornerCard { Profile() }
 
-                        PublishStuff -> ContentBox {
+                        PublishStuff -> RoundedCornerCard {
                             ItemDetailsView(null)
                         }
 
-                        BoxManage -> ContentBox {
-                            BoxManagementView()
-                        }
+                        BoxManage -> BoxManagementView()
 
-                        is ShowItemDetails -> ContentBox {
+                        is ShowItemDetails -> RoundedCornerCard {
                             ItemDetailsView(it.itemId)
                         }
 
-                        BackendInfo -> ContentBox { BackendInfoView() }
+                        BackendInfo -> RoundedCornerCard { BackendInfoView() }
 
-                        Reminders -> ContentBox { RemidersView() }
+                        Reminders -> RoundedCornerCard { RemidersView() }
 
-                        else -> ContentBox { UnderConstruction() }
+                        else ->  UnderConstructionView()
                     }
                 }
             }

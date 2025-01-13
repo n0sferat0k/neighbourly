@@ -45,14 +45,14 @@ import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.datetime.DateTimeDialog
 import com.neighbourly.app.a_device.ui.utils.AlertDialog
 import com.neighbourly.app.a_device.ui.utils.AppColors
-import com.neighbourly.app.a_device.ui.utils.AutocompleteOutlinedTextField
+import com.neighbourly.app.a_device.ui.atomic.molecule.AutocompleteOutlinedTextField
 import com.neighbourly.app.a_device.ui.utils.BoxFooter
 import com.neighbourly.app.a_device.ui.utils.BoxHeader
 import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
-import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
-import com.neighbourly.app.a_device.ui.utils.FriendlyText
-import com.neighbourly.app.a_device.ui.utils.SwipeToDeleteBox
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
+import com.neighbourly.app.a_device.ui.atomic.molecule.SwipeToDeleteContainer
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel.MemImg
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
@@ -717,7 +717,7 @@ fun EditableItemDetailsView(
                 }
 
                 if (state.hasChanged) {
-                    CurlyButton(
+                    FriendlyButton(
                         text = stringResource(Res.string.save),
                         loading = state.saving,
                     ) {
@@ -808,7 +808,7 @@ fun ImageGrid(
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         images.forEach { (key, imageUrl) ->
-            SwipeToDeleteBox(
+            SwipeToDeleteContainer(
                 modifier = Modifier.size(84.dp),
                 onDelete = delete?.let {
                     {
@@ -840,7 +840,7 @@ fun ImageGrid(
             }
         }
         newImages.forEach { memImg ->
-            SwipeToDeleteBox(
+            SwipeToDeleteContainer(
                 modifier = Modifier.size(84.dp),
                 onDelete = {
                     deleteNew?.invoke(memImg)

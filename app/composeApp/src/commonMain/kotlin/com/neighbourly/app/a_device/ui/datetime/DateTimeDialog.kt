@@ -22,8 +22,10 @@ import androidx.compose.ui.window.DialogProperties
 import com.neighbourly.app.a_device.ui.utils.BoxFooter
 import com.neighbourly.app.a_device.ui.utils.BoxHeader
 import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
-import com.neighbourly.app.a_device.ui.utils.ContentBox
-import com.neighbourly.app.a_device.ui.utils.CurlyButton
+import com.neighbourly.app.a_device.ui.atomic.atom.RoundedCornerCard
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
+import com.neighbourly.app.a_device.ui.atomic.organism.CalendarDatePicker
+import com.neighbourly.app.a_device.ui.atomic.organism.ClockTimePicker
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
@@ -58,7 +60,7 @@ fun DateTimeDialog(title: String, instant: Instant, onTimestamp: (Int?) -> Unit)
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            ContentBox(
+            RoundedCornerCard(
                 modifier = Modifier.align(Alignment.CenterStart)
                     .widthIn(max = 440.dp)
                     .padding(20.dp)
@@ -76,28 +78,28 @@ fun DateTimeDialog(title: String, instant: Instant, onTimestamp: (Int?) -> Unit)
                                 verticalArrangement = Arrangement.spacedBy(4.dp),
                                 horizontalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
-                                CurlyButton(text = stringResource(Res.string.now)) {
+                                FriendlyButton(text = stringResource(Res.string.now)) {
                                     selectedInstant = Clock.System.now()
                                 }
-                                CurlyButton(text = stringResource(Res.string.in_10_minutes)) {
+                                FriendlyButton(text = stringResource(Res.string.in_10_minutes)) {
                                     selectedInstant = Clock.System.now().plus(10.minutes)
                                 }
-                                CurlyButton(text = stringResource(Res.string.in_one_hour)) {
+                                FriendlyButton(text = stringResource(Res.string.in_one_hour)) {
                                     selectedInstant = Clock.System.now().plus(1.hours)
                                 }
-                                CurlyButton(text = stringResource(Res.string.in_two_hours)) {
+                                FriendlyButton(text = stringResource(Res.string.in_two_hours)) {
                                     selectedInstant = Clock.System.now().plus(2.hours)
                                 }
-                                CurlyButton(text = stringResource(Res.string.in_eight_hours)) {
+                                FriendlyButton(text = stringResource(Res.string.in_eight_hours)) {
                                     selectedInstant = Clock.System.now().plus(8.hours)
                                 }
-                                CurlyButton(text = stringResource(Res.string.tomorrow)) {
+                                FriendlyButton(text = stringResource(Res.string.tomorrow)) {
                                     selectedInstant = Clock.System.now().plus(1.days).let {
                                         val timezone = TimeZone.currentSystemDefault()
                                         it.toLocalDateTime(timezone).date.atStartOfDayIn(timezone)
                                     }
                                 }
-                                CurlyButton(text = stringResource(Res.string.next_week)) {
+                                FriendlyButton(text = stringResource(Res.string.next_week)) {
                                     selectedInstant = Clock.System.now().let {
                                         val timezone = TimeZone.currentSystemDefault()
                                         val date = it.toLocalDateTime(timezone).date
@@ -149,7 +151,7 @@ fun DateTimeDialog(title: String, instant: Instant, onTimestamp: (Int?) -> Unit)
                     }
 
                     BoxFooter(modifier = Modifier.fillMaxWidth()) {
-                        CurlyButton(
+                        FriendlyButton(
                             modifier = Modifier.align(Alignment.CenterEnd),
                             text = stringResource(Res.string.ok),
                         ) {

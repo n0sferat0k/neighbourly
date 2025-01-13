@@ -28,9 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.AppColors
-import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.FriendlyText
-import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdAddMemberViewModel
 import io.kamel.image.KamelImage
@@ -185,7 +185,7 @@ fun HouseholdAddMemberView(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        CurlyButton(
+        FriendlyButton(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             text = stringResource(Res.string.add_to_household),
             loading = state.adding,

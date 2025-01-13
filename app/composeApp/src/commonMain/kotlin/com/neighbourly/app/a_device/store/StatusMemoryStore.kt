@@ -1,5 +1,6 @@
 package com.neighbourly.app.a_device.store
 
+import com.neighbourly.app.appVersionString
 import com.neighbourly.app.d_entity.interf.ConfigStatusSource
 import com.neighbourly.app.d_entity.interf.StatusUpdater
 import kotlinx.coroutines.flow.Flow
@@ -9,6 +10,10 @@ import kotlinx.coroutines.flow.update
 
 abstract class StatusMemoryStore : ConfigStatusSource, StatusUpdater {
     private val _state = MutableStateFlow(StatusMemoryStoreState())
+
+    override val appVersion: String
+        get() = appVersionString
+
     override val isOnlineFlow: Flow<Pair<Boolean, String?>> =
         _state.map { Pair(it.isOnline, it.lastError) }
 

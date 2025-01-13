@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.datetime
+package com.neighbourly.app.a_device.ui.atomic.organism
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight

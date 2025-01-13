@@ -35,9 +35,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.AppColors
-import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.FriendlyText
-import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.getPhoneNumber
@@ -221,7 +221,7 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        CurlyButton(text = stringResource(Res.string.register), loading = state.loading) {
+        FriendlyButton(text = stringResource(Res.string.register), loading = state.loading) {
             viewModel.onRegister(
                 username,
                 password,

@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.Flow
 interface ConfigStatusSource {
     val wideScreenFlow: Flow<Boolean>
     val isOnlineFlow: Flow<Pair<Boolean,String?>>
+    val appVersion: String
 }

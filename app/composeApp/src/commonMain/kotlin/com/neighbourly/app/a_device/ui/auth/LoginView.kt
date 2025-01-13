@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.AppColors
-import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.FriendlyText
-import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.login
@@ -37,7 +37,7 @@ import neighbourly.composeapp.generated.resources.username
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun Login(
+fun LoginView(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = viewModel { KoinProvider.KOIN.get<LoginViewModel>() }
 ) {
@@ -88,7 +88,7 @@ fun Login(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        CurlyButton(text = stringResource(Res.string.login), loading = state.loading) {
+        FriendlyButton(text = stringResource(Res.string.login), loading = state.loading) {
             viewModel.onLogin(remember)
         }
 

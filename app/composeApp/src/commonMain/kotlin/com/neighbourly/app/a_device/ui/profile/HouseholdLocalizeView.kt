@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.AppColors
-import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.FriendlyText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdLocalizeViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.accept
@@ -49,7 +49,7 @@ fun HouseholdLocalizeView(viewModel: HouseholdLocalizeViewModel = viewModel { Ko
             if (state.editableHousehold) {
                 FriendlyText(text = stringResource(Res.string.household_relocate))
                 Spacer(modifier = Modifier.height(16.dp))
-                CurlyButton(text = stringResource(Res.string.relocate)) {
+                FriendlyButton(text = stringResource(Res.string.relocate)) {
                     viewModel.onRelocate()
                 }
             } else {
@@ -64,13 +64,13 @@ fun HouseholdLocalizeView(viewModel: HouseholdLocalizeViewModel = viewModel { Ko
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Row {
-                            CurlyButton(text = stringResource(Res.string.accept)) {
+                            FriendlyButton(text = stringResource(Res.string.accept)) {
                                 viewModel.onAccept()
                             }
 
                             Spacer(modifier = Modifier.width(8.dp))
 
-                            CurlyButton(text = stringResource(Res.string.retry)) {
+                            FriendlyButton(text = stringResource(Res.string.retry)) {
                                 viewModel.onRetry()
                             }
                         }
@@ -109,7 +109,7 @@ fun HouseholdLocalizeView(viewModel: HouseholdLocalizeViewModel = viewModel { Ko
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    CurlyButton(text = stringResource(Res.string.track_me)) {
+                    FriendlyButton(text = stringResource(Res.string.track_me)) {
                         viewModel.onLocalize()
                     }
                 }

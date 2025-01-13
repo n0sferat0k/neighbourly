@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.menu
+package com.neighbourly.app.a_device.ui.atomic.molecule
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -30,19 +30,36 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.LayoutDirection.Ltr
+import androidx.compose.ui.unit.LayoutDirection.Rtl
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
+import com.neighbourly.app.a_device.ui.atomic.molecule.MenuItemBoxSide.LEFT
+import com.neighbourly.app.a_device.ui.atomic.molecule.MenuItemBoxSide.RIGHT
 import com.neighbourly.app.a_device.ui.utils.AppColors
-import com.neighbourly.app.a_device.ui.utils.FriendlyText
 import kotlinx.coroutines.delay
 
 @Composable
-fun MenuItemBox(
+fun LateralMenuItem(
+    side: MenuItemBoxSide = LEFT,
     modifier: Modifier,
     text: String,
     image: Painter,
-    cornerShape: RoundedCornerShape,
-    layoutDirection: LayoutDirection,
+    cornerShape: RoundedCornerShape = when (side) {
+        LEFT -> RoundedCornerShape(
+            topEnd = 20.dp,
+            bottomEnd = 20.dp,
+        )
+        RIGHT -> RoundedCornerShape(
+            topStart = 20.dp,
+            bottomStart = 20.dp,
+        )
+    },
+    layoutDirection: LayoutDirection =  when (side) {
+        LEFT -> Ltr
+        RIGHT -> Rtl
+    },
     delayMs: Long = 0,
     onClick: () -> Unit,
 ) {
@@ -57,8 +74,8 @@ fun MenuItemBox(
         modifier = modifier.wrapContentSize(),
         visible = startAnimation,
         enter = when (layoutDirection) {
-            LayoutDirection.Ltr -> slideInHorizontally(initialOffsetX = { -it })
-            LayoutDirection.Rtl -> slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth })
+            Ltr -> slideInHorizontally(initialOffsetX = { -it })
+            Rtl -> slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth })
         } + fadeIn()
     ) {
         Box(
@@ -91,42 +108,6 @@ fun MenuItemBox(
     }
 }
 
-@Composable
-fun LeftMenuItemBox(
-    modifier: Modifier,
-    text: String,
-    image: Painter,
-    delayMs: Long = 0,
-    onClick: () -> Unit,
-) {
-    MenuItemBox(
-        modifier = modifier, text = text, image = image,
-        cornerShape = RoundedCornerShape(
-            topEnd = 20.dp,
-            bottomEnd = 20.dp,
-        ),
-        layoutDirection = LayoutDirection.Ltr,
-        delayMs = delayMs,
-        onClick = onClick,
-    )
-}
-
-@Composable
-fun RightMenuItemBox(
-    modifier: Modifier,
-    text: String,
-    image: Painter,
-    delayMs: Long = 0,
-    onClick: () -> Unit,
-) {
-    MenuItemBox(
-        modifier = modifier, text = text, image = image,
-        cornerShape = RoundedCornerShape(
-            topStart = 20.dp,
-            bottomStart = 20.dp,
-        ),
-        layoutDirection = LayoutDirection.Rtl,
-        delayMs = delayMs,
-        onClick = onClick,
-    )
+enum class MenuItemBoxSide {
+    LEFT, RIGHT
 }

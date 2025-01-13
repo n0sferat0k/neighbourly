@@ -35,9 +35,9 @@ import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.utils.AlertDialog
 import com.neighbourly.app.a_device.ui.utils.AppColors
-import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.FriendlyText
-import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.a_device.ui.utils.generateQrCode
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdInfoEditViewModel
@@ -198,7 +198,7 @@ fun HouseholdInfoEditView(
             if (state.editableHousehold || navigation.addingNewHousehold) {
                 Spacer(modifier = Modifier.height(8.dp))
 
-                CurlyButton(
+                FriendlyButton(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     text = stringResource(Res.string.save),
                     loading = state.saving,

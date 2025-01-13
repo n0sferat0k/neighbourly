@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.utils.CurlyButton
-import com.neighbourly.app.a_device.ui.utils.FriendlyErrorText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileInfoEditViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.about
@@ -91,7 +91,7 @@ fun ProfileInfoEditView(viewModel: ProfileInfoEditViewModel = viewModel { KoinPr
 
     Spacer(modifier = Modifier.height(8.dp))
 
-    CurlyButton(
+    FriendlyButton(
         text = stringResource(Res.string.save),
         loading = state.saving,
     ) {
