@@ -51,8 +51,8 @@ import com.neighbourly.app.a_device.ui.atomic.molecule.CardFooter
 import com.neighbourly.app.a_device.ui.atomic.molecule.CardHeader
 import com.neighbourly.app.a_device.ui.atomic.molecule.CardScrollableContent
 import com.neighbourly.app.a_device.ui.atomic.molecule.SwipeToDeleteContainer
-import com.neighbourly.app.a_device.ui.datetime.DateTimeDialog
-import com.neighbourly.app.a_device.ui.utils.AlertDialog
+import com.neighbourly.app.a_device.ui.atomic.organism.datetime.OrganismDateTimeDialog
+import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismAlertDialog
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel.MemImg
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
@@ -328,7 +328,7 @@ fun EditableItemDetailsView(
     val badge = painterResource(Res.drawable.newbadge)
 
     if (showRemoveAlertForFileId != -1) {
-        AlertDialog(
+        OrganismAlertDialog(
             title = stringResource(Res.string.deleteing_file),
             text = stringResource(Res.string.confirm_deleteing_file),
             ok = {
@@ -342,7 +342,7 @@ fun EditableItemDetailsView(
     }
 
     if (showDeleteAlert) {
-        AlertDialog(
+        OrganismAlertDialog(
             title = stringResource(Res.string.deleteing_item),
             text = stringResource(Res.string.confirm_deleteing_this_item),
             ok = {
@@ -356,7 +356,7 @@ fun EditableItemDetailsView(
     }
 
     if (showNewFileAlert) {
-        AlertDialog(
+        OrganismAlertDialog(
             title = stringResource(Res.string.new_file),
             text = stringResource(Res.string.confirm_new_file),
             ok = {
@@ -399,7 +399,7 @@ fun EditableItemDetailsView(
     }
 
     if (showStartDatePicker) {
-        DateTimeDialog(
+        OrganismDateTimeDialog(
             title = stringResource(Res.string.start_date),
             instant = state.startOverride ?: state.start ?: now()
         ) {
@@ -408,7 +408,7 @@ fun EditableItemDetailsView(
         }
     }
     if (showEndDatePicker) {
-        DateTimeDialog(
+        OrganismDateTimeDialog(
             title = stringResource(Res.string.end_date),
             instant = state.endOverride ?: state.end ?: now()
         ) {
@@ -417,7 +417,7 @@ fun EditableItemDetailsView(
         }
     }
     if (showDatePickerInstant != null) {
-        DateTimeDialog(
+        OrganismDateTimeDialog(
             title = stringResource(Res.string.reminders),
             instant = showDatePickerInstant ?: now()
         ) {
@@ -779,7 +779,7 @@ fun ImageGrid(
     val badge = painterResource(Res.drawable.newbadge)
 
     if (showNewImageAlert) {
-        AlertDialog(
+        OrganismAlertDialog(
             title = stringResource(Res.string.new_image),
             text = stringResource(Res.string.confirm_new_image),
             ok = {
@@ -789,7 +789,7 @@ fun ImageGrid(
     }
 
     if (showRemoveAlertForId != -1) {
-        AlertDialog(
+        OrganismAlertDialog(
             title = stringResource(Res.string.deleteing_image),
             text = stringResource(Res.string.confirm_deleteing_image),
             ok = {

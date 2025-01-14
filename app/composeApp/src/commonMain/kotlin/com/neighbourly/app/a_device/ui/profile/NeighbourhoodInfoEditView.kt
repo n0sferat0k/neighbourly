@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.utils.AlertDialog
+import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismAlertDialog
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
@@ -128,7 +128,7 @@ fun NeighbourhoodInfoEditView(
                             Spacer(modifier = Modifier.width(20.dp))
 
                             if (showRemoveAlertForId == neighbourhood.id) {
-                                AlertDialog(
+                                OrganismAlertDialog(
                                     title = stringResource(Res.string.leaving) + " " + neighbourhood.name,
                                     text = stringResource(Res.string.confirm_leaving_neighbourhood),
                                     ok = {

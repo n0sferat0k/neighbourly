@@ -9,10 +9,10 @@ import neighbourly.composeapp.generated.resources.ok
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun CloseCardFooter(onClose:() -> Unit) {
+fun OkCardFooter(onOk:() -> Unit) {
     FriendlyText(
         modifier = Modifier.clickable {
-            onClose()
+            onOk()
         },
         text = stringResource(Res.string.ok)
     )

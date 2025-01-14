@@ -49,7 +49,7 @@ import com.neighbourly.app.a_device.ui.atomic.molecule.CardFooter
 import com.neighbourly.app.a_device.ui.atomic.molecule.CardHeader
 import com.neighbourly.app.a_device.ui.atomic.molecule.CardStaticContent
 import com.neighbourly.app.a_device.ui.atomic.molecule.SwipeToDeleteContainer
-import com.neighbourly.app.a_device.ui.utils.AlertDialog
+import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismAlertDialog
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.BARTER
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.DONATION
@@ -101,7 +101,7 @@ fun FilteredItemListView(
 
     if (showRemoveAlertForId != -1) {
         state.items.firstOrNull { it.id == showRemoveAlertForId }?.let { item ->
-            AlertDialog(
+            OrganismAlertDialog(
                 title = stringResource(Res.string.deleteing_item),
                 text = stringResource(Res.string.confirm_deleteing_item) + " " + item.name,
                 ok = {

@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.utils.AlertDialog
+import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismAlertDialog
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
@@ -226,7 +226,7 @@ fun HouseholdInfoEditView(
                 }
 
                 if (showRemoveAlert) {
-                    AlertDialog(
+                    OrganismAlertDialog(
                         title = stringResource(Res.string.leaving) + " " + state.name,
                         text = stringResource(Res.string.confirm_leaving_household),
                         ok = {

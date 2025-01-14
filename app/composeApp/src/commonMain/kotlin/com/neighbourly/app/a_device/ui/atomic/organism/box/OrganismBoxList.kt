@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.a_device.ui.atomic.molecule.SwipeToDeleteContainer
-import com.neighbourly.app.a_device.ui.utils.AlertDialog
+import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismAlertDialog
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.confirm_deleteing_box
 import neighbourly.composeapp.generated.resources.deleteing_box
@@ -47,7 +47,7 @@ fun OrganismBoxList(
     var showRemoveAlertForId by remember { mutableStateOf("") }
 
     if (showRemoveAlertForId.isNotBlank()) {
-        AlertDialog(
+        OrganismAlertDialog(
             title = stringResource(Res.string.deleteing_box),
             text = stringResource(Res.string.confirm_deleteing_box),
             ok = {
