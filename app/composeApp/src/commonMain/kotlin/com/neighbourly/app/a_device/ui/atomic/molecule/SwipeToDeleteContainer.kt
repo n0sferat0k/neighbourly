@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import com.neighbourly.app.a_device.ui.utils.AppColors
+import com.neighbourly.app.a_device.ui.AppColors
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.delete
 import org.jetbrains.compose.resources.painterResource

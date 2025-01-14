@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.atomic.atom
+package com.neighbourly.app.a_device.ui.atomic.molecule
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.neighbourly.app.a_device.ui.utils.AppColors
+import com.neighbourly.app.a_device.ui.AppColors
 
 @Composable
 fun RoundedCornerCard(

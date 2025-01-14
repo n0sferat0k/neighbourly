@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.neighbourly.app.a_device.ui.utils.AppColors
+import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.HalfCircleHalo
 import com.neighbourly.app.a_device.ui.MainContent
 import com.neighbourly.app.a_device.ui.atomic.molecule.CrownMenuItem

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
@@ -19,13 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.neighbourly.app.a_device.ui.utils.BoxFooter
-import com.neighbourly.app.a_device.ui.utils.BoxHeader
-import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
-import com.neighbourly.app.a_device.ui.atomic.atom.RoundedCornerCard
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
-import com.neighbourly.app.a_device.ui.atomic.organism.CalendarDatePicker
-import com.neighbourly.app.a_device.ui.atomic.organism.ClockTimePicker
+import com.neighbourly.app.a_device.ui.atomic.molecule.CardFooter
+import com.neighbourly.app.a_device.ui.atomic.molecule.CardHeader
+import com.neighbourly.app.a_device.ui.atomic.molecule.CardScrollableContent
+import com.neighbourly.app.a_device.ui.atomic.molecule.RoundedCornerCard
+import com.neighbourly.app.a_device.ui.atomic.organism.datetime.OrganismCalendarDatePicker
+import com.neighbourly.app.a_device.ui.atomic.organism.datetime.OrganismClockTimePicker
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
@@ -68,9 +67,9 @@ fun DateTimeDialog(title: String, instant: Instant, onTimestamp: (Int?) -> Unit)
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    BoxHeader(Modifier.align(Alignment.Start), title = title)
+                    CardHeader(Modifier.align(Alignment.Start), title = title)
 
-                    BoxScrollableContent(modifier = Modifier.weight(1f)) {
+                    CardScrollableContent(modifier = Modifier.weight(1f)) {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
@@ -110,7 +109,7 @@ fun DateTimeDialog(title: String, instant: Instant, onTimestamp: (Int?) -> Unit)
                                 }
                             }
 
-                            CalendarDatePicker(
+                            OrganismCalendarDatePicker(
                                 Modifier.padding(4.dp),
                                 selectedInstant
                             ) { year, month, day ->
@@ -129,7 +128,7 @@ fun DateTimeDialog(title: String, instant: Instant, onTimestamp: (Int?) -> Unit)
                                 selectedInstant = adjustedDateTime.toInstant(timezone)
                             }
 
-                            ClockTimePicker(
+                            OrganismClockTimePicker(
                                 Modifier.padding(4.dp),
                                 selectedInstant
                             ) { hour, minute ->
@@ -150,9 +149,8 @@ fun DateTimeDialog(title: String, instant: Instant, onTimestamp: (Int?) -> Unit)
                         }
                     }
 
-                    BoxFooter(modifier = Modifier.fillMaxWidth()) {
+                    CardFooter {
                         FriendlyButton(
-                            modifier = Modifier.align(Alignment.CenterEnd),
                             text = stringResource(Res.string.ok),
                         ) {
                             onTimestamp(selectedInstant.epochSeconds.toInt())

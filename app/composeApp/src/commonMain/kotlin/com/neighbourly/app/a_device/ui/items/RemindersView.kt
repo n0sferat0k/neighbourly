@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.utils.BoxHeader
-import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
+import com.neighbourly.app.a_device.ui.atomic.molecule.CardHeader
+import com.neighbourly.app.a_device.ui.atomic.molecule.CardScrollableContent
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.b_adapt.viewmodel.items.RemindersViewModel
 import kotlinx.datetime.TimeZone
@@ -30,9 +30,9 @@ fun RemidersView(viewModel: RemindersViewModel = viewModel { KoinProvider.KOIN.g
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        BoxHeader(Modifier.align(Alignment.Start))
+        CardHeader(Modifier.align(Alignment.Start))
 
-        BoxScrollableContent(modifier = Modifier.weight(1f)) {
+        CardScrollableContent(modifier = Modifier.weight(1f)) {
             Column(
                 modifier = Modifier.fillMaxWidth().padding(20.dp),
                 horizontalAlignment = Alignment.Start,

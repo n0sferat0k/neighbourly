@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Neighbourly</string>
     <string name="app_version">Version: %1$s</string>
+    <string name="app_debug">Debug: %1$s</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="confirmpassword">Confirm Password</string>
@@ -140,6 +141,7 @@
     <string name="list_household_members">Your household has the following member(s):</string>
 
     <string name="scan_qr_for_app_install">Scan the below QR code to download and install Neighbourly on the device of a friend or family member.</string>
+    <string name="visit_page_for_app_install">Or visit the app release page:</string>
 
     <string name="last_error">Last Error encountered on API:</string>
 

@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.a_device.ui.atomic.molecule.MenuItemBoxSide.LEFT
 import com.neighbourly.app.a_device.ui.atomic.molecule.MenuItemBoxSide.RIGHT
-import com.neighbourly.app.a_device.ui.utils.AppColors
+import com.neighbourly.app.a_device.ui.AppColors
 import kotlinx.coroutines.delay
 
 @Composable

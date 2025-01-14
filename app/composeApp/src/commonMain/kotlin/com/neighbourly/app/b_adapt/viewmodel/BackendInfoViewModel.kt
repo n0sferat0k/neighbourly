@@ -25,6 +25,7 @@ class BackendInfoViewModel(
 
     data class BackendInfoViewState(
         val appVersion: String = "",
+        val isDebug: Boolean = true,
         val isOnline: Boolean = false,
         val lastError: String? = null
     )

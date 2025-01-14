@@ -2,6 +2,7 @@ package com.neighbourly.app.b_adapt.viewmodel.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.c_business.usecase.auth.LogoutUseCase
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
 import com.neighbourly.app.d_entity.interf.SessionStore
@@ -13,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     val profileRefreshUseCase: ProfileRefreshUseCase,
-    val contentSyncUseCase: ContentSyncUseCase,
+    val logoutUseCase: LogoutUseCase,
     val sessionStore: SessionStore,
 ) : ViewModel() {
     private val _state = MutableStateFlow(ProfileViewState())
@@ -25,6 +26,15 @@ class ProfileViewModel(
             runCatching {
                 profileRefreshUseCase.execute()
             }
+            _state.update { it.copy(loading = false) }
+        }
+    }
+
+
+    fun onLogout(logoutAll: Boolean) {
+        viewModelScope.launch {
+            _state.update { it.copy(loading = true) }
+            logoutUseCase.execute(logoutAll)
             _state.update { it.copy(loading = false) }
         }
     }

@@ -14,9 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.utils.BoxFooter
-import com.neighbourly.app.a_device.ui.utils.BoxHeader
-import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
+import com.neighbourly.app.a_device.ui.atomic.molecule.CardFooter
+import com.neighbourly.app.a_device.ui.atomic.molecule.CardHeader
+import com.neighbourly.app.a_device.ui.atomic.molecule.CardScrollableContent
+import com.neighbourly.app.a_device.ui.atomic.molecule.LogoutCardFooter
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdAddMember
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdInfoEdit
@@ -43,11 +44,11 @@ fun Profile(
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        BoxHeader(Modifier.align(Alignment.Start), busy = state.loading) {
+        CardHeader(Modifier.align(Alignment.Start), busy = state.loading) {
             viewModel.refresh()
         }
 
-        BoxScrollableContent(modifier = Modifier.weight(1f)) {
+        CardScrollableContent(modifier = Modifier.weight(1f)) {
             Column(
                 modifier = Modifier.padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -73,8 +74,8 @@ fun Profile(
                 }
             }
         }
-        BoxFooter(modifier = Modifier.align(Alignment.End)) {
-            ProfileFooter()
+        CardFooter {
+            LogoutCardFooter(viewModel::onLogout)
         }
     }
 }

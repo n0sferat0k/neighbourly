@@ -16,7 +16,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
-import com.neighbourly.app.a_device.ui.utils.AppColors
+import com.neighbourly.app.a_device.ui.AppColors
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.signal
 import org.jetbrains.compose.resources.painterResource

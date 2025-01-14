@@ -9,7 +9,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import com.neighbourly.app.a_device.ui.utils.AppColors
+import com.neighbourly.app.a_device.ui.AppColors
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.curlzmt
 import org.jetbrains.compose.resources.Font

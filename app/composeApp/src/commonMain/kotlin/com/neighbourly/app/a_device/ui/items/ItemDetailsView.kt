@@ -42,17 +42,17 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.datetime.DateTimeDialog
-import com.neighbourly.app.a_device.ui.utils.AlertDialog
-import com.neighbourly.app.a_device.ui.utils.AppColors
-import com.neighbourly.app.a_device.ui.atomic.molecule.AutocompleteOutlinedTextField
-import com.neighbourly.app.a_device.ui.utils.BoxFooter
-import com.neighbourly.app.a_device.ui.utils.BoxHeader
-import com.neighbourly.app.a_device.ui.utils.BoxScrollableContent
+import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
+import com.neighbourly.app.a_device.ui.atomic.molecule.AutocompleteOutlinedTextField
+import com.neighbourly.app.a_device.ui.atomic.molecule.CardFooter
+import com.neighbourly.app.a_device.ui.atomic.molecule.CardHeader
+import com.neighbourly.app.a_device.ui.atomic.molecule.CardScrollableContent
 import com.neighbourly.app.a_device.ui.atomic.molecule.SwipeToDeleteContainer
+import com.neighbourly.app.a_device.ui.datetime.DateTimeDialog
+import com.neighbourly.app.a_device.ui.utils.AlertDialog
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel.MemImg
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
@@ -170,9 +170,9 @@ fun StaticItemDetailsView(
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        BoxHeader(Modifier.align(Alignment.Start))
+        CardHeader(Modifier.align(Alignment.Start))
 
-        BoxScrollableContent(modifier = Modifier.weight(1f)) {
+        CardScrollableContent(modifier = Modifier.weight(1f)) {
             Column(
                 modifier = Modifier.padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -428,9 +428,9 @@ fun EditableItemDetailsView(
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        BoxHeader(Modifier.align(Alignment.Start))
+        CardHeader(Modifier.align(Alignment.Start))
 
-        BoxScrollableContent(modifier = Modifier.weight(1f)) {
+        CardScrollableContent(modifier = Modifier.weight(1f)) {
             Column(
                 modifier = Modifier.padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -730,7 +730,7 @@ fun EditableItemDetailsView(
                 }
             }
         }
-        BoxFooter(modifier = Modifier.align(Alignment.End)) {
+        CardFooter {
             if (state.editable && state.itemId != null) {
                 FriendlyText(
                     modifier = Modifier.clickable {

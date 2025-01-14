@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.atomic.organism
+package com.neighbourly.app.a_device.ui.atomic.organism.datetime
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -12,14 +12,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.neighbourly.app.a_device.ui.utils.AppColors
+import com.neighbourly.app.a_device.ui.AppColors
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ClockTimePicker(
+fun OrganismClockTimePicker(
     modifier: Modifier = Modifier,
     instant: Instant,
     onChange: (Int, Int) -> Unit

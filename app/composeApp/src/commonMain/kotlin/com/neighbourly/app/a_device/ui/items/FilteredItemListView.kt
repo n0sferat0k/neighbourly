@@ -43,13 +43,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.utils.AlertDialog
-import com.neighbourly.app.a_device.ui.utils.AppColors
-import com.neighbourly.app.a_device.ui.utils.BoxFooter
-import com.neighbourly.app.a_device.ui.utils.BoxHeader
-import com.neighbourly.app.a_device.ui.utils.BoxStaticContent
+import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
+import com.neighbourly.app.a_device.ui.atomic.molecule.CardFooter
+import com.neighbourly.app.a_device.ui.atomic.molecule.CardHeader
+import com.neighbourly.app.a_device.ui.atomic.molecule.CardStaticContent
 import com.neighbourly.app.a_device.ui.atomic.molecule.SwipeToDeleteContainer
+import com.neighbourly.app.a_device.ui.utils.AlertDialog
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.BARTER
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.DONATION
@@ -118,11 +118,11 @@ fun FilteredItemListView(
     Column(
         modifier = Modifier.fillMaxSize(),
     ) {
-        BoxHeader(Modifier.align(Alignment.Start), busy = state.loading) {
+        CardHeader(Modifier.align(Alignment.Start), busy = state.loading) {
             viewModel.refresh(true)
         }
 
-        BoxStaticContent(modifier = Modifier.weight(1f)) {
+        CardStaticContent(modifier = Modifier.weight(1f)) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
@@ -140,7 +140,7 @@ fun FilteredItemListView(
                 }
             }
         }
-        BoxFooter(modifier = Modifier.align(Alignment.End)) {
+        CardFooter {
             FriendlyText(text = stringResource(Res.string.filter), bold = true)
         }
     }
@@ -217,7 +217,10 @@ fun ItemCard(
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 if (item.imgCount > 0) {
                     Badge(imgTag, item.imgCount.toString())
                 }

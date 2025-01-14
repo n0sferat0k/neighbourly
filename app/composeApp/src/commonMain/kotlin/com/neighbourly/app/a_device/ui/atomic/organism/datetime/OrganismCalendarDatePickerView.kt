@@ -1,11 +1,11 @@
-package com.neighbourly.app.a_device.ui.atomic.organism
+package com.neighbourly.app.a_device.ui.atomic.organism.datetime
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.neighbourly.app.a_device.ui.utils.AppColors
+import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import epicarchitect.calendar.compose.basis.EpicMonth
 import epicarchitect.calendar.compose.basis.config.rememberMutableBasisEpicCalendarConfig
@@ -22,7 +22,7 @@ import kotlinx.datetime.toLocalDateTime
 
 
 @Composable
-fun CalendarDatePicker(modifier: Modifier, instant: Instant, onChange: (Int, Int, Int) -> Unit) {
+fun OrganismCalendarDatePicker(modifier: Modifier, instant: Instant, onChange: (Int, Int, Int) -> Unit) {
 
     val dateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
 
