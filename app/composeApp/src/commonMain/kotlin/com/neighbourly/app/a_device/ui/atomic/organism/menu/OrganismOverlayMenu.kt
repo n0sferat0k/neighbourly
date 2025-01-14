@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.menu
+package com.neighbourly.app.a_device.ui.atomic.organism.menu
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,16 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.atomic.molecule.LateralMenuItem
 import com.neighbourly.app.a_device.ui.atomic.molecule.MenuItemBoxSide.LEFT
 import com.neighbourly.app.a_device.ui.atomic.molecule.MenuItemBoxSide.RIGHT
-import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BoxManage
-import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ManageMyStuff
-import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.PublishStuff
-import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.Reminders
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab.BOX
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab.ITEMS
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab.MYSTUFF
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab.PROFILE
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab.PUBLISH
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab.REMINDERS
 import com.neighbourly.app.d_entity.data.ItemType
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.barter
@@ -47,8 +46,17 @@ import neighbourly.composeapp.generated.resources.skillshare
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+sealed class MenuTab {
+    object PROFILE : MenuTab()
+    object MYSTUFF : MenuTab()
+    object PUBLISH : MenuTab()
+    object REMINDERS : MenuTab()
+    object BOX : MenuTab()
+    data class ITEMS(val type: ItemType) : MenuTab()
+}
+
 @Composable
-fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }) {
+fun OrganismOverlayMenu(onSelect: (tab: MenuTab) -> Unit) {
     Row(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxHeight().weight(.5f),
@@ -63,7 +71,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.onboard),
                 delayMs = 100
             ) {
-                navigationViewModel.goToProfile()
+                onSelect(PROFILE)
             }
 
             LateralMenuItem(
@@ -73,7 +81,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.layers),
                 delayMs = 200
             ) {
-                navigationViewModel.goToMainPage(ManageMyStuff)
+                onSelect(MYSTUFF)
             }
 
             LateralMenuItem(
@@ -83,7 +91,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.publish),
                 delayMs = 300
             ) {
-                navigationViewModel.goToMainPage(PublishStuff)
+                onSelect(PUBLISH)
             }
 
             LateralMenuItem(
@@ -91,9 +99,9 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 modifier = Modifier.align(Alignment.Start),
                 text = stringResource(Res.string.reminders),
                 image = painterResource(Res.drawable.reminder),
-                delayMs = 500
+                delayMs = 400
             ) {
-                navigationViewModel.goToMainPage(Reminders)
+                onSelect(REMINDERS)
             }
 
             LateralMenuItem(
@@ -101,9 +109,9 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 modifier = Modifier.align(Alignment.Start),
                 text = stringResource(Res.string.box),
                 image = painterResource(Res.drawable.box),
-                delayMs = 400
+                delayMs = 500
             ) {
-                navigationViewModel.goToMainPage(BoxManage)
+                onSelect(BOX)
             }
         }
 
@@ -120,7 +128,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.donate),
                 delayMs = 150
             ) {
-                navigationViewModel.goToFindItems(ItemType.DONATION)
+                onSelect(ITEMS(ItemType.DONATION))
             }
             LateralMenuItem(
                 side = RIGHT,
@@ -129,7 +137,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.barter),
                 delayMs = 250
             ) {
-                navigationViewModel.goToFindItems(ItemType.BARTER)
+                onSelect(ITEMS(ItemType.BARTER))
             }
             LateralMenuItem(
                 side = RIGHT,
@@ -138,7 +146,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.sale),
                 delayMs = 350
             ) {
-                navigationViewModel.goToFindItems(ItemType.SALE)
+                onSelect(ITEMS(ItemType.SALE))
             }
             LateralMenuItem(
                 side = RIGHT,
@@ -147,7 +155,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.event),
                 delayMs = 450
             ) {
-                navigationViewModel.goToFindItems(ItemType.EVENT)
+                onSelect(ITEMS(ItemType.EVENT))
             }
             LateralMenuItem(
                 side = RIGHT,
@@ -156,7 +164,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.need),
                 delayMs = 550
             ) {
-                navigationViewModel.goToFindItems(ItemType.NEED)
+                onSelect(ITEMS(ItemType.NEED))
             }
             LateralMenuItem(
                 side = RIGHT,
@@ -165,7 +173,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.request),
                 delayMs = 650
             ) {
-                navigationViewModel.goToFindItems(ItemType.REQUEST)
+                onSelect(ITEMS(ItemType.REQUEST))
             }
             LateralMenuItem(
                 side = RIGHT,
@@ -174,7 +182,7 @@ fun FullMenuContent(navigationViewModel: NavigationViewModel = viewModel { KoinP
                 image = painterResource(Res.drawable.skillshare),
                 delayMs = 750
             ) {
-                navigationViewModel.goToFindItems(ItemType.SKILLSHARE)
+                onSelect(ITEMS(ItemType.SKILLSHARE))
             }
         }
     }

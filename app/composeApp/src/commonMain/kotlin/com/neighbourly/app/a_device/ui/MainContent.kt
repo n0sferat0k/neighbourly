@@ -7,14 +7,15 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.atomic.molecule.RoundedCornerCard
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.OrganismOverlayMenu
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismUnderConstruction
 import com.neighbourly.app.a_device.ui.atomic.page.BackendInfoPage
-import com.neighbourly.app.a_device.ui.auth.LoginOrRegister
 import com.neighbourly.app.a_device.ui.atomic.page.BoxManagementPage
+import com.neighbourly.app.a_device.ui.auth.LoginOrRegister
 import com.neighbourly.app.a_device.ui.items.FilteredItemListView
 import com.neighbourly.app.a_device.ui.items.ItemDetailsView
 import com.neighbourly.app.a_device.ui.items.RemidersView
-import com.neighbourly.app.a_device.ui.menu.FullMenuContent
 import com.neighbourly.app.a_device.ui.misc.LandingView
 import com.neighbourly.app.a_device.ui.profile.Profile
 import com.neighbourly.app.b_adapt.viewmodel.items.MainContentViewModel
@@ -50,7 +51,16 @@ fun MainContent(
         }
     } else {
         if (navigation.mainContent == MainMenu) {
-            FullMenuContent()
+            OrganismOverlayMenu {
+                when (it) {
+                    MenuTab.PROFILE -> navigationViewModel.goToProfile()
+                    MenuTab.MYSTUFF -> navigationViewModel.goToMainPage(ManageMyStuff)
+                    MenuTab.BOX -> navigationViewModel.goToMainPage(BoxManage)
+                    MenuTab.PUBLISH -> navigationViewModel.goToMainPage(PublishStuff)
+                    MenuTab.REMINDERS -> navigationViewModel.goToMainPage(Reminders)
+                    is MenuTab.ITEMS -> navigationViewModel.goToFindItems(it.type)
+                }
+            }
         } else {
             AnimatedVisibility(navigation.mainContent != MainMenu) {
                 navigation.mainContent.let {
