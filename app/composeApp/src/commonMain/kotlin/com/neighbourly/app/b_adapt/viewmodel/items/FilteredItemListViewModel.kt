@@ -2,15 +2,8 @@ package com.neighbourly.app.b_adapt.viewmodel.items
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.BARTER
-import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.DONATION
-import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.EVENT
-import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.INFO
-import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.NEED
-import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.REMINDER
-import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.REQUEST
-import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.SALE
-import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.ItemTypeVS.SKILLSHARE
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.toItemTypeVS
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.c_business.usecase.content.FilterItemsUseCase
 import com.neighbourly.app.c_business.usecase.content.ItemManagementUseCase
@@ -144,37 +137,6 @@ class FilteredItemListViewModel(
         val loading: Boolean = false,
         val items: List<ItemVS> = emptyList()
     )
-
-    data class ItemVS(
-        val id: Int,
-        val name: String,
-        val description: String,
-        val imageUrl: String? = null,
-        val type: ItemTypeVS,
-        val imgCount: Int = 0,
-        val fileCount: Int = 0,
-        val expLabel: String? = null,
-        val deletable: Boolean = false,
-        val householdImage: String? = null,
-        val householdName: String? = null
-    )
-
-
-    enum class ItemTypeVS {
-        INFO, DONATION, BARTER, SALE, EVENT, NEED, REQUEST, SKILLSHARE, REMINDER;
-    }
-
-    fun ItemType.toItemTypeVS() = when (this) {
-        ItemType.INFO -> INFO
-        ItemType.DONATION -> DONATION
-        ItemType.BARTER -> BARTER
-        ItemType.SALE -> SALE
-        ItemType.EVENT -> EVENT
-        ItemType.NEED -> NEED
-        ItemType.REQUEST -> REQUEST
-        ItemType.SKILLSHARE -> SKILLSHARE
-        ItemType.REMINDER -> REMINDER
-    }
 
     companion object {
         const val MAX_DESC_LEN = 50

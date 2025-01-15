@@ -1,32 +1,22 @@
-@file:OptIn(ExperimentalLayoutApi::class)
-
-package com.neighbourly.app.a_device.ui.items
+package com.neighbourly.app.a_device.ui.atomic.organism.item
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,14 +24,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
-import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
@@ -50,25 +38,19 @@ import com.neighbourly.app.a_device.ui.atomic.molecule.AutocompleteOutlinedTextF
 import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardFooter
 import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardHeader
 import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardScrollableContent
-import com.neighbourly.app.a_device.ui.atomic.molecule.SwipeToDeleteContainer
+import com.neighbourly.app.a_device.ui.atomic.molecule.item.ImageGrid
+import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemTypeOption
 import com.neighbourly.app.a_device.ui.atomic.organism.datetime.OrganismDateTimeDialog
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismAlertDialog
-import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel
-import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel.MemImg
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
-import com.neighbourly.app.d_entity.data.ItemType.BARTER
-import com.neighbourly.app.d_entity.data.ItemType.DONATION
-import com.neighbourly.app.d_entity.data.ItemType.EVENT
-import com.neighbourly.app.d_entity.data.ItemType.NEED
-import com.neighbourly.app.d_entity.data.ItemType.REMINDER
-import com.neighbourly.app.d_entity.data.ItemType.REQUEST
-import com.neighbourly.app.d_entity.data.ItemType.SALE
-import com.neighbourly.app.d_entity.data.ItemType.SKILLSHARE
+import com.neighbourly.app.a_device.ui.atomic.page.TYPE_ASSOC
+import com.neighbourly.app.a_device.ui.atomic.page.TYPE_ASSOC_ADMIN
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.*
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
 import com.neighbourly.app.loadImageFromFile
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
-import kotlinx.datetime.Clock.System.now
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.datetime.Instant.Companion.fromEpochSeconds
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
@@ -78,37 +60,23 @@ import neighbourly.composeapp.generated.resources.add_end
 import neighbourly.composeapp.generated.resources.add_file
 import neighbourly.composeapp.generated.resources.add_image
 import neighbourly.composeapp.generated.resources.add_start
-import neighbourly.composeapp.generated.resources.barter
-import neighbourly.composeapp.generated.resources.bartering
 import neighbourly.composeapp.generated.resources.confirm_deleteing_file
-import neighbourly.composeapp.generated.resources.confirm_deleteing_image
 import neighbourly.composeapp.generated.resources.confirm_deleteing_this_item
 import neighbourly.composeapp.generated.resources.confirm_new_file
-import neighbourly.composeapp.generated.resources.confirm_new_image
 import neighbourly.composeapp.generated.resources.dates
 import neighbourly.composeapp.generated.resources.delete
 import neighbourly.composeapp.generated.resources.deleteing_file
-import neighbourly.composeapp.generated.resources.deleteing_image
 import neighbourly.composeapp.generated.resources.deleteing_item
-import neighbourly.composeapp.generated.resources.donate
-import neighbourly.composeapp.generated.resources.donation
 import neighbourly.composeapp.generated.resources.end_date
-import neighbourly.composeapp.generated.resources.event
 import neighbourly.composeapp.generated.resources.files
 import neighbourly.composeapp.generated.resources.images
 import neighbourly.composeapp.generated.resources.item_description
 import neighbourly.composeapp.generated.resources.item_name
 import neighbourly.composeapp.generated.resources.item_url
-import neighbourly.composeapp.generated.resources.need
 import neighbourly.composeapp.generated.resources.new_file
-import neighbourly.composeapp.generated.resources.new_image
 import neighbourly.composeapp.generated.resources.newbadge
-import neighbourly.composeapp.generated.resources.reminder
 import neighbourly.composeapp.generated.resources.reminders
-import neighbourly.composeapp.generated.resources.request
-import neighbourly.composeapp.generated.resources.sale
 import neighbourly.composeapp.generated.resources.save
-import neighbourly.composeapp.generated.resources.skillshare
 import neighbourly.composeapp.generated.resources.start_date
 import neighbourly.composeapp.generated.resources.target_user
 import neighbourly.composeapp.generated.resources.type
@@ -117,201 +85,16 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import java.time.format.DateTimeFormatter
 
-val TYPE_ASSOC = mapOf(
-    DONATION.name to Pair(Res.drawable.donate, Res.string.donation),
-    BARTER.name to Pair(Res.drawable.barter, Res.string.bartering),
-    SALE.name to Pair(Res.drawable.sale, Res.string.sale),
-    EVENT.name to Pair(Res.drawable.event, Res.string.event),
-    NEED.name to Pair(Res.drawable.need, Res.string.need),
-    REQUEST.name to Pair(Res.drawable.request, Res.string.request),
-    SKILLSHARE.name to Pair(Res.drawable.skillshare, Res.string.skillshare),
-)
-val TYPE_ASSOC_ADMIN = TYPE_ASSOC + mapOf(
-    REMINDER.name to Pair(Res.drawable.reminder, Res.string.reminders),
-)
-
-val LOCALLY_ALLOWED_SITES =
-    listOf("youtube.com", "youtu.be", "facebook", "pinterest", "goo.gl/photos")
-
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ItemDetailsView(
-    itemId: Int? = null,
-    viewModel: ItemDetailsViewModel = viewModel { KoinProvider.KOIN.get<ItemDetailsViewModel>() },
-    navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }
-) {
-    val state by viewModel.state.collectAsState()
-
-    LaunchedEffect(itemId) {
-        viewModel.setItem(itemId)
-    }
-
-    LaunchedEffect(state.deleted) {
-        if (state.deleted) {
-            viewModel.deleteItemAck()
-            navigationViewModel.goBack()
-        }
-    }
-
-    if (state.editable) {
-        EditableItemDetailsView(viewModel, navigationViewModel, state)
-    } else {
-        StaticItemDetailsView(state, navigationViewModel)
-    }
-}
-
-@Composable
-fun StaticItemDetailsView(
-    state: ItemDetailsViewModel.ItemDetailsViewState,
-    navigationViewModel: NavigationViewModel
-) {
-    val uriHandler = LocalUriHandler.current
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        CardHeader(Modifier.align(Alignment.Start))
-
-        CardScrollableContent(modifier = Modifier.weight(1f)) {
-            Column(
-                modifier = Modifier.padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    FriendlyText(text = stringResource(Res.string.type), bold = true)
-                    FriendlyText(
-                        text = stringResource(
-                            TYPE_ASSOC.get(state.type)?.second ?: Res.string.unknown
-                        ),
-                    )
-                    TypeOption(
-                        icon = painterResource(
-                            TYPE_ASSOC.get(state.type)?.first ?: Res.drawable.newbadge
-                        ),
-                        selected = true,
-                        contentDesc = state.type,
-                    ) {}
-                }
-
-                if (listOf(NEED.name, REQUEST.name).contains(state.type)
-                    && state.targetUserId != null
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        FriendlyText(text = stringResource(Res.string.target_user), bold = true)
-                        FriendlyText(text = state.users.getOrDefault(state.targetUserId, ""))
-                    }
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    FriendlyText(text = stringResource(Res.string.item_name), bold = true)
-                    FriendlyText(text = state.name)
-                }
-                if (state.description.isNotEmpty()) {
-                    FriendlyText(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(Res.string.item_description), bold = true
-                    )
-                    FriendlyText(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = state.description
-                    )
-                }
-
-                if (state.url.isNotEmpty()) {
-                    FriendlyText(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(Res.string.item_url), bold = true
-                    )
-                    FriendlyText(modifier = Modifier.clickable {
-                        if (LOCALLY_ALLOWED_SITES.any { state.url.contains(it) }) {
-                            navigationViewModel.goToWebPage(state.url)
-                        } else {
-                            uriHandler.openUri(state.url)
-                        }
-                    }, text = state.url)
-                }
-
-                if (!state.images.isEmpty()) {
-                    FriendlyText(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(Res.string.images),
-                        bold = true
-                    )
-
-                    if (state.images.size > 0 || state.newImages.size > 0) {
-                        ImageGrid(
-                            images = state.images,
-                            newImages = state.newImages
-                        ) { imageId ->
-                            state.itemId?.let { navigationViewModel.goToGallery(it, imageId) }
-                        }
-                    }
-                }
-
-                if (!state.files.isEmpty()) {
-                    FriendlyText(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(Res.string.files),
-                        bold = true
-                    )
-
-                    state.files.onEach {
-                        FriendlyText(
-                            modifier = Modifier.fillMaxWidth()
-                                .clickable {
-                                    uriHandler.openUri(it.url)
-                                },
-                            text = it.name, bold = true
-                        )
-                    }
-                }
-
-                if (state.start != null && state.start.epochSeconds > 0) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        FriendlyText(text = stringResource(Res.string.start_date))
-                        FriendlyText(
-                            text = state.start.toLocalDateTime(TimeZone.currentSystemDefault())
-                                .toJavaLocalDateTime().format(formatter),
-                            bold = true
-                        )
-                    }
-                }
-
-                if (state.end != null && state.end.epochSeconds > 0) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        FriendlyText(text = stringResource(Res.string.end_date))
-                        FriendlyText(
-                            text = state.end.toLocalDateTime(TimeZone.currentSystemDefault())
-                                .toJavaLocalDateTime().format(formatter),
-                            bold = true
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun EditableItemDetailsView(
-    viewModel: ItemDetailsViewModel,
-    navigationViewModel: NavigationViewModel,
-    state: ItemDetailsViewModel.ItemDetailsViewState
+fun OrganismEditableItemDetails(
+    //state: ItemDetailsViewModel.ItemDetailsViewState
+    item: ItemVS,
+    users: Map<Int, String>,
+    deleteFile: (fileId: Int) -> Unit,
+    deleteItem: () -> Unit,
+    onAddImage: (url: String, img: BitmapPainter) -> Unit,
+    onAddFile: (url: String) -> Unit,
 ) {
     var showImageFilePicker by remember { mutableStateOf(false) }
     var showAttachmentFilePicker by remember { mutableStateOf(false) }
@@ -327,12 +110,26 @@ fun EditableItemDetailsView(
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
     val badge = painterResource(Res.drawable.newbadge)
 
+    var targetUserIdOverride by remember { mutableStateOf<Int?>(null) }
+    var startOverride by remember { mutableStateOf<Instant?>(null) }
+    var endOverride by remember { mutableStateOf<Instant?>(null) }
+    var typeOverride by remember { mutableStateOf<ItemTypeVS?>(null) }
+    var nameOverride by remember { mutableStateOf<String?>(null) }
+    var descriptionOverride by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(state.deleted) {
+        if (state.deleted) {
+            viewModel.deleteItemAck()
+            navigationViewModel.goBack()
+        }
+    }
+
     if (showRemoveAlertForFileId != -1) {
         OrganismAlertDialog(
             title = stringResource(Res.string.deleteing_file),
             text = stringResource(Res.string.confirm_deleteing_file),
             ok = {
-                viewModel.deleteFile(showRemoveAlertForFileId)
+                deleteFile(showRemoveAlertForFileId)
                 showRemoveAlertForFileId = -1
             },
             cancel = {
@@ -347,7 +144,7 @@ fun EditableItemDetailsView(
             text = stringResource(Res.string.confirm_deleteing_this_item),
             ok = {
                 showDeleteAlert = false
-                viewModel.deleteItem()
+                deleteItem()
             },
             cancel = {
                 showDeleteAlert = false
@@ -371,7 +168,7 @@ fun EditableItemDetailsView(
         file?.platformFile?.toString()?.let {
             val img = loadImageFromFile(it, 400)
             if (img != null) {
-                viewModel.onAddImage(it, img)
+                onAddImage(it, img)
             }
         }
     }
@@ -394,32 +191,36 @@ fun EditableItemDetailsView(
         showAttachmentFilePicker = false
 
         file?.platformFile?.toString()?.let {
-            viewModel.onAddFile(it)
+            onAddFile(it)
         }
     }
 
     if (showStartDatePicker) {
         OrganismDateTimeDialog(
             title = stringResource(Res.string.start_date),
-            instant = state.startOverride ?: state.start ?: now()
+            instant = startOverride ?: item.start ?: Clock.System.now()
         ) {
-            it?.let { viewModel.updateStartDate(it) }
+            it?.let {
+                startOverride = fromEpochSeconds(it.toLong())
+            }
             showStartDatePicker = false
         }
     }
     if (showEndDatePicker) {
         OrganismDateTimeDialog(
             title = stringResource(Res.string.end_date),
-            instant = state.endOverride ?: state.end ?: now()
+            instant = endOverride ?: item.end ?: Clock.System.now()
         ) {
-            it?.let { viewModel.updateEndDate(it) }
+            it?.let {
+                endOverride = fromEpochSeconds(it.toLong())
+            }
             showEndDatePicker = false
         }
     }
     if (showDatePickerInstant != null) {
         OrganismDateTimeDialog(
             title = stringResource(Res.string.reminders),
-            instant = showDatePickerInstant ?: now()
+            instant = showDatePickerInstant ?: Clock.System.now()
         ) {
             it?.let { viewModel.addOrUpdateDate(it, showDatePickerIndex) }
             showDatePickerInstant = null
@@ -441,7 +242,7 @@ fun EditableItemDetailsView(
 
                     FriendlyText(
                         text = stringResource(
-                            TYPE_ASSOC_ADMIN.get(state.typeOverride ?: state.type)?.second
+                            TYPE_ASSOC_ADMIN.get(typeOverride ?: item.type)?.second
                                 ?: Res.string.unknown
                         ),
                         bold = true,
@@ -453,37 +254,39 @@ fun EditableItemDetailsView(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     horizontalArrangement = Arrangement.Start,
                 ) {
-                    (if (state.admin) TYPE_ASSOC_ADMIN else TYPE_ASSOC).forEach { (typeId, iconNamePair) ->
-                        TypeOption(
+                    (if (state.admin) TYPE_ASSOC_ADMIN else TYPE_ASSOC).forEach { (type, iconNamePair) ->
+                        ItemTypeOption(
                             icon = painterResource(iconNamePair.first),
-                            selected = (state.typeOverride ?: state.type) == typeId,
-                            contentDesc = typeId,
+                            selected = (typeOverride ?: item.type) == type,
+                            contentDesc = type.name,
                         ) {
-                            viewModel.setType(typeId)
+                            typeOverride = type
+                            if (!listOf(NEED, REQUEST).contains(type)) {
+                                targetUserIdOverride = -1
+                            }
                         }
                     }
                 }
 
-                AnimatedVisibility(
-                    listOf(NEED.name, REQUEST.name).contains(
-                        state.typeOverride ?: state.type
-                    )
-                ) {
+                AnimatedVisibility(listOf(NEED, REQUEST).contains(typeOverride ?: item.type)) {
                     AutocompleteOutlinedTextField(
-                        text = (state.targetUserId ?: state.targetUserIdOverride)?.let { userId ->
-                            state.users.getOrDefault(userId, "")
+                        text = (item.targetUserId ?: targetUserIdOverride)?.let { userId ->
+                            users.getOrDefault(userId, "")
                         } ?: "",
                         label = { Text(stringResource(Res.string.target_user)) },
-                        entries = state.users,
+                        entries = users,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        viewModel.setTargetUser(it)
+                        targetUserIdOverride = it
                     }
                 }
 
                 OutlinedTextField(
-                    value = state.nameOverride ?: state.name,
+                    value = nameOverride ?: item.name,
                     onValueChange = {
+                        nameOverride =  it
+                        //todo fix error show on name format
+                        //todo fix hasChanged mechanics 
                         viewModel.updateName(it)
                     },
                     isError = state.nameError,
@@ -491,15 +294,15 @@ fun EditableItemDetailsView(
                     modifier = Modifier.fillMaxWidth(),
                 )
 
-                AnimatedVisibility((state.typeOverride ?: state.type) != REMINDER.name) {
+                AnimatedVisibility((typeOverride ?: item.type) != ItemType.REMINDER.name) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         OutlinedTextField(
-                            value = state.descriptionOverride ?: state.description,
+                            value = descriptionOverride ?: item.description,
                             onValueChange = {
-                                viewModel.updateDescription(it)
+                                descriptionOverride = it
                             },
                             maxLines = 5,
                             label = { Text(stringResource(Res.string.item_description)) },
@@ -507,7 +310,7 @@ fun EditableItemDetailsView(
                         )
 
                         OutlinedTextField(
-                            value = state.urlOverride ?: state.url,
+                            value = state.urlOverride ?: item.url,
                             onValueChange = {
                                 viewModel.updateUrl(it)
                             },
@@ -528,9 +331,9 @@ fun EditableItemDetailsView(
                     }, text = stringResource(Res.string.add_image), bold = true)
                 }
 
-                if (state.images.size > 0 || state.newImages.size > 0) {
+                if (item.images.size > 0 || state.newImages.size > 0) {
                     ImageGrid(
-                        images = state.images,
+                        images = item.images,
                         newImages = state.newImages,
                         deleteNew = {
                             viewModel.deleteNewImage(it.name)
@@ -539,11 +342,11 @@ fun EditableItemDetailsView(
                             viewModel.deleteImage(it)
                         }
                     ) { imageId ->
-                        state.itemId?.let { navigationViewModel.goToGallery(it, imageId) }
+                        item.id?.let { navigationViewModel.goToGallery(it, imageId) }
                     }
                 }
 
-                AnimatedVisibility((state.typeOverride ?: state.type) == REMINDER.name) {
+                AnimatedVisibility((typeOverride ?: item.type) == ItemType.REMINDER.name) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -555,7 +358,8 @@ fun EditableItemDetailsView(
                             FriendlyText(text = stringResource(Res.string.dates))
                             FriendlyText(modifier = Modifier.clickable {
                                 showDatePickerIndex = -1
-                                showDatePickerInstant = state.dates.lastOrNull() ?: now()
+                                showDatePickerInstant =
+                                    state.dates.lastOrNull() ?: Clock.System.now()
                             }, text = stringResource(Res.string.add_date), bold = true)
                         }
 
@@ -585,7 +389,7 @@ fun EditableItemDetailsView(
                     }
                 }
 
-                AnimatedVisibility((state.typeOverride ?: state.type) != REMINDER.name) {
+                AnimatedVisibility((typeOverride ?: item.type) != ItemType.REMINDER.name) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -601,7 +405,7 @@ fun EditableItemDetailsView(
                             }, text = stringResource(Res.string.add_file), bold = true)
                         }
 
-                        state.files.onEach {
+                        item.files.onEach {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
@@ -649,7 +453,7 @@ fun EditableItemDetailsView(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             FriendlyText(text = stringResource(Res.string.start_date))
-                            (state.startOverride ?: state.start)?.takeIf { it.epochSeconds > 0 }
+                            (startOverride ?: item.start)?.takeIf { it.epochSeconds > 0 }
                                 .let { startInstance ->
                                     if (startInstance != null) {
                                         FriendlyText(
@@ -667,8 +471,9 @@ fun EditableItemDetailsView(
                                             if (startInstance == null) {
                                                 focusManager.clearFocus(true)
                                                 showStartDatePicker = true
-                                            } else
-                                                viewModel.updateStartDate(null)
+                                            } else {
+                                                startOverride = fromEpochSeconds(0)
+                                            }
                                         },
                                         text = if (startInstance == null)
                                             stringResource(Res.string.add_start)
@@ -684,7 +489,7 @@ fun EditableItemDetailsView(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             FriendlyText(text = stringResource(Res.string.end_date))
-                            (state.endOverride ?: state.end)?.takeIf { it.epochSeconds > 0 }
+                            (endOverride ?: item.end)?.takeIf { it.epochSeconds > 0 }
                                 .let { endInstance ->
                                     if (endInstance != null) {
                                         FriendlyText(
@@ -702,8 +507,9 @@ fun EditableItemDetailsView(
                                             if (endInstance == null) {
                                                 focusManager.clearFocus(true)
                                                 showEndDatePicker = true
-                                            } else
-                                                viewModel.updateEndDate(null)
+                                            } else {
+                                                endOverride = fromEpochSeconds(0)
+                                            }
                                         },
                                         text = if (endInstance == null)
                                             stringResource(Res.string.add_end)
@@ -731,147 +537,13 @@ fun EditableItemDetailsView(
             }
         }
         CardFooter {
-            if (state.editable && state.itemId != null) {
+            if (state.editable && item.id != null) {
                 FriendlyText(
                     modifier = Modifier.clickable {
                         showDeleteAlert = true
                     },
                     text = stringResource(Res.string.delete), bold = true
                 )
-            }
-        }
-    }
-}
-
-@Composable
-fun TypeOption(selected: Boolean = false, icon: Painter, contentDesc: String, onClick: () -> Unit) {
-    Box(
-        modifier = Modifier.size(36.dp).let {
-            if (selected) {
-                it.border(2.dp, AppColors.primary, CircleShape)
-            } else it
-        },
-        contentAlignment = Alignment.Center,
-    ) {
-        Image(
-            modifier =
-            Modifier.size(30.dp).clickable {
-                onClick()
-            },
-            painter = icon,
-            contentDescription = "Type Image",
-            colorFilter = ColorFilter.tint(AppColors.primary),
-        )
-    }
-
-}
-
-@Composable
-fun ImageGrid(
-    images: List<ItemDetailsViewModel.AttachmentVS>,
-    newImages: List<MemImg>,
-    deleteNew: ((MemImg) -> Unit)? = null,
-    delete: ((Int) -> Unit)? = null,
-    select: ((Int) -> Unit)? = null
-) {
-    var showRemoveAlertForId by remember { mutableStateOf(-1) }
-    var showNewImageAlert by remember { mutableStateOf(false) }
-    val badge = painterResource(Res.drawable.newbadge)
-
-    if (showNewImageAlert) {
-        OrganismAlertDialog(
-            title = stringResource(Res.string.new_image),
-            text = stringResource(Res.string.confirm_new_image),
-            ok = {
-                showNewImageAlert = false
-            },
-        )
-    }
-
-    if (showRemoveAlertForId != -1) {
-        OrganismAlertDialog(
-            title = stringResource(Res.string.deleteing_image),
-            text = stringResource(Res.string.confirm_deleteing_image),
-            ok = {
-                delete?.invoke(showRemoveAlertForId)
-                showRemoveAlertForId = -1
-            },
-            cancel = {
-                showRemoveAlertForId = -1
-            }
-        )
-    }
-
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-    ) {
-        images.forEach { (key, imageUrl) ->
-            SwipeToDeleteContainer(
-                modifier = Modifier.size(84.dp),
-                onDelete = delete?.let {
-                    {
-                        showRemoveAlertForId = key
-                    }
-                }) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f),
-                    shape = RoundedCornerShape(4.dp),
-                    elevation = 4.dp
-                ) {
-                    KamelImage(
-                        modifier = Modifier.fillMaxSize().clickable {
-                            select?.invoke(key)
-                        },
-                        resource = asyncPainterResource(data = imageUrl),
-                        contentDescription = "Item Image",
-                        contentScale = ContentScale.Crop,
-                        onLoading = { progress ->
-                            CircularProgressIndicator(
-                                progress = progress,
-                                color = AppColors.primary,
-                            )
-                        },
-                    )
-                }
-            }
-        }
-        newImages.forEach { memImg ->
-            SwipeToDeleteContainer(
-                modifier = Modifier.size(84.dp),
-                onDelete = {
-                    deleteNew?.invoke(memImg)
-                }
-            ) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f),
-                    shape = RoundedCornerShape(4.dp),
-                    elevation = 4.dp
-                ) {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        Image(
-                            modifier = Modifier.fillMaxSize().clickable {
-                                showNewImageAlert = true
-                            },
-                            painter = memImg.img,
-                            contentDescription = "Item Image",
-                            contentScale = ContentScale.Crop,
-                        )
-                        Image(
-                            modifier = Modifier.size(36.dp).padding(4.dp)
-                                .align(Alignment.BottomEnd),
-                            painter = badge,
-                            contentScale = ContentScale.FillBounds,
-                            contentDescription = "Item Image New Badge",
-                            colorFilter = ColorFilter.tint(AppColors.primary),
-                        )
-                    }
-                }
             }
         }
     }

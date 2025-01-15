@@ -1,6 +1,7 @@
 package com.neighbourly.app.a_device.ui.atomic.page
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -17,12 +18,15 @@ fun LoginOrRegisterPage(
     val loginState by loginViewModel.state.collectAsState()
     val registerState by registerViewModel.state.collectAsState()
 
+    LaunchedEffect(Unit) {
+        loginViewModel.refresh()
+    }
+
     LoginOrRegisterTemplate(
         loginState, registerState,
         loginUsername = loginViewModel::updateUsername,
         loginPassword = loginViewModel::updatePassword,
         onLogin = loginViewModel::onLogin,
-        onRefreshLogin = loginViewModel::refresh,
         registerUsername = registerViewModel::validateUsername,
         registerFullname = registerViewModel::validateFullname,
         registerEmail = registerViewModel::validateEmail,

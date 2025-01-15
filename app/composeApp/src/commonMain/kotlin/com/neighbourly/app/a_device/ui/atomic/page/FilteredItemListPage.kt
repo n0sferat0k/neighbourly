@@ -1,0 +1,29 @@
+package com.neighbourly.app.a_device.ui.atomic.page
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.neighbourly.app.KoinProvider
+import com.neighbourly.app.a_device.ui.atomic.template.FilteredItemListTemplate
+import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
+import com.neighbourly.app.d_entity.data.ItemType
+
+@Composable
+fun FilteredItemListPage(
+    type: ItemType? = null,
+    householdId: Int? = null,
+    showExpired: Boolean = false,
+    viewModel: FilteredItemListViewModel = viewModel { KoinProvider.KOIN.get<FilteredItemListViewModel>() },
+) {
+    val state by viewModel.state.collectAsState()
+    LaunchedEffect(type, householdId, showExpired) {
+        viewModel.setFilters(type, householdId, showExpired)
+    }
+    FilteredItemListTemplate(
+        state = state,
+        onDeleteItem = viewModel::onDeleteItem,
+        refresh = { viewModel.refresh(true) }
+    )
+}

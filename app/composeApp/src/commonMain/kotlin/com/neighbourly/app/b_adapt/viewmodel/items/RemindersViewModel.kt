@@ -2,6 +2,7 @@ package com.neighbourly.app.b_adapt.viewmodel.items
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.b_adapt.viewmodel.bean.ReminderVS
 import com.neighbourly.app.d_entity.data.ItemType.REMINDER
 import com.neighbourly.app.d_entity.interf.Db
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,5 +40,4 @@ class RemindersViewModel(
         val reminders: List<ReminderVS> = emptyList()
     )
 
-    data class ReminderVS(val id: Int?, val name: String, val times: List<Instant> = emptyList())
 }

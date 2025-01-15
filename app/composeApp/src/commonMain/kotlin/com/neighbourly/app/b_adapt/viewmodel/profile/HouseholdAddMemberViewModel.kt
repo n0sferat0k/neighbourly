@@ -2,6 +2,7 @@ package com.neighbourly.app.b_adapt.viewmodel.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.b_adapt.viewmodel.bean.NeighbourhoodAndAccVS
 import com.neighbourly.app.c_business.usecase.profile.FetchProfileUseCase
 import com.neighbourly.app.c_business.usecase.profile.HouseholdManagementUseCase
 import com.neighbourly.app.d_entity.data.OpException
@@ -119,9 +120,4 @@ class HouseholdAddMemberViewModel(
         val neighbourhoodsAndAcc: Map<Int, NeighbourhoodAndAccVS> = emptyMap(),
     )
 
-    data class NeighbourhoodAndAccVS(
-        val name: String,
-        val access: Int,
-        val accessOverride: Int? = null,
-    )
 }

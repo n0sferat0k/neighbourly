@@ -2,6 +2,7 @@ package com.neighbourly.app.b_adapt.viewmodel.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.b_adapt.viewmodel.bean.NeighbourhoodVS
 import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUseCase
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.interf.SessionStore
@@ -117,5 +118,4 @@ class NeighbourhoodInfoViewModel(
         val nameError: Boolean = false,
     )
 
-    data class NeighbourhoodVS(val name: String, val id: Int, val acc: Int)
 }

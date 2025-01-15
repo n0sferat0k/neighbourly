@@ -39,13 +39,8 @@ fun OrganismLoginForm(
     updateUsername: (user: String) -> Unit,
     updatePassword: (pass: String) -> Unit,
     onLogin: (remember: Boolean) -> Unit,
-    onRefreshLogin: () -> Unit,
 ) {
     var remember by remember { mutableStateOf(true) }
-
-    LaunchedEffect(Unit) {
-        onRefreshLogin()
-    }
 
     Column(
         modifier = Modifier

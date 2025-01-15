@@ -12,9 +12,9 @@ import com.neighbourly.app.a_device.ui.atomic.organism.menu.OrganismOverlayMenu
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismUnderConstruction
 import com.neighbourly.app.a_device.ui.atomic.page.BackendInfoPage
 import com.neighbourly.app.a_device.ui.atomic.page.BoxManagementPage
+import com.neighbourly.app.a_device.ui.atomic.page.FilteredItemListPage
 import com.neighbourly.app.a_device.ui.atomic.page.LoginOrRegisterPage
-import com.neighbourly.app.a_device.ui.items.FilteredItemListView
-import com.neighbourly.app.a_device.ui.items.ItemDetailsView
+import com.neighbourly.app.a_device.ui.atomic.page.ItemDetailsPage
 import com.neighbourly.app.a_device.ui.items.RemidersView
 import com.neighbourly.app.a_device.ui.misc.LandingView
 import com.neighbourly.app.a_device.ui.profile.Profile
@@ -63,34 +63,34 @@ fun MainContent(
             AnimatedVisibility(navigation.mainContent != MainMenu) {
                 navigation.mainContent.let {
                     when (it) {
-                        is FindItems -> RoundedCornerCard {
+                        is FindItems ->
                             (navigation.mainContent as FindItems).let {
-                                FilteredItemListView(
+                                FilteredItemListPage(
                                     type = it.type,
                                     householdId = it.householdId,
                                     showExpired = false
                                 )
                             }
-                        }
 
-                        ManageMyStuff -> RoundedCornerCard {
-                            FilteredItemListView(
+
+                        ManageMyStuff ->
+                            FilteredItemListPage(
                                 type = null,
                                 householdId = state.householdId,
                                 showExpired = true
                             )
-                        }
+
 
                         ManageProfile -> Profile()
 
                         PublishStuff -> RoundedCornerCard {
-                            ItemDetailsView(null)
+                            ItemDetailsPage(null)
                         }
 
                         BoxManage -> BoxManagementPage()
 
                         is ShowItemDetails -> RoundedCornerCard {
-                            ItemDetailsView(it.itemId)
+                            ItemDetailsPage(it.itemId)
                         }
 
                         BackendInfo -> BackendInfoPage()

@@ -27,7 +27,6 @@ fun LoginOrRegisterTemplate(
     loginUsername: (user: String) -> Unit,
     loginPassword: (pass: String) -> Unit,
     onLogin: (remember: Boolean) -> Unit,
-    onRefreshLogin: () -> Unit,
     registerUsername: (user: String) -> Unit,
     registerFullname: (name: String) -> Unit,
     registerEmail: (email: String) -> Unit,
@@ -59,7 +58,6 @@ fun LoginOrRegisterTemplate(
                         updateUsername = loginUsername,
                         updatePassword = loginPassword,
                         onLogin = onLogin,
-                        onRefreshLogin = onRefreshLogin,
                     )
 
                     1 -> OrganismRegisterForm(

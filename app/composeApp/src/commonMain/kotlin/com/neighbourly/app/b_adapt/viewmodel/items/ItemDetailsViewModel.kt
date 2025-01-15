@@ -1,9 +1,11 @@
 package com.neighbourly.app.b_adapt.viewmodel.items
 
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.b_adapt.viewmodel.bean.AttachmentVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.MemImgVS
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.c_business.usecase.content.ItemManagementUseCase
 import com.neighbourly.app.d_entity.data.Item
@@ -69,8 +71,6 @@ class ItemDetailsViewModel(
                 nameOverride = null,
                 descriptionOverride = null,
                 urlOverride = null,
-                startOverride = null,
-                endOverride = null,
             )
         }
         if (itemId != null) {
@@ -134,9 +134,6 @@ class ItemDetailsViewModel(
             )
         }
 
-    fun updateDescription(description: String) =
-        _state.update { it.copy(descriptionOverride = description, hasChanged = true) }
-
     fun updateUrl(url: String) = _state.update {
         it.copy(
             urlOverride = url,
@@ -193,22 +190,10 @@ class ItemDetailsViewModel(
         }
     }
 
-    fun setType(type: String) {
-        _state.update {
-            it.copy(
-                typeOverride = type,
-                targetUserIdOverride = if (listOf(
-                        NEED.name,
-                        REQUEST.name
-                    ).contains(type)
-                ) it.targetUserIdOverride else -1,
-                hasChanged = true
-            )
-        }
-    }
+
 
     fun onAddImage(file: String, img: BitmapPainter) {
-        _state.update { it.copy(newImages = it.newImages + MemImg(file, img), hasChanged = true) }
+        _state.update { it.copy(newImages = it.newImages + MemImgVS(file, img), hasChanged = true) }
     }
 
     fun onAddFile(file: String) {
@@ -218,28 +203,6 @@ class ItemDetailsViewModel(
 
     fun deleteNewImage(imgName: String) {
         _state.update { it.copy(newImages = it.newImages.filter { it.name != imgName }.toList()) }
-    }
-
-    fun setTargetUser(targetUserId: Int) {
-        _state.update { it.copy(targetUserIdOverride = targetUserId, hasChanged = true) }
-    }
-
-    fun updateStartDate(startTs: Int?) {
-        _state.update {
-            it.copy(
-                startOverride = startTs.let { fromEpochSeconds(it?.toLong() ?: 0) },
-                hasChanged = true
-            )
-        }
-    }
-
-    fun updateEndDate(endTs: Int?) {
-        _state.update {
-            it.copy(
-                endOverride = endTs.let { fromEpochSeconds(it?.toLong() ?: 0) },
-                hasChanged = true
-            )
-        }
     }
 
     fun addOrUpdateDate(ts: Int?, index: Int) {
@@ -341,44 +304,27 @@ class ItemDetailsViewModel(
         val deleted: Boolean = false,
         val editable: Boolean = false,
         val admin: Boolean = false,
+        val item: ItemVS = ItemVS(),
 
         val hasChanged: Boolean = false,
         val saving: Boolean = false,
         val error: String = "",
-        val itemId: Int? = null,
+
         val neighbourhoodId: Int? = null,
 
-        val images: List<AttachmentVS> = emptyList(),
-        val newImages: List<MemImg> = emptyList(),
+        val newImages: List<MemImgVS> = emptyList(),
 
-        val targetUserId: Int? = null,
-        val targetUserIdOverride: Int? = null,
 
-        val files: List<AttachmentVS> = emptyList(),
+
         val newFiles: Map<String, String> = emptyMap(),
 
-        val type: String = ItemType.DONATION.name,
-        val name: String = "",
-        val description: String = "",
         val dates: List<Instant> = emptyList(),
-        val url: String = "",
-        val start: Instant? = null,
-        val end: Instant? = null,
 
-        val typeOverride: String? = null,
-        val nameOverride: String? = null,
-        val descriptionOverride: String? = null,
         val urlOverride: String? = null,
-        val startOverride: Instant? = null,
-        val endOverride: Instant? = null,
 
         val nameError: Boolean = false,
         val urlError: Boolean = false,
 
         val users: Map<Int, String> = emptyMap(),
     )
-
-    data class AttachmentVS(val id: Int, val url: String, val name: String)
-
-    data class MemImg(val name: String, val img: Painter)
 }
