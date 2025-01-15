@@ -45,9 +45,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
-import com.neighbourly.app.a_device.ui.atomic.molecule.CardFooter
-import com.neighbourly.app.a_device.ui.atomic.molecule.CardHeader
-import com.neighbourly.app.a_device.ui.atomic.molecule.CardStaticContent
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardFooter
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardHeader
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardStaticContent
 import com.neighbourly.app.a_device.ui.atomic.molecule.SwipeToDeleteContainer
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismAlertDialog
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel

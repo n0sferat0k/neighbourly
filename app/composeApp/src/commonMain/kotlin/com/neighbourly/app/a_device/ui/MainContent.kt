@@ -6,13 +6,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.atomic.molecule.RoundedCornerCard
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.RoundedCornerCard
 import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab
 import com.neighbourly.app.a_device.ui.atomic.organism.menu.OrganismOverlayMenu
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismUnderConstruction
 import com.neighbourly.app.a_device.ui.atomic.page.BackendInfoPage
 import com.neighbourly.app.a_device.ui.atomic.page.BoxManagementPage
-import com.neighbourly.app.a_device.ui.auth.LoginOrRegister
+import com.neighbourly.app.a_device.ui.atomic.page.LoginOrRegisterPage
 import com.neighbourly.app.a_device.ui.items.FilteredItemListView
 import com.neighbourly.app.a_device.ui.items.ItemDetailsView
 import com.neighbourly.app.a_device.ui.items.RemidersView
@@ -41,12 +41,10 @@ fun MainContent(
         LandingView()
     } else if (navigation.restrictedContent) {
         AnimatedVisibility(navigation.mainContentVisible) {
-            RoundedCornerCard {
-                if (navigation.userLoggedIn) {
-                    Profile()
-                } else {
-                    LoginOrRegister()
-                }
+            if (navigation.userLoggedIn) {
+                Profile()
+            } else {
+                LoginOrRegisterPage()
             }
         }
     } else {
@@ -83,7 +81,7 @@ fun MainContent(
                             )
                         }
 
-                        ManageProfile -> RoundedCornerCard { Profile() }
+                        ManageProfile -> Profile()
 
                         PublishStuff -> RoundedCornerCard {
                             ItemDetailsView(null)

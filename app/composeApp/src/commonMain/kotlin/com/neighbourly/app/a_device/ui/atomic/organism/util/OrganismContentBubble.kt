@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.neighbourly.app.a_device.ui.atomic.molecule.CardFooter
-import com.neighbourly.app.a_device.ui.atomic.molecule.CardHeader
-import com.neighbourly.app.a_device.ui.atomic.molecule.CardScrollableContent
-import com.neighbourly.app.a_device.ui.atomic.molecule.CardStaticContent
-import com.neighbourly.app.a_device.ui.atomic.molecule.RoundedCornerCard
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardFooter
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardHeader
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardScrollableContent
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardStaticContent
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.RoundedCornerCard
 
 @Composable
 fun OrganismContentBubble(

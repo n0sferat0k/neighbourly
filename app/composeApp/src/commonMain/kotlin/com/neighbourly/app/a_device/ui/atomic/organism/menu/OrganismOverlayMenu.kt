@@ -11,9 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.neighbourly.app.a_device.ui.atomic.molecule.LateralMenuItem
-import com.neighbourly.app.a_device.ui.atomic.molecule.MenuItemBoxSide.LEFT
-import com.neighbourly.app.a_device.ui.atomic.molecule.MenuItemBoxSide.RIGHT
+import com.neighbourly.app.a_device.ui.atomic.molecule.menu.LateralMenuItem
+import com.neighbourly.app.a_device.ui.atomic.molecule.menu.MenuItemBoxSide.LEFT
+import com.neighbourly.app.a_device.ui.atomic.molecule.menu.MenuItemBoxSide.RIGHT
 import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab.BOX
 import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab.ITEMS
 import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab.MYSTUFF

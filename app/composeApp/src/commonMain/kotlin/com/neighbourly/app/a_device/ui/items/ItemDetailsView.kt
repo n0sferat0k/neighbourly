@@ -47,9 +47,9 @@ import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.a_device.ui.atomic.molecule.AutocompleteOutlinedTextField
-import com.neighbourly.app.a_device.ui.atomic.molecule.CardFooter
-import com.neighbourly.app.a_device.ui.atomic.molecule.CardHeader
-import com.neighbourly.app.a_device.ui.atomic.molecule.CardScrollableContent
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardFooter
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardHeader
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardScrollableContent
 import com.neighbourly.app.a_device.ui.atomic.molecule.SwipeToDeleteContainer
 import com.neighbourly.app.a_device.ui.atomic.organism.datetime.OrganismDateTimeDialog
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismAlertDialog

@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.atomic.molecule
+package com.neighbourly.app.a_device.ui.atomic.molecule.menu
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.LayoutDirection.Rtl
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
-import com.neighbourly.app.a_device.ui.atomic.molecule.MenuItemBoxSide.LEFT
-import com.neighbourly.app.a_device.ui.atomic.molecule.MenuItemBoxSide.RIGHT
+import com.neighbourly.app.a_device.ui.atomic.molecule.menu.MenuItemBoxSide.LEFT
+import com.neighbourly.app.a_device.ui.atomic.molecule.menu.MenuItemBoxSide.RIGHT
 import com.neighbourly.app.a_device.ui.AppColors
 import kotlinx.coroutines.delay
 

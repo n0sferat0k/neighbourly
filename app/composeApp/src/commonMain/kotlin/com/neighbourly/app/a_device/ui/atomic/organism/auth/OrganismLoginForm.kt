@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.auth
+package com.neighbourly.app.a_device.ui.atomic.organism.auth
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +13,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,12 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
-import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.login
@@ -37,26 +34,28 @@ import neighbourly.composeapp.generated.resources.username
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun LoginView(
-    modifier: Modifier = Modifier,
-    viewModel: LoginViewModel = viewModel { KoinProvider.KOIN.get<LoginViewModel>() }
+fun OrganismLoginForm(
+    state: LoginViewModel.LoginViewState,
+    updateUsername: (user: String) -> Unit,
+    updatePassword: (pass: String) -> Unit,
+    onLogin: (remember: Boolean) -> Unit,
+    onRefreshLogin: () -> Unit,
 ) {
-    val state by viewModel.state.collectAsState()
+    var remember by remember { mutableStateOf(true) }
 
     LaunchedEffect(Unit) {
-        viewModel.refresh()
+        onRefreshLogin()
     }
 
-    var remember by remember { mutableStateOf(true) }
     Column(
-        modifier = modifier
+        modifier = Modifier
             .widthIn(max = 400.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         // Username Input
         OutlinedTextField(
             value = state.username,
-            onValueChange = { viewModel.updateUsername(it) },
+            onValueChange = { updateUsername(it) },
             label = { Text(stringResource(Res.string.username)) },
             modifier = Modifier.fillMaxWidth(),
         )
@@ -66,7 +65,7 @@ fun LoginView(
         // Password Input
         OutlinedTextField(
             value = state.password,
-            onValueChange = { viewModel.updatePassword(it) },
+            onValueChange = { updatePassword(it) },
             label = { Text(stringResource(Res.string.password)) },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth().padding(0.dp),
@@ -89,7 +88,7 @@ fun LoginView(
         Spacer(modifier = Modifier.height(16.dp))
 
         FriendlyButton(text = stringResource(Res.string.login), loading = state.loading) {
-            viewModel.onLogin(remember)
+            onLogin(remember)
         }
 
         if (state.error.isNotEmpty()) {

@@ -14,10 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.atomic.molecule.CardFooter
-import com.neighbourly.app.a_device.ui.atomic.molecule.CardHeader
-import com.neighbourly.app.a_device.ui.atomic.molecule.CardScrollableContent
-import com.neighbourly.app.a_device.ui.atomic.molecule.LogoutCardFooter
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardFooter
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardHeader
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardScrollableContent
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.LogoutCardFooter
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.RoundedCornerCard
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdAddMember
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdInfoEdit
@@ -40,42 +41,43 @@ fun Profile(
     LaunchedEffect(Unit) {
         viewModel.refresh()
     }
+    RoundedCornerCard {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            CardHeader(Modifier.align(Alignment.Start), busy = state.loading) {
+                viewModel.refresh()
+            }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        CardHeader(Modifier.align(Alignment.Start), busy = state.loading) {
-            viewModel.refresh()
-        }
+            CardScrollableContent(modifier = Modifier.weight(1f)) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    ProfileMenu()
 
-        CardScrollableContent(modifier = Modifier.weight(1f)) {
-            Column(
-                modifier = Modifier.padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                ProfileMenu()
-
-                Spacer(modifier = Modifier.height(8.dp))
-                navigation.profileContent.let {
-                    when (it) {
-                        ProfileInfoEdit -> ProfileInfoEditView()
-                        HouseholdInfoEdit -> HouseholdInfoEditView()
-                        HouseholdLocalize -> HouseholdLocalizeView()
-                        NeighbourhoodInfoEdit -> NeighbourhoodInfoEditView()
-                        is HouseholdAddMember -> HouseholdAddMemberView(it.id, it.username)
-                        HouseholdScanMember -> HouseholdBarcodeScannerView()
-                        is NeighbourhoodScanMember -> NeighbourhoodBarcodeScannerView(it.neighbourhoodid)
-                        is NeighbourhoodAddMemberHousehold -> NeighbourhoodAddMemberView(
-                            it.neighbourhoodid,
-                            it.id,
-                            it.username
-                        )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    navigation.profileContent.let {
+                        when (it) {
+                            ProfileInfoEdit -> ProfileInfoEditView()
+                            HouseholdInfoEdit -> HouseholdInfoEditView()
+                            HouseholdLocalize -> HouseholdLocalizeView()
+                            NeighbourhoodInfoEdit -> NeighbourhoodInfoEditView()
+                            is HouseholdAddMember -> HouseholdAddMemberView(it.id, it.username)
+                            HouseholdScanMember -> HouseholdBarcodeScannerView()
+                            is NeighbourhoodScanMember -> NeighbourhoodBarcodeScannerView(it.neighbourhoodid)
+                            is NeighbourhoodAddMemberHousehold -> NeighbourhoodAddMemberView(
+                                it.neighbourhoodid,
+                                it.id,
+                                it.username
+                            )
+                        }
                     }
                 }
             }
-        }
-        CardFooter {
-            LogoutCardFooter(viewModel::onLogout)
+            CardFooter {
+                LogoutCardFooter(viewModel::onLogout)
+            }
         }
     }
 }

@@ -16,10 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.neighbourly.app.a_device.ui.atomic.molecule.CardHeader
-import com.neighbourly.app.a_device.ui.atomic.molecule.CardScrollableContent
-import com.neighbourly.app.a_device.ui.atomic.molecule.OkCardFooter
-import com.neighbourly.app.a_device.ui.atomic.molecule.RoundedCornerCard
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardHeader
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardScrollableContent
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.OkCardFooter
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.RoundedCornerCard
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month

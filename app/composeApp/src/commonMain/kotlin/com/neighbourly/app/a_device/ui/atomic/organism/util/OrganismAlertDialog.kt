@@ -13,8 +13,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
-import com.neighbourly.app.a_device.ui.atomic.molecule.AlertDialogContent
-import com.neighbourly.app.a_device.ui.atomic.molecule.AlertDialogFlowRow
+import com.neighbourly.app.a_device.ui.atomic.molecule.dialog.AlertDialogContent
+import com.neighbourly.app.a_device.ui.atomic.molecule.dialog.AlertDialogFlowRow
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.cancel
 import neighbourly.composeapp.generated.resources.confirm

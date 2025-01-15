@@ -19,7 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.HalfCircleHalo
 import com.neighbourly.app.a_device.ui.MainContent
-import com.neighbourly.app.a_device.ui.atomic.molecule.CrownMenuItem
+import com.neighbourly.app.a_device.ui.atomic.molecule.menu.CrownMenuItem
 import com.neighbourly.app.a_device.ui.web.WebContentView
 import com.neighbourly.app.b_adapt.viewmodel.BackendInfoViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel

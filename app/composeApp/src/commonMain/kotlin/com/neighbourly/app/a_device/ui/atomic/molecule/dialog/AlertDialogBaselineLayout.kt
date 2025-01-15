@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.atomic.molecule
+package com.neighbourly.app.a_device.ui.atomic.molecule.dialog
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope

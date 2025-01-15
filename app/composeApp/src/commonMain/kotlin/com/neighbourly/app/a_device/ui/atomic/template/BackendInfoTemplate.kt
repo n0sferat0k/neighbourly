@@ -3,7 +3,7 @@ package com.neighbourly.app.a_device.ui.atomic.template
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
-import com.neighbourly.app.a_device.ui.atomic.molecule.OkCardFooter
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.OkCardFooter
 import com.neighbourly.app.a_device.ui.atomic.organism.info.OrganismAppDownloadLink
 import com.neighbourly.app.a_device.ui.atomic.organism.info.OrganismAppInfo
 import com.neighbourly.app.a_device.ui.atomic.organism.info.OrganismErrorLog

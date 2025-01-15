@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.auth
+package com.neighbourly.app.a_device.ui.atomic.organism.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -18,7 +18,6 @@ import androidx.compose.material.Text
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,13 +30,11 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
-import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
-import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.getPhoneNumber
@@ -57,9 +54,24 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<RegisterViewModel>() }) {
-    val state by viewModel.state.collectAsState()
-
+fun OrganismRegisterForm(
+    state: RegisterViewModel.RegisterViewState,
+    updateUsername: (user: String) -> Unit,
+    updateFullname: (name: String) -> Unit,
+    updateEmail: (email: String) -> Unit,
+    updatePhone: (phone: String) -> Unit,
+    updatePassword: (pass: String, confPass: String) -> Unit,
+    onRegister: (
+        username: String,
+        password: String,
+        confirmPassword: String,
+        fullName: String,
+        email: String,
+        phoneNumber: String,
+        profileFile: FileContents?,
+        remember: Boolean
+    ) -> Unit
+) {
     val defaultProfile = painterResource(Res.drawable.profile)
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -83,8 +95,8 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
 
     Column(
         modifier =
-            Modifier
-                .widthIn(max = 400.dp),
+        Modifier
+            .widthIn(max = 400.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         profileImage.let {
@@ -94,19 +106,19 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
                     contentDescription = "Profile Image",
                     colorFilter = ColorFilter.tint(AppColors.primary),
                     modifier =
-                        Modifier.size(80.dp).clickable {
-                            showFilePicker = true
-                        },
+                    Modifier.size(80.dp).clickable {
+                        showFilePicker = true
+                    },
                 )
             } else {
                 Box(
                     modifier =
-                        Modifier
-                            .size(80.dp)
-                            .border(2.dp, AppColors.primary, CircleShape)
-                            .clickable {
-                                showFilePicker = true
-                            },
+                    Modifier
+                        .size(80.dp)
+                        .border(2.dp, AppColors.primary, CircleShape)
+                        .clickable {
+                            showFilePicker = true
+                        },
                     contentAlignment = Alignment.Center,
                 ) {
                     Image(
@@ -126,7 +138,7 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
             value = username,
             onValueChange = {
                 username = it
-                viewModel.validateUsername(username)
+                updateUsername(username)
             },
             label = { Text(stringResource(Res.string.username)) },
             isError = state.usernameError,
@@ -140,7 +152,7 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
             value = password,
             onValueChange = {
                 password = it
-                viewModel.validatePassword(password, confirmPassword)
+                updatePassword(password, confirmPassword)
             },
             label = { Text(stringResource(Res.string.password)) },
             isError = state.passwordError,
@@ -155,7 +167,7 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
             value = confirmPassword,
             onValueChange = {
                 confirmPassword = it
-                viewModel.validatePassword(password, confirmPassword)
+                updatePassword(password, confirmPassword)
             },
             label = { Text(stringResource(Res.string.confirmpassword)) },
             isError = state.passwordError,
@@ -170,7 +182,7 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
             value = fullName,
             onValueChange = {
                 fullName = it
-                viewModel.validateFullname(fullName)
+                updateFullname(fullName)
             },
             label = { Text(stringResource(Res.string.fullname)) },
             isError = state.fullnameError,
@@ -184,7 +196,7 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
             value = email,
             onValueChange = {
                 email = it
-                viewModel.validateEmail(email)
+                updateEmail(email)
             },
             label = { Text(stringResource(Res.string.email)) },
             isError = state.emailError,
@@ -198,7 +210,7 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
             value = phoneNumber,
             onValueChange = {
                 phoneNumber = it
-                viewModel.validatePhone(phoneNumber)
+                updatePhone(phoneNumber)
             },
             label = { Text(stringResource(Res.string.phone)) },
             isError = state.phoneError,
@@ -222,7 +234,7 @@ fun Register(viewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<Re
         Spacer(modifier = Modifier.height(16.dp))
 
         FriendlyButton(text = stringResource(Res.string.register), loading = state.loading) {
-            viewModel.onRegister(
+            onRegister(
                 username,
                 password,
                 confirmPassword,

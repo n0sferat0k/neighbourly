@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.atomic.molecule
+package com.neighbourly.app.a_device.ui.atomic.molecule.menu
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
