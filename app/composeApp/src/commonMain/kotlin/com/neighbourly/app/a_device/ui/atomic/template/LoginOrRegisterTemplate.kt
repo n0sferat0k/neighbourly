@@ -16,6 +16,7 @@ import com.neighbourly.app.a_device.ui.atomic.molecule.card.LoginOrRegisterCardF
 import com.neighbourly.app.a_device.ui.atomic.molecule.card.RoundedCornerCard
 import com.neighbourly.app.a_device.ui.atomic.organism.auth.OrganismLoginForm
 import com.neighbourly.app.a_device.ui.atomic.organism.auth.OrganismRegisterForm
+import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismContentBubble
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
 import com.neighbourly.app.d_entity.data.FileContents
@@ -45,40 +46,33 @@ fun LoginOrRegisterTemplate(
 ) {
     var index by remember { mutableStateOf(0) }
 
-    RoundedCornerCard {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            CardHeader(Modifier.align(Alignment.Start))
-
-            CardScrollableContent(modifier = Modifier.weight(1f)) {
-                when (index) {
-                    0 -> OrganismLoginForm(
-                        state = loginState,
-                        updateUsername = loginUsername,
-                        updatePassword = loginPassword,
-                        onLogin = onLogin,
-                    )
-
-                    1 -> OrganismRegisterForm(
-                        state = registerState,
-                        updateUsername = registerUsername,
-                        updateFullname = registerFullname,
-                        updateEmail = registerEmail,
-                        updatePhone = registerPhone,
-                        updatePassword = registerPassword,
-                        onRegister = onRegister,
-                    )
-                }
+    OrganismContentBubble(
+        scrollable = true,
+        content = {
+            when (index) {
+                0 -> OrganismLoginForm(
+                    state = loginState,
+                    updateUsername = loginUsername,
+                    updatePassword = loginPassword,
+                    onLogin = onLogin,
+                )
+                1 -> OrganismRegisterForm(
+                    state = registerState,
+                    updateUsername = registerUsername,
+                    updateFullname = registerFullname,
+                    updateEmail = registerEmail,
+                    updatePhone = registerPhone,
+                    updatePassword = registerPassword,
+                    onRegister = onRegister,
+                )
             }
-
-            CardFooter {
-                LoginOrRegisterCardFooter(onSelectLogin = {
-                    index = 0
-                }, onSelectRegister = {
-                    index = 1
-                })
-            }
+        },
+        footerContent = {
+            LoginOrRegisterCardFooter(onSelectLogin = {
+                index = 0
+            }, onSelectRegister = {
+                index = 1
+            })
         }
-    }
+    )
 }

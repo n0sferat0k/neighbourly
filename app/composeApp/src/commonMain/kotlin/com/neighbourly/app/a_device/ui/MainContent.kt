@@ -13,8 +13,8 @@ import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismUnderConstru
 import com.neighbourly.app.a_device.ui.atomic.page.BackendInfoPage
 import com.neighbourly.app.a_device.ui.atomic.page.BoxManagementPage
 import com.neighbourly.app.a_device.ui.atomic.page.FilteredItemListPage
-import com.neighbourly.app.a_device.ui.atomic.page.LoginOrRegisterPage
 import com.neighbourly.app.a_device.ui.atomic.page.ItemDetailsPage
+import com.neighbourly.app.a_device.ui.atomic.page.LoginOrRegisterPage
 import com.neighbourly.app.a_device.ui.items.RemidersView
 import com.neighbourly.app.a_device.ui.misc.LandingView
 import com.neighbourly.app.a_device.ui.profile.Profile
@@ -72,7 +72,6 @@ fun MainContent(
                                 )
                             }
 
-
                         ManageMyStuff ->
                             FilteredItemListPage(
                                 type = null,
@@ -80,18 +79,13 @@ fun MainContent(
                                 showExpired = true
                             )
 
-
                         ManageProfile -> Profile()
 
-                        PublishStuff -> RoundedCornerCard {
-                            ItemDetailsPage(null)
-                        }
+                        PublishStuff -> ItemDetailsPage(null)
 
                         BoxManage -> BoxManagementPage()
 
-                        is ShowItemDetails -> RoundedCornerCard {
-                            ItemDetailsPage(it.itemId)
-                        }
+                        is ShowItemDetails -> ItemDetailsPage(it.itemId)
 
                         BackendInfo -> BackendInfoPage()
 

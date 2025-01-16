@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -13,8 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
-import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardHeader
-import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardScrollableContent
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ImageGrid
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemTypeOption
 import com.neighbourly.app.a_device.ui.atomic.page.LOCALLY_ALLOWED_SITES
@@ -47,144 +44,131 @@ fun OrganismReadonlyItemDetails(
     onImageSelected: (imageId: Int) -> Unit,
     onUrlSelected: (url: String) -> Unit,
 ) {
-    val uriHandler = LocalUriHandler.current
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        CardHeader(Modifier.align(Alignment.Start))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            FriendlyText(text = stringResource(Res.string.type), bold = true)
+            FriendlyText(
+                text = stringResource(
+                    TYPE_ASSOC[item.type]?.second ?: Res.string.unknown
+                ),
+            )
+            ItemTypeOption(
+                icon = painterResource(
+                    TYPE_ASSOC[item.type]?.first ?: Res.drawable.newbadge
+                ),
+                selected = true,
+                contentDesc = item.type.name,
+            ) {}
+        }
 
-        CardScrollableContent(modifier = Modifier.weight(1f)) {
-            Column(
-                modifier = Modifier.padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+        if (listOf(ItemTypeVS.NEED, ItemTypeVS.REQUEST).contains(item.type)
+            && item.targetUserId != null
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    FriendlyText(text = stringResource(Res.string.type), bold = true)
-                    FriendlyText(
-                        text = stringResource(
-                            TYPE_ASSOC[item.type]?.second ?: Res.string.unknown
-                        ),
-                    )
-                    ItemTypeOption(
-                        icon = painterResource(
-                            TYPE_ASSOC[item.type]?.first ?: Res.drawable.newbadge
-                        ),
-                        selected = true,
-                        contentDesc = item.type.name,
-                    ) {}
-                }
+                FriendlyText(text = stringResource(Res.string.target_user), bold = true)
+                FriendlyText(text = users.getOrDefault(item.targetUserId, ""))
+            }
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            FriendlyText(text = stringResource(Res.string.item_name), bold = true)
+            FriendlyText(text = item.name)
+        }
+        if (item.description.isNotEmpty()) {
+            FriendlyText(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(Res.string.item_description), bold = true
+            )
+            FriendlyText(
+                modifier = Modifier.fillMaxWidth(),
+                text = item.description
+            )
+        }
 
-                if (listOf(ItemTypeVS.NEED, ItemTypeVS.REQUEST).contains(item.type)
-                    && item.targetUserId != null
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        FriendlyText(text = stringResource(Res.string.target_user), bold = true)
-                        FriendlyText(text = users.getOrDefault(item.targetUserId, ""))
-                    }
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    FriendlyText(text = stringResource(Res.string.item_name), bold = true)
-                    FriendlyText(text = item.name)
-                }
-                if (item.description.isNotEmpty()) {
-                    FriendlyText(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(Res.string.item_description), bold = true
-                    )
-                    FriendlyText(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = item.description
-                    )
-                }
+        if (item.url.isNotEmpty()) {
+            FriendlyText(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(Res.string.item_url), bold = true
+            )
+            FriendlyText(modifier = Modifier.clickable {
+                onUrlSelected(item.url)
+            }, text = item.url)
+        }
 
-                if (item.url.isNotEmpty()) {
-                    FriendlyText(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(Res.string.item_url), bold = true
-                    )
-                    FriendlyText(modifier = Modifier.clickable {
-                        if (LOCALLY_ALLOWED_SITES.any { item.url.contains(it) }) {
-                            onUrlSelected(item.url)
-                        } else {
-                            uriHandler.openUri(item.url)
-                        }
-                    }, text = item.url)
+        if (item.images.isNotEmpty()) {
+            FriendlyText(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(Res.string.images),
+                bold = true
+            )
+
+            if (item.images.isNotEmpty()) {
+                ImageGrid(
+                    images = item.images,
+                    newImages = emptyList()
+                ) { image ->
+                    onImageSelected(image.id)
                 }
+            }
+        }
 
-                if (item.images.isNotEmpty()) {
-                    FriendlyText(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(Res.string.images),
-                        bold = true
-                    )
+        if (item.files.isNotEmpty()) {
+            FriendlyText(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(Res.string.files),
+                bold = true
+            )
 
-                    if (item.images.isNotEmpty()) {
-                        ImageGrid(
-                            images = item.images,
-                            newImages = emptyList()
-                        ) { image ->
-                            onImageSelected(image.id)
-                        }
-                    }
-                }
+            item.files.onEach {
+                FriendlyText(
+                    modifier = Modifier.fillMaxWidth()
+                        .clickable {
+                            onUrlSelected(it.url)
+                        },
+                    text = item.name, bold = true
+                )
+            }
+        }
 
-                if (item.files.isNotEmpty()) {
-                    FriendlyText(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(Res.string.files),
-                        bold = true
-                    )
+        if (item.start != null && item.start.epochSeconds > 0) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                FriendlyText(text = stringResource(Res.string.start_date))
+                FriendlyText(
+                    text = item.start.toLocalDateTime(TimeZone.currentSystemDefault())
+                        .toJavaLocalDateTime().format(formatter),
+                    bold = true
+                )
+            }
+        }
 
-                    item.files.onEach {
-                        FriendlyText(
-                            modifier = Modifier.fillMaxWidth()
-                                .clickable {
-                                    uriHandler.openUri(it.url)
-                                },
-                            text = item.name, bold = true
-                        )
-                    }
-                }
-
-                if (item.start != null && item.start.epochSeconds > 0) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        FriendlyText(text = stringResource(Res.string.start_date))
-                        FriendlyText(
-                            text = item.start.toLocalDateTime(TimeZone.currentSystemDefault())
-                                .toJavaLocalDateTime().format(formatter),
-                            bold = true
-                        )
-                    }
-                }
-
-                if (item.end != null && item.end.epochSeconds > 0) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        FriendlyText(text = stringResource(Res.string.end_date))
-                        FriendlyText(
-                            text = item.end.toLocalDateTime(TimeZone.currentSystemDefault())
-                                .toJavaLocalDateTime().format(formatter),
-                            bold = true
-                        )
-                    }
-                }
+        if (item.end != null && item.end.epochSeconds > 0) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                FriendlyText(text = stringResource(Res.string.end_date))
+                FriendlyText(
+                    text = item.end.toLocalDateTime(TimeZone.currentSystemDefault())
+                        .toJavaLocalDateTime().format(formatter),
+                    bold = true
+                )
             }
         }
     }

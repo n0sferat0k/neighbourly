@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.atomic.template.ItemDetailsTemplate
@@ -55,6 +56,8 @@ fun ItemDetailsPage(
     viewModel: ItemDetailsViewModel = viewModel { KoinProvider.KOIN.get<ItemDetailsViewModel>() },
     navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }
 ) {
+    val uriHandler = LocalUriHandler.current
+
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(itemId) {
@@ -62,7 +65,7 @@ fun ItemDetailsPage(
     }
 
     LaunchedEffect(state.item) {
-        if(state.item == null) {
+        if (state.item == null) {
             viewModel.reset()
             navigationViewModel.goBack()
         }
@@ -70,8 +73,18 @@ fun ItemDetailsPage(
 
     ItemDetailsTemplate(
         state = state,
-        onImageSelected = navigationViewModel::goToGallery,
-        onUrlSelected = navigationViewModel::goToWebPage,
+        onImageSelected = { imageId ->
+            state.item?.id?.let {
+                navigationViewModel.goToGallery(it, imageId)
+            }
+        },
+        onUrlSelected = { url ->
+            if (LOCALLY_ALLOWED_SITES.any { url.contains(it) }) {
+                navigationViewModel.goToWebPage(url)
+            } else {
+                uriHandler.openUri(url)
+            }
+        },
         deleteItem = viewModel::deleteItem,
         deleteFile = viewModel::deleteFile,
         deleteImage = viewModel::deleteImage,
