@@ -1,5 +1,6 @@
 package com.neighbourly.app.a_device.ui.atomic.molecule.item
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -21,30 +22,37 @@ import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ItemEditTypeSelector(type: ItemTypeVS, isAdmin: Boolean, onChange: (type: ItemTypeVS) -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        FriendlyText(text = stringResource(Res.string.type))
+fun ItemEditTypeSelector(
+    hidden: Boolean = false,
+    type: ItemTypeVS,
+    isAdmin: Boolean,
+    onChange: (type: ItemTypeVS) -> Unit
+) {
+    AnimatedVisibility(!hidden) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            FriendlyText(text = stringResource(Res.string.type))
 
-        FriendlyText(
-            text = stringResource(
-                TYPE_ASSOC_ADMIN.get(type)?.second ?: Res.string.unknown
-            ),
-            bold = true,
-        )
-    }
+            FriendlyText(
+                text = stringResource(
+                    TYPE_ASSOC_ADMIN.get(type)?.second ?: Res.string.unknown
+                ),
+                bold = true,
+            )
+        }
 
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-        horizontalArrangement = Arrangement.Start,
-    ) {
-        (if (isAdmin) TYPE_ASSOC_ADMIN else TYPE_ASSOC).forEach { (currentType, iconNamePair) ->
-            ItemTypeOption(
-                icon = painterResource(iconNamePair.first),
-                selected = type == currentType,
-                contentDesc = currentType.name,
-            ) {
-                onChange(currentType)
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.Start,
+        ) {
+            (if (isAdmin) TYPE_ASSOC_ADMIN else TYPE_ASSOC).forEach { (currentType, iconNamePair) ->
+                ItemTypeOption(
+                    icon = painterResource(iconNamePair.first),
+                    selected = type == currentType,
+                    contentDesc = currentType.name,
+                ) {
+                    onChange(currentType)
+                }
             }
         }
     }

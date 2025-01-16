@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
-import com.neighbourly.app.a_device.ui.atomic.molecule.SwipeToDeleteContainer
+import com.neighbourly.app.a_device.ui.atomic.molecule.misc.SwipeToDeleteContainer
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismAlertDialog
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.confirm_deleteing_box

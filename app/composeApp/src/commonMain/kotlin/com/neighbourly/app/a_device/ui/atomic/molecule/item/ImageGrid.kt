@@ -25,7 +25,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.AppColors
-import com.neighbourly.app.a_device.ui.atomic.molecule.SwipeToDeleteContainer
+import com.neighbourly.app.a_device.ui.atomic.molecule.misc.SwipeToDeleteContainer
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismAlertDialog
 import com.neighbourly.app.b_adapt.viewmodel.bean.AttachmentVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.MemImgVS

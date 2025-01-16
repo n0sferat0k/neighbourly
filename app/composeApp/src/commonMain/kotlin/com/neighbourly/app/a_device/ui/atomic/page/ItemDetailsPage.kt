@@ -85,9 +85,9 @@ fun ItemDetailsPage(
                 uriHandler.openUri(url)
             }
         },
-        deleteItem = viewModel::deleteItem,
-        deleteFile = viewModel::deleteFile,
-        deleteImage = viewModel::deleteImage,
+        onDeleteItem = viewModel::deleteItem,
+        onDeleteFile = viewModel::deleteFile,
+        onDeleteImage = viewModel::deleteImage,
         onSave = viewModel::save
     )
 }

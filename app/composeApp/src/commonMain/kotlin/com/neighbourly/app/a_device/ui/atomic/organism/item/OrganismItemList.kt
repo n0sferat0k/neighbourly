@@ -12,7 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.neighbourly.app.a_device.ui.atomic.molecule.SwipeToDeleteContainer
+import com.neighbourly.app.a_device.ui.atomic.molecule.misc.SwipeToDeleteContainer
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismAlertDialog
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
 import neighbourly.composeapp.generated.resources.Res

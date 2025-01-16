@@ -27,9 +27,9 @@ fun ItemDetailsTemplate(
         newImages: List<MemImgVS>,
         newFiles: Map<String, String>,
     ) -> Unit,
-    deleteImage: (imageId: Int) -> Unit,
-    deleteFile: (fileId: Int) -> Unit,
-    deleteItem: () -> Unit,
+    onDeleteImage: (imageId: Int) -> Unit,
+    onDeleteFile: (fileId: Int) -> Unit,
+    onDeleteItem: () -> Unit,
 ) {
     state.item?.let { item ->
         OrganismContentBubble(
@@ -46,8 +46,8 @@ fun ItemDetailsTemplate(
                         onSave = onSave,
                         onImageSelected = onImageSelected,
                         onUrlSelected = onUrlSelected,
-                        deleteImage = deleteImage,
-                        deleteFile = deleteFile,
+                        onDeleteImage = onDeleteImage,
+                        onDeleteFile = onDeleteFile,
                     )
                 } else {
                     OrganismReadonlyItemDetails(
@@ -61,7 +61,7 @@ fun ItemDetailsTemplate(
             footerContent = {
                 if (item.id != null) {
                     DeleteCardFooter {
-                        deleteItem()
+                        onDeleteItem()
                     }
                 }
             }

@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.atomic.molecule
+package com.neighbourly.app.a_device.ui.atomic.molecule.misc
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
