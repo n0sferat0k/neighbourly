@@ -61,10 +61,21 @@ fun ItemDetailsPage(
         viewModel.setItem(itemId)
     }
 
+    LaunchedEffect(state.item) {
+        if(state.item == null) {
+            viewModel.reset()
+            navigationViewModel.goBack()
+        }
+    }
+
     ItemDetailsTemplate(
         state = state,
         onImageSelected = navigationViewModel::goToGallery,
-        onUrlSelected = navigationViewModel::goToWebPage
+        onUrlSelected = navigationViewModel::goToWebPage,
+        deleteItem = viewModel::deleteItem,
+        deleteFile = viewModel::deleteFile,
+        deleteImage = viewModel::deleteImage,
+        onSave = viewModel::save
     )
 }
 

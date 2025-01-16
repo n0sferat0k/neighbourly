@@ -15,6 +15,18 @@ enum class ItemTypeVS {
     INFO, DONATION, BARTER, SALE, EVENT, NEED, REQUEST, SKILLSHARE, REMINDER;
 }
 
+fun ItemTypeVS.toItemType() = when (this) {
+    INFO -> ItemType.INFO
+    DONATION -> ItemType.DONATION
+    BARTER -> ItemType.BARTER
+    SALE -> ItemType.SALE
+    EVENT -> ItemType.EVENT
+    NEED -> ItemType.NEED
+    REQUEST -> ItemType.REQUEST
+    SKILLSHARE -> ItemType.SKILLSHARE
+    REMINDER -> ItemType.REMINDER
+}
+
 fun ItemType.toItemTypeVS() = when (this) {
     ItemType.INFO -> INFO
     ItemType.DONATION -> DONATION

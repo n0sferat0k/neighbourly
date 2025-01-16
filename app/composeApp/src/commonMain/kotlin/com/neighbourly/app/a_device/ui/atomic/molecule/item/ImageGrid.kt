@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,8 +15,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -37,15 +40,16 @@ import neighbourly.composeapp.generated.resources.newbadge
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ImageGrid(
     images: List<AttachmentVS>,
     newImages: List<MemImgVS>,
     deleteNew: ((MemImgVS) -> Unit)? = null,
-    delete: ((Int) -> Unit)? = null,
-    select: ((Int) -> Unit)? = null
+    delete: ((AttachmentVS) -> Unit)? = null,
+    select: ((AttachmentVS) -> Unit)? = null
 ) {
-    var showRemoveAlertForId by remember { mutableStateOf(-1) }
+    var showRemoveImageAlertForId by remember { mutableStateOf(-1) }
     var showNewImageAlert by remember { mutableStateOf(false) }
     val badge = painterResource(Res.drawable.newbadge)
 
@@ -59,16 +63,16 @@ fun ImageGrid(
         )
     }
 
-    if (showRemoveAlertForId != -1) {
+    if (showRemoveImageAlertForId != -1) {
         OrganismAlertDialog(
             title = stringResource(Res.string.deleteing_image),
             text = stringResource(Res.string.confirm_deleteing_image),
             ok = {
-                delete?.invoke(showRemoveAlertForId)
-                showRemoveAlertForId = -1
+                images.firstOrNull {it.id == showRemoveImageAlertForId}?.let { delete?.invoke(it) }
+                showRemoveImageAlertForId = -1
             },
             cancel = {
-                showRemoveAlertForId = -1
+                showRemoveImageAlertForId = -1
             }
         )
     }
@@ -78,12 +82,12 @@ fun ImageGrid(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        images.forEach { (key, imageUrl) ->
+        images.forEach { image ->
             SwipeToDeleteContainer(
                 modifier = Modifier.size(84.dp),
                 onDelete = delete?.let {
                     {
-                        showRemoveAlertForId = key
+                        showRemoveImageAlertForId = image.id
                     }
                 }) {
                 Card(
@@ -95,9 +99,9 @@ fun ImageGrid(
                 ) {
                     KamelImage(
                         modifier = Modifier.fillMaxSize().clickable {
-                            select?.invoke(key)
+                            select?.invoke(image)
                         },
-                        resource = asyncPainterResource(data = imageUrl),
+                        resource = asyncPainterResource(data = image.url),
                         contentDescription = "Item Image",
                         contentScale = ContentScale.Crop,
                         onLoading = { progress ->

@@ -1,24 +1,21 @@
 package com.neighbourly.app.b_adapt.viewmodel.items
 
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.b_adapt.viewmodel.bean.AttachmentVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.MemImgVS
-import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
+import com.neighbourly.app.b_adapt.viewmodel.bean.toItemType
+import com.neighbourly.app.b_adapt.viewmodel.bean.toItemTypeVS
 import com.neighbourly.app.c_business.usecase.content.ItemManagementUseCase
 import com.neighbourly.app.d_entity.data.Item
-import com.neighbourly.app.d_entity.data.ItemType
-import com.neighbourly.app.d_entity.data.ItemType.NEED
 import com.neighbourly.app.d_entity.data.ItemType.REMINDER
-import com.neighbourly.app.d_entity.data.ItemType.REQUEST
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.SessionStore
 import com.neighbourly.app.d_entity.util.isValidUrl
 import com.neighbourly.app.loadContentsFromFile
-import com.neighbourly.app.loadNameFromFile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,10 +25,9 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.Instant.Companion.fromEpochSeconds
 
 class ItemDetailsViewModel(
-    val database: Db,
-    val store: SessionStore,
-    val syncItemsUseCase: ContentSyncUseCase,
-    val itemManagementUseCase: ItemManagementUseCase,
+    private val database: Db,
+    private val store: SessionStore,
+    private val itemManagementUseCase: ItemManagementUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ItemDetailsViewState())
@@ -40,118 +36,91 @@ class ItemDetailsViewModel(
     init {
         viewModelScope.launch {
             database.getUsers().let { users ->
-                _state.update {
-                    it.copy(users = users.map {
+                _state.update { state ->
+                    state.copy(users = users.associate {
                         it.id to (it.fullname ?: it.username)
-                    }.toMap())
+                    })
                 }
             }
         }
     }
 
-    fun setItem(itemId: Int?) {
+    fun reset() {
         _state.update {
             it.copy(
-                deleted = false,
-                name = "",
-                description = "",
-                url = "",
-                images = emptyList(),
-                files = emptyList(),
-                newImages = emptyList(),
-                newFiles = emptyMap(),
-                start = null,
-                end = null,
+                item = ItemVS(type = ItemTypeVS.DONATION),
                 saving = false,
                 hasChanged = false,
                 error = "",
-                nameError = false,
-                targetUserIdOverride = null,
-                typeOverride = null,
-                nameOverride = null,
-                descriptionOverride = null,
-                urlOverride = null,
             )
         }
+    }
+
+    fun setItem(itemId: Int?) {
+        reset()
+
         if (itemId != null) {
-            _state.update { it.copy(itemId = itemId) }
+            _state.update { it.copy(item = it.item?.copy(id = itemId)) }
             viewModelScope.launch {
                 database.getItem(itemId = itemId).let { item ->
-                    _state.update {
-                        it.copy(
+                    _state.update { state ->
+                        state.copy(
                             editable = item.householdId == store.user?.household?.householdid,
                             admin = store.user?.neighbourhoods?.firstOrNull { it.neighbourhoodid == item.neighbourhoodId }?.access?.let { it >= 499 }
                                 ?: false,
-                            neighbourhoodId = item.neighbourhoodId,
-                            type = item.type.name,
-                            name = item.name.orEmpty(),
-                            description = item.description.orEmpty(),
-                            dates = if (item.type == REMINDER) {
-                                kotlin.runCatching {
-                                    item.description?.split(",")
-                                        ?.map { fromEpochSeconds(it.toLong()) }
-                                        ?: emptyList()
-                                }.getOrNull() ?: emptyList()
-                            } else emptyList(),
-                            url = item.url.orEmpty(),
-                            start = item.startTs.takeIf { it > 0 }
-                                ?.let { fromEpochSeconds(it.toLong()) },
-                            end = item.endTs.takeIf { it > 0 }
-                                ?.let { fromEpochSeconds(it.toLong()) },
-                            images = item.images.map { AttachmentVS(it.id, it.url, it.name) },
-                            targetUserId = item.targetUserId,
-                            files = item.files.map {
-                                AttachmentVS(
-                                    id = it.id,
-                                    url = it.url,
-                                    name = it.name,
-                                )
-                            },
+                            item = state.item?.copy(
+                                type = item.type.toItemTypeVS(),
+                                name = item.name.orEmpty(),
+                                description = item.description.orEmpty(),
+                                dates = if (item.type == REMINDER) {
+                                    kotlin.runCatching {
+                                        item.description?.split(",")
+                                            ?.map { fromEpochSeconds(it.toLong()) }
+                                            ?: emptyList()
+                                    }.getOrNull() ?: emptyList()
+                                } else emptyList(),
+                                targetUserId = item.targetUserId,
+                                url = item.url.orEmpty(),
+                                start = item.startTs.takeIf { it > 0 }
+                                    ?.let { fromEpochSeconds(it.toLong()) },
+                                end = item.endTs.takeIf { it > 0 }
+                                    ?.let { fromEpochSeconds(it.toLong()) },
+                                images = item.images.map { AttachmentVS(it.id, it.url, it.name) },
+                                files = item.files.map {
+                                    AttachmentVS(
+                                        id = it.id,
+                                        url = it.url,
+                                        name = it.name,
+                                    )
+                                },
+                                neighbourhoodId = item.neighbourhoodId,
+                            ),
                         )
                     }
                 }
             }
         } else {
-            _state.update {
-                it.copy(
-                    neighbourhoodId = store.user?.neighbourhoods?.firstOrNull()?.neighbourhoodid,
-                    itemId = null,
+            _state.update { state ->
+                state.copy(
+                    item = state.item?.copy(neighbourhoodId = store.user?.neighbourhoods?.firstOrNull()?.neighbourhoodid),
                     editable = true,
                     admin = store.user?.neighbourhoods?.firstOrNull()?.access?.let { it >= 499 }
                         ?: false,
-                    type = ItemType.DONATION.name,
                 )
             }
         }
-    }
-
-    fun updateName(name: String) =
-        _state.update {
-            it.copy(
-                nameOverride = name,
-                nameError = name.isBlank(),
-                hasChanged = true
-            )
-        }
-
-    fun updateUrl(url: String) = _state.update {
-        it.copy(
-            urlOverride = url,
-            urlError = !(url.isBlank() || url.isValidUrl()),
-            hasChanged = true
-        )
     }
 
     fun deleteImage(imageId: Int) {
         viewModelScope.launch {
             try {
                 _state.update { it.copy(error = "", saving = true) }
-                itemManagementUseCase.delImage(_state.value.itemId, imageId)
+                itemManagementUseCase.delImage(_state.value.item?.id, imageId)
                 _state.update {
                     it.copy(
                         error = "",
                         saving = false,
-                        images = it.images.filter { it.id != imageId },
+                        item = it.item?.copy(images = it.item.images.filter { it.id != imageId }),
                     )
                 }
             } catch (e: OpException) {
@@ -164,12 +133,12 @@ class ItemDetailsViewModel(
         viewModelScope.launch {
             try {
                 _state.update { it.copy(error = "", saving = true) }
-                itemManagementUseCase.delFile(_state.value.itemId, fileId)
+                itemManagementUseCase.delFile(_state.value.item?.id, fileId)
                 _state.update {
                     it.copy(
                         error = "",
-                        saving = true,
-                        files = it.files.filter { it.id != fileId }
+                        saving = false,
+                        item = it.item?.copy(files = it.item.files.filter { it.id != fileId }),
                     )
                 }
             } catch (e: OpException) {
@@ -182,106 +151,69 @@ class ItemDetailsViewModel(
         viewModelScope.launch {
             try {
                 _state.update { it.copy(error = "", saving = true) }
-                _state.value.itemId?.let { itemManagementUseCase.delete(it) }
-                _state.update { it.copy(error = "", saving = false, deleted = true) }
+                _state.value.item?.id?.let { itemManagementUseCase.delete(it) }
+                _state.update { it.copy(error = "", saving = false, item = null) }
             } catch (e: OpException) {
                 _state.update { it.copy(error = e.msg, saving = false) }
             }
         }
     }
 
-
-
-    fun onAddImage(file: String, img: BitmapPainter) {
-        _state.update { it.copy(newImages = it.newImages + MemImgVS(file, img), hasChanged = true) }
-    }
-
-    fun onAddFile(file: String) {
-        val name = loadNameFromFile(file)
-        _state.update { it.copy(newFiles = it.newFiles + (file to name), hasChanged = true) }
-    }
-
-    fun deleteNewImage(imgName: String) {
-        _state.update { it.copy(newImages = it.newImages.filter { it.name != imgName }.toList()) }
-    }
-
-    fun addOrUpdateDate(ts: Int?, index: Int) {
-        if (index == -1 && ts != null) {
-            _state.update {
-                it.copy(
-                    dates = (it.dates + fromEpochSeconds(ts.toLong())).sorted(),
-                    hasChanged = true
-                )
-            }
-        }
-        if (index > -1 && ts == null) {
-            _state.update {
-                it.copy(
-                    dates = it.dates.toMutableList().apply { removeAt(index) },
-                    hasChanged = true
-                )
-            }
-        }
-        if (index > -1 && ts != null) {
-            _state.update {
-                it.copy(
-                    dates = it.dates.toMutableList()
-                        .apply { this[index] = fromEpochSeconds(ts.toLong()) }
-                        .sorted(),
-                    hasChanged = true
-                )
-            }
-        }
-    }
-
-    fun deleteItemAck() {
-        _state.update { it.copy(deleted = false) }
-    }
-
-    fun save() {
+    fun save(
+        typeOverride: ItemTypeVS?,
+        nameOverride: String?,
+        descriptionOverride: String?,
+        datesOverride: List<Instant>?,
+        targetUserIdOverride: Int?,
+        urlOverride: String?,
+        startOverride: Instant?,
+        endOverride: Instant?,
+        newImages: List<MemImgVS>,
+        newFiles: Map<String, String>,
+    ) {
         viewModelScope.launch {
-            if (!_state.value.nameError && !_state.value.urlError && !_state.value.saving) {
-                _state.value.let {
+            val nameError = nameOverride?.isBlank() ?: false
+            val urlError = urlOverride?.let { it.isBlank() || !it.isValidUrl() } ?: false
+            if (!nameError && !urlError && !_state.value.saving) {
+                _state.value.item?.let { item ->
                     try {
                         _state.update { it.copy(saving = true) }
-                        val type = ItemType.getByName(it.typeOverride ?: it.type)
-                        val item = when (type) {
+                        val type = (typeOverride ?: item.type).toItemType()
+                        val updateItem = when (type) {
                             REMINDER -> Item(
-                                id = it.itemId,
+                                id = item.id,
                                 type = type,
-                                name = it.nameOverride ?: it.name,
-                                description = it.dates.map { it.epochSeconds.toString() }
+                                name = nameOverride ?: item.name,
+                                description = (datesOverride
+                                    ?: item.dates).map { it.epochSeconds.toString() }
                                     .joinToString(","),
                                 url = "",
-                                neighbourhoodId = it.neighbourhoodId,
+                                neighbourhoodId = item.neighbourhoodId,
                             )
 
                             else -> Item(
-                                id = it.itemId,
+                                id = item.id,
                                 type = type,
-                                name = it.nameOverride ?: it.name,
-                                description = if (type == REMINDER)
-                                    it.dates.map { it.epochSeconds.toString() }.joinToString(",")
-                                else
-                                    it.descriptionOverride ?: it.description,
-                                url = it.urlOverride ?: it.url,
-                                targetUserId = it.targetUserIdOverride ?: it.targetUserId ?: -1,
-                                startTs = (it.startOverride ?: it.start)?.epochSeconds?.toInt()
+                                name = nameOverride ?: item.name,
+                                description = descriptionOverride ?: item.description,
+                                url = urlOverride ?: item.url,
+                                targetUserId = targetUserIdOverride ?: item.targetUserId ?: -1,
+                                startTs = (startOverride ?: item.start)?.epochSeconds?.toInt()
                                     ?: 0,
-                                endTs = (it.endOverride ?: it.end)?.epochSeconds?.toInt() ?: 0,
-                                neighbourhoodId = it.neighbourhoodId,
+                                endTs = (endOverride ?: item.end)?.epochSeconds?.toInt() ?: 0,
+                                neighbourhoodId = item.neighbourhoodId,
                             )
                         }
 
                         itemManagementUseCase.addOrUpdate(
-                            item
+                            updateItem
                         )?.let { newItemId ->
-                            it.newImages.forEach { newImage ->
+                            newImages.forEach { newImage ->
                                 loadContentsFromFile(newImage.name)?.let { fileContent ->
                                     itemManagementUseCase.addImage(newItemId, fileContent)
                                 }
                             }
-                            it.newFiles.keys.forEach { newFile ->
+                            newFiles.keys.forEach { newFile ->
                                 loadContentsFromFile(newFile)?.let { fileContent ->
                                     itemManagementUseCase.addFile(newItemId, fileContent)
                                 }
@@ -289,9 +221,7 @@ class ItemDetailsViewModel(
 
                             setItem(newItemId)
                         }
-
                         _state.update { it.copy(saving = false, hasChanged = false) }
-
                     } catch (e: OpException) {
                         _state.update { it.copy(error = e.msg, saving = false) }
                     }
@@ -301,30 +231,15 @@ class ItemDetailsViewModel(
     }
 
     data class ItemDetailsViewState(
-        val deleted: Boolean = false,
         val editable: Boolean = false,
         val admin: Boolean = false,
-        val item: ItemVS = ItemVS(),
+        val item: ItemVS? = ItemVS(type = ItemTypeVS.DONATION),
 
-        val hasChanged: Boolean = false,
+        val users: Map<Int, String> = emptyMap(),
+
         val saving: Boolean = false,
         val error: String = "",
 
-        val neighbourhoodId: Int? = null,
-
-        val newImages: List<MemImgVS> = emptyList(),
-
-
-
-        val newFiles: Map<String, String> = emptyMap(),
-
-        val dates: List<Instant> = emptyList(),
-
-        val urlOverride: String? = null,
-
-        val nameError: Boolean = false,
-        val urlError: Boolean = false,
-
-        val users: Map<Int, String> = emptyMap(),
+        val hasChanged: Boolean = false,
     )
 }

@@ -27,15 +27,12 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemBadge
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemHouseholdBadge
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import neighbourly.composeapp.generated.resources.Res
@@ -56,7 +53,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun OrganismItemCard(
     item: ItemVS,
-    navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }
+    onClick: () -> Unit,
 ) {
     val imgTag = painterResource(Res.drawable.image)
     val fileTag = painterResource(Res.drawable.file)
@@ -76,7 +73,7 @@ fun OrganismItemCard(
 
     Card(
         modifier = Modifier.fillMaxWidth().clickable {
-            navigationViewModel.goToItemDetails(item.id)
+            onClick()
         },
         shape = RoundedCornerShape(8.dp),
         elevation = 4.dp

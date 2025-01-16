@@ -17,6 +17,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalUriHandler
@@ -45,9 +45,14 @@ import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismAlertDialog
 import com.neighbourly.app.a_device.ui.atomic.page.TYPE_ASSOC
 import com.neighbourly.app.a_device.ui.atomic.page.TYPE_ASSOC_ADMIN
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
-import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.*
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.NEED
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.REMINDER
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.REQUEST
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.MemImgVS
+import com.neighbourly.app.d_entity.util.isValidUrl
 import com.neighbourly.app.loadImageFromFile
+import com.neighbourly.app.loadNameFromFile
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.Instant.Companion.fromEpochSeconds
@@ -88,13 +93,27 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun OrganismEditableItemDetails(
-    //state: ItemDetailsViewModel.ItemDetailsViewState
     item: ItemVS,
     users: Map<Int, String>,
+    isAdmin: Boolean,
+    error: String,
+    saving: Boolean,
+    onSave: (
+        typeOverride: ItemTypeVS?,
+        nameOverride: String?,
+        descriptionOverride: String?,
+        datesOverride: List<Instant>?,
+        targetUserIdOverride: Int?,
+        urlOverride: String?,
+        startOverride: Instant?,
+        endOverride: Instant?,
+        newImages: List<MemImgVS>,
+        newFiles: Map<String, String>,
+    ) -> Unit,
+    onImageSelected: (imageId: Int) -> Unit,
+    deleteImage: (imageId: Int) -> Unit,
     deleteFile: (fileId: Int) -> Unit,
     deleteItem: () -> Unit,
-    onAddImage: (url: String, img: BitmapPainter) -> Unit,
-    onAddFile: (url: String) -> Unit,
 ) {
     var showImageFilePicker by remember { mutableStateOf(false) }
     var showAttachmentFilePicker by remember { mutableStateOf(false) }
@@ -110,18 +129,43 @@ fun OrganismEditableItemDetails(
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
     val badge = painterResource(Res.drawable.newbadge)
 
-    var targetUserIdOverride by remember { mutableStateOf<Int?>(null) }
-    var startOverride by remember { mutableStateOf<Instant?>(null) }
-    var endOverride by remember { mutableStateOf<Instant?>(null) }
     var typeOverride by remember { mutableStateOf<ItemTypeVS?>(null) }
     var nameOverride by remember { mutableStateOf<String?>(null) }
     var descriptionOverride by remember { mutableStateOf<String?>(null) }
+    var datesOverride by remember { mutableStateOf<List<Instant>?>(null) }
+    var targetUserIdOverride by remember { mutableStateOf<Int?>(null) }
+    var urlOverride by remember { mutableStateOf<String?>(null) }
+    var startOverride by remember { mutableStateOf<Instant?>(null) }
+    var endOverride by remember { mutableStateOf<Instant?>(null) }
+    var newImages by remember { mutableStateOf<List<MemImgVS>>(emptyList()) }
+    var newFiles by remember { mutableStateOf<Map<String, String>>(emptyMap()) }
 
-    LaunchedEffect(state.deleted) {
-        if (state.deleted) {
-            viewModel.deleteItemAck()
-            navigationViewModel.goBack()
-        }
+    val hasChanged by derivedStateOf {
+        listOf(
+            typeOverride,
+            nameOverride,
+            descriptionOverride,
+            datesOverride,
+            targetUserIdOverride,
+            urlOverride,
+            startOverride,
+            endOverride,
+        ).any { it != null }
+                || newImages.isNotEmpty()
+                || newFiles.isNotEmpty()
+    }
+
+    LaunchedEffect(item) {
+        typeOverride = null
+        nameOverride = null
+        descriptionOverride = null
+        datesOverride = null
+        targetUserIdOverride = null
+        urlOverride = null
+        startOverride = null
+        endOverride = null
+        newImages = emptyList()
+        newFiles = emptyMap()
     }
 
     if (showRemoveAlertForFileId != -1) {
@@ -168,7 +212,7 @@ fun OrganismEditableItemDetails(
         file?.platformFile?.toString()?.let {
             val img = loadImageFromFile(it, 400)
             if (img != null) {
-                onAddImage(it, img)
+                newImages += MemImgVS(it, img)
             }
         }
     }
@@ -189,9 +233,8 @@ fun OrganismEditableItemDetails(
         )
     ) { file ->
         showAttachmentFilePicker = false
-
         file?.platformFile?.toString()?.let {
-            onAddFile(it)
+            newFiles += (it to loadNameFromFile(it))
         }
     }
 
@@ -222,7 +265,16 @@ fun OrganismEditableItemDetails(
             title = stringResource(Res.string.reminders),
             instant = showDatePickerInstant ?: Clock.System.now()
         ) {
-            it?.let { viewModel.addOrUpdateDate(it, showDatePickerIndex) }
+            it?.let { ts ->
+                val instant = fromEpochSeconds(ts.toLong())
+                datesOverride = (datesOverride ?: item.dates).toMutableList().apply {
+                    if (showDatePickerIndex == -1) {
+                        this += instant
+                    } else {
+                        this[showDatePickerIndex] = instant
+                    }
+                }.sorted()
+            }
             showDatePickerInstant = null
         }
     }
@@ -254,7 +306,7 @@ fun OrganismEditableItemDetails(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     horizontalArrangement = Arrangement.Start,
                 ) {
-                    (if (state.admin) TYPE_ASSOC_ADMIN else TYPE_ASSOC).forEach { (type, iconNamePair) ->
+                    (if (isAdmin) TYPE_ASSOC_ADMIN else TYPE_ASSOC).forEach { (type, iconNamePair) ->
                         ItemTypeOption(
                             icon = painterResource(iconNamePair.first),
                             selected = (typeOverride ?: item.type) == type,
@@ -284,17 +336,14 @@ fun OrganismEditableItemDetails(
                 OutlinedTextField(
                     value = nameOverride ?: item.name,
                     onValueChange = {
-                        nameOverride =  it
-                        //todo fix error show on name format
-                        //todo fix hasChanged mechanics 
-                        viewModel.updateName(it)
+                        nameOverride = it
                     },
-                    isError = state.nameError,
+                    isError = nameOverride?.isBlank() ?: false,
                     label = { Text(stringResource(Res.string.item_name)) },
                     modifier = Modifier.fillMaxWidth(),
                 )
 
-                AnimatedVisibility((typeOverride ?: item.type) != ItemType.REMINDER.name) {
+                AnimatedVisibility((typeOverride ?: item.type) != REMINDER) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -310,11 +359,12 @@ fun OrganismEditableItemDetails(
                         )
 
                         OutlinedTextField(
-                            value = state.urlOverride ?: item.url,
+                            value = urlOverride ?: item.url,
                             onValueChange = {
-                                viewModel.updateUrl(it)
+                                urlOverride = it
                             },
-                            isError = state.urlError,
+                            isError = urlOverride?.let { it.isBlank() || !it.isValidUrl() }
+                                ?: false,
                             label = { Text(stringResource(Res.string.item_url)) },
                             modifier = Modifier.fillMaxWidth(),
                         )
@@ -331,22 +381,23 @@ fun OrganismEditableItemDetails(
                     }, text = stringResource(Res.string.add_image), bold = true)
                 }
 
-                if (item.images.size > 0 || state.newImages.size > 0) {
+                if (item.images.size > 0 || newImages.size > 0) {
                     ImageGrid(
                         images = item.images,
-                        newImages = state.newImages,
-                        deleteNew = {
-                            viewModel.deleteNewImage(it.name)
+                        newImages = newImages,
+                        deleteNew = { delImg ->
+                            newImages = newImages.filter { it != delImg }
                         },
                         delete = {
-                            viewModel.deleteImage(it)
+                            deleteImage(it.id)
+                        },
+                        select = {
+                            onImageSelected(it.id)
                         }
-                    ) { imageId ->
-                        item.id?.let { navigationViewModel.goToGallery(it, imageId) }
-                    }
+                    )
                 }
 
-                AnimatedVisibility((typeOverride ?: item.type) == ItemType.REMINDER.name) {
+                AnimatedVisibility((typeOverride ?: item.type) == REMINDER) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -359,11 +410,11 @@ fun OrganismEditableItemDetails(
                             FriendlyText(modifier = Modifier.clickable {
                                 showDatePickerIndex = -1
                                 showDatePickerInstant =
-                                    state.dates.lastOrNull() ?: Clock.System.now()
+                                    (datesOverride ?: item.dates).lastOrNull() ?: Clock.System.now()
                             }, text = stringResource(Res.string.add_date), bold = true)
                         }
 
-                        state.dates.forEachIndexed { index, date ->
+                        (datesOverride ?: item.dates).forEachIndexed { index, date ->
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
@@ -379,7 +430,10 @@ fun OrganismEditableItemDetails(
                                 )
                                 FriendlyText(
                                     modifier = Modifier.clickable {
-                                        viewModel.addOrUpdateDate(null, index)
+                                        datesOverride =
+                                            (datesOverride ?: item.dates).toMutableList().apply {
+                                                this.removeAt(index)
+                                            }
                                     },
                                     text = stringResource(Res.string.delete),
                                     bold = true
@@ -389,7 +443,7 @@ fun OrganismEditableItemDetails(
                     }
                 }
 
-                AnimatedVisibility((typeOverride ?: item.type) != ItemType.REMINDER.name) {
+                AnimatedVisibility((typeOverride ?: item.type) != REMINDER) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -411,7 +465,7 @@ fun OrganismEditableItemDetails(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 FriendlyText(
-                                    modifier = Modifier.weight(1f).clickable {
+                                    modifier = Modifier.weight(1f).padding(end = 5.dp).clickable {
                                         uriHandler.openUri(it.url)
                                     }, text = it.name, bold = true
                                 )
@@ -426,17 +480,18 @@ fun OrganismEditableItemDetails(
                             }
                         }
 
-                        state.newFiles.onEach {
+                        newFiles.onEach { newFile ->
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 FriendlyText(
                                     modifier = Modifier
-                                        .fillMaxWidth()
+                                        .weight(1f).padding(end = 5.dp)
                                         .clickable {
                                             showNewFileAlert = true
-                                        }, text = it.value, bold = true
+                                        }, text = newFile.value, bold = true
                                 )
                                 Image(
                                     modifier = Modifier.size(36.dp),
@@ -444,6 +499,13 @@ fun OrganismEditableItemDetails(
                                     contentScale = ContentScale.FillBounds,
                                     contentDescription = "Item File New Badge",
                                     colorFilter = ColorFilter.tint(AppColors.primary),
+                                )
+                                FriendlyText(
+                                    modifier = Modifier.wrapContentWidth().clickable {
+                                        newFiles = newFiles.filter { it != newFile }
+                                    },
+                                    text = stringResource(Res.string.delete),
+                                    bold = true
                                 )
                             }
                         }
@@ -522,22 +584,33 @@ fun OrganismEditableItemDetails(
                     }
                 }
 
-                if (state.hasChanged) {
+                if (hasChanged) {
                     FriendlyButton(
                         text = stringResource(Res.string.save),
-                        loading = state.saving,
+                        loading = saving,
                     ) {
-                        viewModel.save()
+                        onSave(
+                            typeOverride,
+                            nameOverride,
+                            descriptionOverride,
+                            datesOverride,
+                            targetUserIdOverride,
+                            urlOverride,
+                            startOverride,
+                            endOverride,
+                            newImages,
+                            newFiles,
+                        )
                     }
                 }
 
-                if (state.error.isNotEmpty()) {
-                    FriendlyErrorText(state.error)
+                if (error.isNotEmpty()) {
+                    FriendlyErrorText(error)
                 }
             }
         }
         CardFooter {
-            if (state.editable && item.id != null) {
+            if (item.id != null) {
                 FriendlyText(
                     modifier = Modifier.clickable {
                         showDeleteAlert = true

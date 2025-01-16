@@ -140,7 +140,7 @@ val adapterModule =
             MainContentViewModel(get(), get())
         }
         factory {
-            ItemDetailsViewModel(get(), get(), get(), get())
+            ItemDetailsViewModel(get(), get(), get())
         }
         factory {
             BackendInfoViewModel(get())

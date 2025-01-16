@@ -36,6 +36,7 @@ import org.jetbrains.compose.resources.stringResource
 fun FilteredItemListTemplate(
     state: FilteredItemListViewState,
     onDeleteItem: (id: Int) -> Unit,
+    onSelectItem: (id: Int) -> Unit,
     refresh: () -> Unit,
 ) {
     var showRemoveAlertForId by remember { mutableStateOf(-1) }
@@ -47,7 +48,7 @@ fun FilteredItemListTemplate(
                 text = stringResource(Res.string.confirm_deleteing_item) + " " + item.name,
                 ok = {
                     showRemoveAlertForId = -1
-                    onDeleteItem(item.id)
+                    item.id?.let { onDeleteItem(it) }
                 },
                 cancel = {
                     showRemoveAlertForId = -1
@@ -67,15 +68,19 @@ fun FilteredItemListTemplate(
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    items(items = state.items, key = { it.id }) { item ->
+                    items(items = state.items, key = { it.id ?: -1 }) { item ->
                         if (item.deletable) {
                             SwipeToDeleteContainer(onDelete = {
-                                showRemoveAlertForId = item.id
+                                showRemoveAlertForId = item.id ?: -1
                             }) {
-                                OrganismItemCard(item)
+                                OrganismItemCard(item) {
+                                    item.id?.let { onSelectItem(it) }
+                                }
                             }
                         } else {
-                            OrganismItemCard(item)
+                            OrganismItemCard(item){
+                                item.id?.let { onSelectItem(it) }
+                            }
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                     }

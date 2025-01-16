@@ -44,7 +44,7 @@ import java.time.format.DateTimeFormatter
 fun OrganismReadonlyItemDetails(
     item: ItemVS,
     users: Map<Int, String>,
-    onImageSelected: (itemId: Int, imageId: Int) -> Unit,
+    onImageSelected: (imageId: Int) -> Unit,
     onUrlSelected: (url: String) -> Unit,
 ) {
     val uriHandler = LocalUriHandler.current
@@ -134,8 +134,8 @@ fun OrganismReadonlyItemDetails(
                         ImageGrid(
                             images = item.images,
                             newImages = emptyList()
-                        ) { imageId ->
-                            item.id?.let { onImageSelected(it, imageId) }
+                        ) { image ->
+                            onImageSelected(image.id)
                         }
                     }
                 }
