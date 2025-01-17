@@ -31,6 +31,7 @@ import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.REMINDER
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.REQUEST
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.MemImgVS
+import com.neighbourly.app.d_entity.util.isValidUrl
 import kotlinx.datetime.Instant
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.save
@@ -140,7 +141,8 @@ fun OrganismEditableItemDetails(
 
         ItemEditUrl(
             hidden = (typeOverride ?: item.type) == REMINDER,
-            url = urlOverride ?: item.url
+            url = urlOverride ?: item.url,
+            isError = urlOverride?.let { it.isBlank() || !it.isValidUrl() } ?: false
         ) {
             urlOverride = it
         }

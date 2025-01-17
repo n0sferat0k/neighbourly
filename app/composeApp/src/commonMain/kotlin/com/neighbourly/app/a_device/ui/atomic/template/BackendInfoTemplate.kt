@@ -9,88 +9,99 @@ import com.neighbourly.app.a_device.ui.atomic.organism.info.OrganismAppInfo
 import com.neighbourly.app.a_device.ui.atomic.organism.info.OrganismErrorLog
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismContentBubble
 import com.neighbourly.app.b_adapt.viewmodel.BackendInfoViewModel.BackendInfoViewState
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 
-val backendInfoTemplate = TemplateNode(
-    id = "OrganismContentBubble",
-    params = mapOf("scrollable" to "true"),
-    children = listOf(
-        TemplateNode(
-            id = "Column", children = listOf(
-                TemplateNode(id = "OrganismAppInfo"),
-                TemplateNode(id = "OrganismAppDownloadLink"),
-                TemplateNode(id = "OrganismErrorLog")
-            )
-        ),
-        TemplateNode(id = "CloseCardFooter")
-    )
-)
+val backendInfoTemplate =
+    """
+    {
+      "id": "OrganismContentBubble",
+      "params": {
+        "scrollable": "true"
+      },
+      "children": {
+        "content": {
+          "id": "Column",
+          "params": {},
+          "children": {
+            "1": {
+              "id": "OrganismAppInfo",
+              "params": {
+                "appVersion": "1.0.4",
+                "isDebug": "true"
+              },
+              "children": {}
+            },
+            "2": {
+              "id": "OrganismAppDownloadLink",
+              "params": {
+                "appVersion": "1.0.4"
+              },
+              "children": {}
+            },
+            "3": {
+              "id": "OrganismErrorLog",
+              "params": {
+                "lastError": "This is a fake error message."
+              },
+              "children": {}
+            }
+          }
+        },
+        "footerContent": {
+          "id": "OkCardFooter",
+          "params": {},
+          "children": {}
+        }
+      }
+    }    
+    """.trimIndent()
 
+@Serializable
 data class TemplateNode(
     val id: String,
     val params: Map<String, String?> = emptyMap(),
-    val children: List<TemplateNode> = emptyList()
+    val children: Map<String, TemplateNode> = emptyMap()
 )
 
 typealias TemplateCallback = (name: String, params: Map<String, String?>) -> Unit
-typealias TemplateArguments = Map<String, String?>
 
 @Composable
 fun RenderTemplate(
     template: TemplateNode?,
-    arguments: TemplateArguments,
     callback: TemplateCallback
 ) {
     template?.let {
         when (template.id) {
             "Column" -> Column {
-                template.children.forEach { RenderTemplate(it, arguments, callback) }
+                template.children.forEach { RenderTemplate(it.value, callback) }
             }
 
             "Row" -> Row {
-                template.children.forEach { RenderTemplate(it, arguments, callback) }
+                template.children.forEach { RenderTemplate(it.value, callback) }
             }
 
             "OrganismContentBubble" -> OrganismContentBubble(
                 scrollable = template.params["scrollable"].toBoolean(),
-                content = { RenderTemplate(template.children[0], arguments, callback) },
-                footerContent = { RenderTemplate(template.children[1], arguments, callback) }
+                content = { RenderTemplate(template.children["content"], callback) },
+                footerContent = { RenderTemplate(template.children["footerContent"], callback) }
             )
 
             "OrganismAppInfo" -> OrganismAppInfo(
-                arguments["appVersion"].orEmpty(),
-                arguments["isDebug"].toBoolean()
+                template.params["appVersion"].orEmpty(),
+                template.params["isDebug"].toBoolean()
             )
 
             "OrganismAppDownloadLink" -> OrganismAppDownloadLink(
-                arguments["appVersion"].orEmpty(),
+                template.params["appVersion"].orEmpty(),
             )
 
-            "OrganismErrorLog" -> OrganismErrorLog(arguments["lastError"])
+            "OrganismErrorLog" -> OrganismErrorLog(template.params["lastError"])
 
-            "CloseCardFooter" -> OkCardFooter(onOk = { callback("onClose", emptyMap()) })
+            "OkCardFooter" -> OkCardFooter(onOk = { callback("onClose", emptyMap()) })
         }
     }
-}
-
-@Composable
-fun BackendInfoTemplate(
-    state: BackendInfoViewState,
-    onClose: () -> Unit
-) {
-    RenderTemplate(
-        backendInfoTemplate,
-        mapOf(
-            "appVersion" to state.appVersion,
-            "isDebug" to state.isDebug.toString(),
-            "lastError" to state.lastError
-        ),
-        { command, params ->
-            when (command) {
-                "onClose" -> onClose()
-            }
-        }
-    )
 }
 
 //@Composable
@@ -98,17 +109,32 @@ fun BackendInfoTemplate(
 //    state: BackendInfoViewState,
 //    onClose: () -> Unit
 //) {
-//    OrganismContentBubble(
-//        scrollable = false,
-//        content = {
-//            Column {
-//                OrganismAppInfo(state.appVersion, state.isDebug)
-//                OrganismAppDownloadLink(state.appVersion)
-//                OrganismErrorLog(state.lastError)
+//    RenderTemplate(
+//        Json.decodeFromString<TemplateNode>(backendInfoTemplate),
+//        { command, params ->
+//            when (command) {
+//                "onClose" -> onClose()
 //            }
-//        },
-//        footerContent = {
-//            CloseCardFooter { onClose() }
 //        }
 //    )
 //}
+
+@Composable
+fun BackendInfoTemplate(
+    state: BackendInfoViewState,
+    onClose: () -> Unit
+) {
+    OrganismContentBubble(
+        scrollable = false,
+        content = {
+            Column {
+                OrganismAppInfo(state.appVersion, state.isDebug)
+                OrganismAppDownloadLink(state.appVersion)
+                OrganismErrorLog(state.lastError)
+            }
+        },
+        footerContent = {
+            OkCardFooter { onClose() }
+        }
+    )
+}

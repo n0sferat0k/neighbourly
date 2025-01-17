@@ -18,6 +18,7 @@ import org.jetbrains.compose.resources.stringResource
 fun ItemEditUrl(
     hidden: Boolean = false,
     url: String,
+    isError: Boolean = false,
     onChange: (url: String) -> Unit
 ) {
     AnimatedVisibility(!hidden) {
@@ -26,8 +27,7 @@ fun ItemEditUrl(
             onValueChange = {
                 onChange(it)
             },
-            isError = urlOverride?.let { it.isBlank() || !it.isValidUrl() }
-                ?: false,
+            isError = isError,
             label = { Text(stringResource(Res.string.item_url)) },
             modifier = Modifier.fillMaxWidth(),
         )

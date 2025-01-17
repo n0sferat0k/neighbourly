@@ -1,9 +1,7 @@
 package com.neighbourly.app.a_device.ui.atomic.organism.info
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
@@ -15,11 +13,11 @@ import org.jetbrains.compose.resources.stringResource
 fun OrganismErrorLog(lastError: String?) {
     if (lastError != null) {
         FriendlyText(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier,
             text = stringResource(Res.string.last_error),
             fontSize = 22.sp,
         )
 
-        FriendlyErrorText(lastError.orEmpty())
+        FriendlyErrorText(lastError)
     }
 }
