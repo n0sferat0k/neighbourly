@@ -12,13 +12,13 @@ import androidx.compose.ui.Modifier
 import com.multiplatform.webview.jsbridge.IJsMessageHandler
 import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.jsbridge.rememberWebViewJsBridge
-import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
 import com.neighbourly.app.GeoLocationCallback
 import com.neighbourly.app.GetLocation
 import com.neighbourly.app.KoinProvider
+import com.neighbourly.app.PlatformWebView
 import com.neighbourly.app.b_adapt.viewmodel.WebMapViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.d_entity.data.ItemType
@@ -68,7 +68,7 @@ fun WebMapView(
         }
     }
 
-    WebView(
+    PlatformWebView(
         state = webViewState,
         modifier = modifier,
         navigator = navigator,

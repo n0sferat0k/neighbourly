@@ -22,6 +22,7 @@ import android.telephony.SubscriptionManager
 import android.telephony.SubscriptionManager.DEFAULT_SUBSCRIPTION_ID
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
@@ -35,6 +36,10 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
+import com.multiplatform.webview.jsbridge.WebViewJsBridge
+import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.WebViewNavigator
+import com.multiplatform.webview.web.WebViewState
 import com.neighbourly.app.NeighbourlyApp.Companion.locationProvider
 import com.neighbourly.app.a_device.store.StatusMemoryStore
 import com.neighbourly.app.d_entity.data.FileContents
@@ -243,3 +248,18 @@ actual fun postSystemNotification(id: Int, title: String, text: String) {
 
 actual val appVersionString: String
     get() = BuildConfig.appVersion
+
+@Composable
+actual fun PlatformWebView(
+    state: WebViewState,
+    modifier: Modifier,
+    navigator: WebViewNavigator,
+    webViewJsBridge: WebViewJsBridge?,
+) {
+    WebView(
+        state = state,
+        modifier = modifier,
+        navigator = navigator,
+        webViewJsBridge = webViewJsBridge,
+    )
+}

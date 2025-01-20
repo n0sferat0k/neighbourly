@@ -19,7 +19,6 @@ import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebGallery
 import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebMap
 import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebPage
 import com.neighbourly.app.d_entity.data.ItemType
-import com.neighbourly.app.d_entity.interf.ConfigStatusSource
 import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,7 +30,6 @@ import java.util.Stack
 
 public class NavigationViewModel(
     val sessionStore: SessionStore,
-    val configProvider: ConfigStatusSource
 ) : ViewModel() {
     private val _state = MutableStateFlow(NavigationViewState())
     private val _stateStack = Stack<NavigationViewState>()
@@ -61,11 +59,14 @@ public class NavigationViewModel(
                 }
             }.launchIn(viewModelScope)
 
-        configProvider.wideScreenFlow.onEach { wideScreen ->
-            _state.update {
-                it.copy(disableMainToggle = wideScreen)
-            }
-        }.launchIn(viewModelScope)
+    }
+
+    fun disableMainToggel(disable: Boolean) {
+        _state.update {
+            it.copy(
+                disableMainToggle = disable
+            )
+        }
     }
 
     fun toggleMainContent() {

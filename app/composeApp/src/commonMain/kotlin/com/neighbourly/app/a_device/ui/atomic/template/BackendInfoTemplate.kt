@@ -8,9 +8,8 @@ import com.neighbourly.app.a_device.ui.atomic.organism.info.OrganismAppDownloadL
 import com.neighbourly.app.a_device.ui.atomic.organism.info.OrganismAppInfo
 import com.neighbourly.app.a_device.ui.atomic.organism.info.OrganismErrorLog
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismContentBubble
-import com.neighbourly.app.b_adapt.viewmodel.BackendInfoViewModel.BackendInfoViewState
+import com.neighbourly.app.b_adapt.viewmodel.AppStateInfoViewModel.AppStateInfoViewState
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
 
 val backendInfoTemplate =
@@ -105,15 +104,13 @@ fun RenderTemplate(
 }
 
 //@Composable
-//fun BackendInfoTemplate(
-//    state: BackendInfoViewState,
-//    onClose: () -> Unit
-//) {
+//fun CusomPageTemplate() {
 //    RenderTemplate(
-//        Json.decodeFromString<TemplateNode>(backendInfoTemplate),
+//        Json.decodeFromString<TemplateNode>(customPageTemplateJson),
 //        { command, params ->
 //            when (command) {
-//                "onClose" -> onClose()
+//                "onDealSelected" -> //send to backend for handling
+//                "onFilterSelected" -> //send to backend for handling
 //            }
 //        }
 //    )
@@ -121,7 +118,7 @@ fun RenderTemplate(
 
 @Composable
 fun BackendInfoTemplate(
-    state: BackendInfoViewState,
+    state: AppStateInfoViewState,
     onClose: () -> Unit
 ) {
     OrganismContentBubble(

@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewState
+import com.neighbourly.app.PlatformWebView
 
 
 @Composable
@@ -16,7 +17,7 @@ fun WebPageView(
         rememberWebViewState(url = url)
     val navigator = rememberWebViewNavigator()
 
-    WebView(
+    PlatformWebView(
         modifier = modifier,
         state = webViewState,
         navigator = navigator,

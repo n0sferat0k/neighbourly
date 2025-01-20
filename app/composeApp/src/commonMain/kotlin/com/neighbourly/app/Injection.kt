@@ -5,7 +5,7 @@ import com.neighbourly.app.a_device.remote.PahoMqttIot
 import com.neighbourly.app.a_device.store.SessionHybridStore
 import com.neighbourly.app.b_adapt.gateway.ApiGateway
 import com.neighbourly.app.b_adapt.interactor.DbInteractor
-import com.neighbourly.app.b_adapt.viewmodel.BackendInfoViewModel
+import com.neighbourly.app.b_adapt.viewmodel.AppStateInfoViewModel
 import com.neighbourly.app.b_adapt.viewmodel.WebMapViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
@@ -95,7 +95,7 @@ val adapterModule =
             DbInteractor(createDatabase())
         }
         single {
-            NavigationViewModel(get(), get())
+            NavigationViewModel(get())
         }
         factory {
             LoginViewModel(get(), get())
@@ -143,7 +143,7 @@ val adapterModule =
             ItemDetailsViewModel(get(), get(), get())
         }
         factory {
-            BackendInfoViewModel(get())
+            AppStateInfoViewModel(get())
         }
         factory {
             BoxManagementViewModel(get(), get(), get(), get())

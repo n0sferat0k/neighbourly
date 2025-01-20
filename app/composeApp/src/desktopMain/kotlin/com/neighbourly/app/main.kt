@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.atomic.page.HostPage
 import com.neighbourly.app.a_device.ui.web.WebContentView
 import dev.datlag.kcef.KCEF
 import kotlinx.coroutines.Dispatchers
@@ -34,68 +35,8 @@ fun main() {
             onCloseRequest = ::exitApplication,
             title = "Neighbourly",
         ) {
-            Surface(modifier = Modifier.fillMaxSize()) {
-                Row(modifier = Modifier.fillMaxSize()) {
-                    Box(
-                        modifier =
-                            Modifier
-                                .width(440.dp)
-                                .fillMaxHeight()
-                                .background(AppColors.primaryLight),
-                    ) {
-                        App(includeMap = false)
-                    }
-                    Box(
-                        modifier =
-                            Modifier
-                                .weight(1f)
-                                .fillMaxHeight()
-                                .background(AppColors.complementaryLight),
-                    ) {
-                        DesktopMap()
-                    }
-                }
-            }
+            HostPage()
         }
     }
 }
 
-@Composable
-fun DesktopMap() {
-    var restartRequired by remember { mutableStateOf(false) }
-    var downloading by remember { mutableStateOf(0F) }
-    var initialized by remember { mutableStateOf(false) }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            KCEF.disposeBlocking()
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            KCEF.init(
-                builder = {
-                    installDir(File("kcef-bundle"))
-                    progress {
-                        onDownloading { downloading = max(it, 0F) }
-                        onInitialized { initialized = true }
-                    }
-                    settings { cachePath = File("cache").absolutePath }
-                },
-                onError = { it?.printStackTrace() },
-                onRestartRequired = { restartRequired = true },
-            )
-        }
-    }
-
-    if (restartRequired) {
-        Text(text = "Restart required.")
-    } else {
-        if (initialized) {
-            WebContentView(modifier = Modifier.fillMaxSize())
-        } else {
-            Text(text = "Downloading $downloading%")
-        }
-    }
-}

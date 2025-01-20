@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewState
+import com.neighbourly.app.PlatformWebView
 
 
 @Composable
@@ -17,7 +18,7 @@ fun WebGalleryView(
         rememberWebViewState(url = "http://neighbourly.go.ro/gallery.php?itemId=$itemId&imageId=$imageId")
     val navigator = rememberWebViewNavigator()
 
-    WebView(
+    PlatformWebView(
         modifier = modifier,
         state = webViewState,
         navigator = navigator,
