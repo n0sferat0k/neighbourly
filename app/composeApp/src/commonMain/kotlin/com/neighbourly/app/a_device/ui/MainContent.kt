@@ -17,7 +17,7 @@ import com.neighbourly.app.a_device.ui.atomic.page.ItemDetailsPage
 import com.neighbourly.app.a_device.ui.atomic.page.LoginOrRegisterPage
 import com.neighbourly.app.a_device.ui.items.RemidersView
 import com.neighbourly.app.a_device.ui.misc.LandingView
-import com.neighbourly.app.a_device.ui.profile.Profile
+import com.neighbourly.app.a_device.ui.atomic.page.ProfilePage
 import com.neighbourly.app.b_adapt.viewmodel.items.MainContentViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BackendInfo
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BoxManage
@@ -42,7 +42,7 @@ fun MainContent(
     } else if (navigation.restrictedContent) {
         AnimatedVisibility(navigation.mainContentVisible) {
             if (navigation.userLoggedIn) {
-                Profile()
+                ProfilePage()
             } else {
                 LoginOrRegisterPage()
             }
@@ -71,26 +71,18 @@ fun MainContent(
                                     showExpired = false
                                 )
                             }
-
                         ManageMyStuff ->
                             FilteredItemListPage(
                                 type = null,
                                 householdId = state.householdId,
                                 showExpired = true
                             )
-
-                        ManageProfile -> Profile()
-
+                        ManageProfile -> ProfilePage()
                         PublishStuff -> ItemDetailsPage(null)
-
                         BoxManage -> BoxManagementPage()
-
                         is ShowItemDetails -> ItemDetailsPage(it.itemId)
-
                         BackendInfo -> BackendInfoPage()
-
                         Reminders -> RoundedCornerCard { RemidersView() }
-
                         else -> OrganismUnderConstruction()
                     }
                 }

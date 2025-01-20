@@ -37,7 +37,6 @@ import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.save
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun OrganismEditableItemDetails(
     item: ItemVS,
@@ -142,7 +141,7 @@ fun OrganismEditableItemDetails(
         ItemEditUrl(
             hidden = (typeOverride ?: item.type) == REMINDER,
             url = urlOverride ?: item.url,
-            isError = urlOverride?.let { it.isBlank() || !it.isValidUrl() } ?: false
+            isError = urlOverride?.let { !it.isBlank() && !it.isValidUrl() } ?: false
         ) {
             urlOverride = it
         }

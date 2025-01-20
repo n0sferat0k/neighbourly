@@ -85,10 +85,16 @@ class ItemDetailsViewModel(
                                     ?.let { fromEpochSeconds(it.toLong()) },
                                 end = item.endTs.takeIf { it > 0 }
                                     ?.let { fromEpochSeconds(it.toLong()) },
-                                images = item.images.map { AttachmentVS(it.id, it.url, it.name) },
+                                images = item.images.map {
+                                    AttachmentVS(
+                                        it.id ?: 0,
+                                        it.url,
+                                        it.name
+                                    )
+                                },
                                 files = item.files.map {
                                     AttachmentVS(
-                                        id = it.id,
+                                        id = it.id ?: 0,
                                         url = it.url,
                                         name = it.name,
                                     )
@@ -172,10 +178,10 @@ class ItemDetailsViewModel(
         newFiles: Map<String, String>,
     ) {
         viewModelScope.launch {
-            val nameError = nameOverride?.isBlank() ?: false
-            val urlError = urlOverride?.let { it.isBlank() || !it.isValidUrl() } ?: false
-            if (!nameError && !urlError && !_state.value.saving) {
-                _state.value.item?.let { item ->
+            _state.value.item?.let { item ->
+                val nameError = (nameOverride ?: item.name).isBlank()
+                val urlError = (urlOverride ?: item.url).let { !it.isBlank() && !it.isValidUrl() }
+                if (!nameError && !urlError && !_state.value.saving) {
                     try {
                         _state.update { it.copy(saving = true) }
                         val type = (typeOverride ?: item.type).toItemType()

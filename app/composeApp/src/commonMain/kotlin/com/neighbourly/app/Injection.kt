@@ -20,8 +20,6 @@ import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdInfoEditViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdLocalizeViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.NeighbourhoodAddMemberViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.NeighbourhoodInfoViewModel
-import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileInfoEditViewModel
-import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileMenuViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileViewModel
 import com.neighbourly.app.c_business.usecase.auth.LoginUseCase
 import com.neighbourly.app.c_business.usecase.auth.LogoutUseCase
@@ -104,13 +102,7 @@ val adapterModule =
             RegisterViewModel(get(), get())
         }
         factory {
-            ProfileViewModel(get(), get(), get())
-        }
-        factory {
-            ProfileMenuViewModel(get(), get())
-        }
-        factory {
-            ProfileInfoEditViewModel(get(), get())
+            ProfileViewModel(get(), get(), get(), get(), get())
         }
         factory {
             LoginViewModel(get(), get())

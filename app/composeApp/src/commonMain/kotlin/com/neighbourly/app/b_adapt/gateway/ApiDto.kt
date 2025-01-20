@@ -148,7 +148,7 @@ data class ItemDTO(
 
 @Serializable
 data class AttachmentDTO(
-    val id: Int,
+    val id: Int? = null,
     val url: String,
     val name: String = "",
 )

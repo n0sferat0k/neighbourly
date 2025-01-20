@@ -34,11 +34,11 @@ fun OrganismContentBubble(
 
             if (scrollable) {
                 CardScrollableContent(modifier = Modifier.fillMaxWidth().weight(1f)) {
-                    Column(content = content)
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, content = content)
                 }
             } else {
                 CardStaticContent(modifier = Modifier.fillMaxWidth().weight(1f)) {
-                    Column(content = content)
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, content = content)
                 }
             }
 

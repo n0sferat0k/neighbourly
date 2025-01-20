@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.profile
+package com.neighbourly.app.a_device.ui.atomic.organism.profile
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -6,15 +6,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
-import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileInfoEditViewModel
+import com.neighbourly.app.b_adapt.viewmodel.bean.ProfileVS
+import com.neighbourly.app.d_entity.util.isValidEmail
+import com.neighbourly.app.d_entity.util.isValidPhone
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.about
 import neighbourly.composeapp.generated.resources.email
@@ -25,12 +29,40 @@ import neighbourly.composeapp.generated.resources.username
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun ProfileInfoEditView(viewModel: ProfileInfoEditViewModel = viewModel { KoinProvider.KOIN.get<ProfileInfoEditViewModel>() }) {
-    val state by viewModel.state.collectAsState()
+fun OrganismProfileInfoEdit(
+    profile: ProfileVS,
+    saving: Boolean,
+    onSave: (
+        fullnameOverride: String?,
+        emailOverride: String?,
+        phoneOverride: String?,
+        aboutOverride: String?,
+    ) -> Unit,
+) {
+    var fullnameOverride by remember { mutableStateOf<String?>(null) }
+    var emailOverride by remember { mutableStateOf<String?>(null) }
+    var phoneOverride by remember { mutableStateOf<String?>(null) }
+    var aboutOverride by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(profile) {
+        fullnameOverride = null
+        emailOverride = null
+        phoneOverride = null
+        aboutOverride = null
+    }
+
+    val hasChanged by derivedStateOf {
+        listOf(
+            fullnameOverride,
+            emailOverride,
+            phoneOverride,
+            aboutOverride,
+        ).any { it != null }
+    }
 
     // Username Input
     OutlinedTextField(
-        value = state.username,
+        value = profile.username,
         onValueChange = { },
         enabled = false,
         label = { Text(stringResource(Res.string.username)) },
@@ -41,12 +73,12 @@ fun ProfileInfoEditView(viewModel: ProfileInfoEditViewModel = viewModel { KoinPr
 
     // Full Name Input
     OutlinedTextField(
-        value = state.fullnameOverride ?: state.fullname,
+        value = fullnameOverride ?: profile.fullname,
         onValueChange = {
-            viewModel.updateFullname(it)
+            fullnameOverride = it
         },
         label = { Text(stringResource(Res.string.fullname)) },
-        isError = state.fullnameError,
+        isError = fullnameOverride?.isBlank() ?: false,
         modifier = Modifier.fillMaxWidth(),
     )
 
@@ -54,12 +86,12 @@ fun ProfileInfoEditView(viewModel: ProfileInfoEditViewModel = viewModel { KoinPr
 
     // Email Input
     OutlinedTextField(
-        value = state.emailOverride ?: state.email,
+        value = emailOverride ?: profile.email,
         onValueChange = {
-            viewModel.updateEmail(it)
+            emailOverride = it
         },
         label = { Text(stringResource(Res.string.email)) },
-        isError = state.emailError,
+        isError = emailOverride?.let { it.isBlank() || !it.isValidEmail() } ?: false,
         modifier = Modifier.fillMaxWidth(),
     )
 
@@ -67,12 +99,12 @@ fun ProfileInfoEditView(viewModel: ProfileInfoEditViewModel = viewModel { KoinPr
 
     // Phone Number Input
     OutlinedTextField(
-        value = state.phoneOverride ?: state.phone,
+        value = phoneOverride ?: profile.phone,
         onValueChange = {
-            viewModel.updatePhone(it)
+            phoneOverride = it
         },
         label = { Text(stringResource(Res.string.phone)) },
-        isError = state.phoneError,
+        isError = phoneOverride?.let { it.isBlank() || !it.isValidPhone() } ?: false,
         modifier = Modifier.fillMaxWidth(),
     )
 
@@ -80,9 +112,9 @@ fun ProfileInfoEditView(viewModel: ProfileInfoEditViewModel = viewModel { KoinPr
 
     // About Input
     OutlinedTextField(
-        value = state.aboutOverride ?: state.about,
+        value = aboutOverride ?: profile.about,
         onValueChange = {
-            viewModel.updateAbout(it)
+            aboutOverride = it
         },
         maxLines = 5,
         label = { Text(stringResource(Res.string.about)) },
@@ -91,14 +123,17 @@ fun ProfileInfoEditView(viewModel: ProfileInfoEditViewModel = viewModel { KoinPr
 
     Spacer(modifier = Modifier.height(8.dp))
 
-    FriendlyButton(
-        text = stringResource(Res.string.save),
-        loading = state.saving,
-    ) {
-        viewModel.onSaveProfile()
-    }
-
-    if (state.error.isNotEmpty()) {
-        FriendlyErrorText(state.error)
+    if (hasChanged) {
+        FriendlyButton(
+            text = stringResource(Res.string.save),
+            loading = saving,
+        ) {
+            onSave(
+                fullnameOverride,
+                emailOverride,
+                phoneOverride,
+                aboutOverride,
+            )
+        }
     }
 }
