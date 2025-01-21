@@ -169,6 +169,7 @@ class ApiGateway(
         token: String,
         id: Int,
         username: String,
+        access: Map<Int, Int>,
     ): User =
         runContextCatchTranslateThrow {
             api
@@ -178,6 +179,12 @@ class ApiGateway(
                     AddMemberToHouseholdInput(
                         id = id,
                         username = username,
+                        neighbourhoods = access.map {
+                            NeighbourhoodDTO(
+                                neighbourhoodid = it.key,
+                                access = it.value
+                            )
+                        }
                     ),
                 ).toUser()
         }

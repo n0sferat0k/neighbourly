@@ -55,11 +55,12 @@ class HouseholdManagementUseCase(
     suspend fun addMember(
         id: Int,
         username: String,
+        access: Map<Int, Int>,
     ) {
         val token = sessionStore.user?.authtoken
 
         token?.let {
-            val user = apiGw.addMemberToHousehold(it, id, username)
+            val user = apiGw.addMemberToHousehold(it, id, username, access)
             sessionStore.updateUser {
                 it?.copy(
                     username = user.username,

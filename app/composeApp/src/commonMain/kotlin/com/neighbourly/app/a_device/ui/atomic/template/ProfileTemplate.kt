@@ -13,7 +13,7 @@ import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismProfileIn
 import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismProfileMenu
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismContentBubble
 import com.neighbourly.app.a_device.ui.atomic.page.HouseholdInfoEditPage
-import com.neighbourly.app.a_device.ui.profile.HouseholdAddMemberView
+import com.neighbourly.app.a_device.ui.atomic.page.HouseholdAddMemberPage
 import com.neighbourly.app.a_device.ui.profile.HouseholdLocalizeView
 import com.neighbourly.app.a_device.ui.profile.NeighbourhoodAddMemberView
 import com.neighbourly.app.a_device.ui.profile.NeighbourhoodInfoEditView
@@ -83,7 +83,7 @@ fun ProfileTemplate(
                     HouseholdInfoEdit -> HouseholdInfoEditPage()
                     HouseholdLocalize -> HouseholdLocalizeView()
                     NeighbourhoodInfoEdit -> NeighbourhoodInfoEditView()
-                    is HouseholdAddMember -> HouseholdAddMemberView(it.id, it.username)
+                    is HouseholdAddMember -> HouseholdAddMemberPage(it.id, it.username)
                     HouseholdScanMember -> OrganismHouseholdMemberScanner(onScan = householdMemberAdd)
                     is NeighbourhoodScanMember -> OrganismNeighbourhoodMemberScanner(onScan = { id, user ->
                         neighbourhoodMemberAdd(it.neighbourhoodid, id, user)

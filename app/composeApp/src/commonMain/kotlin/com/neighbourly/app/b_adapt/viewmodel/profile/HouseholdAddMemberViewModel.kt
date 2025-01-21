@@ -2,6 +2,7 @@ package com.neighbourly.app.b_adapt.viewmodel.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.b_adapt.viewmodel.bean.MemberVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.NeighbourhoodAndAccVS
 import com.neighbourly.app.c_business.usecase.profile.FetchProfileUseCase
 import com.neighbourly.app.c_business.usecase.profile.HouseholdManagementUseCase
@@ -14,7 +15,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.math.min
 
 class HouseholdAddMemberViewModel(
     val sessionStore: SessionStore,
@@ -30,48 +30,35 @@ class HouseholdAddMemberViewModel(
                 user?.household?.let { household ->
                     _state.update {
                         it.copy(
-                            neighbourhoodsAndAcc =
-                                user.neighbourhoods
+                            member = it.member.copy(
+                                neighbourhoodsAndAcc = user.neighbourhoods
                                     .map {
                                         it.neighbourhoodid to
-                                            NeighbourhoodAndAccVS(
-                                                name = it.name,
-                                                access = it.access,
-                                            )
+                                                NeighbourhoodAndAccVS(
+                                                    name = it.name,
+                                                    access = it.access - 1,
+                                                )
                                     }.toMap(),
+                            ),
                         )
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
-    fun onAddToHousehold() {
+    fun onAddToHousehold(neighbourhoodsAndAcc: Map<Int, NeighbourhoodAndAccVS>) {
         viewModelScope.launch {
             try {
                 _state.update { it.copy(error = "", adding = true) }
-                householdManagementUseCase.addMember(_state.value.id, _state.value.username)
+                householdManagementUseCase.addMember(
+                    id = _state.value.member.id,
+                    username = _state.value.member.username,
+                    access = neighbourhoodsAndAcc.map { it.key to it.value.access }.toMap()
+                )
                 _state.update { it.copy(error = "", adding = false, added = true) }
             } catch (e: OpException) {
                 _state.update { it.copy(error = e.msg, adding = false) }
             }
-        }
-    }
-
-    fun updateNeighbourhoodAcc(
-        neighbourhoodid: Int,
-        access: String,
-    ) {
-        val neighbourhoodAndAcc = _state.value.neighbourhoodsAndAcc[neighbourhoodid]!!
-        val newAcc = min(access.toIntOrNull() ?: 0, neighbourhoodAndAcc.access - 1)
-        _state.update {
-            it.copy(
-                neighbourhoodsAndAcc =
-                    it.neighbourhoodsAndAcc
-                        .toMutableMap()
-                        .apply {
-                            put(neighbourhoodid, neighbourhoodAndAcc.copy(accessOverride = newAcc))
-                        },
-            )
         }
     }
 
@@ -87,13 +74,15 @@ class HouseholdAddMemberViewModel(
                         it.copy(
                             error = "",
                             loading = false,
-                            id = user.id,
-                            username = user.username,
-                            fullname = user.fullname.orEmpty(),
-                            email = user.email.orEmpty(),
-                            phone = user.phone.orEmpty(),
-                            about = user.about.orEmpty(),
-                            imageurl = user.imageurl,
+                            member = it.member.copy(
+                                id = user.id,
+                                username = user.username,
+                                fullname = user.fullname.orEmpty(),
+                                email = user.email.orEmpty(),
+                                phone = user.phone.orEmpty(),
+                                about = user.about.orEmpty(),
+                                imageurl = user.imageurl,
+                            ),
                         )
                     }
                 } ?: run {
@@ -106,18 +95,12 @@ class HouseholdAddMemberViewModel(
     }
 
     data class HouseholdAddMemberViewState(
+        val member: MemberVS = MemberVS(),
+
         val loading: Boolean = false,
         val error: String = "",
-        val id: Int = -1,
+
         val adding: Boolean = false,
         val added: Boolean = false,
-        val username: String = "",
-        val fullname: String = "",
-        val email: String = "",
-        val phone: String = "",
-        val about: String = "",
-        val imageurl: String? = null,
-        val neighbourhoodsAndAcc: Map<Int, NeighbourhoodAndAccVS> = emptyMap(),
     )
-
 }

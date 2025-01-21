@@ -92,7 +92,7 @@ fun OrganismItemCard(
                         KamelImage(
                             modifier = Modifier.size(48.dp)
                                 .shadow(elevation = 3.dp, ambientColor = AppColors.primary),
-                            resource = { asyncPainterResource(data = item.imageUrl) },
+                            resource = asyncPainterResource(data = item.imageUrl),
                             contentDescription = "Item Image",
                             contentScale = ContentScale.Crop,
                             onLoading = { progress ->

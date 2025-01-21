@@ -89,6 +89,7 @@ interface Api {
         token: String,
         id: Int,
         username: String,
+        access: Map<Int, Int>,
     ): User
 
     suspend fun addMemberToNeighbourhood(

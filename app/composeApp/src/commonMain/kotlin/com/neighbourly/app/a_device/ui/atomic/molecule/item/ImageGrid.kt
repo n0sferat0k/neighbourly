@@ -102,7 +102,7 @@ fun ImageGrid(
                         modifier = Modifier.fillMaxSize().clickable {
                             select?.invoke(image)
                         },
-                        resource = { asyncPainterResource(data = image.url) },
+                        resource = asyncPainterResource(data = image.url),
                         contentDescription = "Item Image",
                         contentScale = ContentScale.Crop,
                         onLoading = { progress ->

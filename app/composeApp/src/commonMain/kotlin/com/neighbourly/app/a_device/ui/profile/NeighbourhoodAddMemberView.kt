@@ -99,7 +99,7 @@ fun NeighbourhoodAddMemberView(
                         if (!it.isNullOrBlank()) {
                             KamelImage(
                                 modifier = Modifier.fillMaxSize().clip(CircleShape),
-                                resource = { asyncPainterResource(data = it) },
+                                resource = asyncPainterResource(data = it),
                                 contentDescription = "Profile Image",
                                 contentScale = ContentScale.Crop,
                                 onLoading = { progress ->

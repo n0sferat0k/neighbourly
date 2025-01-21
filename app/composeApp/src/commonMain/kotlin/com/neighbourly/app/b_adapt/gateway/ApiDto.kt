@@ -36,6 +36,7 @@ data class UpdateHouseholdInput(
 data class AddMemberToHouseholdInput(
     val id: Int,
     val username: String,
+    val neighbourhoods: List<NeighbourhoodDTO>
 )
 
 @Serializable

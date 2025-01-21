@@ -1,7 +1,8 @@
-package com.neighbourly.app.a_device.ui.profile
+package com.neighbourly.app.a_device.ui.atomic.organism.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,26 +14,24 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
-import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
-import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
-import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdAddMemberViewModel
+import com.neighbourly.app.b_adapt.viewmodel.bean.MemberVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.NeighbourhoodAndAccVS
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import neighbourly.composeapp.generated.resources.Res
@@ -47,36 +46,29 @@ import neighbourly.composeapp.generated.resources.profile
 import neighbourly.composeapp.generated.resources.username
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import kotlin.math.min
 
 @Composable
-fun HouseholdAddMemberView(
-    id: Int,
-    username: String,
-    navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() },
-    viewModel: HouseholdAddMemberViewModel = viewModel { KoinProvider.KOIN.get<HouseholdAddMemberViewModel>() },
+fun OrganismHouseholdMemberAdd(
+    member: MemberVS,
+    adding: Boolean,
+    onAddToHousehold: (neighbourhoodsAndAcc: Map<Int, NeighbourhoodAndAccVS>) -> Unit,
 ) {
-    val state by viewModel.state.collectAsState()
     val defaultProfile = painterResource(Res.drawable.profile)
 
-    LaunchedEffect(id, username) {
-        viewModel.loadProfile(id, username)
+    var neighbourhoodsAndAccOverride by remember {
+        mutableStateOf(
+            member.neighbourhoodsAndAcc
+        )
     }
 
-    LaunchedEffect(state.added) {
-        if (state.added) {
-            navigationViewModel.goToHouseholdInfoEdit()
-        }
-    }
-
-    Column {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         FriendlyText(text = stringResource(Res.string.attempting_to_add_household_member))
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         Row {
             // Name Input
             OutlinedTextField(
-                value = state.username,
+                value = member.username,
                 onValueChange = { },
                 enabled = false,
                 label = { Text(stringResource(Res.string.username)) },
@@ -93,11 +85,11 @@ fun HouseholdAddMemberView(
                     .border(2.dp, AppColors.primary, CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
-                state.imageurl.let {
+                member.imageurl.let {
                     if (!it.isNullOrBlank()) {
                         KamelImage(
                             modifier = Modifier.fillMaxSize().clip(CircleShape),
-                            resource = { asyncPainterResource(data = it) },
+                            resource = asyncPainterResource(data = it),
                             contentDescription = "Profile Image",
                             contentScale = ContentScale.Crop,
                             onLoading = { progress ->
@@ -119,44 +111,36 @@ fun HouseholdAddMemberView(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         // Full Name Input
         OutlinedTextField(
-            value = state.fullname,
+            value = member.fullname,
             onValueChange = { },
             enabled = false,
             label = { Text(stringResource(Res.string.fullname)) },
             modifier = Modifier.fillMaxWidth(),
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         // Email Input
         OutlinedTextField(
-            value = state.email,
+            value = member.email,
             onValueChange = { },
             enabled = false,
             label = { Text(stringResource(Res.string.email)) },
             modifier = Modifier.fillMaxWidth(),
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         // Phone Number Input
         OutlinedTextField(
-            value = state.phone,
+            value = member.phone,
             onValueChange = { },
             enabled = false,
             label = { Text(stringResource(Res.string.phone)) },
             modifier = Modifier.fillMaxWidth(),
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         // About Input
         OutlinedTextField(
-            value = state.about,
+            value = member.about,
             onValueChange = { },
             enabled = false,
             maxLines = 5,
@@ -164,18 +148,29 @@ fun HouseholdAddMemberView(
             modifier = Modifier.fillMaxWidth(),
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        if (state.neighbourhoodsAndAcc.size > 0) {
+        if (neighbourhoodsAndAccOverride.size > 0) {
             FriendlyText(text = stringResource(Res.string.neighbourhood_acc))
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            state.neighbourhoodsAndAcc.toList().forEach { (id, item) ->
+            neighbourhoodsAndAccOverride.toList().forEach { (id, item) ->
                 OutlinedTextField(
-                    value = (item.accessOverride ?: (item.access - 1)).toString(),
-                    onValueChange = {
-                        viewModel.updateNeighbourhoodAcc(id, it)
+                    value = item.access.toString(),
+                    onValueChange = { access ->
+                        member.neighbourhoodsAndAcc[id]?.let { neighbourhoodAndAcc ->
+                            neighbourhoodsAndAccOverride = neighbourhoodsAndAccOverride
+                                .toMutableMap()
+                                .apply {
+                                    put(
+                                        id, neighbourhoodAndAcc.copy(
+                                            access = min(
+                                                access.toIntOrNull() ?: 0,
+                                                neighbourhoodAndAcc.access
+                                            )
+                                        )
+                                    )
+                                }
+                        }
                     },
                     label = { Text(item.name) },
                     modifier = Modifier.fillMaxWidth(),
@@ -188,13 +183,9 @@ fun HouseholdAddMemberView(
         FriendlyButton(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             text = stringResource(Res.string.add_to_household),
-            loading = state.adding,
+            loading = adding,
         ) {
-            viewModel.onAddToHousehold()
-        }
-
-        if (state.error.isNotEmpty()) {
-            FriendlyErrorText(state.error)
+            onAddToHousehold(neighbourhoodsAndAccOverride)
         }
     }
 }

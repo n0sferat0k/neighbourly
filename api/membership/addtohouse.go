@@ -4,6 +4,7 @@ import (
 	"api/entity"
 	"api/utility"
 	"context"
+	"math"
 	"net/http"
 )
 
@@ -57,13 +58,22 @@ func AddToHousehold(w http.ResponseWriter, r *http.Request) {
 
 	defer rows.Close()
 
-	var neighbourhoodId int
+	var neighbourhoodId int64
 	var access int
+	var familyMemberAccess int
 	for rows.Next() {
 		err := rows.Scan(&neighbourhoodId, &access)
 		if err != nil {
 			http.Error(w, "Failed to add user to neighbourhoods "+err.Error(), http.StatusInternalServerError)
 			return
+		}
+
+		familyMemberAccess = access - 1
+
+		for _, familyMemberNeighbourhood := range familyMember.Neighbourhoods {
+			if *familyMemberNeighbourhood.Neighbourhoodid == neighbourhoodId {
+				familyMemberAccess = int(math.Min(float64(familyMemberAccess), float64(*familyMemberNeighbourhood.Access)))
+			}
 		}
 
 		_, err = utility.DB.Exec(`INSERT INTO neighbourhood_household_users (
@@ -74,7 +84,7 @@ func AddToHousehold(w http.ResponseWriter, r *http.Request) {
 							neighbourhood_household_users_add_numerics_3,
 							neighbourhood_household_users_add_numerics_4) 
 						VALUES (UNIX_TIMESTAMP(), ?,?,?,?,?)`,
-			neighbourhoodId, householdId, familyMember.Userid, access-1, userId)
+			neighbourhoodId, householdId, familyMember.Userid, familyMemberAccess, userId)
 		if err != nil {
 			http.Error(w, "Failed to add user to neighbourhoods "+err.Error(), http.StatusInternalServerError)
 			return
