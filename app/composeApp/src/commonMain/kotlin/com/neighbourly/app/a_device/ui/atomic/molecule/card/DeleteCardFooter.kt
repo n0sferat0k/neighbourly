@@ -13,8 +13,6 @@ import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.confirm_deleteing_this_item
 import neighbourly.composeapp.generated.resources.delete
 import neighbourly.composeapp.generated.resources.deleteing_item
-import neighbourly.composeapp.generated.resources.login
-import neighbourly.composeapp.generated.resources.register
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

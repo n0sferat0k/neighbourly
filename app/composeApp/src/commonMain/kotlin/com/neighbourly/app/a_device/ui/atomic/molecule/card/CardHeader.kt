@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.neighbourly.app.a_device.ui.atomic.atom.CurlyText
 import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.atomic.atom.CurlyText
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.app_name
 import neighbourly.composeapp.generated.resources.houses

@@ -85,8 +85,6 @@ fun OrganismHostContent(
                     BackendInfo -> BackendInfoPage()
                     Reminders -> RemindersPage()
                 }
-
-            else -> OrganismUnderConstruction()
         }
     }
 }

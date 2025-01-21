@@ -42,9 +42,7 @@ import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
-import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.getPhoneNumber
-import com.neighbourly.app.loadContentsFromFile
 import com.neighbourly.app.loadImageFromFile
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.confirmpassword

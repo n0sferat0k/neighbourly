@@ -9,12 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ImageGrid
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemTypeOption
-import com.neighbourly.app.a_device.ui.atomic.page.LOCALLY_ALLOWED_SITES
 import com.neighbourly.app.a_device.ui.atomic.page.TYPE_ASSOC
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS

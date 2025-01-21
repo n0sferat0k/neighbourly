@@ -6,11 +6,7 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.neighbourly.app.d_entity.util.isValidUrl
-import jdk.jfr.Description
 import neighbourly.composeapp.generated.resources.Res
-import neighbourly.composeapp.generated.resources.item_description
-import neighbourly.composeapp.generated.resources.item_name
 import neighbourly.composeapp.generated.resources.item_url
 import org.jetbrains.compose.resources.stringResource
 

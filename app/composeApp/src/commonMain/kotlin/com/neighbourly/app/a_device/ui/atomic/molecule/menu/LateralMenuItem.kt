@@ -34,10 +34,10 @@ import androidx.compose.ui.unit.LayoutDirection.Ltr
 import androidx.compose.ui.unit.LayoutDirection.Rtl
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.a_device.ui.atomic.molecule.menu.MenuItemBoxSide.LEFT
 import com.neighbourly.app.a_device.ui.atomic.molecule.menu.MenuItemBoxSide.RIGHT
-import com.neighbourly.app.a_device.ui.AppColors
 import kotlinx.coroutines.delay
 
 @Composable

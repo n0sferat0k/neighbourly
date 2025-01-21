@@ -8,15 +8,15 @@ import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.a_device.ui.atomic.molecule.card.LogoutCardFooter
 import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismHouseholdMemberScanner
+import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismNeighbourhoodMemberScanner
 import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismProfileInfoEdit
 import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismProfileMenu
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismContentBubble
+import com.neighbourly.app.a_device.ui.atomic.page.HouseholdInfoEditPage
 import com.neighbourly.app.a_device.ui.profile.HouseholdAddMemberView
 import com.neighbourly.app.a_device.ui.profile.HouseholdLocalizeView
 import com.neighbourly.app.a_device.ui.profile.NeighbourhoodAddMemberView
 import com.neighbourly.app.a_device.ui.profile.NeighbourhoodInfoEditView
-import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismNeighbourhoodMemberScanner
-import com.neighbourly.app.a_device.ui.atomic.page.HouseholdInfoEditPage
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewState
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdAddMember
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdInfoEdit

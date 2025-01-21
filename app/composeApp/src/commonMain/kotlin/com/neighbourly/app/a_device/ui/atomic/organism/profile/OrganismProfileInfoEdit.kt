@@ -15,7 +15,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
-import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.b_adapt.viewmodel.bean.ProfileVS
 import com.neighbourly.app.d_entity.util.isValidEmail
 import com.neighbourly.app.d_entity.util.isValidPhone
