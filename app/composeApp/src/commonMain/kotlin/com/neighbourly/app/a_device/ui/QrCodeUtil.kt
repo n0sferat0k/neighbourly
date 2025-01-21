@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.utils
+package com.neighbourly.app.a_device.ui
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap

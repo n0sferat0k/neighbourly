@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
-import com.neighbourly.app.a_device.ui.utils.generateQrCode
+import com.neighbourly.app.a_device.ui.generateQrCode
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.scan_qr_for_app_install
 import neighbourly.composeapp.generated.resources.visit_page_for_app_install

@@ -1,25 +1,16 @@
 package com.neighbourly.app.a_device.ui.atomic.template
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardFooter
-import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardHeader
-import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardScrollableContent
 import com.neighbourly.app.a_device.ui.atomic.molecule.card.LoginOrRegisterCardFooter
-import com.neighbourly.app.a_device.ui.atomic.molecule.card.RoundedCornerCard
 import com.neighbourly.app.a_device.ui.atomic.organism.auth.OrganismLoginForm
 import com.neighbourly.app.a_device.ui.atomic.organism.auth.OrganismRegisterForm
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismContentBubble
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
-import com.neighbourly.app.d_entity.data.FileContents
 
 @Composable
 fun LoginOrRegisterTemplate(
@@ -40,7 +31,7 @@ fun LoginOrRegisterTemplate(
         fullName: String,
         email: String,
         phoneNumber: String,
-        profileFile: FileContents?,
+        profileFile: String?,
         remember: Boolean
     ) -> Unit
 ) {
@@ -56,6 +47,7 @@ fun LoginOrRegisterTemplate(
                     updatePassword = loginPassword,
                     onLogin = onLogin,
                 )
+
                 1 -> OrganismRegisterForm(
                     state = registerState,
                     updateUsername = registerUsername,

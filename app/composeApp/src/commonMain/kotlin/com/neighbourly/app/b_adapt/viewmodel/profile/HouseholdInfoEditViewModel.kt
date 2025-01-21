@@ -2,10 +2,11 @@ package com.neighbourly.app.b_adapt.viewmodel.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.b_adapt.viewmodel.bean.HouseholdVS
 import com.neighbourly.app.c_business.usecase.profile.HouseholdManagementUseCase
-import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.interf.SessionStore
+import com.neighbourly.app.loadContentsFromFile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,12 +28,16 @@ class HouseholdInfoEditViewModel(
                 user?.household?.let { household ->
                     _state.update {
                         it.copy(
-                            hasHousehold = true,
-                            editableHousehold = household.headid == user.id,
-                            imageurl = household.imageurl,
-                            name = household.name,
-                            address = household.address.orEmpty(),
-                            about = household.about.orEmpty(),
+                            household = HouseholdVS(
+                                name = household.name,
+                                address = household.address.orEmpty(),
+                                about = household.about.orEmpty(),
+                                imageurl = household.imageurl,
+
+                            ),
+
+                            isHouseHead = household.headid == user.id,
+
                             members = household.members?.map { it.fullname ?: it.username },
                         )
                     }
@@ -46,15 +51,16 @@ class HouseholdInfoEditViewModel(
             }.launchIn(viewModelScope)
     }
 
-    fun updateName(name: String) = _state.update { it.copy(nameOverride = name, nameError = name.isBlank()) }
+    fun onSaveHousehold(
+        nameOverride: String? = null,
+        addressOverride: String? = null,
+        aboutOverride: String? = null,
+    ) {
+        _state.value.household.let {
+            val nameError: Boolean = (nameOverride ?: it?.name)?.isBlank() ?: true
+            val addressError: Boolean = (addressOverride ?: it?.address)?.isBlank() ?: true
 
-    fun updateAddress(address: String) = _state.update { it.copy(addressOverride = address, addressError = address.isBlank()) }
-
-    fun updateAbout(about: String) = _state.update { it.copy(aboutOverride = about) }
-
-    fun onSaveHousehold() {
-        _state.value.let {
-            if (it.nameError || it.addressError) {
+            if (nameError || addressError) {
                 return
             }
 
@@ -62,9 +68,9 @@ class HouseholdInfoEditViewModel(
                 try {
                     _state.update { it.copy(error = "", saving = true) }
                     householdManagementUseCase.updateInfo(
-                        it.nameOverride ?: it.name,
-                        it.addressOverride ?: it.address,
-                        it.aboutOverride ?: it.about,
+                        nameOverride ?: it?.name.orEmpty(),
+                        addressOverride ?: it?.address.orEmpty(),
+                        aboutOverride ?: it?.about.orEmpty(),
                     )
                     _state.update { it.copy(error = "", saving = false) }
                 } catch (e: OpException) {
@@ -74,10 +80,10 @@ class HouseholdInfoEditViewModel(
         }
     }
 
-    fun onHouseholdImageUpdate(fileContents: FileContents?) {
+    fun onHouseholdImageUpdate(file: String) {
         viewModelScope.launch {
             try {
-                fileContents?.let {
+                loadContentsFromFile(file)?.let {
                     _state.update { it.copy(error = "", imageUpdating = true) }
                     householdManagementUseCase.updateImage(it)
                     _state.update { it.copy(error = "", imageUpdating = false) }
@@ -95,28 +101,21 @@ class HouseholdInfoEditViewModel(
             try {
                 _state.update { it.copy(error = "") }
                 householdManagementUseCase.leaveHousehold()
-            } catch (e:OpException) {
+            } catch (e: OpException) {
                 _state.update { it.copy(error = e.msg) }
             }
         }
     }
 
     data class HouseholdInfoEditViewState(
+        val household: HouseholdVS? = null,
+        val members: List<String>? = null,
+        val isHouseHead: Boolean = false,
+
         val error: String = "",
         val saving: Boolean = false,
         val userQr: String? = null,
-        val hasHousehold: Boolean = false,
-        val editableHousehold: Boolean = false,
-        val imageurl: String? = null,
+
         val imageUpdating: Boolean = false,
-        val name: String = "",
-        val address: String = "",
-        val about: String = "",
-        val nameOverride: String? = null,
-        val addressOverride: String? = null,
-        val aboutOverride: String? = null,
-        val nameError: Boolean = false,
-        val addressError: Boolean = false,
-        val members: List<String>? = null,
     )
 }

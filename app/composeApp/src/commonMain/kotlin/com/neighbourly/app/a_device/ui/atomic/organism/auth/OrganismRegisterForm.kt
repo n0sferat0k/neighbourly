@@ -74,7 +74,7 @@ fun OrganismRegisterForm(
         fullName: String,
         email: String,
         phoneNumber: String,
-        profileFile: FileContents?,
+        profileFile: String?,
         remember: Boolean
     ) -> Unit
 ) {
@@ -86,7 +86,7 @@ fun OrganismRegisterForm(
     var email by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf(getPhoneNumber().orEmpty()) }
     var profileImage by remember { mutableStateOf<Painter?>(null) }
-    var profileFile by remember { mutableStateOf<FileContents?>(null) }
+    var profileFile by remember { mutableStateOf<String?>(null) }
     var showFilePicker by remember { mutableStateOf(false) }
     var remember by remember { mutableStateOf(true) }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -97,7 +97,7 @@ fun OrganismRegisterForm(
 
         file?.platformFile.toString().let {
             profileImage = loadImageFromFile(it)
-            profileFile = loadContentsFromFile(it)
+            profileFile = it
         }
     }
 

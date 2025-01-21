@@ -5,14 +5,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTabVS
 import com.neighbourly.app.a_device.ui.web.WebContentView
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent
 
 @Composable
 fun OrganismHostContentOverWeb(
-    showMain: Boolean,
+    showLanding: Boolean,
+    showAuth: Boolean,
+    showContent: Boolean,
+    mainContent: MainContent,
     isOnline: Boolean,
     onCrownClick: () -> Unit,
-    onHomeClick: () -> Unit
+    onHomeClick: () -> Unit,
+    onMenuClick: (tab: MenuTabVS) -> Unit,
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -22,10 +28,14 @@ fun OrganismHostContentOverWeb(
             modifier = Modifier.fillMaxSize(),
         )
         OrganismHostContent(
-            showMain = showMain,
+            showLanding = showLanding,
+            showAuth = showAuth,
+            showContent = showContent,
+            mainContent = mainContent,
             isOnline = isOnline,
             onCrownClick = onCrownClick,
-            onHomeClick = onHomeClick
+            onHomeClick = onHomeClick,
+            onMenuClick = onMenuClick,
         )
     }
 }

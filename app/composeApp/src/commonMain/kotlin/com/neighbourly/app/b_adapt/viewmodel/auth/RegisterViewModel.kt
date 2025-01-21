@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.c_business.usecase.auth.RegisterUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileImageUpdateUseCase
-import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.util.isValidEmail
 import com.neighbourly.app.d_entity.util.isValidPhone
+import com.neighbourly.app.loadContentsFromFile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,18 +21,23 @@ class RegisterViewModel(
     private val _state = MutableStateFlow(RegisterViewState())
     val state: StateFlow<RegisterViewState> = _state.asStateFlow()
 
-    fun validateUsername(username: String) = _state.update { it.copy(usernameError = username.isBlank()) }
+    fun validateUsername(username: String) =
+        _state.update { it.copy(usernameError = username.isBlank()) }
 
     fun validatePassword(
         password: String,
         confirmPassword: String,
-    ) = _state.update { it.copy(passwordError = (password.isBlank() || password != confirmPassword)) }
+    ) =
+        _state.update { it.copy(passwordError = (password.isBlank() || password != confirmPassword)) }
 
-    fun validateFullname(fullName: String) = _state.update { it.copy(fullnameError = fullName.isBlank()) }
+    fun validateFullname(fullName: String) =
+        _state.update { it.copy(fullnameError = fullName.isBlank()) }
 
-    fun validateEmail(email: String) = _state.update { it.copy(emailError = (email.isBlank() || !email.isValidEmail())) }
+    fun validateEmail(email: String) =
+        _state.update { it.copy(emailError = (email.isBlank() || !email.isValidEmail())) }
 
-    fun validatePhone(phoneNumber: String) = _state.update { it.copy(phoneError = (phoneNumber.isBlank() || !phoneNumber.isValidPhone())) }
+    fun validatePhone(phoneNumber: String) =
+        _state.update { it.copy(phoneError = (phoneNumber.isBlank() || !phoneNumber.isValidPhone())) }
 
     fun onRegister(
         username: String,
@@ -41,7 +46,7 @@ class RegisterViewModel(
         fullname: String,
         email: String,
         phone: String,
-        profileImageFileContents: FileContents?,
+        profileImageFile: String?,
         remember: Boolean,
     ) {
         validateUsername(username)
@@ -69,8 +74,10 @@ class RegisterViewModel(
         viewModelScope.launch {
             try {
                 registerUseCase.execute(username, password, fullname, email, phone, remember)
-                profileImageFileContents?.let {
-                    profileUpdateUseCase.execute(profileImageFileContents)
+                profileImageFile?.let {
+                    loadContentsFromFile(it)?.let {
+                        profileUpdateUseCase.execute(it)
+                    }
                 }
                 _state.update { it.copy(error = "", loading = false) }
             } catch (e: OpException) {

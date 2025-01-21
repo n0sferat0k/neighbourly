@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.neighbourly.app.a_device.ui.atomic.molecule.misc.ScreenSplitter
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTabVS
 import com.neighbourly.app.a_device.ui.atomic.organism.misc.OrganismHostContent
 import com.neighbourly.app.a_device.ui.atomic.organism.misc.OrganismHostContentOverWeb
 import com.neighbourly.app.a_device.ui.web.WebContentView
@@ -15,16 +16,21 @@ fun HostTemplate(
     appState: AppStateInfoViewModel.AppStateInfoViewState,
     navigationState: NavigationViewState,
     onCrownClick: () -> Unit,
-    onHomeClick: () -> Unit
+    onHomeClick: () -> Unit,
+    onMenuClick: (tab: MenuTabVS) -> Unit,
 ) {
     if (appState.isWideLand) {
         ScreenSplitter(
             leftContent = {
                 OrganismHostContent(
-                    showMain = navigationState.mainContentVisible,
+                    showLanding = appState.isLanding,
+                    showAuth = !appState.isLoggedIn,
+                    showContent = navigationState.mainContentVisible,
+                    mainContent = navigationState.mainContent,
                     isOnline = appState.isOnline,
                     onCrownClick = onCrownClick,
                     onHomeClick = onHomeClick,
+                    onMenuClick = onMenuClick,
                 )
             },
             rightContent = {
@@ -35,10 +41,14 @@ fun HostTemplate(
         )
     } else {
         OrganismHostContentOverWeb(
-            showMain = navigationState.mainContentVisible,
+            showLanding = appState.isLanding,
+            showAuth = !appState.isLoggedIn,
+            showContent = navigationState.mainContentVisible,
+            mainContent = navigationState.mainContent,
             isOnline = appState.isOnline,
             onCrownClick = onCrownClick,
             onHomeClick = onHomeClick,
+            onMenuClick = onMenuClick,
         )
     }
 }

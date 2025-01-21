@@ -46,7 +46,7 @@ fun ItemHouseholdBadge(householdImage: String?, householdName: String?) {
                 if (!it.isNullOrBlank()) {
                     KamelImage(
                         modifier = Modifier.fillMaxSize().clip(CircleShape),
-                        resource = asyncPainterResource(data = it),
+                        resource = { asyncPainterResource(data = it) },
                         contentDescription = "Household Image",
                         contentScale = ContentScale.Crop,
                         onLoading = { progress ->

@@ -6,9 +6,7 @@ import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebMap
 import com.neighbourly.app.d_entity.data.ItemType
 
 data class NavigationViewState(
-    val userLoggedIn: Boolean = false,
     val disableMainToggle: Boolean = false,
-    val restrictedContent: Boolean = true,
     val mainContentVisible: Boolean = true,
     val addingNewHousehold: Boolean = false,
     val mainContent: MainContent = MainMenu,

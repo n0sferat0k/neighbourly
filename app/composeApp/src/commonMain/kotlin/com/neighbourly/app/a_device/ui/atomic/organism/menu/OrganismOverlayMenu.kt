@@ -14,12 +14,12 @@ import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.atomic.molecule.menu.LateralMenuItem
 import com.neighbourly.app.a_device.ui.atomic.molecule.menu.MenuItemBoxSide.LEFT
 import com.neighbourly.app.a_device.ui.atomic.molecule.menu.MenuItemBoxSide.RIGHT
-import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab.BOX
-import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab.ITEMS
-import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab.MYSTUFF
-import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab.PROFILE
-import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab.PUBLISH
-import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTab.REMINDERS
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTabVS.BOX
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTabVS.ITEMS
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTabVS.MYSTUFF
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTabVS.PROFILE
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTabVS.PUBLISH
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTabVS.REMINDERS
 import com.neighbourly.app.d_entity.data.ItemType
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.barter
@@ -46,17 +46,17 @@ import neighbourly.composeapp.generated.resources.skillshare
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-sealed class MenuTab {
-    object PROFILE : MenuTab()
-    object MYSTUFF : MenuTab()
-    object PUBLISH : MenuTab()
-    object REMINDERS : MenuTab()
-    object BOX : MenuTab()
-    data class ITEMS(val type: ItemType) : MenuTab()
+sealed class MenuTabVS {
+    object PROFILE : MenuTabVS()
+    object MYSTUFF : MenuTabVS()
+    object PUBLISH : MenuTabVS()
+    object REMINDERS : MenuTabVS()
+    object BOX : MenuTabVS()
+    data class ITEMS(val type: ItemType) : MenuTabVS()
 }
 
 @Composable
-fun OrganismOverlayMenu(onSelect: (tab: MenuTab) -> Unit) {
+fun OrganismOverlayMenu(onSelect: (tab: MenuTabVS) -> Unit) {
     Row(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxHeight().weight(.5f),

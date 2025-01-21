@@ -1,44 +1,32 @@
-package com.neighbourly.app.a_device.ui.items
+package com.neighbourly.app.a_device.ui.atomic.template
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardHeader
-import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardScrollableContent
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
-import com.neighbourly.app.b_adapt.viewmodel.items.RemindersViewModel
+import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismContentBubble
+import com.neighbourly.app.b_adapt.viewmodel.bean.ReminderVS
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun RemidersView(viewModel: RemindersViewModel = viewModel { KoinProvider.KOIN.get<RemindersViewModel>() }) {
-    val state by viewModel.state.collectAsState()
+fun RemidersTemplate(reminders: List<ReminderVS>) {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        CardHeader(Modifier.align(Alignment.Start))
-
-        CardScrollableContent(modifier = Modifier.weight(1f)) {
+    OrganismContentBubble(
+        scrollable = true,
+        content = {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(20.dp),
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                state.reminders.forEach {
+                reminders.forEach {
                     FriendlyText(text = it.name, bold = true)
                     it.times.forEach {
                         FriendlyText(
@@ -50,6 +38,7 @@ fun RemidersView(viewModel: RemindersViewModel = viewModel { KoinProvider.KOIN.g
                     }
                 }
             }
-        }
-    }
+        },
+        footerContent = {}
+    )
 }

@@ -7,16 +7,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.a_device.ui.atomic.molecule.card.LogoutCardFooter
+import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismHouseholdMemberScanner
 import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismProfileInfoEdit
 import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismProfileMenu
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismContentBubble
 import com.neighbourly.app.a_device.ui.profile.HouseholdAddMemberView
-import com.neighbourly.app.a_device.ui.profile.HouseholdBarcodeScannerView
-import com.neighbourly.app.a_device.ui.profile.HouseholdInfoEditView
 import com.neighbourly.app.a_device.ui.profile.HouseholdLocalizeView
 import com.neighbourly.app.a_device.ui.profile.NeighbourhoodAddMemberView
-import com.neighbourly.app.a_device.ui.profile.NeighbourhoodBarcodeScannerView
 import com.neighbourly.app.a_device.ui.profile.NeighbourhoodInfoEditView
+import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismNeighbourhoodMemberScanner
+import com.neighbourly.app.a_device.ui.atomic.page.HouseholdInfoEditPage
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewState
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdAddMember
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdInfoEdit
@@ -36,12 +36,9 @@ fun ProfileTemplate(
     refresh: () -> Unit,
     logout: (all: Boolean) -> Unit,
     profileImageUpdate: (fileContents: FileContents?) -> Unit,
-    profileInfoSave: (
-        fullnameOverride: String?,
-        emailOverride: String?,
-        phoneOverride: String?,
-        aboutOverride: String?,
-    ) -> Unit,
+    profileInfoSave: (fullnameOverride: String?, emailOverride: String?, phoneOverride: String?, aboutOverride: String?) -> Unit,
+    householdMemberAdd: (id: Int, user: String) -> Unit,
+    neighbourhoodMemberAdd: (neighbourhoodId: Int, id: Int, user: String) -> Unit,
     profileImageSelect: () -> Unit,
     houseInfoSelect: () -> Unit,
     houseLocationSelect: () -> Unit,
@@ -61,7 +58,6 @@ fun ProfileTemplate(
                     is HouseholdAddMember,
                     HouseholdScanMember,
                     HouseholdInfoEdit -> 1
-
                     HouseholdLocalize -> 2
                     is NeighbourhoodAddMemberHousehold,
                     is NeighbourhoodScanMember,
@@ -84,12 +80,15 @@ fun ProfileTemplate(
                         onSave = profileInfoSave
                     )
 
-                    HouseholdInfoEdit -> HouseholdInfoEditView()
+                    HouseholdInfoEdit -> HouseholdInfoEditPage()
                     HouseholdLocalize -> HouseholdLocalizeView()
                     NeighbourhoodInfoEdit -> NeighbourhoodInfoEditView()
                     is HouseholdAddMember -> HouseholdAddMemberView(it.id, it.username)
-                    HouseholdScanMember -> HouseholdBarcodeScannerView()
-                    is NeighbourhoodScanMember -> NeighbourhoodBarcodeScannerView(it.neighbourhoodid)
+                    HouseholdScanMember -> OrganismHouseholdMemberScanner(onScan = householdMemberAdd)
+                    is NeighbourhoodScanMember -> OrganismNeighbourhoodMemberScanner(onScan = { id, user ->
+                        neighbourhoodMemberAdd(it.neighbourhoodid, id, user)
+                    })
+
                     is NeighbourhoodAddMemberHousehold -> NeighbourhoodAddMemberView(
                         it.neighbourhoodid,
                         it.id,

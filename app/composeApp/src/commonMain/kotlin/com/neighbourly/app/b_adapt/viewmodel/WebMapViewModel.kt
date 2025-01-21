@@ -2,6 +2,9 @@ package com.neighbourly.app.b_adapt.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.b_adapt.viewmodel.bean.GpsItemVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.HouseholdSummaryVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.NeighbourhoodVS
 import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
 import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUseCase
 import com.neighbourly.app.d_entity.data.GpsItem
@@ -84,6 +87,7 @@ class WebMapViewModel(
                             NeighbourhoodVS(
                                 id = it.neighbourhoodid,
                                 name = it.name,
+                                acc = it.access,
                                 geofence = it.geofence,
                             )
                         } ?: emptyList(),
@@ -127,7 +131,7 @@ class WebMapViewModel(
         }
     }
 
-    private suspend fun HouseholdVS.pullStatsClone(): HouseholdVS {
+    private suspend fun HouseholdSummaryVS.pullStatsClone(): HouseholdSummaryVS {
         val items = database.filterItems(householdId = id)
         return this.copy(
             skillshare = items.filter { it.type == ItemType.SKILLSHARE }.size,
@@ -143,54 +147,19 @@ class WebMapViewModel(
     data class MapViewState(
         val drawing: Boolean = false,
         val lastSyncTs: Int = 0,
-        val myHousehold: HouseholdVS? = null,
-        val otherHouseholds: List<HouseholdVS> = emptyList(),
+        val myHousehold: HouseholdSummaryVS? = null,
+        val otherHouseholds: List<HouseholdSummaryVS> = emptyList(),
         val neighbourhoods: List<NeighbourhoodVS> = emptyList(),
         val heatmap: List<GpsItemVS>? = null,
         val candidate: GpsItemVS? = null,
     )
 
-    data class HouseholdVS(
-        val id: Int,
-        val location: GpsItemVS,
-        val name: String,
-        val floatName: Boolean = false,
-        val address: String = "",
-        val description: String = "",
-        val skillshare: Int = 0,
-        val requests: Int = 0,
-        val needs: Int = 0,
-        val events: Int = 0,
-        val sales: Int = 0,
-        val barterings: Int = 0,
-        val donations: Int = 0,
-        val imageurl: String? = null,
-    )
-
-    data class NeighbourhoodVS(
-        val id: Int,
-        val name: String,
-        val geofence: String,
-    )
-
-    data class GpsItemVS(
-        val latitude: Float,
-        val longitude: Float,
-        val frequency: Int = 1,
-    )
-
-    fun Pair<Float, Float>.toGpsItemVS() =
-        GpsItemVS(
-            first,
-            second,
-        )
-
     fun Household.toHouseholdVS(
         alternateLocation: GpsItemVS? = null,
         floatName: Boolean = false
-    ): HouseholdVS? =
+    ): HouseholdSummaryVS? =
         (location?.let { GpsItemVS(it.first, it.second) } ?: alternateLocation)?.let { location ->
-            HouseholdVS(
+            HouseholdSummaryVS(
                 id = householdid,
                 location = location,
                 name = name,

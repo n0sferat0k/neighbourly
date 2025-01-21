@@ -39,29 +39,16 @@ public class NavigationViewModel(
         sessionStore.isLoggedInFlow.onEach {
             when (it) {
                 true -> _state.update {
-                    it.copy(userLoggedIn = true, mainContentVisible = true)
+                    it.copy(mainContentVisible = true)
                 }
-
                 false -> _state.update {
-                    NavigationViewState(
-                        disableMainToggle = _state.value.disableMainToggle
-                    )
+                    NavigationViewState(disableMainToggle = _state.value.disableMainToggle)
                 }
             }
         }.launchIn(viewModelScope)
-
-        sessionStore.userFlow
-            .onEach { user ->
-                user?.let {
-                    _state.update {
-                        it.copy(restrictedContent = user.household?.location == null || user.neighbourhoods.isEmpty())
-                    }
-                }
-            }.launchIn(viewModelScope)
-
     }
 
-    fun disableMainToggel(disable: Boolean) {
+    fun disableMainToggle(disable: Boolean) {
         _state.update {
             it.copy(
                 disableMainToggle = disable

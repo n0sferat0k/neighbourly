@@ -16,12 +16,13 @@ fun FilteredItemListPage(
     type: ItemType? = null,
     householdId: Int? = null,
     showExpired: Boolean = false,
+    showOwnHousehold: Boolean = false,
     viewModel: FilteredItemListViewModel = viewModel { KoinProvider.KOIN.get<FilteredItemListViewModel>() },
     navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }
 ) {
     val state by viewModel.state.collectAsState()
     LaunchedEffect(type, householdId, showExpired) {
-        viewModel.setFilters(type, householdId, showExpired)
+        viewModel.setFilters(type, householdId, showExpired, showOwnHousehold)
     }
     FilteredItemListTemplate(
         state = state,

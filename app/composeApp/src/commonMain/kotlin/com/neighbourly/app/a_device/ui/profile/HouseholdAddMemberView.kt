@@ -29,8 +29,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
-import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdAddMemberViewModel
 import io.kamel.image.KamelImage
@@ -87,17 +87,17 @@ fun HouseholdAddMemberView(
 
             Box(
                 modifier =
-                    Modifier
-                        .size(60.dp)
-                        .align(Alignment.Bottom)
-                        .border(2.dp, AppColors.primary, CircleShape),
+                Modifier
+                    .size(60.dp)
+                    .align(Alignment.Bottom)
+                    .border(2.dp, AppColors.primary, CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
                 state.imageurl.let {
                     if (!it.isNullOrBlank()) {
                         KamelImage(
                             modifier = Modifier.fillMaxSize().clip(CircleShape),
-                            resource = asyncPainterResource(data = it),
+                            resource = { asyncPainterResource(data = it) },
                             contentDescription = "Profile Image",
                             contentScale = ContentScale.Crop,
                             onLoading = { progress ->

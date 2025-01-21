@@ -29,6 +29,8 @@ fun ProfilePage(
         logout = viewModel::onLogout,
         profileImageUpdate = viewModel::onProfileImageUpdate,
         profileInfoSave = viewModel::onSaveProfile,
+        householdMemberAdd = navigationViewModel::goToHouseholdAddMember,
+        neighbourhoodMemberAdd = navigationViewModel::goToNeighbourhoodAddHousehold,
         profileImageSelect = navigationViewModel::goToProfileInfoEdit,
         houseInfoSelect = navigationViewModel::goToHouseholdInfoEdit,
         houseLocationSelect = navigationViewModel::goToHouseholdLocalize,

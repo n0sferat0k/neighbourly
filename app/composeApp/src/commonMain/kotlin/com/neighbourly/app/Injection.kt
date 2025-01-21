@@ -12,7 +12,6 @@ import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
 import com.neighbourly.app.b_adapt.viewmodel.box.BoxManagementViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel
-import com.neighbourly.app.b_adapt.viewmodel.items.MainContentViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.RemindersViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdAddMemberViewModel
@@ -129,13 +128,10 @@ val adapterModule =
             FilteredItemListViewModel(get(), get(), get(), get())
         }
         factory {
-            MainContentViewModel(get(), get())
-        }
-        factory {
             ItemDetailsViewModel(get(), get(), get())
         }
         factory {
-            AppStateInfoViewModel(get())
+            AppStateInfoViewModel(get(), get(), get())
         }
         factory {
             BoxManagementViewModel(get(), get(), get(), get())

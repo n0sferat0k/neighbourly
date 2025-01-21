@@ -80,7 +80,7 @@ fun OrganismProfileMenu(
                 ) {
                     KamelImage(
                         modifier = Modifier.size(80.dp).clip(CircleShape),
-                        resource = asyncPainterResource(data = it),
+                        resource = { asyncPainterResource(data = it) },
                         contentDescription = "Profile Image",
                         contentScale = ContentScale.Crop,
                         onLoading = { progress ->
@@ -171,8 +171,8 @@ fun OrganismProfileMenu(
                     else it
                 }
                 .size(48.dp).clickable {
-                neighbourhoodInfoSelect()
-            },
+                    neighbourhoodInfoSelect()
+                },
         )
     }
 }

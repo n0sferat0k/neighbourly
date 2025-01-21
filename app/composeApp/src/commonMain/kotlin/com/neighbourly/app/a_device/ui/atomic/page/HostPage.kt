@@ -6,8 +6,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTabVS
 import com.neighbourly.app.a_device.ui.atomic.template.HostTemplate
 import com.neighbourly.app.b_adapt.viewmodel.AppStateInfoViewModel
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BoxManage
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ManageMyStuff
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.PublishStuff
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.Reminders
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 
 @Composable
@@ -19,7 +24,7 @@ fun HostPage(
     val appState by appStateInfoViewModel.state.collectAsState()
 
     LaunchedEffect(appState.isWideLand) {
-        navigationViewModel.disableMainToggel(appState.isWideLand)
+        navigationViewModel.disableMainToggle(appState.isWideLand)
     }
 
     HostTemplate(appState = appState, navigationState = navigationState,
@@ -27,5 +32,16 @@ fun HostPage(
             navigationViewModel.goToBackendInfo()
         }, onHomeClick = {
             navigationViewModel.toggleMainContent()
-        })
+        },
+        onMenuClick = {
+            when (it) {
+                MenuTabVS.PROFILE -> navigationViewModel.goToProfile()
+                MenuTabVS.MYSTUFF -> navigationViewModel.goToMainPage(ManageMyStuff)
+                MenuTabVS.BOX -> navigationViewModel.goToMainPage(BoxManage)
+                MenuTabVS.PUBLISH -> navigationViewModel.goToMainPage(PublishStuff)
+                MenuTabVS.REMINDERS -> navigationViewModel.goToMainPage(Reminders)
+                is MenuTabVS.ITEMS -> navigationViewModel.goToFindItems(it.type)
+            }
+        }
+    )
 }

@@ -33,8 +33,21 @@ class FilteredItemListViewModel(
     private val _state = MutableStateFlow(FilteredItemListViewState())
     val state: StateFlow<FilteredItemListViewState> = _state.asStateFlow()
 
-    fun setFilters(type: ItemType?, householdId: Int?, showExpired: Boolean) {
-        _state.update { it.copy(type = type, householdId = householdId, showExpired = showExpired) }
+    fun setFilters(
+        type: ItemType?,
+        householdId: Int?,
+        showExpired: Boolean,
+        showOwnHousehold: Boolean = false
+    ) {
+        val filterHouseholdId =
+            if (showOwnHousehold) store.user?.household?.householdid else householdId
+        _state.update {
+            it.copy(
+                type = type,
+                householdId = filterHouseholdId,
+                showExpired = showExpired
+            )
+        }
         refresh()
     }
 

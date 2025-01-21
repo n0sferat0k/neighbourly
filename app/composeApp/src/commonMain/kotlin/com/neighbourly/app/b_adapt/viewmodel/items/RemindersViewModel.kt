@@ -39,5 +39,4 @@ class RemindersViewModel(
     data class RemindersViewState(
         val reminders: List<ReminderVS> = emptyList()
     )
-
 }

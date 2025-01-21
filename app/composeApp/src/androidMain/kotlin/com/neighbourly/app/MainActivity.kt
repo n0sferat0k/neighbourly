@@ -1,10 +1,15 @@
 package com.neighbourly.app
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import com.neighbourly.app.a_device.ui.atomic.page.HostPage
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 

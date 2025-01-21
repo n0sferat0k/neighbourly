@@ -68,7 +68,8 @@ fun ImageGrid(
             title = stringResource(Res.string.deleteing_image),
             text = stringResource(Res.string.confirm_deleteing_image),
             ok = {
-                images.firstOrNull {it.id == showRemoveImageAlertForId}?.let { delete?.invoke(it) }
+                images.firstOrNull { it.id == showRemoveImageAlertForId }
+                    ?.let { delete?.invoke(it) }
                 showRemoveImageAlertForId = -1
             },
             cancel = {
@@ -101,7 +102,7 @@ fun ImageGrid(
                         modifier = Modifier.fillMaxSize().clickable {
                             select?.invoke(image)
                         },
-                        resource = asyncPainterResource(data = image.url),
+                        resource = { asyncPainterResource(data = image.url) },
                         contentDescription = "Item Image",
                         contentScale = ContentScale.Crop,
                         onLoading = { progress ->

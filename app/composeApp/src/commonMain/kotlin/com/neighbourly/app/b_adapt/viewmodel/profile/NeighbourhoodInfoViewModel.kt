@@ -46,6 +46,7 @@ class NeighbourhoodInfoViewModel(
                                     id = it.neighbourhoodid,
                                     name = it.name,
                                     acc = it.access,
+                                    geofence = it.geofence,
                                 )
                             },
                         )
