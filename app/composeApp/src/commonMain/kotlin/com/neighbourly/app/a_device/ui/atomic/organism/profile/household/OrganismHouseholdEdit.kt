@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.atomic.organism.profile
+package com.neighbourly.app.a_device.ui.atomic.organism.profile.household
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border

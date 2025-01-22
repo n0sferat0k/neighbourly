@@ -83,8 +83,8 @@
             map.addControl(new maplibregl.NavigationControl());
     
             function callNative(obj) {
-                //alert(JSON.stringify(obj));
-                window.kmpJsBridge.callNative("MapFeedback", JSON.stringify(obj), function (data) { });
+                alert(JSON.stringify(obj));
+                //window.kmpJsBridge.callNative("MapFeedback", JSON.stringify(obj), function (data) { });
             }
 
             map.on('load', () => {                
@@ -105,7 +105,7 @@
                 //                     {'longitude':23.6784, 'latitude':47.6731, 'id':2, 'name':"Krucz House with a really long name", 'imageurl':'http://localhost/householdsIMGS/boiling-frog.png'}
                 //                 ]);
 
-                // enableDraw();
+                enableDraw();
                 // disableDraw();
 
                 //addNeighbourhood("1", [[23.664421990469435,47.65655129393659],[23.665995201870714,47.64961446944116],[23.670235774323487,47.64969293384053],[23.668970442219916,47.653967631296325],[23.67055763940516,47.656120831152805],[23.6676487837274,47.65622253206254],[23.664421990469435,47.65655129393659]]);
@@ -161,9 +161,13 @@
                     }
                 }
     
+                map.on('draw.modechange', function(e) {
+                    if("simple_select" == e.mode) {
+                        updateArea();
+                    }
+                });
                 map.on('draw.create', updateArea);
                 map.on('draw.delete', updateArea);
-                map.on('draw.update', updateArea);
             }
 
             function disableDraw() {

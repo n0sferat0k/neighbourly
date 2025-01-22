@@ -23,10 +23,10 @@ class NeighbourhoodManagementUseCase(
     suspend fun saveNeighbourhood(
         id: Int? = null,
         name: String,
+        geofence: List<GpsItem>?
     ) {
         val token = sessionStore.user?.authtoken
 
-        val geofence = sessionStore.drawing
         if (token != null && geofence != null) {
             val user = apiGw.updateNeighbourhood(token, id, name, geofence)
 

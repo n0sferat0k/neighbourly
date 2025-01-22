@@ -175,9 +175,13 @@ val mapHtml =
                         }
                     }
         
+                    map.on('draw.modechange', function(e) {
+                        if("simple_select" == e.mode) {
+                            updateArea();
+                        }
+                    });
                     map.on('draw.create', updateArea);
                     map.on('draw.delete', updateArea);
-                    map.on('draw.update', updateArea);
                 }
     
                 function disableDraw() {

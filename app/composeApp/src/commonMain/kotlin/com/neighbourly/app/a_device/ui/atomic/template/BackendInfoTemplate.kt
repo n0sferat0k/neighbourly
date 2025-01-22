@@ -122,7 +122,7 @@ fun BackendInfoTemplate(
     onClose: () -> Unit
 ) {
     OrganismContentBubble(
-        scrollable = false,
+        scrollable = true,
         content = {
             Column {
                 OrganismAppInfo(state.appVersion, state.isDebug)

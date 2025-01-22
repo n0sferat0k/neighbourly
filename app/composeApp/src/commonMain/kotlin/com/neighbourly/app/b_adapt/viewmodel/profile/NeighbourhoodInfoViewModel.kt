@@ -26,8 +26,8 @@ class NeighbourhoodInfoViewModel(
             .onEach { localization ->
                 _state.update {
                     it.copy(
-                        drawing = localization.drawing,
-                        drawingDone = !localization.drawingPoints.isNullOrEmpty(),
+                        geofenceDrawing = localization.drawing,
+                        geofenceDrawn = !localization.drawingPoints.isNullOrEmpty(),
                     )
                 }
             }.launchIn(viewModelScope)
@@ -57,24 +57,21 @@ class NeighbourhoodInfoViewModel(
             }.launchIn(viewModelScope)
     }
 
-    fun createNeighbourhood() {
+    fun startNeighbourhoodCreation() {
         viewModelScope.launch {
             neighbourhoodManagementUseCase.startDrawing()
         }
     }
 
-    fun onCancelNeighbourhoodCreate() {
+    fun cancelNeighbourhoodCreation() {
         viewModelScope.launch {
             neighbourhoodManagementUseCase.cancelDrawing()
         }
     }
 
-    fun updateName(name: String) =
-        _state.update { it.copy(nameOverride = name, nameError = name.isBlank()) }
-
-    fun onSaveNeighbourhood() {
+    fun completeNeighbourhoodCreation(name: String) {
         _state.value.let {
-            if (it.nameError) {
+            if (name.isBlank()) {
                 return
             }
 
@@ -82,7 +79,8 @@ class NeighbourhoodInfoViewModel(
                 try {
                     _state.update { it.copy(error = "", saving = true) }
                     neighbourhoodManagementUseCase.saveNeighbourhood(
-                        name = it.nameOverride ?: it.name,
+                        name = name,
+                        geofence = sessionStore.drawing
                     )
                     _state.update { it.copy(error = "", saving = false) }
                 } catch (e: OpException) {
@@ -107,16 +105,13 @@ class NeighbourhoodInfoViewModel(
     data class NeighbourhoodInfoViewState(
         val error: String = "",
         val saving: Boolean = false,
-        val drawing: Boolean = false,
-        val drawingDone: Boolean = false,
+        val geofenceDrawing: Boolean = false,
+        val geofenceDrawn: Boolean = false,
         val hasLocalizedHouse: Boolean = false,
         val hasNeighbourhoods: Boolean = false,
         val isHouseholdHead: Boolean = false,
         val neighbourhoods: List<NeighbourhoodVS> = emptyList(),
         val userQr: String? = null,
-        val name: String = "",
-        val nameOverride: String? = null,
-        val nameError: Boolean = false,
     )
 
 }

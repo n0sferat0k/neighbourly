@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.atomic.organism.profile
+package com.neighbourly.app.a_device.ui.atomic.organism.profile.household
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -6,8 +6,8 @@ import androidx.compose.ui.Modifier
 import com.neighbourly.app.a_device.ui.BarcodeScanner
 
 @Composable
-fun OrganismNeighbourhoodMemberScanner(
-    onScan: (id: Int, user: String) -> Unit,
+fun OrganismHouseholdMemberScanner(
+    onScan: (id: Int, user: String) -> Unit
 ) {
     BarcodeScanner(modifier = Modifier.fillMaxSize()) { scanString ->
         scanString.split(",").let { tokens ->

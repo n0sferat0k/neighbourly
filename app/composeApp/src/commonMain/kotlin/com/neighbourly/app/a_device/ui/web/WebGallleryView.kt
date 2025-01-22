@@ -1,5 +1,6 @@
 package com.neighbourly.app.a_device.ui.web
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.multiplatform.webview.web.rememberWebViewNavigator
@@ -9,7 +10,6 @@ import com.neighbourly.app.PlatformWebView
 
 @Composable
 fun WebGalleryView(
-    modifier: Modifier = Modifier,
     itemId: Int,
     imageId: Int,
 ) {
@@ -18,7 +18,7 @@ fun WebGalleryView(
     val navigator = rememberWebViewNavigator()
 
     PlatformWebView(
-        modifier = modifier,
+        modifier = Modifier.fillMaxSize(),
         state = webViewState,
         navigator = navigator,
     )

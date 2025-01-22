@@ -8,5 +8,5 @@ data class MemberVS(
     val phone: String = "",
     val about: String = "",
     val imageurl: String? = null,
-    val neighbourhoodsAndAcc: Map<Int, NeighbourhoodAndAccVS> = emptyMap(),
+    val hasEstablishedHousehold: Boolean = false,
 )

@@ -3,7 +3,7 @@ package com.neighbourly.app.b_adapt.viewmodel.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.b_adapt.viewmodel.bean.MemberVS
-import com.neighbourly.app.b_adapt.viewmodel.bean.NeighbourhoodAndAccVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.NameAndAccessVS
 import com.neighbourly.app.c_business.usecase.profile.FetchProfileUseCase
 import com.neighbourly.app.c_business.usecase.profile.HouseholdManagementUseCase
 import com.neighbourly.app.d_entity.data.OpException
@@ -30,23 +30,21 @@ class HouseholdAddMemberViewModel(
                 user?.household?.let { household ->
                     _state.update {
                         it.copy(
-                            member = it.member.copy(
-                                neighbourhoodsAndAcc = user.neighbourhoods
-                                    .map {
-                                        it.neighbourhoodid to
-                                                NeighbourhoodAndAccVS(
-                                                    name = it.name,
-                                                    access = it.access - 1,
-                                                )
-                                    }.toMap(),
-                            ),
-                        )
+                            neighbourhoodsAndAcc = user.neighbourhoods
+                                .map {
+                                    it.neighbourhoodid to
+                                            NameAndAccessVS(
+                                                name = it.name,
+                                                access = it.access - 1,
+                                            )
+                                }.toMap(),
+                            )
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
-    fun onAddToHousehold(neighbourhoodsAndAcc: Map<Int, NeighbourhoodAndAccVS>) {
+    fun onAddToHousehold(neighbourhoodsAndAcc: Map<Int, NameAndAccessVS>) {
         viewModelScope.launch {
             try {
                 _state.update { it.copy(error = "", adding = true) }
@@ -96,6 +94,7 @@ class HouseholdAddMemberViewModel(
 
     data class HouseholdAddMemberViewState(
         val member: MemberVS = MemberVS(),
+        val neighbourhoodsAndAcc: Map<Int, NameAndAccessVS> = emptyMap(),
 
         val loading: Boolean = false,
         val error: String = "",

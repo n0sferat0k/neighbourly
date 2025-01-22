@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.atomic.organism.profile
+package com.neighbourly.app.a_device.ui.atomic.organism.profile.person
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +28,7 @@ import neighbourly.composeapp.generated.resources.username
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun OrganismProfileInfoEdit(
+fun OrganismPersonInfoEdit(
     profile: ProfileVS,
     saving: Boolean,
     onSave: (

@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.atomic.organism.profile
+package com.neighbourly.app.a_device.ui.atomic.organism.profile.household
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -35,7 +35,7 @@ fun OrganismHouseholdMissing(userQr: String?, onCreateHousehold: () -> Unit) {
         FriendlyText(
             modifier =
             Modifier.clickable {
-                onCreateHousehold
+                onCreateHousehold()
             },
             bold = true,
             text = stringResource(Res.string.create_from_scratch),

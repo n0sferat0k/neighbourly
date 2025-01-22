@@ -22,7 +22,7 @@ func LeaveHousehold(w http.ResponseWriter, r *http.Request) {
 	var householdId int64
 	err := utility.DB.QueryRow(`SELECT households_id FROM households WHERE households_add_numerics_0 = ? LIMIT 1`, userId).Scan(&householdId)
 	if err != nil {
-		if err != sql.ErrNoRows {
+		if err == sql.ErrNoRows {
 			householdId = -1
 		} else {
 			http.Error(w, "Failed to retrieve owned household"+err.Error(), http.StatusInternalServerError)

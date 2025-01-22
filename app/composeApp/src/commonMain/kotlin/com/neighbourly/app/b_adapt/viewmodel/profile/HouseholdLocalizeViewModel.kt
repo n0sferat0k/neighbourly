@@ -29,7 +29,7 @@ class HouseholdLocalizeViewModel(
                             localized = user.household?.location != null,
                             localizing = user.localizing,
                             gpsprogress = user.household?.gpsprogress ?: 0f,
-                            editableHousehold = user.household?.headid == user.id,
+                            canEditHousehold = user.household?.headid == user.id,
                         )
                     }
                 } ?: run {
@@ -38,13 +38,19 @@ class HouseholdLocalizeViewModel(
             }.launchIn(viewModelScope)
     }
 
-    fun onLocalize() {
+    fun onStartLocalize() {
         viewModelScope.launch {
             householdLocalizeUseCase.startMonitoring()
         }
     }
 
-    fun onAccept() {
+    fun onStopLocalize() {
+        viewModelScope.launch {
+            householdLocalizeUseCase.stopMonitoring()
+        }
+    }
+
+    fun onAcceptLocalize() {
         viewModelScope.launch {
             _state.update { it.copy(loading = true) }
             householdLocalizeUseCase.acceptGpsCandidate()
@@ -52,7 +58,7 @@ class HouseholdLocalizeViewModel(
         }
     }
 
-    fun onRetry() {
+    fun onRetryLocalize() {
         viewModelScope.launch {
             _state.update { it.copy(loading = true) }
             householdLocalizeUseCase.retryMonitoring()
@@ -73,7 +79,7 @@ class HouseholdLocalizeViewModel(
         val hasHouse: Boolean = false,
         val localized: Boolean = false,
         val localizing: Boolean = false,
-        val editableHousehold: Boolean = false,
+        val canEditHousehold: Boolean = false,
         val gpsprogress: Float = 0f,
     )
 }

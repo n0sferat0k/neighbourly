@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTabVS
-import com.neighbourly.app.a_device.ui.web.WebContentView
+import com.neighbourly.app.a_device.ui.atomic.page.WebContentPage
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent
 
 @Composable
@@ -24,9 +24,8 @@ fun OrganismHostContentOverWeb(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter,
     ) {
-        WebContentView(
-            modifier = Modifier.fillMaxSize(),
-        )
+        WebContentPage()
+
         OrganismHostContent(
             showLanding = showLanding,
             showAuth = showAuth,

@@ -7,16 +7,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.a_device.ui.atomic.molecule.card.LogoutCardFooter
-import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismHouseholdMemberScanner
-import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismNeighbourhoodMemberScanner
-import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismProfileInfoEdit
+import com.neighbourly.app.a_device.ui.atomic.organism.profile.household.OrganismHouseholdMemberScanner
+import com.neighbourly.app.a_device.ui.atomic.organism.profile.neighbourhood.OrganismNeighbourhoodMemberScanner
+import com.neighbourly.app.a_device.ui.atomic.organism.profile.person.OrganismPersonInfoEdit
 import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismProfileMenu
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismContentBubble
-import com.neighbourly.app.a_device.ui.atomic.page.HouseholdInfoEditPage
 import com.neighbourly.app.a_device.ui.atomic.page.HouseholdAddMemberPage
-import com.neighbourly.app.a_device.ui.profile.HouseholdLocalizeView
-import com.neighbourly.app.a_device.ui.profile.NeighbourhoodAddMemberView
-import com.neighbourly.app.a_device.ui.profile.NeighbourhoodInfoEditView
+import com.neighbourly.app.a_device.ui.atomic.page.HouseholdInfoEditPage
+import com.neighbourly.app.a_device.ui.atomic.page.NeighbourhoodAddMemberPage
+import com.neighbourly.app.a_device.ui.atomic.page.HouseholdLocalizePage
+import com.neighbourly.app.a_device.ui.atomic.page.NeighbourhoodInfoEditPage
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewState
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdAddMember
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdInfoEdit
@@ -74,22 +74,22 @@ fun ProfileTemplate(
 
             navigationState.profileContent.let {
                 when (it) {
-                    ProfileInfoEdit -> OrganismProfileInfoEdit(
+                    ProfileInfoEdit -> OrganismPersonInfoEdit(
                         profile = state.profile,
                         saving = state.saving,
                         onSave = profileInfoSave
                     )
 
                     HouseholdInfoEdit -> HouseholdInfoEditPage()
-                    HouseholdLocalize -> HouseholdLocalizeView()
-                    NeighbourhoodInfoEdit -> NeighbourhoodInfoEditView()
+                    HouseholdLocalize -> HouseholdLocalizePage()
+                    NeighbourhoodInfoEdit -> NeighbourhoodInfoEditPage()
                     is HouseholdAddMember -> HouseholdAddMemberPage(it.id, it.username)
                     HouseholdScanMember -> OrganismHouseholdMemberScanner(onScan = householdMemberAdd)
                     is NeighbourhoodScanMember -> OrganismNeighbourhoodMemberScanner(onScan = { id, user ->
                         neighbourhoodMemberAdd(it.neighbourhoodid, id, user)
                     })
 
-                    is NeighbourhoodAddMemberHousehold -> NeighbourhoodAddMemberView(
+                    is NeighbourhoodAddMemberHousehold -> NeighbourhoodAddMemberPage(
                         it.neighbourhoodid,
                         it.id,
                         it.username

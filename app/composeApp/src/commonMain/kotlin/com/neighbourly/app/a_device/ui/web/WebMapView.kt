@@ -1,5 +1,6 @@
 package com.neighbourly.app.a_device.ui.web
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -27,7 +28,6 @@ import kotlinx.serialization.json.Json
 
 @Composable
 fun WebMapView(
-    modifier: Modifier = Modifier,
     viewModel: WebMapViewModel = androidx.lifecycle.viewmodel.compose.viewModel { KoinProvider.KOIN.get<WebMapViewModel>() },
     navigation: NavigationViewModel = androidx.lifecycle.viewmodel.compose.viewModel { KoinProvider.KOIN.get<NavigationViewModel>() },
 ) {
@@ -56,7 +56,7 @@ fun WebMapView(
                 }
                 if (params.drawData != null) {
                     viewModel.onDrawn(params.drawData)
-                    navigation.goBack()
+                    navigation.goToNeighbourhoodInfoEdit()
                 }
             }
         }
@@ -70,7 +70,7 @@ fun WebMapView(
 
     PlatformWebView(
         state = webViewState,
-        modifier = modifier,
+        modifier = Modifier.fillMaxSize(),
         navigator = navigator,
         webViewJsBridge = jsBridge,
     )

@@ -7,7 +7,7 @@ import com.neighbourly.app.a_device.ui.atomic.molecule.misc.ScreenSplitter
 import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTabVS
 import com.neighbourly.app.a_device.ui.atomic.organism.misc.OrganismHostContent
 import com.neighbourly.app.a_device.ui.atomic.organism.misc.OrganismHostContentOverWeb
-import com.neighbourly.app.a_device.ui.web.WebContentView
+import com.neighbourly.app.a_device.ui.atomic.page.WebContentPage
 import com.neighbourly.app.b_adapt.viewmodel.AppStateInfoViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewState
 
@@ -34,9 +34,7 @@ fun HostTemplate(
                 )
             },
             rightContent = {
-                WebContentView(
-                    modifier = Modifier.fillMaxSize(),
-                )
+                WebContentPage()
             }
         )
     } else {

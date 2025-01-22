@@ -28,12 +28,14 @@
     <string name="add_to_household">Add To Household</string>
     <string name="add_to_neighbourhood">Add To Neighbourhood</string>
     <string name="neighbourhood_acc">Neighbourhoods Acc:</string>
+    <string name="members_acc">Family members Acc:</string>
 
     <string name="box_id">Box ID:</string>
     <string name="box_name">Box Name:</string>
 
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="stop">Stop</string>
     <string name="leaving">Leaving</string>
     <string name="confirm_leaving_neighbourhood">This action will take you and your entire household out of this neighbourhood, If you are the creator of the neighbourhood, it will be inherited by the next in line. Are you sure you want to continue ?</string>
     <string name="confirm_leaving_household">Leaving a household will also take out of any neighbourhoods you are in, are you sure you want to continue ?</string>

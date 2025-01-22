@@ -2,8 +2,8 @@ package com.neighbourly.app.a_device.ui.atomic.template
 
 import androidx.compose.runtime.Composable
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
-import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismHouseholdEdit
-import com.neighbourly.app.a_device.ui.atomic.organism.profile.OrganismHouseholdMissing
+import com.neighbourly.app.a_device.ui.atomic.organism.profile.household.OrganismHouseholdEdit
+import com.neighbourly.app.a_device.ui.atomic.organism.profile.household.OrganismHouseholdMissing
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewState
 import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdInfoEditViewModel
 

@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.atomic.organism.profile
+package com.neighbourly.app.a_device.ui.atomic.organism.profile.neighbourhood
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -6,16 +6,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,16 +28,15 @@ import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.b_adapt.viewmodel.bean.MemberVS
-import com.neighbourly.app.b_adapt.viewmodel.bean.NeighbourhoodAndAccVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.NameAndAccessVS
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.about
-import neighbourly.composeapp.generated.resources.add_to_household
-import neighbourly.composeapp.generated.resources.attempting_to_add_household_member
+import neighbourly.composeapp.generated.resources.add_to_neighbourhood
 import neighbourly.composeapp.generated.resources.email
 import neighbourly.composeapp.generated.resources.fullname
-import neighbourly.composeapp.generated.resources.neighbourhood_acc
+import neighbourly.composeapp.generated.resources.members_acc
 import neighbourly.composeapp.generated.resources.phone
 import neighbourly.composeapp.generated.resources.profile
 import neighbourly.composeapp.generated.resources.username
@@ -49,22 +45,20 @@ import org.jetbrains.compose.resources.stringResource
 import kotlin.math.min
 
 @Composable
-fun OrganismHouseholdMemberAdd(
+fun OrganismNeighbourhoodMemberAdd(
     member: MemberVS,
     adding: Boolean,
-    onAddToHousehold: (neighbourhoodsAndAcc: Map<Int, NeighbourhoodAndAccVS>) -> Unit,
+    personsAndAcc: Map<Int, NameAndAccessVS>,
+    onAddToNeighbourhood: (personsAndAcc: Map<Int, NameAndAccessVS>) -> Unit
 ) {
     val defaultProfile = painterResource(Res.drawable.profile)
-
-    var neighbourhoodsAndAccOverride by remember {
+    var personsAndAccOverride by remember {
         mutableStateOf(
-            member.neighbourhoodsAndAcc
+            personsAndAcc
         )
     }
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        FriendlyText(text = stringResource(Res.string.attempting_to_add_household_member))
-
         Row {
             // Name Input
             OutlinedTextField(
@@ -74,8 +68,6 @@ fun OrganismHouseholdMemberAdd(
                 label = { Text(stringResource(Res.string.username)) },
                 modifier = Modifier.weight(1f),
             )
-
-            Spacer(modifier = Modifier.width(3.dp))
 
             Box(
                 modifier =
@@ -148,24 +140,24 @@ fun OrganismHouseholdMemberAdd(
             modifier = Modifier.fillMaxWidth(),
         )
 
-        if (neighbourhoodsAndAccOverride.size > 0) {
-            FriendlyText(text = stringResource(Res.string.neighbourhood_acc))
 
-            Spacer(modifier = Modifier.height(8.dp))
 
-            neighbourhoodsAndAccOverride.toList().forEach { (id, item) ->
+        if (personsAndAccOverride.isNotEmpty()) {
+            FriendlyText(text = stringResource(Res.string.members_acc))
+
+            personsAndAccOverride.toList().forEach { (id, item) ->
                 OutlinedTextField(
                     value = item.access.toString(),
                     onValueChange = { access ->
-                        member.neighbourhoodsAndAcc[id]?.let { neighbourhoodAndAcc ->
-                            neighbourhoodsAndAccOverride = neighbourhoodsAndAccOverride
+                        personsAndAccOverride[id]?.let { personAndAcc ->
+                            personsAndAccOverride = personsAndAccOverride
                                 .toMutableMap()
                                 .apply {
                                     put(
-                                        id, neighbourhoodAndAcc.copy(
+                                        id, personAndAcc.copy(
                                             access = min(
                                                 access.toIntOrNull() ?: 0,
-                                                neighbourhoodAndAcc.access
+                                                personsAndAcc[id]?.access ?: 0
                                             )
                                         )
                                     )
@@ -176,16 +168,16 @@ fun OrganismHouseholdMemberAdd(
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
         }
 
         FriendlyButton(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = stringResource(Res.string.add_to_household),
+            text = stringResource(Res.string.add_to_neighbourhood),
             loading = adding,
         ) {
-            onAddToHousehold(neighbourhoodsAndAccOverride)
+            onAddToNeighbourhood(personsAndAccOverride)
         }
+
+
     }
 }
