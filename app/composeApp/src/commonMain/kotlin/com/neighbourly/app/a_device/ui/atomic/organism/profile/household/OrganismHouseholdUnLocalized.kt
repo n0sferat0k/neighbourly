@@ -2,10 +2,8 @@ package com.neighbourly.app.a_device.ui.atomic.organism.profile.household
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
@@ -21,7 +19,10 @@ fun OrganismHouseholdUnLocalized(
     canEditHousehold: Boolean,
     onLocalize: () -> Unit
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
         if (canEditHousehold) {
             FriendlyText(text = stringResource(Res.string.need_to_localize))
             FriendlyButton(text = stringResource(Res.string.track_me)) {

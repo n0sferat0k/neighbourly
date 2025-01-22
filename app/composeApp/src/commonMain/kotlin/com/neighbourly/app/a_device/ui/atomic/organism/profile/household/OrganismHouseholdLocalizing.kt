@@ -24,7 +24,10 @@ import java.math.RoundingMode
 
 @Composable
 fun OrganismHouseholdLocalizing(progress: Float, onStop: () -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
         FriendlyText(text = stringResource(Res.string.localize_progress))
 
         Box(modifier = Modifier.size(150.dp)) {

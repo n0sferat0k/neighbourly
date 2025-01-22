@@ -47,6 +47,7 @@ class HouseholdManagementUseCase(
                     imageurl = user.imageurl,
                     household = user.household,
                     neighbourhoods = user.neighbourhoods,
+                    localizing = false,
                 )
             }
         }

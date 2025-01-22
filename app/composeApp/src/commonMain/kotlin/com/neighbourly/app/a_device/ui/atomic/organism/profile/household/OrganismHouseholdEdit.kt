@@ -3,6 +3,7 @@ package com.neighbourly.app.a_device.ui.atomic.organism.profile.household
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -101,7 +102,7 @@ fun OrganismHouseholdEdit(
         )
     }
 
-    Column {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row {
             // Name Input
             OutlinedTextField(
@@ -172,8 +173,6 @@ fun OrganismHouseholdEdit(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         // Address Input
         OutlinedTextField(
             value = addressOverride ?: household?.address ?: "",
@@ -185,8 +184,6 @@ fun OrganismHouseholdEdit(
             isError = (addressOverride ?: household?.address)?.isBlank() ?: true,
             modifier = Modifier.fillMaxWidth(),
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         // About Input
         OutlinedTextField(
@@ -201,8 +198,6 @@ fun OrganismHouseholdEdit(
         )
 
         if (hasChanged && editableHousehold) {
-            Spacer(modifier = Modifier.height(8.dp))
-
             FriendlyButton(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 text = stringResource(Res.string.save),
@@ -210,36 +205,35 @@ fun OrganismHouseholdEdit(
             ) {
                 onSaveHousehold(nameOverride, addressOverride, aboutOverride)
             }
-
-            Spacer(modifier = Modifier.height(8.dp))
         }
-        Box(modifier = Modifier.fillMaxWidth()) {
-            if (editableHousehold) {
+
+        if (household != null) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                if (editableHousehold) {
+                    FriendlyText(
+                        modifier =
+                        Modifier
+                            .clickable {
+                                onAddMember()
+                            }.align(Alignment.CenterStart),
+                        bold = true,
+                        text = stringResource(Res.string.add_member),
+                    )
+                }
+
                 FriendlyText(
                     modifier =
                     Modifier
                         .clickable {
-                            onAddMember()
-                        }.align(Alignment.CenterStart),
+                            showRemoveAlert = true
+                        }.align(Alignment.CenterEnd),
                     bold = true,
-                    text = stringResource(Res.string.add_member),
+                    text = stringResource(Res.string.leave_household),
                 )
             }
-
-            FriendlyText(
-                modifier =
-                Modifier
-                    .clickable {
-                        showRemoveAlert = true
-                    }.align(Alignment.CenterEnd),
-                bold = true,
-                text = stringResource(Res.string.leave_household),
-            )
         }
 
         if (members != null) {
-            Spacer(modifier = Modifier.height(8.dp))
-
             FriendlyText(text = stringResource(Res.string.list_household_members))
 
             members.forEach {
