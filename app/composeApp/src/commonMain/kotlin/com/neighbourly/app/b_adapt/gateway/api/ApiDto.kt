@@ -1,4 +1,4 @@
-package com.neighbourly.app.b_adapt.gateway
+package com.neighbourly.app.b_adapt.gateway.api
 
 import kotlinx.serialization.Serializable
 
@@ -163,3 +163,7 @@ data class SyncResponseDTO(
     val households: List<HouseholdDTO> = emptyList(),
     val householdIds: List<Int> = emptyList(),
 )
+
+class ApiException(
+    val msg: String,
+) : RuntimeException(msg)

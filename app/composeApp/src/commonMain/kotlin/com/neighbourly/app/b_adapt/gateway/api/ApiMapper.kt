@@ -1,4 +1,4 @@
-package com.neighbourly.app.b_adapt.gateway
+package com.neighbourly.app.b_adapt.gateway.api
 
 import com.neighbourly.app.d_entity.data.Attachment
 import com.neighbourly.app.d_entity.data.Box
@@ -24,6 +24,21 @@ fun UserDTO.toUser(): User =
         neighbourhoods = neighbourhoods.map { it.toNeighbourhood() },
     )
 
+fun User.toUserDTO(): UserDTO =
+    UserDTO(
+        id = id,
+        username = username,
+        about = about,
+        fullname = fullname,
+        email = email,
+        phone = phone,
+        imageurl = imageurl?.prependResourceUrlBase(),
+        authtoken = authtoken,
+        household = household?.toHouseholdDTO(),
+        lastModifiedTs = lastModifiedTs,
+        neighbourhoods = neighbourhoods.map { it.toNeighbourhoodDTO() },
+    )
+
 fun HouseholdDTO.toHousehold(): Household =
     Household(
         householdid = householdid,
@@ -47,6 +62,21 @@ fun HouseholdDTO.toHousehold(): Household =
         boxes = boxes?.map { it.toBox() }
     )
 
+fun Household.toHouseholdDTO(): HouseholdDTO =
+    HouseholdDTO(
+        householdid = householdid,
+        name = name,
+        about = about,
+        imageurl = imageurl?.prependResourceUrlBase(),
+        headid = headid,
+        latitude = location?.first,
+        longitude = location?.second,
+        address = address,
+        gpsprogress = gpsprogress,
+        lastModifiedTs = lastModifiedTs,
+        members = members?.map { it.toUserDTO() },
+    )
+
 fun BoxDTO.toBox(): Box = Box(
     name = name,
     id = id,
@@ -59,6 +89,15 @@ fun NeighbourhoodDTO.toNeighbourhood(): Neighbourhood =
         geofence = geofence.orEmpty(),
         access = access ?: 0,
         parent = parent?.toUser(),
+    )
+
+fun Neighbourhood.toNeighbourhoodDTO(): NeighbourhoodDTO =
+    NeighbourhoodDTO(
+        neighbourhoodid = neighbourhoodid,
+        name = name,
+        geofence = geofence,
+        access = access,
+        parent = parent?.toUserDTO(),
     )
 
 fun GpsItemDTO.toGpsItem(): GpsItem =

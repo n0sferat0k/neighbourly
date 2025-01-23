@@ -1,9 +1,11 @@
 package com.neighbourly.app
 
+import com.neighbourly.app.a_device.api.KtorAI
 import com.neighbourly.app.a_device.api.KtorApi
 import com.neighbourly.app.a_device.remote.PahoMqttIot
 import com.neighbourly.app.a_device.store.SessionHybridStore
-import com.neighbourly.app.b_adapt.gateway.ApiGateway
+import com.neighbourly.app.b_adapt.gateway.ai.AiGateway
+import com.neighbourly.app.b_adapt.gateway.api.ApiGateway
 import com.neighbourly.app.b_adapt.interactor.DbInteractor
 import com.neighbourly.app.b_adapt.viewmodel.AppStateInfoViewModel
 import com.neighbourly.app.b_adapt.viewmodel.WebMapViewModel
@@ -34,6 +36,7 @@ import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUse
 import com.neighbourly.app.c_business.usecase.profile.ProfileImageUpdateUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileUpdateUseCase
+import com.neighbourly.app.d_entity.interf.AI
 import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.ConfigStatusSource
 import com.neighbourly.app.d_entity.interf.Db
@@ -85,6 +88,9 @@ val adapterModule =
         single<Api> {
             ApiGateway(KtorApi, get())
         }
+        single<AI> {
+            AiGateway(KtorAI)
+        }
         single<Iot> {
             PahoMqttIot()
         }
@@ -101,7 +107,7 @@ val adapterModule =
             RegisterViewModel(get(), get())
         }
         factory {
-            ProfileViewModel(get(), get(), get(), get(), get(),get())
+            ProfileViewModel(get(), get(), get(), get(), get(), get())
         }
         factory {
             LoginViewModel(get(), get())
@@ -174,7 +180,7 @@ val useCaseModule =
             FetchProfileUseCase(get(), get())
         }
         factory {
-            ContentSyncUseCase(get(), get(), get())
+            ContentSyncUseCase(get(), get(), get(), get())
         }
         factory {
             ItemManagementUseCase(get(), get(), get())

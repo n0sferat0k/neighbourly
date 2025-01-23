@@ -1,4 +1,4 @@
-package com.neighbourly.app.b_adapt.gateway
+package com.neighbourly.app.b_adapt.gateway.api
 
 import com.neighbourly.app.a_device.api.KtorApi
 import com.neighbourly.app.d_entity.data.Attachment
@@ -431,6 +431,3 @@ class ApiGateway(
         }
 }
 
-class ApiException(
-    val msg: String,
-) : RuntimeException(msg)
