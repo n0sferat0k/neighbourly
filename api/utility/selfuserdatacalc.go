@@ -21,8 +21,8 @@ func RetreiveSessionUserData(userId string) (*entity.User, error) {
 		H.households_text_EN AS Householdabout,
 		H.households_pic AS HouseholdImageURL,
 		H.households_add_numerics_0 AS HeadID,
-		H.households_add_numerics_1 / ? AS Latitude,
-		H.households_add_numerics_2 / ? AS Longitude,
+		ROUND(H.households_add_numerics_1 / ?, 6) AS Latitude,
+		ROUND(H.households_add_numerics_2 / ?, 6) AS Longitude,
 		H.households_add_strings_0 AS Address
 
 		FROM 

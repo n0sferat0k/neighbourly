@@ -13,6 +13,10 @@ import com.neighbourly.app.d_entity.data.ItemType
 
 enum class ItemTypeVS {
     INFO, DONATION, BARTER, SALE, EVENT, NEED, REQUEST, SKILLSHARE, REMINDER;
+    companion object {
+        fun getByName(type: String?): ItemTypeVS =
+            ItemTypeVS.entries.filter { it.name == type }.firstOrNull() ?: INFO
+    }
 }
 
 fun ItemTypeVS.toItemType() = when (this) {

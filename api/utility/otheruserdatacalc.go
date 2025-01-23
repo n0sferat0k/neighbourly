@@ -20,8 +20,8 @@ func RetreiveUserData(userId int64, userName string) (*entity.User, error) {
 
 		H.households_id,
 		H.households_titlu_EN,
-		H.households_add_numerics_1 / ? AS Latitude,
-		H.households_add_numerics_2 / ? AS Longitude,
+		ROUND(H.households_add_numerics_1 / ?, 6) AS Latitude,
+		ROUND(H.households_add_numerics_2 / ?, 6) AS Longitude,
 		H.households_add_numerics_0 AS HeadID
 
 		FROM 

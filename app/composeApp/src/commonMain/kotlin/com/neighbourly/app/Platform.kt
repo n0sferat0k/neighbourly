@@ -3,13 +3,9 @@
 package com.neighbourly.app
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import app.cash.sqldelight.db.SqlDriver
-import com.multiplatform.webview.jsbridge.WebViewJsBridge
-import com.multiplatform.webview.web.WebViewNavigator
-import com.multiplatform.webview.web.WebViewState
 import com.neighbourly.app.a_device.store.StatusMemoryStore
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
@@ -17,14 +13,6 @@ import io.ktor.client.engine.HttpClientEngine
 
 @Composable
 expect fun requestPermissions()
-
-@Composable
-expect fun PlatformWebView(
-    state: WebViewState,
-    modifier: Modifier,
-    navigator: WebViewNavigator,
-    webViewJsBridge: WebViewJsBridge? = null
-)
 
 typealias GeoLocationCallback = (latitude: Double, longitude: Double, accuracy: Float) -> Unit
 

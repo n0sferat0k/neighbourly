@@ -28,7 +28,10 @@ func AddToNeighbourhood(w http.ResponseWriter, r *http.Request) {
 	var longitude float64
 	var latitude float64
 
-	err := utility.DB.QueryRow(`SELECT users_add_numerics_0, households_add_numerics_1 / ?, households_add_numerics_2/ ?
+	err := utility.DB.QueryRow(`SELECT 
+									users_add_numerics_0, 
+									ROUND(households_add_numerics_1 / ?, 6),
+									ROUND(households_add_numerics_2 / ?, 6)
 								FROM users LEFT JOIN households ON households.households_id = users.users_add_numerics_0
 								WHERE users_id = ? AND users_add_strings_0 = ?`,
 		utility.GpsPrecisionFactor, utility.GpsPrecisionFactor, addRequest.Userid, addRequest.Username).Scan(&householdid, &latitude, &longitude)

@@ -1,15 +1,185 @@
-package com.neighbourly.app.a_device.ui.web
+package com.neighbourly.app.a_device.ui.atomic.template
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import com.multiplatform.webview.jsbridge.IJsMessageHandler
+import com.multiplatform.webview.jsbridge.JsMessage
+import com.multiplatform.webview.jsbridge.rememberWebViewJsBridge
+import com.multiplatform.webview.web.WebViewNavigator
+import com.multiplatform.webview.web.rememberWebViewNavigator
+import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
+import com.neighbourly.app.a_device.ui.atomic.atom.PlatformWebView
+import com.neighbourly.app.b_adapt.viewmodel.WebMapViewModel.MapViewState
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 
-@Serializable
-data class MapFeedbackModel(
-    val mapReady: Boolean? = null,
-    val drawData: List<List<Float>>? = null,
-    val householdid: Int? = null,
-    val type: String? = null,
-)
+@Composable
+fun WebMapTemplate(
+    state: MapViewState,
+    onMapReady: () -> Unit,
+    onHouseAndTypeSelected: (type: ItemTypeVS, householdId: Int) -> Unit,
+    onDrawnUpdate: (drawData: List<List<Float>>) -> Unit
+) {
+    @Serializable
+    data class MapFeedbackModel(
+        val mapReady: Boolean? = null,
+        val drawData: List<List<Float>>? = null,
+        val householdid: Int? = null,
+        val type: String? = null,
+    )
+
+    var mapReady by remember { mutableStateOf(false) }
+    val webViewState = rememberWebViewStateWithHTMLData(data = mapHtml)
+    val navigator = rememberWebViewNavigator()
+    val jsBridge = rememberWebViewJsBridge()
+    var firstGps by remember { mutableStateOf(true) }
+    val jsMessageHandler = remember {
+        object : IJsMessageHandler {
+            override fun methodName(): String = "MapFeedback"
+
+            override fun handle(
+                message: JsMessage,
+                navigator: WebViewNavigator?,
+                callback: (String) -> Unit,
+            ) {
+                val params = Json.decodeFromString<MapFeedbackModel>(message.params)
+                params.householdid?.let {
+                    onHouseAndTypeSelected(ItemTypeVS.getByName(params.type), it)
+                }
+                if (params.mapReady == true) {
+                    mapReady = true
+                    onMapReady()
+                }
+                if (params.drawData != null) {
+                    onDrawnUpdate(params.drawData)
+                }
+            }
+        }
+    }
+
+    DisposableEffect(jsBridge) {
+        jsBridge.register(jsMessageHandler)
+        onDispose {
+            jsBridge.unregister(jsMessageHandler)
+        }
+    }
+
+    LaunchedEffect(mapReady, state.myLocation) {
+        if (!mapReady) return@LaunchedEffect
+
+        if (state.myLocation != null) {
+            navigator.evaluateJavaScript("setDot(${state.myLocation.longitude}, ${state.myLocation.latitude}, 'current');")
+            if (firstGps) {
+                navigator.evaluateJavaScript("centerToDot();")
+                firstGps = false
+            }
+        }
+    }
+
+    LaunchedEffect(mapReady, state.drawing) {
+        if (!mapReady) return@LaunchedEffect
+
+        if (state.drawing) {
+            navigator.evaluateJavaScript("enableDraw()")
+        } else {
+            navigator.evaluateJavaScript("disableDraw()")
+        }
+    }
+
+    LaunchedEffect(mapReady, state.myHousehold) {
+        if (!mapReady) return@LaunchedEffect
+
+        state.myHousehold.location?.let { myHouseLocation ->
+            if (firstGps) {
+                navigator.evaluateJavaScript("center(${myHouseLocation.longitude}, ${myHouseLocation.latitude}, 15);")
+                firstGps = false
+            }
+        }
+    }
+
+    LaunchedEffect(mapReady, state.otherHouseholds, state.myHousehold) {
+        if (!mapReady) return@LaunchedEffect
+
+        var housesToShow = state.otherHouseholds
+        if (state.myHousehold.location != null) {
+            housesToShow += state.myHousehold
+        }
+
+        if (housesToShow.isEmpty()) {
+            navigator.evaluateJavaScript("clearHouseholds()")
+        } else {
+            val js = housesToShow
+                .filter { it.location != null }
+                .map {
+                    "{" +
+                            "'longitude':${it.location!!.longitude}, " +
+                            "'latitude':${it.location.latitude}, " +
+                            "'id':${it.id}, " +
+                            "'name':'${it.name}', " +
+                            "'floatName':${it.isCandidate}," +
+                            "'address':'${it.address}', " +
+                            "'description':'${it.description}', " +
+                            "'donations':${it.donations}, " +
+                            "'barterings':${it.barterings}, " +
+                            "'sales':${it.sales}, " +
+                            "'events':${it.events}, " +
+                            "'needs':${it.needs}, " +
+                            "'requests':${it.requests}, " +
+                            "'skillshare':${it.skillshare}, " +
+                            "'imageurl':'${it.imageurl ?: ""}'" +
+                            "}"
+                }.joinToString(separator = ",", prefix = "updateHouseholds([", postfix = "]);")
+            navigator.evaluateJavaScript(js)
+
+        }
+    }
+
+    LaunchedEffect(mapReady, state.neighbourhoods) {
+        if (!mapReady) return@LaunchedEffect
+
+        if (state.neighbourhoods.isEmpty()) {
+            navigator.evaluateJavaScript("clearNeighbourhoods()")
+        } else {
+            state.neighbourhoods.forEach {
+                navigator.evaluateJavaScript("addNeighbourhood('${it.id}', ${it.geofence})")
+            }
+        }
+    }
+
+    LaunchedEffect(mapReady, state.heatmap) {
+        if (!mapReady) return@LaunchedEffect
+
+        state.heatmap.takeIf { !it.isNullOrEmpty() }?.let {
+            val js = it.map { heatmapItem ->
+                "{'type': 'Feature', 'geometry': {'type': 'Point','coordinates': [${heatmapItem.longitude}, ${heatmapItem.latitude}]},'properties': {'frequency': ${heatmapItem.frequency} }}"
+            }.joinToString(
+                separator = ",",
+                prefix = "addLocationHeatMap('heatmap', [",
+                postfix = "])"
+            )
+
+            navigator.evaluateJavaScript(js)
+        } ?: run {
+            navigator.evaluateJavaScript("clearLocationHeatMap('heatmap')")
+        }
+    }
+
+    PlatformWebView(
+        state = webViewState,
+        modifier = Modifier.fillMaxSize(),
+        navigator = navigator,
+        webViewJsBridge = jsBridge,
+    )
+}
 
 val mapHtml =
     """

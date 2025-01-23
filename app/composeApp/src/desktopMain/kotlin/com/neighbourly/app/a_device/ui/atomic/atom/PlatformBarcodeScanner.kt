@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui
+package com.neighbourly.app.a_device.ui.atomic.atom
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -29,7 +29,7 @@ import org.jetbrains.skiko.toBitmap
 import java.awt.image.BufferedImage
 
 @Composable
-actual fun BarcodeScanner(
+actual fun PlatformBarcodeScanner(
     modifier: Modifier,
     onDone: ((String) -> Unit),
 ) {

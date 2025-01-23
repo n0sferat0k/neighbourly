@@ -7,7 +7,11 @@ import (
 
 func RetrieveHeatmap(userId string, onlyNight bool) ([]entity.GpsPayload, error) {
 	factorStr := strconv.Itoa(GpsPrecisionFactor)
-	query := `SELECT coordinates_add_numerics_1 / ` + factorStr + `, coordinates_add_numerics_2 / ` + factorStr + `, COUNT(*) FROM coordinates
+	query := `SELECT 
+					ROUND(coordinates_add_numerics_1 / ` + factorStr + `, 6), 
+					ROUND(coordinates_add_numerics_2 / ` + factorStr + `, 6), 
+					COUNT(*) 				
+				FROM coordinates
 				WHERE coordinates_add_numerics_0 = ?`
 
 	if onlyNight {

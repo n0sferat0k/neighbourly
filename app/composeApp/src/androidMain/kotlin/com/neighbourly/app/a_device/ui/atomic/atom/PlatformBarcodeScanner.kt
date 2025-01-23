@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui
+package com.neighbourly.app.a_device.ui.atomic.atom
 
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
@@ -32,11 +32,12 @@ import androidx.core.content.ContextCompat
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
+import com.neighbourly.app.a_device.ui.AppColors
 
 @ExperimentalLensFacing
 @ExperimentalGetImage
 @Composable
-actual fun BarcodeScanner(
+actual fun PlatformBarcodeScanner(
     modifier: Modifier,
     onDone: ((String) -> Unit),
 ) {

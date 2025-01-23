@@ -1,11 +1,11 @@
-package com.neighbourly.app.a_device.ui.web
+package com.neighbourly.app.a_device.ui.atomic.organism.web
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewState
-import com.neighbourly.app.PlatformWebView
+import com.neighbourly.app.a_device.ui.atomic.atom.PlatformWebView
 
 
 @Composable
