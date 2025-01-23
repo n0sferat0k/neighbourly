@@ -101,7 +101,7 @@ val adapterModule =
             RegisterViewModel(get(), get())
         }
         factory {
-            ProfileViewModel(get(), get(), get(), get(), get())
+            ProfileViewModel(get(), get(), get(), get(), get(),get())
         }
         factory {
             LoginViewModel(get(), get())

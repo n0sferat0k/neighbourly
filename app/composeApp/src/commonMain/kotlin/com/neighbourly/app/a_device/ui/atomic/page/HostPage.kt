@@ -6,7 +6,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTabVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.MenuTabVS
 import com.neighbourly.app.a_device.ui.atomic.template.HostTemplate
 import com.neighbourly.app.b_adapt.viewmodel.AppStateInfoViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BoxManage

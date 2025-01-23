@@ -3,7 +3,6 @@ package com.neighbourly.app.b_adapt.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
-import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.interf.ConfigStatusSource
 import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,16 +25,17 @@ class AppStateInfoViewModel(
     init {
         if (sessionStore.user != null) {
             viewModelScope.launch {
-                try {
+                kotlin.runCatching {
                     contentSyncUseCase.execute()
-                } catch (e: OpException) {
-                    //todo handle token
                 }
                 _state.update { it.copy(isLanding = false) }
             }
         } else {
             _state.update { it.copy(isLanding = false) }
         }
+        sessionStore.userFlow.onEach { user ->
+            _state.update { it.copy(isOnboarded = user?.neighbourhoods?.isNotEmpty() ?: false) }
+        }.launchIn(viewModelScope)
         configSource.isOnlineFlow.onEach { isOnline ->
             _state.update { it.copy(isOnline = isOnline.first, lastError = isOnline.second) }
         }.launchIn(viewModelScope)
@@ -53,6 +53,7 @@ class AppStateInfoViewModel(
         val isDebug: Boolean = true,
         val isOnline: Boolean = false,
         val isLoggedIn: Boolean = false,
+        val isOnboarded: Boolean = false,
         val isLanding: Boolean = true,
         val lastError: String? = null
     )

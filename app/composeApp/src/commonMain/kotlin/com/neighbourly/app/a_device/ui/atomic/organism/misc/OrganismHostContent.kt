@@ -7,8 +7,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.neighbourly.app.a_device.ui.atomic.molecule.menu.CrownMenuItem
 import com.neighbourly.app.a_device.ui.atomic.molecule.menu.HomeMenuItem
-import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTabVS
-import com.neighbourly.app.a_device.ui.atomic.organism.menu.OrganismOverlayMenu
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.OrganismOverlayMenuFull
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.OrganismOverlayMenuLimited
 import com.neighbourly.app.a_device.ui.atomic.page.BackendInfoPage
 import com.neighbourly.app.a_device.ui.atomic.page.BoxManagementPage
 import com.neighbourly.app.a_device.ui.atomic.page.FilteredItemListPage
@@ -17,6 +17,7 @@ import com.neighbourly.app.a_device.ui.atomic.page.LandingPage
 import com.neighbourly.app.a_device.ui.atomic.page.LoginOrRegisterPage
 import com.neighbourly.app.a_device.ui.atomic.page.ProfilePage
 import com.neighbourly.app.a_device.ui.atomic.page.RemindersPage
+import com.neighbourly.app.b_adapt.viewmodel.bean.MenuTabVS
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BackendInfo
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BoxManage
@@ -34,6 +35,7 @@ fun OrganismHostContent(
     showAuth: Boolean,
     showContent: Boolean,
     mainContent: MainContent,
+    showLimitedContent: Boolean,
     isOnline: Boolean,
     onCrownClick: () -> Unit,
     onHomeClick: () -> Unit,
@@ -60,7 +62,10 @@ fun OrganismHostContent(
             showAuth -> LoginOrRegisterPage()
             showContent ->
                 when (mainContent) {
-                    MainMenu -> OrganismOverlayMenu(onSelect = onMenuClick)
+                    MainMenu -> if (showLimitedContent)
+                        OrganismOverlayMenuLimited(onSelect = onMenuClick)
+                    else
+                        OrganismOverlayMenuFull(onSelect = onMenuClick)
                     is FindItems ->
                         mainContent.let {
                             FilteredItemListPage(

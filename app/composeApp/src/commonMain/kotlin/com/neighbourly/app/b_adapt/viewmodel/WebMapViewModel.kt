@@ -128,8 +128,10 @@ class WebMapViewModel(
             GetLocation.addCallback(this)
             if (sessionStore.user?.localizing == true) {
                 viewModelScope.launch {
-                    householdLocalizeUseCase.fetchGpsLogs()
-                    householdLocalizeUseCase.fetchGpsCandidate()
+                    kotlin.runCatching {
+                        householdLocalizeUseCase.fetchGpsLogs()
+                        householdLocalizeUseCase.fetchGpsCandidate()
+                    }
                 }
             }
         } else {

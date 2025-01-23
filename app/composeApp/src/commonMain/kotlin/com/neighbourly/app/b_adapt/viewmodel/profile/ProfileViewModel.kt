@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.b_adapt.viewmodel.bean.OnboardVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.ProfileVS
 import com.neighbourly.app.c_business.usecase.auth.LogoutUseCase
+import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileImageUpdateUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileUpdateUseCase
@@ -25,6 +26,7 @@ class ProfileViewModel(
     val profileRefreshUseCase: ProfileRefreshUseCase,
     val profileImageUpdateUseCase: ProfileImageUpdateUseCase,
     val profileUpdateUseCase: ProfileUpdateUseCase,
+    val householdLocalizeUseCase: HouseholdLocalizeUseCase,
     val logoutUseCase: LogoutUseCase,
     val sessionStore: SessionStore,
 ) : ViewModel() {
@@ -62,7 +64,13 @@ class ProfileViewModel(
         _state.update { it.copy(loading = true) }
         viewModelScope.launch {
             runCatching {
-                profileRefreshUseCase.execute()
+                kotlin.runCatching {
+                    profileRefreshUseCase.execute()
+                    if (sessionStore.user?.localizing == true) {
+                        householdLocalizeUseCase.fetchGpsLogs()
+                        householdLocalizeUseCase.fetchGpsCandidate()
+                    }
+                }
             }
             _state.update { it.copy(loading = false) }
         }

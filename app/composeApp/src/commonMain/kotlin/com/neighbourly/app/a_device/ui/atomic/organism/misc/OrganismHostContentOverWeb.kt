@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.neighbourly.app.a_device.ui.atomic.organism.menu.MenuTabVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.MenuTabVS
 import com.neighbourly.app.a_device.ui.atomic.page.WebContentPage
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent
 
@@ -15,6 +15,7 @@ fun OrganismHostContentOverWeb(
     showAuth: Boolean,
     showContent: Boolean,
     mainContent: MainContent,
+    showLimitedContent: Boolean,
     isOnline: Boolean,
     onCrownClick: () -> Unit,
     onHomeClick: () -> Unit,
@@ -31,6 +32,7 @@ fun OrganismHostContentOverWeb(
             showAuth = showAuth,
             showContent = showContent,
             mainContent = mainContent,
+            showLimitedContent = showLimitedContent,
             isOnline = isOnline,
             onCrownClick = onCrownClick,
             onHomeClick = onHomeClick,
