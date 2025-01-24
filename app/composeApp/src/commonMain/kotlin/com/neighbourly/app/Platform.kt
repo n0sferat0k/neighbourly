@@ -49,6 +49,8 @@ expect class PlatformBitmap(width: Int, height: Int) {
 
 expect val databaseDriver: SqlDriver
 
+expect fun requestFutureWork(delaySeconds:Int, data: Map<String, Any>)
+
 fun createDatabase(): NeighbourlyDB {
     return NeighbourlyDB(databaseDriver)
 }

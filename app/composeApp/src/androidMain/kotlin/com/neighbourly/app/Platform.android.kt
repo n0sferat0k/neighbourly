@@ -26,6 +26,12 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.core.net.toUri
+import androidx.work.CoroutineWorker
+import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkerParameters
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -37,6 +43,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.neighbourly.app.NeighbourlyApp.Companion.locationProvider
 import com.neighbourly.app.a_device.store.StatusMemoryStore
+import com.neighbourly.app.c_business.usecase.work.ScheduledWorkUseCase
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
@@ -46,6 +53,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import java.nio.file.Paths
+import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 import kotlin.math.max
 
@@ -244,3 +252,23 @@ actual fun postSystemNotification(id: Int, title: String, text: String) {
 actual val appVersionString: String
     get() = BuildConfig.appVersion
 
+class NeighbourlyWorker(
+    appContext: Context,
+    params: WorkerParameters
+) : CoroutineWorker(appContext, params) {
+    override suspend fun doWork(): Result {
+        KoinProvider.KOIN.get<ScheduledWorkUseCase>().handle(inputData.keyValueMap)
+        return Result.Success()
+    }
+}
+
+actual fun requestFutureWork(delaySeconds: Int, data: Map<String, Any>) {
+    WorkManager.getInstance(NeighbourlyApp.appContext).enqueueUniqueWork(
+        "NeighbourlyNextOperation",
+        ExistingWorkPolicy.REPLACE,
+        OneTimeWorkRequestBuilder<NeighbourlyWorker>()
+            .setInitialDelay(delaySeconds.toLong(), TimeUnit.SECONDS)
+            .setInputData(Data.Builder().putAll(data).build())
+            .build()
+    )
+}

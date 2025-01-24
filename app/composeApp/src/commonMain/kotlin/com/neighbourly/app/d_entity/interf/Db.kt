@@ -13,8 +13,10 @@ interface Db {
     suspend fun deleteItem(itemId: Int)
     suspend fun storeUsers(users: List<User>)
     suspend fun stripUsers(validIds: List<Int>)
+    suspend fun getUser(userId: Int): User
     suspend fun getUsers(): List<User>
     suspend fun storeHouseholds(households: List<Household>)
+    suspend fun getHousehold(householdId: Int): Household
     suspend fun stripHouseholds(validIds: List<Int>)
     suspend fun getItem(itemId: Int): Item
     suspend fun getItemIds(): List<Int>

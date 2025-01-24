@@ -25,6 +25,9 @@ DELETE FROM Households WHERE 1;
 getHouseholds:
 SELECT * FROM Households ORDER BY id DESC;
 
+getHousehold:
+SELECT * FROM Households WHERE id = ?;
+
 filterHouseholdsByIds:
 SELECT * FROM Households WHERE id IN ? ORDER BY id DESC;
 

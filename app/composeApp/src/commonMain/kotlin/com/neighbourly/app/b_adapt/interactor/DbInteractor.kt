@@ -1,6 +1,7 @@
 package com.neighbourly.app.b_adapt.interactor
 
 import com.neighbourly.app.NeighbourlyDB
+import com.neighbourly.app.adevice.db.Households
 import com.neighbourly.app.adevice.db.Items
 import com.neighbourly.app.adevice.db.Users
 import com.neighbourly.app.d_entity.data.Household
@@ -96,9 +97,21 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
         }
     }
 
+    override suspend fun getUser(userId: Int): User {
+        return withContext(Dispatchers.IO) {
+            db.usersQueries.getUser(userId.toLong()).executeAsOne().toUser()
+        }
+    }
+
     override suspend fun getUsers(): List<User> {
         return withContext(Dispatchers.IO) {
             db.usersQueries.getUsers().executeAsList().map { it.toUser() }
+        }
+    }
+
+    override suspend fun getHousehold(householdId: Int): Household {
+        return withContext(Dispatchers.IO) {
+            db.householdsQueries.getHousehold(householdId.toLong()).executeAsOne().toHousehold()
         }
     }
 
@@ -158,27 +171,29 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
                 db.householdsQueries.filterHouseholdsByIds(ids.map { it.toLong() })
             } ?: db.householdsQueries.getHouseholds())
                 .executeAsList().map {
-                    Household(
-                        householdid = it.id.toInt(),
-                        name = it.name,
-                        headid = it.headid.toInt(),
-                        about = it.about,
-                        imageurl = it.image,
-                        location = it.latitude?.let { lat ->
-                            it.longitude?.let { lng ->
-                                Pair(
-                                    lat.toFloat(),
-                                    lng.toFloat(),
-                                )
-                            }
-                        },
-                        address = it.address,
-                        lastModifiedTs = it.lastmodifiedts.toInt(),
-                    )
+                    it.toHousehold()
                 }
         }
     }
 }
+
+private fun Households.toHousehold(): Household = Household(
+    householdid = id.toInt(),
+    name = name,
+    headid = headid.toInt(),
+    about = about,
+    imageurl = image,
+    location = latitude?.let { lat ->
+        longitude?.let { lng ->
+            Pair(
+                lat.toFloat(),
+                lng.toFloat(),
+            )
+        }
+    },
+    address = address,
+    lastModifiedTs = lastmodifiedts.toInt(),
+)
 
 private fun Users.toUser(): User =
     User(

@@ -36,6 +36,7 @@ import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUse
 import com.neighbourly.app.c_business.usecase.profile.ProfileImageUpdateUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileUpdateUseCase
+import com.neighbourly.app.c_business.usecase.work.ScheduledWorkUseCase
 import com.neighbourly.app.d_entity.interf.AI
 import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.ConfigStatusSource
@@ -180,7 +181,7 @@ val useCaseModule =
             FetchProfileUseCase(get(), get())
         }
         factory {
-            ContentSyncUseCase(get(), get(), get(), get())
+            ContentSyncUseCase(get(), get(), get(), get(), get())
         }
         factory {
             ItemManagementUseCase(get(), get(), get())
@@ -190,5 +191,8 @@ val useCaseModule =
         }
         factory {
             FilterItemsUseCase(get())
+        }
+        factory {
+            ScheduledWorkUseCase(get())
         }
     }

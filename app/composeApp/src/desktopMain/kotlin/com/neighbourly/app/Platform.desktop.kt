@@ -119,3 +119,5 @@ actual fun postSystemNotification(id: Int, title: String, text: String) {
 actual val appVersionString: String
     get() = System.getProperty("app.version") ?: "Unknown"
 
+actual fun requestFutureWork(delaySeconds: Int, data: Map<String, Any>) {
+}

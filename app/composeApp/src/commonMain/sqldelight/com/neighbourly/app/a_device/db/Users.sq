@@ -16,6 +16,9 @@ INSERT OR REPLACE INTO Users(id, username,
                     householdid, lastmodifiedts
                   )  VALUES(?,?, ?,?,?,?,?,?,?);
 
+getUser:
+SELECT * FROM Users WHERE id = ?;
+
 getUsers:
 SELECT * FROM Users WHERE 1;
 

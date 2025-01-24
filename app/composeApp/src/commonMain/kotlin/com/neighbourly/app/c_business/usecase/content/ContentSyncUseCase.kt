@@ -1,5 +1,6 @@
 package com.neighbourly.app.c_business.usecase.content
 
+import com.neighbourly.app.c_business.usecase.work.ScheduledWorkUseCase
 import com.neighbourly.app.d_entity.interf.AI
 import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.Db
@@ -13,6 +14,7 @@ class ContentSyncUseCase(
     val apiGw: Api,
     val aiGw: AI,
     val sessionStore: SessionStore,
+    val workUseCase: ScheduledWorkUseCase,
 ) {
     private val currentTs
         get() = (System.currentTimeMillis() / 1000).toInt()
@@ -54,6 +56,8 @@ class ContentSyncUseCase(
 
                 sessionStore.lastSyncTs = currentTs
             }
+
+            workUseCase.scheduleNextWork()
         }
     }
 }
