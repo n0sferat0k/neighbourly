@@ -71,6 +71,7 @@ fun OrganismHostContent(
                             FilteredItemListPage(
                                 type = it.type,
                                 householdId = it.householdId,
+                                itemIds = it.itemIds,
                                 showExpired = false
                             )
                         }

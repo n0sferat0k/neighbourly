@@ -6,9 +6,16 @@ import com.neighbourly.app.b_adapt.gateway.api.NeighbourhoodDTO
 import com.neighbourly.app.b_adapt.gateway.api.UserDTO
 import kotlinx.serialization.Serializable
 
+@Serializable
 data class GenerateInput(
     val model: String = "llama3.2:3B",
-    val system: String = """You are a summary generator for an android app made for rural and suburban neighbourhoods. 
+    val stream: Boolean = false,
+    val system: String,
+    val prompt: String
+)
+
+fun overviewInput(prompt: String) = GenerateInput(
+    system = """You are a summary generator for an android app made for rural and suburban neighbourhoods. 
         You will receive raw json information about people and households in the neighbourhood as well as items posted by the people.
         You will generate a short (about 1 paragraph) summary that should offer most relevant overview for the user of the app contents.
         Here is some extra context that may be useful in doing your job:
@@ -24,9 +31,7 @@ data class GenerateInput(
             REMINDER - usually and important periodic thing that people should be reminded of, like trash day.
         3. items may have multiple dates, dates of creation or update but also start and end dates which signify the period in which the item is relevant.        
         """,
-    val raw: Boolean = true,
-    val stream: Boolean = false,
-    val prompt: String
+    prompt = prompt
 )
 
 @Serializable
@@ -37,6 +42,7 @@ data class AppContentDTO(
     val neighbourhoods: List<NeighbourhoodDTO>
 )
 
+@Serializable
 data class AIResponse(
     val model: String,
     val response: String,

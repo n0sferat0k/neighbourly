@@ -10,6 +10,7 @@ import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import com.neighbourly.app.a_device.store.StatusMemoryStore
 import com.neighbourly.app.d_entity.data.FileContents
+import com.neighbourly.app.d_entity.data.ScheduledWork
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
@@ -113,11 +114,11 @@ actual val statusConfigSource = object : StatusMemoryStore() {
         get() = listOf(true).asFlow()
 }
 
-actual fun postSystemNotification(id: Int, title: String, text: String) {
+actual suspend fun postSystemNotification(id: String?, title: String?, text: String) {
 }
 
 actual val appVersionString: String
     get() = System.getProperty("app.version") ?: "Unknown"
 
-actual fun requestFutureWork(delaySeconds: Int, data: Map<String, Any>) {
+actual fun requestFutureWork(work: ScheduledWork) {
 }

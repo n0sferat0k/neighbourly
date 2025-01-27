@@ -3,6 +3,7 @@ package com.neighbourly.app
 import com.neighbourly.app.a_device.api.KtorAI
 import com.neighbourly.app.a_device.api.KtorApi
 import com.neighbourly.app.a_device.remote.PahoMqttIot
+import com.neighbourly.app.a_device.spirit.NeighbourlySpirit
 import com.neighbourly.app.a_device.store.SessionHybridStore
 import com.neighbourly.app.b_adapt.gateway.ai.AiGateway
 import com.neighbourly.app.b_adapt.gateway.api.ApiGateway
@@ -36,7 +37,7 @@ import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUse
 import com.neighbourly.app.c_business.usecase.profile.ProfileImageUpdateUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileUpdateUseCase
-import com.neighbourly.app.c_business.usecase.work.ScheduledWorkUseCase
+import com.neighbourly.app.c_business.usecase.work.ScheduleWorkUseCase
 import com.neighbourly.app.d_entity.interf.AI
 import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.ConfigStatusSource
@@ -45,6 +46,7 @@ import com.neighbourly.app.d_entity.interf.Iot
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import com.neighbourly.app.d_entity.interf.SessionStore
 import com.neighbourly.app.d_entity.interf.StatusUpdater
+import com.neighbourly.app.d_entity.interf.Summonable
 import org.koin.core.Koin
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
@@ -82,6 +84,9 @@ val deviceModule =
         }
         single<StatusUpdater> {
             statusConfigSource
+        }
+        single<Summonable> {
+            NeighbourlySpirit
         }
     }
 val adapterModule =
@@ -163,7 +168,7 @@ val useCaseModule =
             ProfileImageUpdateUseCase(get(), get())
         }
         factory {
-            ProfileRefreshUseCase(get(), get())
+            ProfileRefreshUseCase(get(), get(), get())
         }
         factory {
             ProfileUpdateUseCase(get(), get())
@@ -181,10 +186,10 @@ val useCaseModule =
             FetchProfileUseCase(get(), get())
         }
         factory {
-            ContentSyncUseCase(get(), get(), get(), get(), get())
+            ContentSyncUseCase(get(), get(), get(), get())
         }
         factory {
-            ItemManagementUseCase(get(), get(), get())
+            ItemManagementUseCase(get(), get(), get(), get())
         }
         factory {
             BoxOpsUseCase(get(), get())
@@ -193,6 +198,6 @@ val useCaseModule =
             FilterItemsUseCase(get())
         }
         factory {
-            ScheduledWorkUseCase(get())
+            ScheduleWorkUseCase(get(), get())
         }
     }

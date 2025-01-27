@@ -36,6 +36,7 @@ class FilteredItemListViewModel(
     fun setFilters(
         type: ItemType?,
         householdId: Int?,
+        itemIds:List<Int>?,
         showExpired: Boolean,
         showOwnHousehold: Boolean = false
     ) {
@@ -45,6 +46,7 @@ class FilteredItemListViewModel(
             it.copy(
                 type = type,
                 householdId = filterHouseholdId,
+                itemIds = itemIds,
                 showExpired = showExpired
             )
         }
@@ -92,6 +94,7 @@ class FilteredItemListViewModel(
             filterItemsUseCase.filterItems(
                 _state.value.type,
                 _state.value.householdId,
+                _state.value.itemIds,
                 _state.value.showExpired
             )
                 .let { itemsAndHouses ->
@@ -146,6 +149,7 @@ class FilteredItemListViewModel(
     data class FilteredItemListViewState(
         val type: ItemType? = null,
         val householdId: Int? = null,
+        val itemIds:List<Int>? = null,
         val showExpired: Boolean = false,
         val loading: Boolean = false,
         val items: List<ItemVS> = emptyList()

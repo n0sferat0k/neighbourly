@@ -16,12 +16,25 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.IOException
-import java.util.concurrent.TimeoutException
 
 class AiGateway(
     val api: KtorAI,
 ) : AI {
+
     override suspend fun generate(
+        system:String,
+        prompt:String
+    ): String =
+        runContextCatchTranslateThrow {
+            api.generate(
+                GenerateInput(
+                    system = system,
+                    prompt = prompt,
+                )
+            ).response
+        }
+
+    override suspend fun contentOverview(
         items: List<Item>,
         people: List<User>,
         houses: List<Household>,
@@ -29,7 +42,7 @@ class AiGateway(
     ): String =
         runContextCatchTranslateThrow {
             api.generate(
-                GenerateInput(
+                overviewInput(
                     prompt = Json.encodeToString<AppContentDTO>(AppContentDTO(
                         items = items.map { it.toItemDTO() },
                         people = people.map { it.toUserDTO() },

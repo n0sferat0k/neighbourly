@@ -149,17 +149,28 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
         db.itemsQueries.getItemIds().executeAsList().map { it.toInt() }
 
 
-    override suspend fun filterItems(type: ItemType?, householdId: Int?): List<Item> {
+    override suspend fun filterItems(
+        type: ItemType?,
+        householdId: Int?,
+        ids: List<Int>?
+    ): List<Item> {
         return withContext(Dispatchers.IO) {
+            val query =
+                if (!ids.isNullOrEmpty()) {
+                    db.itemsQueries.getItemsByIds(ids.map { it.toLong() })
+                } else if (type != null && householdId != null)
+                    db.itemsQueries.filterItemsByTypeAndHousehold(
+                        type.name,
+                        householdId.toLong()
+                    )
+                else if (type != null)
+                    db.itemsQueries.filterItemsByType(type.name)
+                else if (householdId != null)
+                    db.itemsQueries.filterItemsByHousehold(householdId.toLong())
+                else
+                    db.itemsQueries.getItems()
 
-            (if (type != null && householdId != null)
-                db.itemsQueries.filterItemsByTypeAndHousehold(type.name, householdId.toLong())
-            else if (type != null)
-                db.itemsQueries.filterItemsByType(type.name)
-            else if (householdId != null)
-                db.itemsQueries.filterItemsByHousehold(householdId.toLong())
-            else
-                db.itemsQueries.getItems()).executeAsList().map {
+            query.executeAsList().map {
                 it.toItem()
             }
         }

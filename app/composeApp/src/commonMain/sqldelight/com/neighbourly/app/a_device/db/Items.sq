@@ -42,6 +42,9 @@ SELECT * FROM Items ORDER BY id DESC;
 getItemIds:
 SELECT id FROM Items ORDER BY id ASC;
 
+getItemsByIds:
+SELECT * FROM Items WHERE id IN ? ORDER BY id DESC;
+
 filterItemsByType:
 SELECT * FROM Items WHERE type = ? ORDER BY id DESC;
 

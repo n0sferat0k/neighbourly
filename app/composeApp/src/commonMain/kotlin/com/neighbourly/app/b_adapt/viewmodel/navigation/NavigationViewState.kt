@@ -35,7 +35,8 @@ sealed interface MainContent {
 
     data class FindItems(
         val type: ItemType? = null,
-        val householdId: Int? = null
+        val householdId: Int? = null,
+        val itemIds: List<Int>? = null,
     ) : MainContent
 }
 

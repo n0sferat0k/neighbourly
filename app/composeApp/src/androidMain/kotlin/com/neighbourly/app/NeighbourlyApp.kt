@@ -5,13 +5,12 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_HIGH
-import android.app.PendingIntent
 import android.app.PendingIntent.*
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.neighbourly.app.MainActivity.Companion.EXTRA_ITEM_ID
+import com.neighbourly.app.MainActivity.Companion.EXTRA_INDIRECTION
 import com.neighbourly.app.a_device.service.GpsTracker
 import java.util.concurrent.TimeUnit
 
@@ -36,9 +35,9 @@ class NeighbourlyApp : Application() {
     }
 
     @SuppressLint("NotificationPermission")
-    fun showBasicNotification(id: Int, title: String, text: String) {
+    fun showBasicNotification(id: String?, title: String, text: String) {
         val actionIntent = Intent(this, MainActivity::class.java)
-        actionIntent.putExtra(EXTRA_ITEM_ID, id)
+        actionIntent.putExtra(EXTRA_INDIRECTION, id)
         actionIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle(title)
@@ -57,10 +56,11 @@ class NeighbourlyApp : Application() {
             )
             .build()
 
-        notificationManager.notify(id, notification)
+        notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
     companion object {
+        const val NOTIFICATION_ID = 1234
         const val NOTIFICATION_CHANNEL_ID = "neighbourly_notification"
         val NOTIFICATION_TIMEOUT_MS = TimeUnit.MILLISECONDS.convert(2, TimeUnit.HOURS)
 

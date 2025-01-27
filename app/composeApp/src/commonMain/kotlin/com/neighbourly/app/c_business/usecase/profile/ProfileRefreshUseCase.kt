@@ -2,10 +2,12 @@ package com.neighbourly.app.c_business.usecase.profile
 
 import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.SessionStore
+import com.neighbourly.app.d_entity.interf.Summonable
 
 class ProfileRefreshUseCase(
     val apiGw: Api,
     val sessionStore: SessionStore,
+    val summonable: Summonable,
 ) {
     suspend fun execute() {
         val token = sessionStore.user?.authtoken
@@ -24,6 +26,7 @@ class ProfileRefreshUseCase(
                     neighbourhoods = user.neighbourhoods,
                 )
             }
+            summonable.summonOnProfileSyncComplete()
         }
     }
 }

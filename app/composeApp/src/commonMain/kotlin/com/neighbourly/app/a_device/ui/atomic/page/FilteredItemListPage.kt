@@ -15,6 +15,7 @@ import com.neighbourly.app.d_entity.data.ItemType
 fun FilteredItemListPage(
     type: ItemType? = null,
     householdId: Int? = null,
+    itemIds: List<Int>? = null,
     showExpired: Boolean = false,
     showOwnHousehold: Boolean = false,
     viewModel: FilteredItemListViewModel = viewModel { KoinProvider.KOIN.get<FilteredItemListViewModel>() },
@@ -22,7 +23,7 @@ fun FilteredItemListPage(
 ) {
     val state by viewModel.state.collectAsState()
     LaunchedEffect(type, householdId, showExpired) {
-        viewModel.setFilters(type, householdId, showExpired, showOwnHousehold)
+        viewModel.setFilters(type, householdId, itemIds, showExpired, showOwnHousehold)
     }
     FilteredItemListTemplate(
         state = state,

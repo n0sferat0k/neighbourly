@@ -20,6 +20,6 @@ interface Db {
     suspend fun stripHouseholds(validIds: List<Int>)
     suspend fun getItem(itemId: Int): Item
     suspend fun getItemIds(): List<Int>
-    suspend fun filterItems(type: ItemType? = null, householdId: Int? = null): List<Item>
+    suspend fun filterItems(type: ItemType? = null, householdId: Int? = null, ids: List<Int>? = null): List<Item>
     suspend fun filterHouseholds(ids: List<Int>? = null): List<Household>
 }

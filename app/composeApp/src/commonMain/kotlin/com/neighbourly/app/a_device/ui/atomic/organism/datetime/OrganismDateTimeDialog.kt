@@ -16,10 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardHeader
-import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardScrollableContent
 import com.neighbourly.app.a_device.ui.atomic.molecule.card.OkCardFooter
-import com.neighbourly.app.a_device.ui.atomic.molecule.card.RoundedCornerCard
+import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismContentBubble
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
@@ -37,17 +35,15 @@ fun OrganismDateTimeDialog(title: String, instant: Instant, onTimestamp: (Int?) 
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            RoundedCornerCard(
+            Box(
                 modifier = Modifier.align(Alignment.CenterStart)
                     .widthIn(max = 440.dp)
                     .padding(20.dp)
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    CardHeader(Modifier.align(Alignment.Start), title = title)
-
-                    CardScrollableContent(modifier = Modifier.weight(1f)) {
+                OrganismContentBubble(
+                    scrollable = true,
+                    title = title,
+                    content = {
                         Column(
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
@@ -93,12 +89,13 @@ fun OrganismDateTimeDialog(title: String, instant: Instant, onTimestamp: (Int?) 
                                 selectedInstant = adjustedDateTime.toInstant(timezone)
                             }
                         }
+                    },
+                    footerContent = {
+                        OkCardFooter {
+                            onTimestamp(selectedInstant.epochSeconds.toInt())
+                        }
                     }
-
-                    OkCardFooter {
-                        onTimestamp(selectedInstant.epochSeconds.toInt())
-                    }
-                }
+                )
             }
         }
     }

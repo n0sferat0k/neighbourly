@@ -7,6 +7,11 @@ import com.neighbourly.app.d_entity.data.User
 
 interface AI {
     suspend fun generate(
+        system: String,
+        prompt: String
+    ): String
+
+    suspend fun contentOverview(
         items: List<Item>,
         people: List<User>,
         houses: List<Household>,

@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import app.cash.sqldelight.db.SqlDriver
 import com.neighbourly.app.a_device.store.StatusMemoryStore
 import com.neighbourly.app.d_entity.data.FileContents
+import com.neighbourly.app.d_entity.data.ScheduledWork
 import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
 
@@ -32,7 +33,7 @@ expect fun loadContentsFromFile(file: String): FileContents?
 
 expect fun getPhoneNumber(): String?
 
-expect fun postSystemNotification(id: Int, title: String, text: String)
+expect suspend fun postSystemNotification(id: String? = null, title: String? = null, text: String)
 
 expect val httpClientEngine: HttpClientEngine
 
@@ -49,7 +50,7 @@ expect class PlatformBitmap(width: Int, height: Int) {
 
 expect val databaseDriver: SqlDriver
 
-expect fun requestFutureWork(delaySeconds:Int, data: Map<String, Any>)
+expect fun requestFutureWork(work: ScheduledWork)
 
 fun createDatabase(): NeighbourlyDB {
     return NeighbourlyDB(databaseDriver)

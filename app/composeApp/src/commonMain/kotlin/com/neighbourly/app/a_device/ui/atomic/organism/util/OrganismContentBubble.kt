@@ -13,10 +13,14 @@ import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardHeader
 import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardScrollableContent
 import com.neighbourly.app.a_device.ui.atomic.molecule.card.CardStaticContent
 import com.neighbourly.app.a_device.ui.atomic.molecule.card.RoundedCornerCard
+import neighbourly.composeapp.generated.resources.Res
+import neighbourly.composeapp.generated.resources.app_name
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun OrganismContentBubble(
     scrollable: Boolean = false,
+    title: String = stringResource(Res.string.app_name),
     busy: Boolean = false,
     content: @Composable ColumnScope.() -> Unit,
     footerContent: @Composable RowScope.() -> Unit,
@@ -29,7 +33,8 @@ fun OrganismContentBubble(
             CardHeader(
                 modifier = Modifier.fillMaxWidth().align(Alignment.Start),
                 busy = busy,
-                refresh = refresh
+                refresh = refresh,
+                title = title,
             )
 
             if (scrollable) {

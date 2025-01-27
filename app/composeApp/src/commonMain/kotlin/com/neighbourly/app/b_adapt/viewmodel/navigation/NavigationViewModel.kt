@@ -41,6 +41,7 @@ public class NavigationViewModel(
                 true -> _state.update {
                     it.copy(mainContentVisible = true)
                 }
+
                 false -> _state.update {
                     NavigationViewState(disableMainToggle = _state.value.disableMainToggle)
                 }
@@ -83,11 +84,15 @@ public class NavigationViewModel(
         }
     }
 
-    fun goToFindItems(itemType: ItemType? = null, householdId: Int? = null) {
+    fun goToFindItems(
+        itemType: ItemType? = null,
+        householdId: Int? = null,
+        itemIds: List<Int>? = null
+    ) {
         _state.update {
             it.copy(
                 mainContentVisible = true,
-                mainContent = MainContent.FindItems(itemType, householdId),
+                mainContent = MainContent.FindItems(itemType, householdId, itemIds),
             )
         }
     }

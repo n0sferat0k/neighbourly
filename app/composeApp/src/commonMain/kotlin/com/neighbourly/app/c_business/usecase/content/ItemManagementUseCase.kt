@@ -5,18 +5,21 @@ import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.SessionStore
+import com.neighbourly.app.d_entity.interf.Summonable
 
 class ItemManagementUseCase(
-    val dbInteractor: Db,
+    val database: Db,
     val apiGw: Api,
     val sessionStore: SessionStore,
+    val summonable: Summonable,
 ) {
     suspend fun delete(itemId: Int) {
         val token = sessionStore.user?.authtoken
 
         token?.let {
             apiGw.deleteItem(token, itemId)
-            dbInteractor.deleteItem(itemId)
+            database.deleteItem(itemId)
+            summonable.summonOnItemOp()
         }
     }
 
@@ -25,7 +28,8 @@ class ItemManagementUseCase(
 
         return token?.let {
             val updatedItem = apiGw.addOrUpdateItem(token, item)
-            dbInteractor.storeItems(listOf(updatedItem))
+            database.storeItems(listOf(updatedItem))
+            summonable.summonOnItemOp()
             updatedItem.id
         }
     }
@@ -35,8 +39,9 @@ class ItemManagementUseCase(
 
         token?.let {
             apiGw.uploadItemImage(it, itemId, imageFileContents).let { img ->
-                dbInteractor.getItem(itemId).let {
-                    dbInteractor.storeItems(listOf(it.copy(images = it.images + img)))
+                database.getItem(itemId).let {
+                    database.storeItems(listOf(it.copy(images = it.images + img)))
+                    summonable.summonOnItemOp()
                 }
             }
         }
@@ -47,8 +52,9 @@ class ItemManagementUseCase(
 
         token?.let {
             apiGw.uploadItemFile(it, itemId, fileContents).let { file ->
-                dbInteractor.getItem(itemId).let {
-                    dbInteractor.storeItems(listOf(it.copy(files = it.files + file)))
+                database.getItem(itemId).let {
+                    database.storeItems(listOf(it.copy(files = it.files + file)))
+                    summonable.summonOnItemOp()
                 }
             }
         }
@@ -59,8 +65,9 @@ class ItemManagementUseCase(
         token?.let {
             apiGw.deleteItemImage(it, imageId)
             itemId?.let {
-                dbInteractor.getItem(itemId).let {
-                    dbInteractor.storeItems(listOf(it.copy(images = it.images.filter { it.id != imageId })))
+                database.getItem(itemId).let {
+                    database.storeItems(listOf(it.copy(images = it.images.filter { it.id != imageId })))
+                    summonable.summonOnItemOp()
                 }
             }
         }
@@ -71,8 +78,9 @@ class ItemManagementUseCase(
         token?.let {
             apiGw.deleteItemFile(it, fileId)
             itemId?.let {
-                dbInteractor.getItem(itemId).let {
-                    dbInteractor.storeItems(listOf(it.copy(files = it.files.filter { it.id != fileId })))
+                database.getItem(itemId).let {
+                    database.storeItems(listOf(it.copy(files = it.files.filter { it.id != fileId })))
+                    summonable.summonOnItemOp()
                 }
             }
         }

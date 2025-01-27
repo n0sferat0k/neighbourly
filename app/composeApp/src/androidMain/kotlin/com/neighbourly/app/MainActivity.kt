@@ -1,15 +1,10 @@
 package com.neighbourly.app
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import com.neighbourly.app.a_device.ui.atomic.page.HostPage
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 
@@ -32,14 +27,19 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (intent.hasExtra(EXTRA_ITEM_ID)) {
-            KoinProvider.KOIN.get<NavigationViewModel>()
-                .goToItemDetails(intent.getIntExtra(EXTRA_ITEM_ID, 0))
+        if (intent.hasExtra(EXTRA_INDIRECTION)) {
+            intent.getStringExtra(EXTRA_INDIRECTION).let {
+                it?.toIntOrNull()?.let {
+                    KoinProvider.KOIN.get<NavigationViewModel>().goToItemDetails(it)
+                } ?: run {
+                    KoinProvider.KOIN.get<NavigationViewModel>()
+                        .goToFindItems(itemIds = it?.split(",")?.map { it.toIntOrNull() }?.filterNotNull())
+                }
+            }
         }
-
     }
 
     companion object {
-        const val EXTRA_ITEM_ID = "extra.item.id"
+        const val EXTRA_INDIRECTION = "extra.indirection.id"
     }
 }
