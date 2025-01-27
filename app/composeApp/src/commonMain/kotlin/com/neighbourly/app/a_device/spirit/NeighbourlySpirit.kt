@@ -55,8 +55,12 @@ object NeighbourlySpirit : Summonable {
 
                 val text = kotlin.runCatching {
                     aiGw.generate(
-                        system = "You are a helpful assistant, your speach is short and concise, you live inside an app used to connect people and households inside neighbourhoods, you will generate descriptions of items posted to the app by its users.",
-                        prompt = "Here is a set or recent items: " + Json.encodeToString(
+                        system = """You are a helpful assistant, 
+                                    your speach is short and concise, 
+                                    you live inside an app used to connect people and households inside neighbourhoods, 
+                                    you will summarize what items were posted to the app by its users. 
+                                    This summary should fit in a system notification !""",
+                        prompt = "Here are the recent items: " + Json.encodeToString(
                             novelItems.map { it.toItemDTO() }
                         )
                     )
