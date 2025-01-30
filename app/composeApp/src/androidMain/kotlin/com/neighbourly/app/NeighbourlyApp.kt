@@ -5,8 +5,11 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_HIGH
-import android.app.PendingIntent.*
+import android.app.PendingIntent.FLAG_MUTABLE
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
+import android.app.PendingIntent.getActivity
 import android.content.Intent
+import android.graphics.BitmapFactory
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -43,9 +46,15 @@ class NeighbourlyApp : Application() {
             .setContentTitle(title)
             .setContentText(text)
             .setSmallIcon(R.mipmap.ic_launcher)
+            .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
+            .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
             .setPriority(IMPORTANCE_HIGH)
             .setAutoCancel(true)
             .setTimeoutAfter(NOTIFICATION_TIMEOUT_MS)
+            .setStyle(
+                NotificationCompat.BigTextStyle()
+                    .bigText(text)
+            )
             .setContentIntent(
                 getActivity(
                     this,

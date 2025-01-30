@@ -20,6 +20,7 @@ fun UserDTO.toUser(): User =
         imageurl = imageurl?.prependResourceUrlBase(),
         authtoken = authtoken,
         household = household?.toHousehold(),
+        householdid = householdid,
         lastModifiedTs = lastModifiedTs,
         neighbourhoods = neighbourhoods.map { it.toNeighbourhood() },
     )

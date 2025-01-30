@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.atomic.template.ItemDetailsTemplate
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.BARTER
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.DONATION
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.EVENT
@@ -53,6 +54,7 @@ val LOCALLY_ALLOWED_SITES =
 @Composable
 fun ItemDetailsPage(
     itemId: Int? = null,
+    itemType: ItemTypeVS? = null,
     viewModel: ItemDetailsViewModel = viewModel { KoinProvider.KOIN.get<ItemDetailsViewModel>() },
     navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() }
 ) {
@@ -60,8 +62,8 @@ fun ItemDetailsPage(
 
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(itemId) {
-        viewModel.setItem(itemId)
+    LaunchedEffect(itemId, itemType) {
+        viewModel.setItem(itemId, itemType)
     }
 
     LaunchedEffect(state.item) {

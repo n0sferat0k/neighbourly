@@ -29,7 +29,7 @@ fun HouseholdSummaryVS.pullFrom(household: Household) = this.copy(
     imageurl = household.imageurl,
 )
 
-fun Household.toHouseholdVS(): HouseholdSummaryVS =
+fun Household.toHouseholdSummaryVS(): HouseholdSummaryVS =
     HouseholdSummaryVS(
         id = householdid,
         location = location?.let { GpsItemVS(it.first, it.second) },

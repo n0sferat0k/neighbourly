@@ -24,9 +24,9 @@ import java.util.concurrent.TimeUnit
 object KtorAI {
     private val client = HttpClient(httpClientEngine) {
         install(HttpTimeout) {
-            requestTimeoutMillis = TimeUnit.MINUTES.toMillis(5)
-            connectTimeoutMillis = TimeUnit.MINUTES.toMillis(5)
-            socketTimeoutMillis = TimeUnit.MINUTES.toMillis(5)
+            requestTimeoutMillis = TimeUnit.MINUTES.toMillis(10)
+            connectTimeoutMillis = TimeUnit.MINUTES.toMillis(10)
+            socketTimeoutMillis = TimeUnit.MINUTES.toMillis(10)
         }
         install(Logging) {
             logger = object : Logger {
@@ -56,7 +56,6 @@ object KtorAI {
         val response: HttpResponse = client.post("http://localhost:11434/api/generate") {
             contentType(ContentType.Application.Json)
             setBody(generateInput)
-
         }
         if (response.status.value == 200) {
             return response.body<AIResponse>()

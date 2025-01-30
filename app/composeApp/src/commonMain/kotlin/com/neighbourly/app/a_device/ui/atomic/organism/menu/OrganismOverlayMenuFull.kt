@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.atomic.molecule.menu.LateralMenuItem
 import com.neighbourly.app.a_device.ui.atomic.molecule.menu.MenuItemBoxSide.LEFT
 import com.neighbourly.app.a_device.ui.atomic.molecule.menu.MenuItemBoxSide.RIGHT
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.MenuTabVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.MenuTabVS.BOX
 import com.neighbourly.app.b_adapt.viewmodel.bean.MenuTabVS.ITEMS
@@ -21,7 +22,6 @@ import com.neighbourly.app.b_adapt.viewmodel.bean.MenuTabVS.MYSTUFF
 import com.neighbourly.app.b_adapt.viewmodel.bean.MenuTabVS.PROFILE
 import com.neighbourly.app.b_adapt.viewmodel.bean.MenuTabVS.PUBLISH
 import com.neighbourly.app.b_adapt.viewmodel.bean.MenuTabVS.REMINDERS
-import com.neighbourly.app.d_entity.data.ItemType
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.barter
 import neighbourly.composeapp.generated.resources.barterings
@@ -54,7 +54,7 @@ fun OrganismOverlayMenuFull(onSelect: (tab: MenuTabVS) -> Unit) {
             modifier = Modifier.fillMaxHeight().weight(.5f),
             verticalArrangement = Arrangement.spacedBy(15.dp, Alignment.Top),
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             LateralMenuItem(
                 side = LEFT,
@@ -120,7 +120,7 @@ fun OrganismOverlayMenuFull(onSelect: (tab: MenuTabVS) -> Unit) {
                 image = painterResource(Res.drawable.donate),
                 delayMs = 150
             ) {
-                onSelect(ITEMS(ItemType.DONATION))
+                onSelect(ITEMS(ItemTypeVS.DONATION))
             }
             LateralMenuItem(
                 side = RIGHT,
@@ -129,7 +129,7 @@ fun OrganismOverlayMenuFull(onSelect: (tab: MenuTabVS) -> Unit) {
                 image = painterResource(Res.drawable.barter),
                 delayMs = 250
             ) {
-                onSelect(ITEMS(ItemType.BARTER))
+                onSelect(ITEMS(ItemTypeVS.BARTER))
             }
             LateralMenuItem(
                 side = RIGHT,
@@ -138,7 +138,7 @@ fun OrganismOverlayMenuFull(onSelect: (tab: MenuTabVS) -> Unit) {
                 image = painterResource(Res.drawable.sale),
                 delayMs = 350
             ) {
-                onSelect(ITEMS(ItemType.SALE))
+                onSelect(ITEMS(ItemTypeVS.SALE))
             }
             LateralMenuItem(
                 side = RIGHT,
@@ -147,7 +147,7 @@ fun OrganismOverlayMenuFull(onSelect: (tab: MenuTabVS) -> Unit) {
                 image = painterResource(Res.drawable.event),
                 delayMs = 450
             ) {
-                onSelect(ITEMS(ItemType.EVENT))
+                onSelect(ITEMS(ItemTypeVS.EVENT))
             }
             LateralMenuItem(
                 side = RIGHT,
@@ -156,7 +156,7 @@ fun OrganismOverlayMenuFull(onSelect: (tab: MenuTabVS) -> Unit) {
                 image = painterResource(Res.drawable.need),
                 delayMs = 550
             ) {
-                onSelect(ITEMS(ItemType.NEED))
+                onSelect(ITEMS(ItemTypeVS.NEED))
             }
             LateralMenuItem(
                 side = RIGHT,
@@ -165,7 +165,7 @@ fun OrganismOverlayMenuFull(onSelect: (tab: MenuTabVS) -> Unit) {
                 image = painterResource(Res.drawable.request),
                 delayMs = 650
             ) {
-                onSelect(ITEMS(ItemType.REQUEST))
+                onSelect(ITEMS(ItemTypeVS.REQUEST))
             }
             LateralMenuItem(
                 side = RIGHT,
@@ -174,7 +174,7 @@ fun OrganismOverlayMenuFull(onSelect: (tab: MenuTabVS) -> Unit) {
                 image = painterResource(Res.drawable.skillshare),
                 delayMs = 750
             ) {
-                onSelect(ITEMS(ItemType.SKILLSHARE))
+                onSelect(ITEMS(ItemTypeVS.SKILLSHARE))
             }
         }
     }

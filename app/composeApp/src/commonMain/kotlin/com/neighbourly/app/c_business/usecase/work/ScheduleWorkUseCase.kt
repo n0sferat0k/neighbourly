@@ -7,7 +7,7 @@ import com.neighbourly.app.d_entity.data.ScheduledWorkType.SYNC
 import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.SessionStore
 import com.neighbourly.app.requestFutureWork
-import java.util.concurrent.TimeUnit.HOURS
+import java.util.concurrent.TimeUnit.MINUTES
 import java.util.concurrent.TimeUnit.SECONDS
 
 class ScheduleWorkUseCase(
@@ -48,6 +48,6 @@ class ScheduleWorkUseCase(
     }
 
     companion object {
-        val REFRESH_PERIOD_SECONDS = SECONDS.convert(1, HOURS)
+        val REFRESH_PERIOD_SECONDS = SECONDS.convert(10, MINUTES)
     }
 }

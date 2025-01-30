@@ -22,7 +22,6 @@ fun HouseholdInfoEditTemplate(
     } else {
         OrganismHouseholdEdit(
             household = state.household,
-            members = state.members,
             saving = state.saving,
             imageUpdating = state.imageUpdating,
             editableHousehold = state.isHouseHead || navigationState.addingNewHousehold,

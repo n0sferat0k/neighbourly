@@ -32,8 +32,7 @@ fun FriendlyButton(
 ) {
     Button(
         onClick = onClick,
-        modifier =
-        modifier
+        modifier = modifier
             .wrapContentWidth()
             .height(48.dp),
         shape = RoundedCornerShape(16.dp),

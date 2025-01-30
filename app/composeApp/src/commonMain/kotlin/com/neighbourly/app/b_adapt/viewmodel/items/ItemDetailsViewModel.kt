@@ -2,12 +2,11 @@ package com.neighbourly.app.b_adapt.viewmodel.items
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.neighbourly.app.b_adapt.viewmodel.bean.AttachmentVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.MemImgVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.toItemType
-import com.neighbourly.app.b_adapt.viewmodel.bean.toItemTypeVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.toItemVS
 import com.neighbourly.app.c_business.usecase.content.ItemManagementUseCase
 import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.data.ItemType.REMINDER
@@ -22,7 +21,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
-import kotlinx.datetime.Instant.Companion.fromEpochSeconds
 
 class ItemDetailsViewModel(
     private val database: Db,
@@ -56,7 +54,7 @@ class ItemDetailsViewModel(
         }
     }
 
-    fun setItem(itemId: Int?) {
+    fun setItem(itemId: Int?, itemType: ItemTypeVS? = null) {
         reset()
 
         if (itemId != null) {
@@ -68,39 +66,7 @@ class ItemDetailsViewModel(
                             editable = item.householdId == store.user?.household?.householdid,
                             admin = store.user?.neighbourhoods?.firstOrNull { it.neighbourhoodid == item.neighbourhoodId }?.access?.let { it >= 499 }
                                 ?: false,
-                            item = state.item?.copy(
-                                type = item.type.toItemTypeVS(),
-                                name = item.name.orEmpty(),
-                                description = item.description.orEmpty(),
-                                dates = if (item.type == REMINDER) {
-                                    kotlin.runCatching {
-                                        item.description?.split(",")
-                                            ?.map { fromEpochSeconds(it.toLong()) }
-                                            ?: emptyList()
-                                    }.getOrNull() ?: emptyList()
-                                } else emptyList(),
-                                targetUserId = item.targetUserId,
-                                url = item.url.orEmpty(),
-                                start = item.startTs.takeIf { it > 0 }
-                                    ?.let { fromEpochSeconds(it.toLong()) },
-                                end = item.endTs.takeIf { it > 0 }
-                                    ?.let { fromEpochSeconds(it.toLong()) },
-                                images = item.images.map {
-                                    AttachmentVS(
-                                        it.id ?: 0,
-                                        it.url,
-                                        it.name
-                                    )
-                                },
-                                files = item.files.map {
-                                    AttachmentVS(
-                                        id = it.id ?: 0,
-                                        url = it.url,
-                                        name = it.name,
-                                    )
-                                },
-                                neighbourhoodId = item.neighbourhoodId,
-                            ),
+                            item = item.toItemVS(),
                         )
                     }
                 }
@@ -108,7 +74,10 @@ class ItemDetailsViewModel(
         } else {
             _state.update { state ->
                 state.copy(
-                    item = state.item?.copy(neighbourhoodId = store.user?.neighbourhoods?.firstOrNull()?.neighbourhoodid),
+                    item = state.item?.copy(
+                        type = itemType ?: state.item.type,
+                        neighbourhoodId = store.user?.neighbourhoods?.firstOrNull()?.neighbourhoodid
+                    ),
                     editable = true,
                     admin = store.user?.neighbourhoods?.firstOrNull()?.access?.let { it >= 499 }
                         ?: false,

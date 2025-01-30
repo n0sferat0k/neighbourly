@@ -9,7 +9,7 @@ import com.neighbourly.app.b_adapt.viewmodel.bean.HouseholdSummaryVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.NeighbourhoodVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.pullFrom
 import com.neighbourly.app.b_adapt.viewmodel.bean.toGpsItemVS
-import com.neighbourly.app.b_adapt.viewmodel.bean.toHouseholdVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.toHouseholdSummaryVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.toNeighbourhoodVS
 import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
 import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUseCase
@@ -71,7 +71,7 @@ class WebMapViewModel(
             .onEach { user ->
                 val allOtherHouseholds =
                     database.filterHouseholds().filter { it.householdid != user?.householdid }.map {
-                        it.toHouseholdVS().pullStatsClone()
+                        it.toHouseholdSummaryVS().pullStatsClone()
                     }
 
                 _state.update { state ->

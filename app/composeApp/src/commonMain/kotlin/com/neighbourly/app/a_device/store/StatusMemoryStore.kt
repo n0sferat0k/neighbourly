@@ -17,12 +17,27 @@ abstract class StatusMemoryStore : ConfigStatusSource, StatusUpdater {
     override val isOnlineFlow: Flow<Pair<Boolean, String?>> =
         _state.map { Pair(it.isOnline, it.lastError) }
 
+    override val isAiOnlineFlow: Flow<Boolean> =
+        _state.map { it.isAiOnline }
+
+    override val aiMessages: Flow<List<String>> = _state.map { it.aiMessages }
+
     override fun setOnline(isOnline: Boolean, lastError: String?) {
         _state.update { it.copy(isOnline = isOnline, lastError = lastError) }
     }
 
+    override fun setAiOnline(isAiOnline: Boolean) {
+        _state.update { it.copy(isAiOnline = isAiOnline) }
+    }
+
+    override fun storeAiMessage(message: String) {
+        _state.update { it.copy(aiMessages = it.aiMessages + message) }
+    }
+
     private data class StatusMemoryStoreState(
         val isOnline: Boolean = true,
-        val lastError: String? = null
+        val isAiOnline: Boolean = true,
+        val lastError: String? = null,
+        val aiMessages: List<String> = emptyList()
     )
 }

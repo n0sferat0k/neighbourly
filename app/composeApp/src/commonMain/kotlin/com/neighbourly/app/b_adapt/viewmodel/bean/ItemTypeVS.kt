@@ -9,6 +9,7 @@ import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.REMINDER
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.REQUEST
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.SALE
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.SKILLSHARE
+import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.data.ItemType
 
 enum class ItemTypeVS {

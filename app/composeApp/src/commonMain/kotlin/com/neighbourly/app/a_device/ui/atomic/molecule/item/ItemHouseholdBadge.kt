@@ -28,19 +28,20 @@ import neighbourly.composeapp.generated.resources.houses
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun ItemHouseholdBadge(householdImage: String?, householdName: String?) {
+fun ItemHouseholdBadge(householdImage: String?, householdName: String?, onClick: () -> Unit) {
     val defaultHouseImg = painterResource(Res.drawable.houses)
 
     Column(
-        modifier = Modifier.widthIn(max = 72.dp),
+        modifier = Modifier.widthIn(max = 72.dp).clickable {
+            onClick()
+        },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier =
             Modifier
                 .size(36.dp)
-                .border(2.dp, AppColors.primary, CircleShape)
-                .clickable {},
+                .border(2.dp, AppColors.primary, CircleShape),
         ) {
             householdImage.let {
                 if (!it.isNullOrBlank()) {

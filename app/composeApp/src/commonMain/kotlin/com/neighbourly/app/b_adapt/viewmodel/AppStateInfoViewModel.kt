@@ -39,6 +39,9 @@ class AppStateInfoViewModel(
         configSource.isOnlineFlow.onEach { isOnline ->
             _state.update { it.copy(isOnline = isOnline.first, lastError = isOnline.second) }
         }.launchIn(viewModelScope)
+        configSource.isAiOnlineFlow.onEach { isAiOnline ->
+            _state.update { it.copy(isAiOnline = isAiOnline) }
+        }.launchIn(viewModelScope)
         configSource.wideScreenFlow.onEach { isWide ->
             _state.update { it.copy(isWideLand = isWide) }
         }.launchIn(viewModelScope)
@@ -52,6 +55,7 @@ class AppStateInfoViewModel(
         val isWideLand: Boolean = false,
         val isDebug: Boolean = true,
         val isOnline: Boolean = false,
+        val isAiOnline: Boolean = false,
         val isLoggedIn: Boolean = false,
         val isOnboarded: Boolean = false,
         val isLanding: Boolean = true,

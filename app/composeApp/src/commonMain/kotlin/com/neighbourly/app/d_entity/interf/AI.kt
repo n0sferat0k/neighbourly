@@ -12,6 +12,7 @@ interface AI {
     ): String
 
     suspend fun contentOverview(
+        prompt: String,
         items: List<Item>,
         people: List<User>,
         houses: List<Household>,

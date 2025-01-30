@@ -63,37 +63,25 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 import kotlin.math.max
 
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-actual fun requestPermissions() {
-    // Initialize the state for managing multiple location permissions.
-    val permissionState =
-        rememberMultiplePermissionsState(
-            listOf(
-                CAMERA,
-                ACCESS_COARSE_LOCATION,
-                ACCESS_FINE_LOCATION,
-                READ_EXTERNAL_STORAGE,
-                READ_PHONE_STATE,
-                READ_PHONE_NUMBERS,
-                POST_NOTIFICATIONS
-            ),
+actual fun requestAllPermissions() {
+    val permissionState = rememberMultiplePermissionsState(
+        listOf(
+            CAMERA,
+            ACCESS_COARSE_LOCATION,
+            ACCESS_FINE_LOCATION,
+            READ_EXTERNAL_STORAGE,
+            READ_PHONE_STATE,
+            READ_PHONE_NUMBERS,
+            POST_NOTIFICATIONS,
         )
-
-    // Use LaunchedEffect to handle permissions logic when the composition is launched.
-    LaunchedEffect(key1 = permissionState) {
-        // Check if all previously granted permissions are revoked.
-        val allPermissionsRevoked =
-            permissionState.permissions.size == permissionState.revokedPermissions.size
-
-        // Filter permissions that need to be requested.
-        val permissionsToRequest =
-            permissionState.permissions.filter {
-                !it.status.isGranted
-            }
-
+    )
+    LaunchedEffect(permissionState) {
         // If there are permissions to request, launch the permission request.
-        if (permissionsToRequest.isNotEmpty()) permissionState.launchMultiplePermissionRequest()
+        if (permissionState.permissions.any { !it.status.isGranted })
+            permissionState.launchMultiplePermissionRequest()
     }
 }
 
@@ -252,7 +240,11 @@ actual val statusConfigSource = object : StatusMemoryStore() {
 }
 
 actual suspend fun postSystemNotification(id: String?, title: String?, text: String) {
-    NeighbourlyApp.appContext.showBasicNotification(id, title ?: getString(Res.string.app_name), text)
+    NeighbourlyApp.appContext.showBasicNotification(
+        id,
+        title ?: getString(Res.string.app_name),
+        text
+    )
 }
 
 actual val appVersionString: String

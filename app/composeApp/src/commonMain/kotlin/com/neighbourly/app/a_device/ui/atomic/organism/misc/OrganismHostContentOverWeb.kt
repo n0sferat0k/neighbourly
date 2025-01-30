@@ -17,7 +17,9 @@ fun OrganismHostContentOverWeb(
     mainContent: MainContent,
     showLimitedContent: Boolean,
     isOnline: Boolean,
-    onCrownClick: () -> Unit,
+    isAiOnline: Boolean,
+    onWifiClick: () -> Unit,
+    onAiClick: () -> Unit,
     onHomeClick: () -> Unit,
     onMenuClick: (tab: MenuTabVS) -> Unit,
 ) {
@@ -34,7 +36,9 @@ fun OrganismHostContentOverWeb(
             mainContent = mainContent,
             showLimitedContent = showLimitedContent,
             isOnline = isOnline,
-            onCrownClick = onCrownClick,
+            isAiOnline = isAiOnline,
+            onWifiClick = onWifiClick,
+            onAiClick = onAiClick,
             onHomeClick = onHomeClick,
             onMenuClick = onMenuClick,
         )

@@ -7,13 +7,14 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.atomic.template.FilteredItemListTemplate
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
-import com.neighbourly.app.d_entity.data.ItemType
 
 @Composable
 fun FilteredItemListPage(
-    type: ItemType? = null,
+    type: ItemTypeVS? = null,
     householdId: Int? = null,
     itemIds: List<Int>? = null,
     showExpired: Boolean = false,
@@ -29,6 +30,8 @@ fun FilteredItemListPage(
         state = state,
         onDeleteItem = viewModel::onDeleteItem,
         onSelectItem = navigationViewModel::goToItemDetails,
-        refresh = { viewModel.refresh(true) }
+        onSelectHousehold = navigationViewModel::goToHouseholdDetails,
+        refresh = { viewModel.refresh(true) },
+        add = { navigationViewModel.goToMainPage(MainContent.PublishStuff(type)) }
     )
 }

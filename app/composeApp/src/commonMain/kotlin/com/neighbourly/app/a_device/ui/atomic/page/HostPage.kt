@@ -28,9 +28,13 @@ fun HostPage(
     }
 
     HostTemplate(appState = appState, navigationState = navigationState,
-        onCrownClick = {
+        onWifiClick = {
             navigationViewModel.goToBackendInfo()
-        }, onHomeClick = {
+        },
+        onAiClick = {
+            navigationViewModel.goToAiPage()
+        },
+        onHomeClick = {
             navigationViewModel.toggleMainContent()
         },
         onMenuClick = {
@@ -38,7 +42,7 @@ fun HostPage(
                 MenuTabVS.PROFILE -> navigationViewModel.goToProfile()
                 MenuTabVS.MYSTUFF -> navigationViewModel.goToMainPage(ManageMyStuff)
                 MenuTabVS.BOX -> navigationViewModel.goToMainPage(BoxManage)
-                MenuTabVS.PUBLISH -> navigationViewModel.goToMainPage(PublishStuff)
+                MenuTabVS.PUBLISH -> navigationViewModel.goToMainPage(PublishStuff())
                 MenuTabVS.REMINDERS -> navigationViewModel.goToMainPage(Reminders)
                 is MenuTabVS.ITEMS -> navigationViewModel.goToFindItems(it.type)
             }

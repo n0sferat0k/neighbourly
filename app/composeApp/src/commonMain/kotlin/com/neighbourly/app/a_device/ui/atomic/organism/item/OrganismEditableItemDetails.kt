@@ -13,8 +13,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyAntiButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemEditDateSeries
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemEditDateStartEnd
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemEditDescription
@@ -34,6 +36,7 @@ import com.neighbourly.app.d_entity.util.isValidUrl
 import kotlinx.datetime.Instant
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.save
+import neighbourly.composeapp.generated.resources.saved
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -70,6 +73,8 @@ fun OrganismEditableItemDetails(
     var endOverride by remember { mutableStateOf<Instant?>(null) }
     var newImages by remember { mutableStateOf<List<MemImgVS>>(emptyList()) }
     var newFiles by remember { mutableStateOf<Map<String, String>>(emptyMap()) }
+    var startedSaving by remember { mutableStateOf(false) }
+    var saved by remember { mutableStateOf(false) }
 
     val hasChanged by derivedStateOf {
         listOf(
@@ -86,6 +91,12 @@ fun OrganismEditableItemDetails(
                 || newFiles.isNotEmpty()
     }
 
+    LaunchedEffect(hasChanged) {
+        if (hasChanged) {
+            saved = false
+        }
+    }
+
     LaunchedEffect(item) {
         typeOverride = null
         nameOverride = null
@@ -97,6 +108,10 @@ fun OrganismEditableItemDetails(
         endOverride = null
         newImages = emptyList()
         newFiles = emptyMap()
+        if (startedSaving) {
+            startedSaving = false
+            saved = true
+        }
     }
 
     Column(
@@ -186,6 +201,7 @@ fun OrganismEditableItemDetails(
                 text = stringResource(Res.string.save),
                 loading = saving,
             ) {
+                startedSaving = true
                 onSave(
                     typeOverride,
                     nameOverride,
@@ -199,6 +215,10 @@ fun OrganismEditableItemDetails(
                     newFiles,
                 )
             }
+        } else if (saved) {
+            FriendlyAntiButton(
+                text = stringResource(Res.string.saved),
+            )
         }
 
         if (error.isNotEmpty()) {

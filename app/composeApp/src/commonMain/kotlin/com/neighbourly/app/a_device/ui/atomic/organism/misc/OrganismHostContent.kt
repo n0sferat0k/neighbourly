@@ -5,13 +5,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.neighbourly.app.a_device.ui.atomic.molecule.menu.CrownMenuItem
 import com.neighbourly.app.a_device.ui.atomic.molecule.menu.HomeMenuItem
+import com.neighbourly.app.a_device.ui.atomic.organism.menu.OrganismCrownMenu
 import com.neighbourly.app.a_device.ui.atomic.organism.menu.OrganismOverlayMenuFull
 import com.neighbourly.app.a_device.ui.atomic.organism.menu.OrganismOverlayMenuLimited
+import com.neighbourly.app.a_device.ui.atomic.page.AiInterfacePage
 import com.neighbourly.app.a_device.ui.atomic.page.BackendInfoPage
 import com.neighbourly.app.a_device.ui.atomic.page.BoxManagementPage
 import com.neighbourly.app.a_device.ui.atomic.page.FilteredItemListPage
+import com.neighbourly.app.a_device.ui.atomic.page.HouseholdDetailPage
 import com.neighbourly.app.a_device.ui.atomic.page.ItemDetailsPage
 import com.neighbourly.app.a_device.ui.atomic.page.LandingPage
 import com.neighbourly.app.a_device.ui.atomic.page.LoginOrRegisterPage
@@ -19,15 +21,17 @@ import com.neighbourly.app.a_device.ui.atomic.page.ProfilePage
 import com.neighbourly.app.a_device.ui.atomic.page.RemindersPage
 import com.neighbourly.app.b_adapt.viewmodel.bean.MenuTabVS
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.AiInterface
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BackendInfo
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BoxManage
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.FindItems
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.HouseholdDetails
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ItemDetails
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.MainMenu
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ManageMyStuff
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ManageProfile
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.PublishStuff
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.Reminders
-import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ShowItemDetails
 
 @Composable
 fun OrganismHostContent(
@@ -37,18 +41,22 @@ fun OrganismHostContent(
     mainContent: MainContent,
     showLimitedContent: Boolean,
     isOnline: Boolean,
-    onCrownClick: () -> Unit,
+    isAiOnline: Boolean,
+    onWifiClick: () -> Unit,
+    onAiClick: () -> Unit,
     onHomeClick: () -> Unit,
     onMenuClick: (tab: MenuTabVS) -> Unit,
 ) {
-
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter,
     ) {
-        CrownMenuItem(isOnline = isOnline) {
-            onCrownClick()
-        }
+        OrganismCrownMenu(
+            isOnline = isOnline,
+            isAiOnline = isAiOnline,
+            onWifiClick = onWifiClick,
+            onAiClick = onAiClick
+        )
     }
 
     Box(
@@ -66,6 +74,9 @@ fun OrganismHostContent(
                         OrganismOverlayMenuLimited(onSelect = onMenuClick)
                     else
                         OrganismOverlayMenuFull(onSelect = onMenuClick)
+
+                    is HouseholdDetails -> HouseholdDetailPage(mainContent.householdId)
+
                     is FindItems ->
                         mainContent.let {
                             FilteredItemListPage(
@@ -84,10 +95,11 @@ fun OrganismHostContent(
                         )
 
                     ManageProfile -> ProfilePage()
-                    PublishStuff -> ItemDetailsPage(null)
+                    is PublishStuff -> ItemDetailsPage(null, mainContent.type)
                     BoxManage -> BoxManagementPage()
-                    is ShowItemDetails -> ItemDetailsPage(mainContent.itemId)
+                    is ItemDetails -> ItemDetailsPage(mainContent.itemId)
                     BackendInfo -> BackendInfoPage()
+                    AiInterface -> AiInterfacePage()
                     Reminders -> RemindersPage()
                 }
         }

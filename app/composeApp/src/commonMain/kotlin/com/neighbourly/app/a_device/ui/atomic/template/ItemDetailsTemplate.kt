@@ -59,7 +59,7 @@ fun ItemDetailsTemplate(
                 }
             },
             footerContent = {
-                if (item.id != null) {
+                if (item.id != null && state.editable) {
                     DeleteCardFooter {
                         onDeleteItem()
                     }

@@ -1,5 +1,6 @@
 package com.neighbourly.app.a_device.ui.atomic.atom
 
+import android.Manifest.permission.CAMERA
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ExperimentalLensFacing
@@ -33,6 +34,7 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.atomic.molecule.PermissionGatedContent
 
 @ExperimentalLensFacing
 @ExperimentalGetImage
@@ -88,41 +90,50 @@ actual fun PlatformBarcodeScanner(
                     }
                 }
         }
-
-    Box(modifier = modifier.wrapContentSize().widthIn(max = 300.dp).heightIn(max = 400.dp)) {
-        AndroidView(
-            modifier = Modifier.widthIn(max = 300.dp).heightIn(max = 400.dp).align(Alignment.Center),
-            factory = { PreviewView(context) },
-        ) { view ->
-            val cameraProvider = ProcessCameraProvider.getInstance(context).get()
-            val preview = Preview.Builder().build()
-            val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
-
-            cameraProvider.unbindAll()
-            try {
-                cameraProvider.bindToLifecycle(
-                    lifecycleOwner,
-                    cameraSelector,
-                    preview,
-                    imageAnalysis,
-                )
-            } catch (e: IllegalArgumentException) {
-                rotateLensFacing()
-            }
-
-            preview.setSurfaceProvider(view.surfaceProvider)
-        }
-        IconButton(
-            modifier = Modifier.padding(end = 24.dp),
-            onClick = {
-                rotateLensFacing()
-            },
+    PermissionGatedContent(permissions = listOf(CAMERA)) {
+        Box(
+            modifier = modifier
+                .wrapContentSize()
+                .widthIn(max = 300.dp)
+                .heightIn(max = 400.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.Cameraswitch,
-                contentDescription = null,
-                tint = AppColors.primary,
-            )
+            AndroidView(
+                modifier = Modifier
+                    .widthIn(max = 300.dp)
+                    .heightIn(max = 400.dp)
+                    .align(Alignment.Center),
+                factory = { PreviewView(context) },
+            ) { view ->
+                val cameraProvider = ProcessCameraProvider.getInstance(context).get()
+                val preview = Preview.Builder().build()
+                val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
+
+                cameraProvider.unbindAll()
+                try {
+                    cameraProvider.bindToLifecycle(
+                        lifecycleOwner,
+                        cameraSelector,
+                        preview,
+                        imageAnalysis,
+                    )
+                } catch (e: IllegalArgumentException) {
+                    rotateLensFacing()
+                }
+
+                preview.setSurfaceProvider(view.surfaceProvider)
+            }
+            IconButton(
+                modifier = Modifier.padding(end = 24.dp),
+                onClick = {
+                    rotateLensFacing()
+                },
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Cameraswitch,
+                    contentDescription = null,
+                    tint = AppColors.primary,
+                )
+            }
         }
     }
 }

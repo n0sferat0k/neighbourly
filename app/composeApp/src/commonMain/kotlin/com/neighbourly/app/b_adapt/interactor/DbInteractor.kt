@@ -103,9 +103,14 @@ class DbInteractor(val db: NeighbourlyDB) : Db {
         }
     }
 
-    override suspend fun getUsers(): List<User> {
+    override suspend fun getUsers(ids: List<Int>?): List<User> {
         return withContext(Dispatchers.IO) {
-            db.usersQueries.getUsers().executeAsList().map { it.toUser() }
+            if (ids.isNullOrEmpty()) {
+                db.usersQueries.getUsers().executeAsList().map { it.toUser() }
+            } else {
+                db.usersQueries.getUsersByIds(ids.map { it.toLong() }).executeAsList()
+                    .map { it.toUser() }
+            }
         }
     }
 

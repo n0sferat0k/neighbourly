@@ -11,6 +11,7 @@ import com.neighbourly.app.d_entity.data.Neighbourhood
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.data.User
 import com.neighbourly.app.d_entity.interf.AI
+import com.neighbourly.app.d_entity.interf.StatusUpdater
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
@@ -19,11 +20,12 @@ import java.io.IOException
 
 class AiGateway(
     val api: KtorAI,
+    val statusUpdater: StatusUpdater,
 ) : AI {
 
     override suspend fun generate(
-        system:String,
-        prompt:String
+        system: String,
+        prompt: String
     ): String =
         runContextCatchTranslateThrow {
             api.generate(
@@ -35,6 +37,7 @@ class AiGateway(
         }
 
     override suspend fun contentOverview(
+        prompt: String,
         items: List<Item>,
         people: List<User>,
         houses: List<Household>,
@@ -43,12 +46,13 @@ class AiGateway(
         runContextCatchTranslateThrow {
             api.generate(
                 overviewInput(
-                    prompt = Json.encodeToString<AppContentDTO>(AppContentDTO(
+                    jsonContext = Json.encodeToString<AppContentDTO>(AppContentDTO(
                         items = items.map { it.toItemDTO() },
                         people = people.map { it.toUserDTO() },
                         houses = houses.map { it.toHouseholdDTO() },
                         neighbourhoods = neighbourhoods.map { it.toNeighbourhoodDTO() }
-                    ))
+                    )),
+                    prompt = prompt
                 )
             ).response
         }
@@ -61,10 +65,14 @@ class AiGateway(
         }.let {
             when {
                 it.isSuccess -> {
-                    it.getOrElse { throw OpException("Unknown Error") }
+                    statusUpdater.setAiOnline(true)
+                    it.getOrElse { throw OpException("Unknown Error") }.also { message ->
+                        statusUpdater.storeAiMessage(message.toString())
+                    }
                 }
 
                 it.isFailure -> {
+                    statusUpdater.setAiOnline(false)
                     val messgae = it.exceptionOrNull().let {
                         when (it) {
                             is AiException -> it.msg

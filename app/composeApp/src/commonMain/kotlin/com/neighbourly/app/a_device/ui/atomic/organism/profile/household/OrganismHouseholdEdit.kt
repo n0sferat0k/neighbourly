@@ -63,7 +63,6 @@ fun OrganismHouseholdEdit(
     onSaveHousehold: (name: String?, address: String?, about: String?) -> Unit,
     onAddMember: () -> Unit,
     onLeaveHousehold: () -> Unit,
-    members: List<String>?,
 ) {
     val defaultHouseImg = painterResource(Res.drawable.houses)
 
@@ -145,7 +144,6 @@ fun OrganismHouseholdEdit(
                 ) {
                     household.imageurl.let {
                         if (!it.isNullOrBlank() && !imageUpdating) {
-                            LocalKamelConfig
                             KamelImage(
                                 modifier = Modifier.fillMaxSize().clip(CircleShape),
                                 resource = asyncPainterResource(data = it),
@@ -233,10 +231,10 @@ fun OrganismHouseholdEdit(
             }
         }
 
-        if (members != null) {
+        if (!household?.members.isNullOrEmpty()) {
             FriendlyText(text = stringResource(Res.string.list_household_members))
 
-            members.forEach {
+            household?.members?.forEach {
                 FriendlyText(text = "* " + it, bold = true)
             }
         }

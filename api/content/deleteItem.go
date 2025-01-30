@@ -23,16 +23,16 @@ func DeleteItem(w http.ResponseWriter, r *http.Request) {
 	var householdId int
 	utility.DB.QueryRow("SELECT users_add_numerics_0 FROM users WHERE users_id = ?", userId).Scan(&householdId)
 	_, err := utility.DB.Exec(`DELETE FROM 
-									items
+									items I
 								WHERE 
-									items_id = ?
+									I.items_id = ?
 								AND EXISTS(
 									SELECT * FROM 
-										neighbourhood_household_users 
+										neighbourhood_household_users NHU
 									WHERE 
-										neighbourhood_household_users_add_numerics_1 = ?
+										NHU.neighbourhood_household_users_id = I.items_add_numerics_0										
 									AND
-										neighbourhood_household_users_id = items_add_numerics_0
+										NHU.neighbourhood_household_users_add_numerics_1 = ?										
 								)`, itemId, householdId)
 	if err != nil {
 		http.Error(w, "Failed to delete item"+err.Error(), http.StatusInternalServerError)

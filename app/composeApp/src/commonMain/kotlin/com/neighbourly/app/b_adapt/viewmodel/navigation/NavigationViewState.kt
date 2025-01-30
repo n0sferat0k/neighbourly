@@ -1,9 +1,9 @@
 package com.neighbourly.app.b_adapt.viewmodel.navigation
 
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.MainMenu
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.ProfileInfoEdit
 import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebMap
-import com.neighbourly.app.d_entity.data.ItemType
 
 data class NavigationViewState(
     val disableMainToggle: Boolean = false,
@@ -25,16 +25,17 @@ sealed interface MainContent {
 
     object ManageProfile : MainContent
     object ManageMyStuff : MainContent
-    object PublishStuff : MainContent
+    data class PublishStuff(val type: ItemTypeVS? = null) : MainContent
     object BoxManage : MainContent
     object Reminders : MainContent
 
     object BackendInfo : MainContent
-
-    data class ShowItemDetails(val itemId: Int) : MainContent
+    object AiInterface : MainContent
+    data class HouseholdDetails(val householdId: Int) : MainContent
+    data class ItemDetails(val itemId: Int) : MainContent
 
     data class FindItems(
-        val type: ItemType? = null,
+        val type: ItemTypeVS? = null,
         val householdId: Int? = null,
         val itemIds: List<Int>? = null,
     ) : MainContent

@@ -10,9 +10,11 @@ import com.neighbourly.app.b_adapt.gateway.api.ApiGateway
 import com.neighbourly.app.b_adapt.interactor.DbInteractor
 import com.neighbourly.app.b_adapt.viewmodel.AppStateInfoViewModel
 import com.neighbourly.app.b_adapt.viewmodel.WebMapViewModel
+import com.neighbourly.app.b_adapt.viewmodel.ai.AiInterfaceViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
 import com.neighbourly.app.b_adapt.viewmodel.box.BoxManagementViewModel
+import com.neighbourly.app.b_adapt.viewmodel.household.HouseholdDetailsViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.ItemDetailsViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.RemindersViewModel
@@ -23,6 +25,7 @@ import com.neighbourly.app.b_adapt.viewmodel.profile.HouseholdLocalizeViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.NeighbourhoodAddMemberViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.NeighbourhoodInfoViewModel
 import com.neighbourly.app.b_adapt.viewmodel.profile.ProfileViewModel
+import com.neighbourly.app.c_business.usecase.ai.AiChatUseCase
 import com.neighbourly.app.c_business.usecase.auth.LoginUseCase
 import com.neighbourly.app.c_business.usecase.auth.LogoutUseCase
 import com.neighbourly.app.c_business.usecase.auth.RegisterUseCase
@@ -95,7 +98,7 @@ val adapterModule =
             ApiGateway(KtorApi, get())
         }
         single<AI> {
-            AiGateway(KtorAI)
+            AiGateway(KtorAI, get())
         }
         single<Iot> {
             PahoMqttIot()
@@ -151,6 +154,12 @@ val adapterModule =
         factory {
             RemindersViewModel(get())
         }
+        factory {
+            AiInterfaceViewModel(get(), get())
+        }
+        factory {
+            HouseholdDetailsViewModel(get())
+        }
     }
 
 val useCaseModule =
@@ -199,5 +208,8 @@ val useCaseModule =
         }
         factory {
             ScheduleWorkUseCase(get(), get())
+        }
+        factory {
+            AiChatUseCase(get(), get(), get())
         }
     }

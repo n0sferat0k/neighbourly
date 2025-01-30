@@ -54,6 +54,7 @@ import org.jetbrains.compose.resources.painterResource
 fun OrganismItemCard(
     item: ItemVS,
     onClick: () -> Unit,
+    onHouseholdClick: () -> Unit,
 ) {
     val imgTag = painterResource(Res.drawable.image)
     val fileTag = painterResource(Res.drawable.file)
@@ -80,7 +81,8 @@ fun OrganismItemCard(
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.Top) {
-                if (item.imageUrl.isNullOrBlank()) {
+                val imgUrl = item.augmentation?.imageUrl
+                if (imgUrl.isNullOrBlank()) {
                     Image(
                         modifier = Modifier.size(56.dp),
                         painter = defaultItemImg,
@@ -92,7 +94,7 @@ fun OrganismItemCard(
                         KamelImage(
                             modifier = Modifier.size(48.dp)
                                 .shadow(elevation = 3.dp, ambientColor = AppColors.primary),
-                            resource = asyncPainterResource(data = item.imageUrl),
+                            resource = asyncPainterResource(data = imgUrl),
                             contentDescription = "Item Image",
                             contentScale = ContentScale.Crop,
                             onLoading = { progress ->
@@ -133,13 +135,19 @@ fun OrganismItemCard(
                     ItemBadge(fileTag, item.fileCount.toString())
                 }
 
-                if (item.expLabel != null) {
-                    ItemBadge(expTag, item.expLabel, AppColors.complementary)
+                if (item.augmentation?.expLabel != null) {
+                    ItemBadge(expTag, item.augmentation.expLabel, AppColors.complementary)
                 }
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                ItemHouseholdBadge(item.householdImage, item.householdName)
+                item.augmentation?.household?.let {
+                    ItemHouseholdBadge(
+                        householdImage = it.imageurl,
+                        householdName = it.name,
+                        onClick = onHouseholdClick
+                    )
+                }
             }
         }
     }

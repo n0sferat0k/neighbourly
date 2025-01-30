@@ -22,6 +22,9 @@ SELECT * FROM Users WHERE id = ?;
 getUsers:
 SELECT * FROM Users WHERE 1;
 
+getUsersByIds:
+SELECT * FROM Users WHERE id IN ?;
+
 strip:
 DELETE FROM Users WHERE id NOT IN ?;
 

@@ -13,7 +13,8 @@ import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewState
 fun HostTemplate(
     appState: AppStateInfoViewModel.AppStateInfoViewState,
     navigationState: NavigationViewState,
-    onCrownClick: () -> Unit,
+    onWifiClick: () -> Unit,
+    onAiClick: () -> Unit,
     onHomeClick: () -> Unit,
     onMenuClick: (tab: MenuTabVS) -> Unit,
 ) {
@@ -27,7 +28,9 @@ fun HostTemplate(
                     mainContent = navigationState.mainContent,
                     showLimitedContent = !appState.isOnboarded,
                     isOnline = appState.isOnline,
-                    onCrownClick = onCrownClick,
+                    isAiOnline = appState.isAiOnline,
+                    onWifiClick = onWifiClick,
+                    onAiClick = onAiClick,
                     onHomeClick = onHomeClick,
                     onMenuClick = onMenuClick,
                 )
@@ -44,7 +47,9 @@ fun HostTemplate(
             mainContent = navigationState.mainContent,
             showLimitedContent = !appState.isOnboarded,
             isOnline = appState.isOnline,
-            onCrownClick = onCrownClick,
+            isAiOnline = appState.isAiOnline,
+            onWifiClick = onWifiClick,
+            onAiClick = onAiClick,
             onHomeClick = onHomeClick,
             onMenuClick = onMenuClick,
         )

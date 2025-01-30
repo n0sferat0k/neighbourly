@@ -34,7 +34,7 @@ fun WebMapPage(
         state = state,
         onMapReady = { viewModel.onMapReady(true) },
         onHouseAndTypeSelected = { type, id ->
-            navigation.goToFindItems(type.toItemType(), id)
+            navigation.goToFindItems(type, id)
         },
         onDrawnUpdate = { drawData ->
             viewModel.onDrawn(drawData)

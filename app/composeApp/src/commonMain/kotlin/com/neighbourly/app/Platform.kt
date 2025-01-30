@@ -13,7 +13,7 @@ import com.neighbourly.app.d_entity.interf.KeyValueRegistry
 import io.ktor.client.engine.HttpClientEngine
 
 @Composable
-expect fun requestPermissions()
+expect fun requestAllPermissions()
 
 typealias GeoLocationCallback = (latitude: Double, longitude: Double, accuracy: Float) -> Unit
 

@@ -1,7 +1,6 @@
 package com.neighbourly.app.a_device.spirit
 
 import com.neighbourly.app.KoinProvider
-import com.neighbourly.app.b_adapt.gateway.api.toItemDTO
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.c_business.usecase.work.ScheduleWorkUseCase
 import com.neighbourly.app.d_entity.data.ScheduledWork
@@ -14,8 +13,6 @@ import com.neighbourly.app.postSystemNotification
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 object NeighbourlySpirit : Summonable {
     val scheduledWorkUseCase: ScheduleWorkUseCase by lazy { KoinProvider.KOIN.get() }
@@ -46,39 +43,39 @@ object NeighbourlySpirit : Summonable {
         syncedHouseIds: List<Int>
     ) {
         spiritScope.launch {
-            if (lastSyncTs > 0 && (novelItemIds + syncedItemIds).isNotEmpty()) {
-                val novelItems =
-                    database.filterItems(ids = novelItemIds + syncedItemIds)
-                val novelItemsHouseholds =
-                    database.filterHouseholds(novelItems.map { it.householdId }.filterNotNull())
-                val myNeighbourhoods = sessionStore.user?.neighbourhoods.orEmpty()
+            val ids = novelItemIds + syncedItemIds
+            if (lastSyncTs > 0 && ids.isNotEmpty()) {
+                val items = database.filterItems(ids = ids)
+                val itemHouses =
+                    database.filterHouseholds(items.map { it.householdId }.filterNotNull())
+                val itemPeople = database.getUsers(items.map { it.userId }.filterNotNull())
+                val itemsDesc = items.map { item ->
+                    val person = itemPeople.firstOrNull { it.id == item.userId }
+                    val house = itemHouses.firstOrNull { it.householdid == item.householdId }
+                    item.id to "${person?.fullname ?: person?.username} from ${house?.name} at ${house?.address} posted a ${item.type.name} : ${item.name} - ${item.description}"
+                }.toMap()
 
-                val text = kotlin.runCatching {
+                kotlin.runCatching {
+                    val itemDescStr = itemsDesc.values.joinToString(";")
                     aiGw.generate(
-                        system = """You are a helpful assistant, 
-                                    your speach is short and concise, 
-                                    you live inside an app used to connect people and households inside neighbourhoods, 
-                                    you will summarize what items were posted to the app by its users. 
-                                    This summary should fit in a system notification !""",
-                        prompt = "Here are the recent items: " + Json.encodeToString(
-                            novelItems.map { it.toItemDTO() }
-                        )
+                        system = """You are a helpful assistant, your speach is short and concise.
+                                    You will provide a short summary of items posted by people in households of a neighbourhood.
+                                    You will return only the summary, no formatting, no other text, and no longer than 2 sentences!""".trimIndent(),
+                        prompt = "Here are the items: $itemDescStr"
                     )
-                }.getOrDefault(
-                    novelItems.map { item ->
-                        val house =
-                            novelItemsHouseholds.firstOrNull { it.householdid == item.householdId }
-                        val neighbourhood =
-                            myNeighbourhoods.firstOrNull { it.neighbourhoodid == item.neighbourhoodId }
-
-                        neighbourhood?.name + "/" + house?.name.orEmpty() + ": " + item.name
-                    }.joinToString("\r\n")
-                )
-
-                postSystemNotification(
-                    id = (novelItemIds + syncedItemIds).joinToString(","),
-                    text = text
-                )
+                }.getOrNull()?.let { aiSummary ->
+                    postSystemNotification(
+                        id = (ids).joinToString(","),
+                        text = aiSummary
+                    )
+                } ?: run {
+                    for (entry in itemsDesc) {
+                        postSystemNotification(
+                            id = entry.key.toString(),
+                            text = entry.value
+                        )
+                    }
+                }
             }
             scheduledWorkUseCase.execute()
         }

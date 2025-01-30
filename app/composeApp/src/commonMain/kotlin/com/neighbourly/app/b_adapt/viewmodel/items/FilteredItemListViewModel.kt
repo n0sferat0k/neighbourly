@@ -2,12 +2,17 @@ package com.neighbourly.app.b_adapt.viewmodel.items
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemAugmentVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.REMINDER
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.toHouseholdVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.toItemType
 import com.neighbourly.app.b_adapt.viewmodel.bean.toItemTypeVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.toItemVS
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.c_business.usecase.content.FilterItemsUseCase
 import com.neighbourly.app.c_business.usecase.content.ItemManagementUseCase
-import com.neighbourly.app.d_entity.data.ItemType
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,9 +39,9 @@ class FilteredItemListViewModel(
     val state: StateFlow<FilteredItemListViewState> = _state.asStateFlow()
 
     fun setFilters(
-        type: ItemType?,
+        type: ItemTypeVS?,
         householdId: Int?,
-        itemIds:List<Int>?,
+        itemIds: List<Int>?,
         showExpired: Boolean,
         showOwnHousehold: Boolean = false
     ) {
@@ -92,7 +97,7 @@ class FilteredItemListViewModel(
             val now = Clock.System.now().epochSeconds.toInt()
 
             filterItemsUseCase.filterItems(
-                _state.value.type,
+                _state.value.type?.toItemType(),
                 _state.value.householdId,
                 _state.value.itemIds,
                 _state.value.showExpired
@@ -100,28 +105,7 @@ class FilteredItemListViewModel(
                 .let { itemsAndHouses ->
                     _state.update {
                         it.copy(loading = false, items = itemsAndHouses.map { (item, house) ->
-                            ItemVS(
-                                id = item.id!!,
-                                name = item.name.orEmpty(),
-                                description = when (it.type) {
-                                    ItemType.REMINDER -> kotlin.runCatching {
-                                        item.description?.split(",")
-                                            ?.map { fromEpochSeconds(it.toLong()).toDateString() }
-                                            ?.joinToString(", ").orEmpty()
-                                    }.getOrDefault("")
-
-                                    else -> item.description.orEmpty()
-                                }.let {
-                                    if (it.length > MAX_DESC_LEN) it.substring(
-                                        0,
-                                        MAX_DESC_LEN
-                                    ) + "...";
-                                    else it
-                                },
-                                imageUrl = item.images.randomOrNull()?.url,
-                                type = item.type.toItemTypeVS(),
-                                imgCount = item.images.size,
-                                fileCount = item.files.size,
+                            item.toItemVS().copy(augmentation = ItemAugmentVS(
                                 expLabel = item.endTs.let {
                                     if (it > 0) {
                                         val remainingSeconds = it - now
@@ -136,10 +120,10 @@ class FilteredItemListViewModel(
                                         } else "exp"
                                     } else null
                                 },
+                                imageUrl = item.images.randomOrNull()?.url,
                                 deletable = item.householdId == myHouseholdId,
-                                householdImage = house?.imageurl,
-                                householdName = house?.name
-                            )
+                                household = house?.toHouseholdVS(),
+                            ))
                         })
                     }
                 }
@@ -147,9 +131,9 @@ class FilteredItemListViewModel(
     }
 
     data class FilteredItemListViewState(
-        val type: ItemType? = null,
+        val type: ItemTypeVS? = null,
         val householdId: Int? = null,
-        val itemIds:List<Int>? = null,
+        val itemIds: List<Int>? = null,
         val showExpired: Boolean = false,
         val loading: Boolean = false,
         val items: List<ItemVS> = emptyList()

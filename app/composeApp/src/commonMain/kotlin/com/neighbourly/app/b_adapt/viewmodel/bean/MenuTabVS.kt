@@ -8,5 +8,5 @@ sealed class MenuTabVS {
     object PUBLISH : MenuTabVS()
     object REMINDERS : MenuTabVS()
     object BOX : MenuTabVS()
-    data class ITEMS(val type: ItemType) : MenuTabVS()
+    data class ITEMS(val type: ItemTypeVS) : MenuTabVS()
 }

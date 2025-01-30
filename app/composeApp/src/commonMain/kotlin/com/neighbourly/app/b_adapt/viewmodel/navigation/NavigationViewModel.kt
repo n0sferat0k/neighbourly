@@ -2,9 +2,12 @@ package com.neighbourly.app.b_adapt.viewmodel.navigation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.AiInterface
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.BackendInfo
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.HouseholdDetails
+import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ItemDetails
 import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ManageProfile
-import com.neighbourly.app.b_adapt.viewmodel.navigation.MainContent.ShowItemDetails
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavPages.HideMenu
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavPages.ShowMenuAndReset
 import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.HouseholdAddMember
@@ -18,7 +21,6 @@ import com.neighbourly.app.b_adapt.viewmodel.navigation.ProfileContent.ProfileIn
 import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebGallery
 import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebMap
 import com.neighbourly.app.b_adapt.viewmodel.navigation.WebContent.WebPage
-import com.neighbourly.app.d_entity.data.ItemType
 import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -85,7 +87,7 @@ public class NavigationViewModel(
     }
 
     fun goToFindItems(
-        itemType: ItemType? = null,
+        itemType: ItemTypeVS? = null,
         householdId: Int? = null,
         itemIds: List<Int>? = null
     ) {
@@ -105,6 +107,16 @@ public class NavigationViewModel(
             )
         }
     }
+
+    fun goToAiPage() {
+        _state.update {
+            it.copy(
+                mainContentVisible = true,
+                mainContent = AiInterface,
+            )
+        }
+    }
+
 
     fun goToScanMemberForHousehold() {
         _state.update {
@@ -233,11 +245,20 @@ public class NavigationViewModel(
             )
         }
 
+    fun goToHouseholdDetails(householdId: Int) {
+        _state.updateAndStack {
+            it.copy(
+                mainContentVisible = true,
+                mainContent = HouseholdDetails(householdId)
+            )
+        }
+    }
+
     fun goToItemDetails(itemId: Int) {
         _state.updateAndStack {
             it.copy(
                 mainContentVisible = true,
-                mainContent = ShowItemDetails(itemId)
+                mainContent = ItemDetails(itemId)
             )
         }
     }

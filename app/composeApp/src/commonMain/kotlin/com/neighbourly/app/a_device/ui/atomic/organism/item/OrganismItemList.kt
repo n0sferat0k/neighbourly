@@ -26,6 +26,7 @@ fun OrganismItemList(
     items: List<ItemVS>,
     onSelectItem: (id: Int) -> Unit,
     onDeleteItem: (id: Int) -> Unit,
+    onSelectHousehold: (id: Int) -> Unit,
 ) {
     var showRemoveAlertForId by remember { mutableStateOf(-1) }
 
@@ -48,18 +49,22 @@ fun OrganismItemList(
         modifier = Modifier.fillMaxSize()
     ) {
         items(items = items, key = { it.id ?: -1 }) { item ->
-            if (item.deletable) {
+            if (item.augmentation?.deletable == true) {
                 SwipeToDeleteContainer(onDelete = {
                     showRemoveAlertForId = item.id ?: -1
                 }) {
-                    OrganismItemCard(item) {
+                    OrganismItemCard(item = item, onClick = {
                         item.id?.let { onSelectItem(it) }
-                    }
+                    }, onHouseholdClick = {
+                        item.augmentation.household?.id?.let { onSelectHousehold(it) }
+                    })
                 }
             } else {
-                OrganismItemCard(item) {
+                OrganismItemCard(item = item, onClick = {
                     item.id?.let { onSelectItem(it) }
-                }
+                }, onHouseholdClick = {
+                    item.augmentation?.household?.id?.let { onSelectHousehold(it) }
+                })
             }
             Spacer(modifier = Modifier.height(8.dp))
         }

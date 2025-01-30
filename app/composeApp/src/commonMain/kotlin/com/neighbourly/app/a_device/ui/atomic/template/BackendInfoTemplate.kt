@@ -10,6 +10,7 @@ import com.neighbourly.app.a_device.ui.atomic.organism.info.OrganismErrorLog
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismContentBubble
 import com.neighbourly.app.b_adapt.viewmodel.AppStateInfoViewModel.AppStateInfoViewState
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 
 val backendInfoTemplate =
@@ -102,7 +103,7 @@ fun RenderTemplate(
         }
     }
 }
-
+//
 //@Composable
 //fun CusomPageTemplate() {
 //    RenderTemplate(

@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
@@ -51,12 +51,13 @@ fun LateralMenuItem(
             topEnd = 20.dp,
             bottomEnd = 20.dp,
         )
+
         RIGHT -> RoundedCornerShape(
             topStart = 20.dp,
             bottomStart = 20.dp,
         )
     },
-    layoutDirection: LayoutDirection =  when (side) {
+    layoutDirection: LayoutDirection = when (side) {
         LEFT -> Ltr
         RIGHT -> Rtl
     },
@@ -79,7 +80,7 @@ fun LateralMenuItem(
         } + fadeIn()
     ) {
         Box(
-            modifier = Modifier.alpha(.7f).height(48.dp)
+            modifier = Modifier.height(48.dp).fillMaxWidth(.8f)
                 .clickable { onClick() }
                 .border(1.dp, AppColors.primary, cornerShape).background(
                     color = Color.White,
@@ -88,7 +89,8 @@ fun LateralMenuItem(
         ) {
             CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    modifier = Modifier.align(if (side == LEFT) Alignment.CenterEnd else Alignment.CenterStart),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     FriendlyText(
                         modifier = Modifier.padding(start = 10.dp)

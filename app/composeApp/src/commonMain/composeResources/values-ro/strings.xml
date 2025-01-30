@@ -136,7 +136,7 @@
 
     <string name="cannot_add_to_neighbourhood_member">Doar persoanele cu gospodărie stabilită pot fi adăugate la cartiere!</string>
 
-    <string name="list_household_members">Gospodăria dvs. are următorii membri:</string>
+    <string name="list_household_members">Gospodăria are următorii membri:</string>
 
     <string name="scan_qr_for_app_install">Scanați codul QR de mai jos pentru a descărca și instala „Vecinătate” pe dispozitivul unui prieten sau membru al familiei.</string>
 
@@ -148,4 +148,12 @@
 
     <string name="dates">Date</string>
     <string name="add_date">Adaugă dată</string>
+
+    <string name="ai_prompt">Scrie întrebarea</string>
+
+    <string name="need_to_grant_permission">Acest conținut necesită acordarea unor permisiuni. Folosiți butonul de mai jos pentru a revizui permisiunile lipsă!</string>
+    <string name="review_permissions">Revizuire Permisiuni</string>
+
+    <string name="add">Adaugă</string>
+    <string name="saved">Salvat ✔</string>
 </resources>

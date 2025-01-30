@@ -30,7 +30,7 @@ import kotlin.math.ceil
 import kotlin.math.max
 
 @Composable
-actual fun requestPermissions() {
+actual fun requestAllPermissions() {
 }
 
 actual object GetLocation {

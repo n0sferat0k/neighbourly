@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.AppColors
 import neighbourly.composeapp.generated.resources.Res
@@ -24,7 +25,8 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun CrownMenuItem(
     modifier: Modifier = Modifier,
-    isOnline: Boolean = true,
+    painter: Painter,
+    isActive: Boolean = true,
     onClick: () -> Unit
 ) {
     val cornerShape = RoundedCornerShape(
@@ -32,7 +34,7 @@ fun CrownMenuItem(
         bottomEnd = 20.dp,
     )
     Box(
-        modifier = modifier.alpha(.7f).height(36.dp).width(48.dp)
+        modifier = modifier.height(36.dp).width(48.dp)
             .clickable {
                 onClick()
             }
@@ -43,8 +45,8 @@ fun CrownMenuItem(
     ) {
         Image(
             modifier = Modifier.size(36.dp).align(Alignment.Center),
-            painter = painterResource(Res.drawable.signal),
-            colorFilter = ColorFilter.tint(if (isOnline) AppColors.primary else AppColors.complementary),
+            painter = painter,
+            colorFilter = ColorFilter.tint(if (isActive) AppColors.primary else AppColors.complementary),
             contentDescription = null,
         )
     }

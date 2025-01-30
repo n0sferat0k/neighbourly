@@ -33,12 +33,10 @@ class HouseholdInfoEditViewModel(
                                 address = household.address.orEmpty(),
                                 about = household.about.orEmpty(),
                                 imageurl = household.imageurl,
-
+                                members = household.members?.map { it.fullname ?: it.username }.orEmpty(),
                             ),
 
                             isHouseHead = household.headid == user.id,
-
-                            members = household.members?.map { it.fullname ?: it.username },
                         )
                     }
                 } ?: run {
@@ -109,7 +107,6 @@ class HouseholdInfoEditViewModel(
 
     data class HouseholdInfoEditViewState(
         val household: HouseholdVS? = null,
-        val members: List<String>? = null,
         val isHouseHead: Boolean = false,
 
         val error: String = "",
