@@ -77,7 +77,7 @@ fun ItemDetailsPage(
         state = state,
         onImageSelected = { imageId ->
             state.item?.id?.let {
-                navigationViewModel.goToGallery(it, imageId)
+                navigationViewModel.goToItemGallery(it, imageId)
             }
         },
         onUrlSelected = { url ->

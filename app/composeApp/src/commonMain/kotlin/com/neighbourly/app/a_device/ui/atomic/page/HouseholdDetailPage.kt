@@ -23,7 +23,9 @@ fun HouseholdDetailPage(
     }
     HouseholdDetailTemplate(
         state = state,
-        onHouseholdImage = { state.household?.imageurl?.let { navigationViewModel.goToWebPage(it) } },
+        onHouseholdImage = {
+            state.household?.id?.let { navigationViewModel.goToHouseholdGallery(householdId = it) }
+        },
         onSelectItem = navigationViewModel::goToItemDetails,
         onClose = navigationViewModel::goBack
     )

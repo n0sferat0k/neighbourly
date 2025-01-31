@@ -16,7 +16,7 @@ data class NavigationViewState(
 
 sealed interface WebContent {
     object WebMap : WebContent
-    data class WebGallery(val itemId: Int, val imageId: Int) : WebContent
+    data class WebGallery(val itemId: Int? = null, val householdId: Int? = null, val imageId: Int) : WebContent
     data class WebPage(val url: String) : WebContent
 }
 

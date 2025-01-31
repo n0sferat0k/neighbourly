@@ -10,11 +10,12 @@ import com.neighbourly.app.a_device.ui.atomic.atom.PlatformWebView
 
 @Composable
 fun WebGalleryView(
-    itemId: Int,
+    householdId: Int? = null,
+    itemId: Int? = null,
     imageId: Int,
 ) {
     val webViewState =
-        rememberWebViewState(url = "http://neighbourly.go.ro/gallery.php?itemId=$itemId&imageId=$imageId")
+        rememberWebViewState(url = "http://neighbourly.go.ro/gallery.php?${if(itemId != null) "itemId=$itemId" else "householdId=$householdId" }&imageId=$imageId")
     val navigator = rememberWebViewNavigator()
 
     PlatformWebView(

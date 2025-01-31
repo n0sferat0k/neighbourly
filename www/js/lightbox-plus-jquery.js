@@ -11167,6 +11167,26 @@ return jQuery;
       return false;
     });
 
+	this.$lightbox.find('.lb-image').on("swiperight",function() {		
+		$('.lb-image').effect("slide", { "direction" : "right",  "mode" : "hide"} ,function(){
+			if (self.currentImageIndex === 0) {
+				self.changeImage(self.album.length - 1);
+			} else {
+				self.changeImage(self.currentImageIndex - 1);
+			}
+		})
+	});
+
+	this.$lightbox.find('.lb-image').on("swipeleft",function() {  		
+		$('.lb-image').effect("slide", { "direction" : "left",  "mode" : "hide"} ,function(){
+			if (self.currentImageIndex === self.album.length - 1) {
+				self.changeImage(0);
+			} else {
+				self.changeImage(self.currentImageIndex + 1);
+			}
+		})
+	});
+
     /*
       Show context menu for image on right-click
 
@@ -11437,38 +11457,38 @@ return jQuery;
 
   // Display previous and next navigation if appropriate.
   Lightbox.prototype.updateNav = function() {
-    // Check to see if the browser supports touch events. If so, we take the conservative approach
-    // and assume that mouse hover events are not supported and always show prev/next navigation
-    // arrows in image sets.
-    var alwaysShowNav = false;
-    try {
-      document.createEvent('TouchEvent');
-      alwaysShowNav = (this.options.alwaysShowNavOnTouchDevices) ? true : false;
-    } catch (e) {}
-
-    this.$lightbox.find('.lb-nav').show();
-
-    if (this.album.length > 1) {
-      if (this.options.wrapAround) {
-        if (alwaysShowNav) {
-          this.$lightbox.find('.lb-prev, .lb-next').css('opacity', '1');
-        }
-        this.$lightbox.find('.lb-prev, .lb-next').show();
-      } else {
-        if (this.currentImageIndex > 0) {
-          this.$lightbox.find('.lb-prev').show();
-          if (alwaysShowNav) {
-            this.$lightbox.find('.lb-prev').css('opacity', '1');
-          }
-        }
-        if (this.currentImageIndex < this.album.length - 1) {
-          this.$lightbox.find('.lb-next').show();
-          if (alwaysShowNav) {
-            this.$lightbox.find('.lb-next').css('opacity', '1');
-          }
-        }
-      }
-    }
+	// Check to see if the browser supports touch events. If so, we take the conservative approach
+	// and assume that mouse hover events are not supported and always show prev/next navigation
+	// arrows in image sets.
+	var alwaysShowNav = (this.options.alwaysShowNavOnTouchDevices)? true: false;
+	var enableSwipe = (this.options.enableSwipeOnTouchDevices)? true: false;
+	
+	  //if swiping is enable, hide the two navigation buttons
+	  if (!enableSwipe) {
+		this.$lightbox.find('.lb-nav').show();
+  
+		if (this.album.length > 1) {
+		  if (this.options.wrapAround) {
+			if (alwaysShowNav) {
+			  this.$lightbox.find('.lb-prev, .lb-next').css('opacity', '1');
+			}
+			this.$lightbox.find('.lb-prev, .lb-next').show();
+		  } else {
+			if (this.currentImageIndex > 0) {
+			  this.$lightbox.find('.lb-prev').show();
+			  if (alwaysShowNav) {
+				this.$lightbox.find('.lb-prev').css('opacity', '1');
+			  }
+			}
+			if (this.currentImageIndex < this.album.length - 1) {
+			  this.$lightbox.find('.lb-next').show();
+			  if (alwaysShowNav) {
+				this.$lightbox.find('.lb-next').css('opacity', '1');
+			  }
+			}
+		  }
+		}
+	}
   };
 
   // Display caption, image number, and closing button.

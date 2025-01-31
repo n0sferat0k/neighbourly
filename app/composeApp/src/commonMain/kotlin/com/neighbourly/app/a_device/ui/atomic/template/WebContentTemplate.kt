@@ -17,6 +17,7 @@ fun WebContentTemplate(
 
         is WebGallery -> WebGalleryView(
             itemId = webContent.itemId,
+            householdId = webContent.householdId,
             imageId = webContent.imageId
         )
 

@@ -263,11 +263,25 @@ public class NavigationViewModel(
         }
     }
 
-    fun goToGallery(itemId: Int, imageId: Int) {
+    fun goToHouseholdGallery(householdId: Int) {
         val updater: (NavigationViewState) -> NavigationViewState = {
             it.copy(
                 mainContentVisible = if (it.disableMainToggle) true else false,
-                webContent = WebGallery(itemId, imageId)
+                webContent = WebGallery(householdId = householdId, imageId = householdId)
+            )
+        }
+        if (_state.value.disableMainToggle) {
+            _state.update(updater)
+        } else {
+            _state.updateAndStack(updater)
+        }
+    }
+
+    fun goToItemGallery(itemId: Int, imageId: Int) {
+        val updater: (NavigationViewState) -> NavigationViewState = {
+            it.copy(
+                mainContentVisible = if (it.disableMainToggle) true else false,
+                webContent = WebGallery(itemId = itemId, imageId = imageId)
             )
         }
         if (_state.value.disableMainToggle) {

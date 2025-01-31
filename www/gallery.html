@@ -4,77 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Gallery</title>    
-    <script type="module">
-        import PhotoSwipeLightbox from '/photoswipe/photoswipe-lightbox.esm.js';
-
-        const lightbox = new PhotoSwipeLightbox({
-        // may select multiple "galleries"
-        gallery: '#gallery--getting-started',
-
-        // Elements within gallery (slides)
-        children: 'a',
-
-        // setup PhotoSwipe Core dynamic import
-        pswpModule: () => import('/photoswipe/photoswipe.esm.js')
-        });
-        lightbox.init();
-    </script>
+    <link href="css/lightbox.css" rel="stylesheet">    
+        
     <style>
-        body {font-family: 'Bitter', Georgia, Times, sans-serif;}
-    h1 {margin: 2em;}
-    .pswp__caption__center {text-align: center;}
-    figure {
-      display: inline-block;
-      width: 33.333%;
-      float: left;
-    }
-    img {width: 100%;}
-    .spacer {height: 5em;}
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .image {
+            display: block;
+            margin: 10px;
+            float: left;
+            width: 160px;
+            height: 160px;
+            overflow: hidden;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgb(0, 0, 0);
+            transition: 0.3s;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
-    <div class="pswp-gallery pswp-gallery--single-column" id="gallery--getting-started">
-        <a href="https://cdn.photoswipe.com/photoswipe-demo-images/photos/2/img-2500.jpg" 
-          data-pswp-width="1669" 
-          data-pswp-height="2500" 
-          target="_blank">
-          <img src="https://cdn.photoswipe.com/photoswipe-demo-images/photos/2/img-200.jpg" alt="" />
-        </a>
-        <!-- cropped thumbnail: -->
-        <a href="https://cdn.photoswipe.com/photoswipe-demo-images/photos/7/img-2500.jpg" 
-          data-pswp-width="1875" 
-          data-pswp-height="2500" 
-          data-cropped="true" 
-          target="_blank">
-          <img src="https://cdn.photoswipe.com/photoswipe-demo-images/photos/7/img-200.jpg" alt="" />
-          Cropped
-        </a>
-        <!-- data-pswp-src with custom URL in href -->
-        <a href="https://unsplash.com" 
-          data-pswp-src="https://cdn.photoswipe.com/photoswipe-demo-images/photos/3/img-2500.jpg"
-          data-pswp-width="2500" 
-          data-pswp-height="1666" 
-          target="_blank">
-          <img src="https://cdn.photoswipe.com/photoswipe-demo-images/photos/3/img-200.jpg" alt="" />
-        </a>
-        <!-- Without thumbnail: -->
-        <a href="http://example.com" 
-          data-pswp-src="https://cdn.photoswipe.com/photoswipe-demo-images/photos/5/img-2500.jpg"
-          data-pswp-width="2500" 
-          data-pswp-height="1668" 
-          target="_blank">
-          No thumbnail
-        </a>
-        <!-- wrapped with any element: -->
-        <div>
-          <a href="https://cdn.photoswipe.com/photoswipe-demo-images/photos/6/img-2500.jpg"
-            data-pswp-width="2500" 
-            data-pswp-height="1667" 
-            target="_blank">
-            <img src="https://cdn.photoswipe.com/photoswipe-demo-images/photos/6/img-200.jpg" alt="" />
-          </a>
-        </div>
-      </div>
+    <div class="gallery" id="gallery">
+        <?php
+            while($image = mysqli_fetch_assoc($images)) {
+                ?>
+                    <a href="https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-800x525.jpg" data-lightbox="mygallery" data-title="Image 1" id="image_1">
+                        <img class="image" src="https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-800x525.jpg" alt="Image 1">
+                    </a>    
+                    <a href="https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-800x525.jpg" data-lightbox="mygallery" data-title="Image 2"  id="image_2">
+                      <img class="image" src="https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-800x525.jpg" alt="Image 1">
+                    </a>    
+                <?php
+            }
+        ?>
+    </div>
+    <script src="js/lightbox-plus-jquery.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/jquery-mobile.js"></script>
+        
+    <script>
+      lightbox.option({
+        'enableSwipeOnTouchDevices': true,
+        'alwaysShowNavOnTouchDevices': true,
+      })
+
+      window.onload = function() {
+        window.setTimeout(function() {          
+          $('#image_1').click();
+        }, 500);        
+      }       
+    </script>      
 </body>
 </html>
-
