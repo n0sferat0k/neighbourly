@@ -148,6 +148,15 @@ data class ItemDTO(
 )
 
 @Serializable
+data class ItemMessageDTO(
+    val id: Int? = null,
+    val lastModifiedTs: Int? = null,
+    val message: String? = null,
+    val userId: Int? = null,
+    val itemId: Int? = null,
+)
+
+@Serializable
 data class AttachmentDTO(
     val id: Int? = null,
     val url: String,

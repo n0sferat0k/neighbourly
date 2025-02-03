@@ -46,34 +46,42 @@ object NeighbourlySpirit : Summonable {
             val ids = novelItemIds + syncedItemIds
             if (lastSyncTs > 0 && ids.isNotEmpty()) {
                 val items = database.filterItems(ids = ids)
-                val itemHouses =
-                    database.filterHouseholds(items.map { it.householdId }.filterNotNull())
-                val itemPeople = database.getUsers(items.map { it.userId }.filterNotNull())
+                val muteHouseIds = sessionStore.user?.mutedHouseholds.orEmpty()
+                val mutePersonIds = sessionStore.user?.mutedUsers.orEmpty()
+                val itemHouses = database.filterHouseholds(items.map { it.householdId }.filter { !muteHouseIds.contains(it) }.filterNotNull())
+                val itemPeople = database.getUsers(items.map { it.userId }.filter { !mutePersonIds.contains(it) }.filterNotNull())
+
                 val itemsDesc = items.map { item ->
                     val person = itemPeople.firstOrNull { it.id == item.userId }
                     val house = itemHouses.firstOrNull { it.householdid == item.householdId }
-                    item.id to "${person?.fullname ?: person?.username} from ${house?.name} at ${house?.address} posted a ${item.type.name} : ${item.name} - ${item.description}"
-                }.toMap()
+                    house?.let {
+                        person?.let {
+                            item.id to "${person.fullname ?: person.username} from ${house.name} at ${house.address} posted a ${item.type.name} : ${item.name} - ${item.description}"
+                        }
+                    }
+                }.filterNotNull().toMap()
 
-                kotlin.runCatching {
-                    val itemDescStr = itemsDesc.values.joinToString(";")
-                    aiGw.generate(
-                        system = """You are a helpful assistant, your speach is short and concise.
-                                    You will provide a short summary of items posted by people in households of a neighbourhood.
-                                    You will return only the summary, no formatting, no other text, and no longer than 2 sentences!""".trimIndent(),
-                        prompt = "Here are the items: $itemDescStr"
-                    )
-                }.getOrNull()?.let { aiSummary ->
-                    postSystemNotification(
-                        id = (ids).joinToString(","),
-                        text = aiSummary
-                    )
-                } ?: run {
-                    for (entry in itemsDesc) {
-                        postSystemNotification(
-                            id = entry.key.toString(),
-                            text = entry.value
+                if(itemsDesc.size > 0) {
+                    kotlin.runCatching {
+                        val itemDescStr = itemsDesc.values.joinToString(";")
+                        aiGw.generate(
+                            system = """You are a helpful assistant, your speach is short and concise.
+                                        You will provide a short summary of items posted by people in households of a neighbourhood.
+                                        You will return only the summary, no formatting, no other text, and no longer than 2 sentences!""".trimIndent(),
+                            prompt = "Here are the items: $itemDescStr"
                         )
+                    }.getOrNull()?.let { aiSummary ->
+                        postSystemNotification(
+                            id = (ids).joinToString(","),
+                            text = aiSummary
+                        )
+                    } ?: run {
+                        for (entry in itemsDesc) {
+                            postSystemNotification(
+                                id = entry.key.toString(),
+                                text = entry.value
+                            )
+                        }
                     }
                 }
             }

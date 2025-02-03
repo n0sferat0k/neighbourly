@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.AppColors
 import neighbourly.composeapp.generated.resources.Res
-import neighbourly.composeapp.generated.resources.ai_prompt
+import neighbourly.composeapp.generated.resources.message_prompt
 import neighbourly.composeapp.generated.resources.send
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -40,7 +40,7 @@ fun OrganismChatPromptInput(
             onValueChange = {
                 prompt = it
             },
-            label = { Text(stringResource(Res.string.ai_prompt)) },
+            label = { Text(stringResource(Res.string.message_prompt)) },
             modifier = Modifier.weight(1f),
         )
 

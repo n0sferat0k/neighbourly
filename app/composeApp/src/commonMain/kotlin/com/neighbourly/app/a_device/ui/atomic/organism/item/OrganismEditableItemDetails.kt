@@ -115,7 +115,6 @@ fun OrganismEditableItemDetails(
     }
 
     Column(
-        modifier = Modifier.padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {

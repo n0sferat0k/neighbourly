@@ -9,6 +9,7 @@ import com.neighbourly.app.b_adapt.gateway.api.FetchProfileInput
 import com.neighbourly.app.b_adapt.gateway.api.GpsItemDTO
 import com.neighbourly.app.b_adapt.gateway.api.GpsLogInput
 import com.neighbourly.app.b_adapt.gateway.api.ItemDTO
+import com.neighbourly.app.b_adapt.gateway.api.ItemMessageDTO
 import com.neighbourly.app.b_adapt.gateway.api.LoginInput
 import com.neighbourly.app.b_adapt.gateway.api.NeighbourhoodDTO
 import com.neighbourly.app.b_adapt.gateway.api.RegisterInput
@@ -461,6 +462,45 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<ItemDTO>()
         } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun addItemMessage(baseUrl: String, token: String, message: ItemMessageDTO): ItemMessageDTO {
+        val response = client.post(baseUrl + "content/addItemMessage") {
+            contentType(ContentType.Application.Json)
+            setBody(message)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
+            }
+        }
+        if (response.status.value == 200) {
+            return response.body<ItemMessageDTO>()
+        } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun getItemMessages(baseUrl: String, token: String, itemId: Int): List<ItemMessageDTO> {
+        val response = client.get(baseUrl + "content/getItemMessages?itemId=$itemId") {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
+            }
+        }
+        if (response.status.value == 200) {
+            return response.body<List<ItemMessageDTO>>()
+        } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun deleteItemMessage(baseUrl: String, token: String, itemMessageId:Int) {
+        val response = client.get(baseUrl + "content/deleteItemMessage?itemMessageId=$itemMessageId") {
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
+            }
+        }
+        if (response.status.value != 200) {
             throw ApiException(response.bodyAsText())
         }
     }

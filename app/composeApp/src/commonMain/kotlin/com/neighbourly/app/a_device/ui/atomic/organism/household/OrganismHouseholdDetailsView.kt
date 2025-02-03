@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -20,7 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.b_adapt.viewmodel.bean.HouseholdVS
@@ -28,12 +31,16 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.houses
+import neighbourly.composeapp.generated.resources.mute
+import neighbourly.composeapp.generated.resources.unmute
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun OrganismHouseholdDetailsView(
     household: HouseholdVS,
-    onHouseholdImage: () -> Unit
+    onHouseholdImage: () -> Unit,
+    onMute: (muted: Boolean) -> Unit,
 ) {
     val defaultHouseImg = painterResource(Res.drawable.houses)
 
@@ -55,16 +62,15 @@ fun OrganismHouseholdDetailsView(
                 Modifier
                     .size(60.dp)
                     .align(Alignment.CenterVertically)
-                    .border(2.dp, AppColors.primary, CircleShape)
-                    .clickable {
-                        onHouseholdImage()
-                    },
+                    .border(2.dp, AppColors.primary, CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
                 household.imageurl.let {
                     if (!it.isNullOrBlank()) {
                         KamelImage(
-                            modifier = Modifier.fillMaxSize().clip(CircleShape),
+                            modifier = Modifier.fillMaxSize().clip(CircleShape).clickable {
+                                onHouseholdImage()
+                            },
                             resource = asyncPainterResource(data = it),
                             contentDescription = "Household Image",
                             contentScale = ContentScale.Crop,
@@ -86,10 +92,19 @@ fun OrganismHouseholdDetailsView(
                 }
             }
         }
+        Box(modifier = Modifier.fillMaxWidth()) {
+            FriendlyText(
+                modifier = Modifier.width(60.dp).align(Alignment.CenterEnd).clickable {
+                    onMute(!household.muted)
+                },
+                bold = true,
+                text = stringResource(if (household.muted) Res.string.unmute else Res.string.mute),
+                textAlign = TextAlign.Center,
+                fontSize = 20.sp
+            )
+        }
 
         FriendlyText(text = household.address)
         FriendlyText(text = household.about)
-
-
     }
 }

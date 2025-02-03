@@ -158,7 +158,7 @@ val adapterModule =
             AiInterfaceViewModel(get(), get())
         }
         factory {
-            HouseholdDetailsViewModel(get())
+            HouseholdDetailsViewModel(get(), get())
         }
     }
 

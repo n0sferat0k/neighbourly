@@ -45,7 +45,6 @@ fun OrganismReadonlyItemDetails(
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
     Column(
-        modifier = Modifier.padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {

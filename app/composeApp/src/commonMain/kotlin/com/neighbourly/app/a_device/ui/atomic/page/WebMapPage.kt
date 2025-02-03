@@ -4,16 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import com.neighbourly.app.GeoLocationCallback
-import com.neighbourly.app.GetLocation
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.atomic.template.WebMapTemplate
 import com.neighbourly.app.b_adapt.viewmodel.WebMapViewModel
-import com.neighbourly.app.b_adapt.viewmodel.bean.GpsItemVS
-import com.neighbourly.app.b_adapt.viewmodel.bean.toItemType
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 
 
@@ -33,6 +26,9 @@ fun WebMapPage(
     WebMapTemplate(
         state = state,
         onMapReady = { viewModel.onMapReady(true) },
+        onHouseSelected = {
+            navigation.goToHouseholdDetails(it)
+        },
         onHouseAndTypeSelected = { type, id ->
             navigation.goToFindItems(type, id)
         },

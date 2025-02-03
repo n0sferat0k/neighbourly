@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.MemImgVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.toHouseholdVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.toItemMessageVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.toItemType
 import com.neighbourly.app.b_adapt.viewmodel.bean.toItemVS
 import com.neighbourly.app.c_business.usecase.content.ItemManagementUseCase
@@ -68,6 +70,35 @@ class ItemDetailsViewModel(
                                 ?: false,
                             item = item.toItemVS(),
                         )
+                    }
+
+                    itemManagementUseCase.fetchMessages(itemId).let { messages ->
+                        val messageUsers =
+                            database.getUsers(messages.map { it.userId }.filterNotNull())
+                        val messageUserHouses =
+                            database.filterHouseholds(messageUsers.map { it.householdid }
+                                .filterNotNull())
+                        val userIdToHouseMap = messageUsers.associate { user ->
+                            user.id to messageUserHouses.firstOrNull { user.householdid == it.householdid }
+                        }
+
+                        val messages = messages.map { message ->
+                            val house = userIdToHouseMap[message.userId]
+
+                            message.toItemMessageVS(
+                                deletable = house?.householdid == store.user?.householdid || _state.value.item?.augmentation?.deletable == true,
+                                sender = messageUsers.firstOrNull { it.id == message.userId }
+                                    ?.let { it.fullname ?: it.username }.orEmpty(),
+                                household = house?.toHouseholdVS()
+                            )
+                        }
+
+                        _state.update { state ->
+                            state.copy(
+
+                                item = state.item?.copy(messages = messages)
+                            )
+                        }
                     }
                 }
             }
@@ -201,6 +232,45 @@ class ItemDetailsViewModel(
                         _state.update { it.copy(error = e.msg, saving = false) }
                     }
                 }
+            }
+        }
+    }
+
+    fun onPostItemMessage(message: String) {
+        viewModelScope.launch {
+            try {
+                val message = _state.value.item?.id?.let {
+                    itemManagementUseCase.postMessage(it, message)
+                        ?.toItemMessageVS(
+                            deletable = true,
+                            sender = store.user?.let { it.fullname ?: it.username }.orEmpty(),
+                            household = store.user?.household?.toHouseholdVS()
+                        )
+                }
+                _state.update {
+                    it.copy(
+                        error = "",
+                        item = it.item?.copy(messages = (it.item.messages + message).filterNotNull())
+                    )
+                }
+            } catch (e: OpException) {
+                _state.update { it.copy(error = e.msg) }
+            }
+        }
+    }
+
+    fun onDeleteItemMeddage(messageId: Int) {
+        viewModelScope.launch {
+            try {
+                _state.value.item?.id?.let { itemManagementUseCase.deleteMessage(messageId) }
+                _state.update {
+                    it.copy(
+                        error = "",
+                        item = it.item?.copy(messages = it.item.messages.filter { it.id != messageId })
+                    )
+                }
+            } catch (e: OpException) {
+                _state.update { it.copy(error = e.msg) }
             }
         }
     }

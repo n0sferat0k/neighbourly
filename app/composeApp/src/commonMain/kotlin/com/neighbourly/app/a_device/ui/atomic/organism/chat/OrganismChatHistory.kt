@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.neighbourly.app.a_device.ui.atomic.molecule.chat.MessageBubble
+import com.neighbourly.app.a_device.ui.atomic.molecule.chat.MessageBubbleSimple
 
 @Composable
 fun OrganismChatHistory(
@@ -18,7 +18,7 @@ fun OrganismChatHistory(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(items = messages) { message ->
-            MessageBubble(message)
+            MessageBubbleSimple(message)
         }
     }
 }

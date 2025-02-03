@@ -67,6 +67,10 @@ if($DISPLAY_TEMPLATE_BODY) { ?>
 			  	<div class="TAB_TITLE">
 				  	<?php echo $listitems[$listitems_counter]['title']; ?>
 				</div>	
+			<?php } else if($has_text) { ?>
+				<div class="TAB_TITLE">
+				  	<?php echo $listitems[$listitems_counter]['text']; ?>
+				</div>				
 			<?php } else { ?>
 			<?php } ?>
 						

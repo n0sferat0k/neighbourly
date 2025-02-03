@@ -124,6 +124,7 @@ class WebMapViewModel(
     }
 
     fun onMapReady(ready: Boolean) {
+        _state.update { it.copy(mapReady = ready) }
         if (ready) {
             GetLocation.addCallback(this)
             if (sessionStore.user?.localizing == true) {
@@ -136,11 +137,11 @@ class WebMapViewModel(
             }
         } else {
             GetLocation.removeCallback(this)
-            clearMapContent()
         }
     }
 
     data class MapViewState(
+        val mapReady:Boolean = false,
         val drawing: Boolean = false,
         val myLocation: GpsItemVS? = null,
         val myHousehold: HouseholdSummaryVS = HouseholdSummaryVS(),

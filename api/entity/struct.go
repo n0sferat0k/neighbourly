@@ -56,20 +56,29 @@ type AddToNeighbourhoodRequest struct {
 }
 
 type Item struct {
-	Itemid          *int64       `json:"id,omitempty"`
-	Type            *string      `json:"type,omitempty"`
-	Name            *string      `json:"name,omitempty"`
-	Description     *string      `json:"description,omitempty"`
-	Url             *string      `json:"url,omitempty"`
-	TargetUserid    *int64       `json:"targetUserId,omitempty"`
-	Images          []Attachment `json:"images,omitempty"`
-	Files           []Attachment `json:"files,omitempty"`
-	StartTs         *int64       `json:"startTs,omitempty"`
-	EndTs           *int64       `json:"endTs,omitempty"`
-	LastModifiedTs  *int64       `json:"lastModifiedTs,omitempty"`
-	Neighbourhoodid *int64       `json:"neighbourhoodId,omitempty"`
-	Householdid     *int64       `json:"householdId,omitempty"`
-	Userid          *int64       `json:"userId,omitempty"`
+	Itemid          *int64        `json:"id,omitempty"`
+	Type            *string       `json:"type,omitempty"`
+	Name            *string       `json:"name,omitempty"`
+	Description     *string       `json:"description,omitempty"`
+	Url             *string       `json:"url,omitempty"`
+	TargetUserid    *int64        `json:"targetUserId,omitempty"`
+	Images          []Attachment  `json:"images,omitempty"`
+	Files           []Attachment  `json:"files,omitempty"`
+	Messages        []ItemMessage `json:"messages,omitempty"`
+	StartTs         *int64        `json:"startTs,omitempty"`
+	EndTs           *int64        `json:"endTs,omitempty"`
+	LastModifiedTs  *int64        `json:"lastModifiedTs,omitempty"`
+	Neighbourhoodid *int64        `json:"neighbourhoodId,omitempty"`
+	Householdid     *int64        `json:"householdId,omitempty"`
+	Userid          *int64        `json:"userId,omitempty"`
+}
+
+type ItemMessage struct {
+	Id             *int64  `json:"id,omitempty"`
+	LastModifiedTs *int64  `json:"lastModifiedTs,omitempty"`
+	Itemid         *int64  `json:"itemId,omitempty"`
+	Userid         *int64  `json:"userId,omitempty"`
+	Message        *string `json:"message,omitempty"`
 }
 
 type Attachment struct {

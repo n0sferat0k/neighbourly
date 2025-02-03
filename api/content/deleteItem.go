@@ -35,7 +35,13 @@ func DeleteItem(w http.ResponseWriter, r *http.Request) {
 										NHU.neighbourhood_household_users_add_numerics_1 = ?										
 								)`, itemId, householdId)
 	if err != nil {
-		http.Error(w, "Failed to delete item"+err.Error(), http.StatusInternalServerError)
+		http.Error(w, "Failed to delete item "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	_, err = utility.DB.Exec(`DELETE FROM messages WHERE messages_add_numerics_0 = ?`, itemId)
+	if err != nil {
+		http.Error(w, "Failed to delete item messages "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 

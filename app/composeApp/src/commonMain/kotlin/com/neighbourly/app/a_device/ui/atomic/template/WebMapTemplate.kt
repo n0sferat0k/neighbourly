@@ -26,6 +26,7 @@ import kotlinx.serialization.json.Json
 fun WebMapTemplate(
     state: MapViewState,
     onMapReady: () -> Unit,
+    onHouseSelected:(householdId: Int) -> Unit,
     onHouseAndTypeSelected: (type: ItemTypeVS, householdId: Int) -> Unit,
     onDrawnUpdate: (drawData: List<List<Float>>) -> Unit
 ) {
@@ -37,7 +38,6 @@ fun WebMapTemplate(
         val type: String? = null,
     )
 
-    var mapReady by remember { mutableStateOf(false) }
     val webViewState = rememberWebViewStateWithHTMLData(data = mapHtml)
     val navigator = rememberWebViewNavigator()
     val jsBridge = rememberWebViewJsBridge()
@@ -52,11 +52,15 @@ fun WebMapTemplate(
                 callback: (String) -> Unit,
             ) {
                 val params = Json.decodeFromString<MapFeedbackModel>(message.params)
-                params.householdid?.let {
-                    onHouseAndTypeSelected(ItemTypeVS.getByName(params.type), it)
+                params.householdid?.let { householdId ->
+                    params.type?.let {
+                        onHouseAndTypeSelected(ItemTypeVS.getByName(params.type), householdId)
+                    } ?: run {
+                        onHouseSelected(householdId)
+                    }
                 }
                 if (params.mapReady == true) {
-                    mapReady = true
+
                     onMapReady()
                 }
                 if (params.drawData != null) {
@@ -73,8 +77,8 @@ fun WebMapTemplate(
         }
     }
 
-    LaunchedEffect(mapReady, state.myLocation) {
-        if (!mapReady) return@LaunchedEffect
+    LaunchedEffect(state.mapReady, state.myLocation) {
+        if (!state.mapReady) return@LaunchedEffect
 
         if (state.myLocation != null) {
             navigator.evaluateJavaScript("setDot(${state.myLocation.longitude}, ${state.myLocation.latitude}, 'current');")
@@ -85,8 +89,8 @@ fun WebMapTemplate(
         }
     }
 
-    LaunchedEffect(mapReady, state.drawing) {
-        if (!mapReady) return@LaunchedEffect
+    LaunchedEffect(state.mapReady, state.drawing) {
+        if (!state.mapReady) return@LaunchedEffect
 
         if (state.drawing) {
             navigator.evaluateJavaScript("enableDraw()")
@@ -95,8 +99,8 @@ fun WebMapTemplate(
         }
     }
 
-    LaunchedEffect(mapReady, state.myHousehold) {
-        if (!mapReady) return@LaunchedEffect
+    LaunchedEffect(state.mapReady, state.myHousehold) {
+        if (!state.mapReady) return@LaunchedEffect
 
         state.myHousehold.location?.let { myHouseLocation ->
             if (firstGps) {
@@ -106,8 +110,11 @@ fun WebMapTemplate(
         }
     }
 
-    LaunchedEffect(mapReady, state.otherHouseholds, state.myHousehold) {
-        if (!mapReady) return@LaunchedEffect
+    LaunchedEffect(state.mapReady, state.otherHouseholds, state.myHousehold) {
+        if (!state.mapReady) {
+            println("AAAAAAAAAAAAAAAAAAAAAAAAA HOUSES but map not ready")
+            return@LaunchedEffect
+        }
 
         var housesToShow = state.otherHouseholds
         if (state.myHousehold.location != null) {
@@ -115,6 +122,7 @@ fun WebMapTemplate(
         }
 
         if (housesToShow.isEmpty()) {
+            println("AAAAAAAAAAAAAAAAAAAAAAAA NO HOUSE")
             navigator.evaluateJavaScript("clearHouseholds()")
         } else {
             val js = housesToShow
@@ -138,13 +146,14 @@ fun WebMapTemplate(
                             "'imageurl':'${it.imageurl ?: ""}'" +
                             "}"
                 }.joinToString(separator = ",", prefix = "updateHouseholds([", postfix = "]);")
-            navigator.evaluateJavaScript(js)
 
+            println("AAAAAAAAAAAAAAAAAAAAAAAA SOME HOUSE " + housesToShow.size)
+            navigator.evaluateJavaScript(js)
         }
     }
 
-    LaunchedEffect(mapReady, state.neighbourhoods) {
-        if (!mapReady) return@LaunchedEffect
+    LaunchedEffect(state.mapReady, state.neighbourhoods) {
+        if (!state.mapReady) return@LaunchedEffect
 
         if (state.neighbourhoods.isEmpty()) {
             navigator.evaluateJavaScript("clearNeighbourhoods()")
@@ -155,8 +164,8 @@ fun WebMapTemplate(
         }
     }
 
-    LaunchedEffect(mapReady, state.heatmap) {
-        if (!mapReady) return@LaunchedEffect
+    LaunchedEffect(state.mapReady, state.heatmap) {
+        if (!state.mapReady) return@LaunchedEffect
 
         state.heatmap.takeIf { !it.isNullOrEmpty() }?.let {
             val js = it.map { heatmapItem ->
@@ -579,7 +588,7 @@ val mapHtml =
     
                         var popupHtml = `
                                         <div style="display: flex; flex-direction: column; align-items: left;">
-                                            <span style="padding:3px;text-align:left;font-size:10px;font-weight:bold;line-height:10px;">` +  house.name + `</span>
+                                            <span style="padding:3px;text-align:left;font-size:14px;font-weight:bold;line-height:10px;color:#5BA9AE" onclick="callNative({ householdid: `+house.id+`});">` +  house.name + `</span>
                                             <span style="padding:3px;text-align:left;font-size:10px;line-height:10px;">` +  house.address + `</span>
                                             <span style="padding:3px;text-align:left;font-size:10px;line-height:10px;">` +  house.description + `</span>
                                             <div style="display: flex; flex-direction: row; align-items: center;justify-content: space-around;">                                            

@@ -2,6 +2,7 @@ package com.neighbourly.app.c_business.usecase.content
 
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.Item
+import com.neighbourly.app.d_entity.data.ItemMessage
 import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.SessionStore
@@ -83,6 +84,27 @@ class ItemManagementUseCase(
                     summonable.summonOnItemOp()
                 }
             }
+        }
+    }
+
+    suspend fun postMessage(itemId: Int, message: String): ItemMessage? {
+        val token = sessionStore.user?.authtoken
+        return token?.let {
+            apiGw.addItemMessage(token, itemId, message)
+        }
+    }
+
+    suspend fun fetchMessages(itemId: Int): List<ItemMessage> {
+        val token = sessionStore.user?.authtoken
+        return token?.let {
+            apiGw.getItemMessages(token, itemId)
+        } ?: emptyList()
+    }
+
+    suspend fun deleteMessage(messageId: Int) {
+        val token = sessionStore.user?.authtoken
+        token?.let {
+            apiGw.deleteItemMessage(token, messageId)
         }
     }
 }

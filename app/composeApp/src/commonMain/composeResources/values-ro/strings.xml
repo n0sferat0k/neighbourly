@@ -149,11 +149,16 @@
     <string name="dates">Date</string>
     <string name="add_date">Adaugă dată</string>
 
-    <string name="ai_prompt">Scrie întrebarea</string>
+    <string name="message_prompt">Scrie mesajul</string>
 
     <string name="need_to_grant_permission">Acest conținut necesită acordarea unor permisiuni. Folosiți butonul de mai jos pentru a revizui permisiunile lipsă!</string>
     <string name="review_permissions">Revizuire Permisiuni</string>
 
     <string name="add">Adaugă</string>
     <string name="saved">Salvat ✔</string>
+
+    <string name="messages">Mesaje:</string>
+
+    <string name="mute">Mut</string>
+    <string name="unmute">Activ</string>
 </resources>

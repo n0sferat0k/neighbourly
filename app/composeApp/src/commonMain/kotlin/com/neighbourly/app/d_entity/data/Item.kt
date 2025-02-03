@@ -9,6 +9,7 @@ data class Item(
     val targetUserId: Int? = null,
     val images: List<Attachment> = emptyList(),
     val files: List<Attachment> = emptyList(),
+    val messages: List<ItemMessage> = emptyList(),
     val startTs: Int = 0,
     val endTs: Int = 0,
     val lastModifiedTs: Int? = null,

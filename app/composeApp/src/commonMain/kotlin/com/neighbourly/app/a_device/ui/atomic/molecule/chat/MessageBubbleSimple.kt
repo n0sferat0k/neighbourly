@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 
 @Composable
-fun MessageBubble(text: String) {
+fun MessageBubbleSimple(text: String) {
     Card(
         modifier = Modifier.fillMaxWidth().wrapContentHeight(),
         shape = RoundedCornerShape(8.dp),

@@ -4,6 +4,7 @@ import com.neighbourly.app.d_entity.data.Attachment
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.Item
+import com.neighbourly.app.d_entity.data.ItemMessage
 import com.neighbourly.app.d_entity.data.SyncData
 import com.neighbourly.app.d_entity.data.User
 
@@ -134,6 +135,12 @@ interface Api {
     suspend fun deleteItem(token: String, itemId: Int)
 
     suspend fun addOrUpdateItem(token: String, item: Item): Item
+
+    suspend fun addItemMessage(token: String, itemId: Int, message:String): ItemMessage
+
+    suspend fun getItemMessages(token: String, itemId: Int): List<ItemMessage>
+
+    suspend fun deleteItemMessage(token: String, itemMessageId: Int)
 
     suspend fun addBox(token: String, boxId: String, boxName: String)
 

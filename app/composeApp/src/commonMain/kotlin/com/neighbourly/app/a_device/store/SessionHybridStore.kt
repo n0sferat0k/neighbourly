@@ -21,6 +21,7 @@ class SessionHybridStore(
     override val isLoggedInFlow by lazy { userFlow.map { it != null } }
     override val user: User?
         get() = userState.value
+
     override var lastSyncTs: Int?
         get() = userState.value?.lastSyncTs
         set(value) {
@@ -76,6 +77,21 @@ class SessionHybridStore(
     override fun clear() {
         userState.tryEmit(null)
         localizationState.tryEmit(LocalizationProgress())
+        saveToStore()
+    }
+
+    override fun muteHousehold(householdId: Int, mute: Boolean) {
+        userState.update {
+            it?.copy(
+                mutedHouseholds = (
+                        if (mute)
+                            it.mutedHouseholds + householdId
+                        else
+                            it.mutedHouseholds.filter { it != householdId }
+                        )
+                    .toSet()
+            )
+        }
         saveToStore()
     }
 

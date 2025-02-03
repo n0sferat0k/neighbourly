@@ -5,6 +5,7 @@ import com.neighbourly.app.d_entity.data.Attachment
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.Item
+import com.neighbourly.app.d_entity.data.ItemMessage
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.data.SyncData
 import com.neighbourly.app.d_entity.data.User
@@ -354,6 +355,33 @@ class ApiGateway(
             api.addOrUpdateItem(API_BASE_URL, token, item.toItemDTO()).toItem()
         }
 
+    override suspend fun addItemMessage(token: String, itemId: Int, message: String): ItemMessage =
+        runContextCatchTranslateThrow {
+            api.addItemMessage(
+                API_BASE_URL,
+                token,
+                ItemMessageDTO(itemId = itemId, message = message)
+            ).toItemMessage()
+        }
+
+    override suspend fun getItemMessages(token: String, itemId: Int): List<ItemMessage> =
+        runContextCatchTranslateThrow {
+            api.getItemMessages(
+                API_BASE_URL,
+                token,
+                itemId
+            ).map { it.toItemMessage() }
+        }
+
+    override suspend fun deleteItemMessage(token: String, itemMessageId: Int) =
+        runContextCatchTranslateThrow {
+            api.deleteItemMessage(
+                API_BASE_URL,
+                token,
+                itemMessageId
+            )
+        }
+
     override suspend fun addBox(token: String, boxId: String, boxName: String) {
         runContextCatchTranslateThrow {
             api.boxAdd(API_BASE_URL, token, BoxDTO(id = boxId, name = boxName))
@@ -426,8 +454,5 @@ class ApiGateway(
 
                 else -> throw OpException("Unknown Error")
             }
-
-
         }
 }
-

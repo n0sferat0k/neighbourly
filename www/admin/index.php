@@ -447,6 +447,56 @@ $boxes = new combinedObjectTTDI();
 $boxes->setParams($p);
 $classManagger->add($boxes);
 
+/*********************************************************************************MESSAGES*/
+
+unset($p);
+$p = $combinedObcejtTTDI_defparams;
+$p['KEY']="messages";
+$p['MENULABLE']="Messages";
+$p['DISPLAYMENUTAB']=true;
+
+$p['PIC']=false;
+$p['MULTIPIC']=false;
+$p['FILE']=false;
+$p['MULTIFILE']=false;
+
+$p['DATE']=true;
+$p['TEXT']=true;
+$p['TITLE']=false;
+$p['LINK']=false;
+$p['ACCENT']=false;
+$p['ZINDEX']=false;
+$p['MOVEABLE']=false;
+$p['SORTINDEX']=false;
+
+$p['DATE_modif']=true;
+$p['TEXT_modif']=true;
+$p['TITLE_modif']=false;
+$p['LINK_modif']=false;
+
+$p['SINGULAR']=false;
+$p['DELETABLE']=true;
+$p['APPENDABLE']=true;
+
+$p['LANGUAGES']=array("EN");
+$p['CURRENTLANGUAGE']=0;
+
+$p['ADD_NUMERICS'] = array(	
+	array("EN" => "User Id"),
+	array("EN" => "Item Id"),
+);
+$p['ADD_NUMERICS_modif'] = array(
+	array(0 => true,1 => true),	
+	array(0 => true,1 => true),	
+);
+
+$p['LIST_template']="TEMPLATES/table_list.php";
+$p['SINGLE_template']="TEMPLATES/single_noedit.php";
+
+$boxes = new combinedObjectTTDI();
+$boxes->setParams($p);
+$classManagger->add($boxes);
+
 /*********************************************************************************ASSOC USER NEIGHBOURHOOD*/
 
 unset($p);

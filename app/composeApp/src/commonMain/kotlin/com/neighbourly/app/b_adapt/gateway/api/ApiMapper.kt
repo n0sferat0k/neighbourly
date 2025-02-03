@@ -5,6 +5,7 @@ import com.neighbourly.app.d_entity.data.Box
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.Household
 import com.neighbourly.app.d_entity.data.Item
+import com.neighbourly.app.d_entity.data.ItemMessage
 import com.neighbourly.app.d_entity.data.ItemType
 import com.neighbourly.app.d_entity.data.Neighbourhood
 import com.neighbourly.app.d_entity.data.User
@@ -143,6 +144,14 @@ fun Item.toItemDTO(): ItemDTO =
         householdId = householdId,
         userId = userId,
     )
+
+fun ItemMessageDTO.toItemMessage() = ItemMessage(
+    id = id,
+    message = message.orEmpty(),
+    lastModifiedTs = lastModifiedTs,
+    userId = userId,
+    itemId = itemId
+)
 
 fun AttachmentDTO.toAttachment(): Attachment = Attachment(
     id = id,

@@ -90,7 +90,10 @@ fun ItemDetailsPage(
         onDeleteItem = viewModel::deleteItem,
         onDeleteFile = viewModel::deleteFile,
         onDeleteImage = viewModel::deleteImage,
-        onSave = viewModel::save
+        onSave = viewModel::save,
+        onPostItemMessage = viewModel::onPostItemMessage,
+        onDeleteItemMessage = viewModel::onDeleteItemMeddage,
+        onSelectHousehold = navigationViewModel::goToHouseholdDetails,
     )
 }
 

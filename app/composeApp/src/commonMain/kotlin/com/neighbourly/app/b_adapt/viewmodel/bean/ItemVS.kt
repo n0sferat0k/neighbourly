@@ -1,6 +1,7 @@
 package com.neighbourly.app.b_adapt.viewmodel.bean
 
 import com.neighbourly.app.d_entity.data.Item
+import com.neighbourly.app.d_entity.data.ItemMessage
 import com.neighbourly.app.d_entity.data.ItemType.REMINDER
 import kotlinx.datetime.Instant
 import kotlinx.datetime.Instant.Companion.fromEpochSeconds
@@ -17,6 +18,7 @@ data class ItemVS(
     val end: Instant? = null,
     val images: List<AttachmentVS> = emptyList(),
     val files: List<AttachmentVS> = emptyList(),
+    val messages: List<ItemMessageVS> = emptyList(),
     val neighbourhoodId: Int? = null,
     val imgCount: Int = 0,
     val fileCount: Int = 0,
@@ -28,6 +30,14 @@ data class ItemAugmentVS(
     val deletable: Boolean = false,
     val household: HouseholdVS? = null,
     val imageUrl: String? = null,
+)
+
+data class ItemMessageVS(
+    val deletable: Boolean = false,
+    val id: Int,
+    val message: String,
+    val sender: String = "",
+    val household: HouseholdVS? = null,
 )
 
 fun Item.toItemVS() = ItemVS(
@@ -65,4 +75,12 @@ fun Item.toItemVS() = ItemVS(
     neighbourhoodId = neighbourhoodId,
     imgCount = images.size,
     fileCount = files.size,
+)
+
+fun ItemMessage.toItemMessageVS(deletable: Boolean, sender: String, household: HouseholdVS? = null) = ItemMessageVS(
+    deletable = deletable,
+    id = id ?: 0,
+    message = message,
+    sender = sender,
+    household = household
 )

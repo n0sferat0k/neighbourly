@@ -11,6 +11,7 @@ import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.Com
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.Companion.HOUR_IN_SECONDS
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.Companion.MINUTE_IN_SECONDS
 import com.neighbourly.app.d_entity.interf.Db
+import com.neighbourly.app.d_entity.interf.SessionStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,6 +21,7 @@ import kotlinx.datetime.Clock
 
 class HouseholdDetailsViewModel(
     private val database: Db,
+    val store: SessionStore,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HouseholdDetailsViewState())
@@ -31,7 +33,10 @@ class HouseholdDetailsViewModel(
             val membersNames = database.getUsers().filter { it.householdid == householdId }
                 .map { it.fullname ?: it.username }
             val household =
-                database.getHousehold(householdId).toHouseholdVS().copy(members = membersNames)
+                database.getHousehold(householdId).toHouseholdVS().copy(
+                    members = membersNames,
+                    muted = store.user?.mutedHouseholds?.contains(householdId) ?: false
+                )
             val items = database.filterItems(householdId = householdId).map { item ->
                 item.toItemVS().copy(
                     augmentation = ItemAugmentVS(
@@ -54,6 +59,13 @@ class HouseholdDetailsViewModel(
                 )
             }
             _state.update { it.copy(household = household, items = items) }
+        }
+    }
+
+    fun onMute(muted: Boolean) {
+        _state.value.household?.id?.let {
+            store.muteHousehold(it, muted)
+            _state.update { it.copy(household = it.household?.copy(muted = muted)) }
         }
     }
 

@@ -26,4 +26,6 @@ interface SessionStore {
     val isLoggedInFlow: Flow<Boolean>
     var lastSyncTs : Int?
     val drawing: List<GpsItem>?
+
+    fun muteHousehold(householdId: Int, mute: Boolean)
 }
