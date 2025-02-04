@@ -26,7 +26,7 @@ import kotlinx.serialization.json.Json
 fun WebMapTemplate(
     state: MapViewState,
     onMapReady: () -> Unit,
-    onHouseSelected:(householdId: Int) -> Unit,
+    onHouseSelected: (householdId: Int) -> Unit,
     onHouseAndTypeSelected: (type: ItemTypeVS, householdId: Int) -> Unit,
     onDrawnUpdate: (drawData: List<List<Float>>) -> Unit
 ) {
@@ -111,10 +111,8 @@ fun WebMapTemplate(
     }
 
     LaunchedEffect(state.mapReady, state.otherHouseholds, state.myHousehold) {
-        if (!state.mapReady) {
-            println("AAAAAAAAAAAAAAAAAAAAAAAAA HOUSES but map not ready")
-            return@LaunchedEffect
-        }
+        if (!state.mapReady) return@LaunchedEffect
+
 
         var housesToShow = state.otherHouseholds
         if (state.myHousehold.location != null) {
@@ -122,7 +120,6 @@ fun WebMapTemplate(
         }
 
         if (housesToShow.isEmpty()) {
-            println("AAAAAAAAAAAAAAAAAAAAAAAA NO HOUSE")
             navigator.evaluateJavaScript("clearHouseholds()")
         } else {
             val js = housesToShow
@@ -147,7 +144,6 @@ fun WebMapTemplate(
                             "}"
                 }.joinToString(separator = ",", prefix = "updateHouseholds([", postfix = "]);")
 
-            println("AAAAAAAAAAAAAAAAAAAAAAAA SOME HOUSE " + housesToShow.size)
             navigator.evaluateJavaScript(js)
         }
     }
@@ -179,6 +175,22 @@ fun WebMapTemplate(
             navigator.evaluateJavaScript(js)
         } ?: run {
             navigator.evaluateJavaScript("clearLocationHeatMap('heatmap')")
+        }
+    }
+
+    LaunchedEffect(state.randomItems) {
+        if (!state.mapReady) return@LaunchedEffect
+
+        state.randomItems.takeIf { it.isNotEmpty() }?.let {
+            val js = it.map { item ->
+
+            }.joinToString(
+                separator = ",",
+                prefix = "addHouseItemHighlights('highlights', [",
+                postfix = "])"
+            )
+
+            //navigator.evaluateJavaScript(js)
         }
     }
 

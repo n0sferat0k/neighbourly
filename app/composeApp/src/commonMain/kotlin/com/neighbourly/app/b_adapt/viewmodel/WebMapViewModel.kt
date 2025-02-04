@@ -6,10 +6,12 @@ import com.neighbourly.app.GeoLocationCallback
 import com.neighbourly.app.GetLocation
 import com.neighbourly.app.b_adapt.viewmodel.bean.GpsItemVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.HouseholdSummaryVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.NeighbourhoodVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.pullFrom
 import com.neighbourly.app.b_adapt.viewmodel.bean.toGpsItemVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.toHouseholdSummaryVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.toItemVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.toNeighbourhoodVS
 import com.neighbourly.app.c_business.usecase.profile.HouseholdLocalizeUseCase
 import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUseCase
@@ -81,10 +83,20 @@ class WebMapViewModel(
                         neighbourhoods = user?.neighbourhoods?.map { it.toNeighbourhoodVS() }
                             ?: emptyList(),
                         otherHouseholds = allOtherHouseholds,
+                        lastSync = user?.lastSyncTs,
                     )
                 }
             }.launchIn(viewModelScope)
+    }
 
+    fun onContentRefresh() {
+        viewModelScope.launch {
+            database.filterItems(ids = database.getItemIds().shuffled().subList(0, 3))
+                .map { it.toItemVS() }
+                .let { items ->
+                    _state.update { it.copy(randomItems = items) }
+                }
+        }
     }
 
     override fun invoke(latitude: Double, longitude: Double, accuracy: Float) {
@@ -141,12 +153,14 @@ class WebMapViewModel(
     }
 
     data class MapViewState(
-        val mapReady:Boolean = false,
+        val mapReady: Boolean = false,
         val drawing: Boolean = false,
         val myLocation: GpsItemVS? = null,
         val myHousehold: HouseholdSummaryVS = HouseholdSummaryVS(),
         val otherHouseholds: List<HouseholdSummaryVS> = emptyList(),
         val neighbourhoods: List<NeighbourhoodVS> = emptyList(),
         val heatmap: List<GpsItemVS>? = null,
+        val lastSync: Int? = null,
+        val randomItems: List<ItemVS> = emptyList()
     )
 }

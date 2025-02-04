@@ -28,4 +28,5 @@ interface SessionStore {
     val drawing: List<GpsItem>?
 
     fun muteHousehold(householdId: Int, mute: Boolean)
+    fun mutePerson(personId: Int, mute: Boolean)
 }

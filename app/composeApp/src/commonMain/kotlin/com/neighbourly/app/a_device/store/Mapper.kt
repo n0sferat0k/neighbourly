@@ -20,6 +20,8 @@ fun StoreUser.toUser() =
         lastModifiedTs = this.lastModifiedTs,
         household = this.household?.toHousehold(),
         neighbourhoods = this.neighbourhoods.map { it.toStoreNeighbourhood() },
+        mutedHouseholds = this.mutedHouseholds,
+        mutedUsers = this.mutedUsers,
         localizing = this.localizing,
     )
 
@@ -37,6 +39,8 @@ fun User.toStoreUser(): StoreUser =
         lastModifiedTs = this.lastModifiedTs,
         household = this.household?.toStoreHousehold(),
         neighbourhoods = this.neighbourhoods.map { it.toStoreNeighbourhood() },
+        mutedHouseholds = this.mutedHouseholds,
+        mutedUsers = this.mutedUsers,
         localizing = this.localizing,
     )
 
@@ -118,6 +122,8 @@ data class StoreUser(
     val lastModifiedTs: Int = 0,
     val household: StoreHousehold? = null,
     val neighbourhoods: List<StoreNeighbourhood> = emptyList(),
+    val mutedHouseholds: Set<Int> = emptySet(),
+    val mutedUsers: Set<Int> = emptySet(),
     val localizing: Boolean = false,
 )
 

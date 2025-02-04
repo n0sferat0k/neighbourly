@@ -31,12 +31,13 @@ class AiInterfaceViewModel(
 
     fun onPrompt(prompt: String) {
         viewModelScope.launch {
-            aiChatUseCase.execute(prompt)
+            runCatching {
+                aiChatUseCase.execute(prompt)
+            }
         }
     }
 
     data class AiInterfaceViewState(
-
         val isAiOnline: Boolean = false,
         val aiMessages: List<String> = emptyList()
     )

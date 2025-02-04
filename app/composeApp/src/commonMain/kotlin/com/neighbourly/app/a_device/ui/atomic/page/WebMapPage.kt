@@ -2,6 +2,7 @@ package com.neighbourly.app.a_device.ui.atomic.page
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.neighbourly.app.KoinProvider
@@ -21,6 +22,10 @@ fun WebMapPage(
         onDispose {
             viewModel.onMapReady(false)
         }
+    }
+
+    LaunchedEffect(state.lastSync) {
+        viewModel.onContentRefresh()
     }
 
     WebMapTemplate(

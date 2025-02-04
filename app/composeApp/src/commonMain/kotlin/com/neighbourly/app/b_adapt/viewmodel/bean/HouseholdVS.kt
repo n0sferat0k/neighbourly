@@ -8,7 +8,7 @@ data class HouseholdVS(
     val address: String = "",
     val about: String = "",
     val imageurl: String? = null,
-    val members: List<String> = emptyList(),
+    val members: List<MemberVS> = emptyList(),
     val muted: Boolean = false,
 )
 

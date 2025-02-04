@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -21,36 +20,53 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.AppColors
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyIconedText
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.b_adapt.viewmodel.bean.HouseholdVS
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.houses
-import neighbourly.composeapp.generated.resources.mute
-import neighbourly.composeapp.generated.resources.unmute
+import neighbourly.composeapp.generated.resources.muted
+import neighbourly.composeapp.generated.resources.unmuted
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun OrganismHouseholdDetailsView(
     household: HouseholdVS,
     onHouseholdImage: () -> Unit,
-    onMute: (muted: Boolean) -> Unit,
+    onMuteHouse: (muted: Boolean) -> Unit,
+    onMuteHouseMember: (id: Int, muted: Boolean) -> Unit,
 ) {
     val defaultHouseImg = painterResource(Res.drawable.houses)
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.wrapContentHeight().weight(1f)) {
-                FriendlyText(text = household.name)
+                FriendlyIconedText(
+                    text = household.name,
+                    painter = painterResource(if (household.muted) Res.drawable.muted else Res.drawable.unmuted),
+                    bold = true,
+                    fontSize = 20.sp,
+                    iconSize = 36.dp,
+                    iconClick = { onMuteHouse(!household.muted) }
+                )
+
                 if (household.members.isNotEmpty()) {
-                    household.members.forEach {
-                        FriendlyText(text = "* " + it, bold = true)
+                    household.members.forEach { member ->
+
+                        FriendlyIconedText(
+                            text = "* " + (member.fullname.takeIf { it.isNotBlank() } ?: member.username),
+                            painter = painterResource(if (member.muted) Res.drawable.muted else Res.drawable.unmuted),
+                            bold = true,
+                            iconSize = 24.dp,
+                            iconClick = {
+                                onMuteHouseMember(member.id, !member.muted)
+                            }
+                        )
                     }
                 }
             }
@@ -91,17 +107,6 @@ fun OrganismHouseholdDetailsView(
                     }
                 }
             }
-        }
-        Box(modifier = Modifier.fillMaxWidth()) {
-            FriendlyText(
-                modifier = Modifier.width(60.dp).align(Alignment.CenterEnd).clickable {
-                    onMute(!household.muted)
-                },
-                bold = true,
-                text = stringResource(if (household.muted) Res.string.unmute else Res.string.mute),
-                textAlign = TextAlign.Center,
-                fontSize = 20.sp
-            )
         }
 
         FriendlyText(text = household.address)

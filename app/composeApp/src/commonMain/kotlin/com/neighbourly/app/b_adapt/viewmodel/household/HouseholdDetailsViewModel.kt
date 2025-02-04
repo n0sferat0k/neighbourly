@@ -7,6 +7,7 @@ import com.neighbourly.app.b_adapt.viewmodel.bean.ItemAugmentVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.toHouseholdVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.toItemVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.toMemberVS
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.Companion.DAY_IN_SECONDS
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.Companion.HOUR_IN_SECONDS
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel.Companion.MINUTE_IN_SECONDS
@@ -30,11 +31,18 @@ class HouseholdDetailsViewModel(
     fun setHousehold(householdId: Int) {
         viewModelScope.launch {
             val now = Clock.System.now().epochSeconds.toInt()
-            val membersNames = database.getUsers().filter { it.householdid == householdId }
-                .map { it.fullname ?: it.username }
+            val members = database.getUsers().filter { it.householdid == householdId }
+                .map {
+                    it.toMemberVS().let {
+                        it.copy(
+                            muted = store.user?.mutedUsers?.contains(it.id) ?: false
+                        )
+                    }
+                }
+
             val household =
                 database.getHousehold(householdId).toHouseholdVS().copy(
-                    members = membersNames,
+                    members = members,
                     muted = store.user?.mutedHouseholds?.contains(householdId) ?: false
                 )
             val items = database.filterItems(householdId = householdId).map { item ->
@@ -62,10 +70,20 @@ class HouseholdDetailsViewModel(
         }
     }
 
-    fun onMute(muted: Boolean) {
+    fun onMuteHouse(muted: Boolean) {
         _state.value.household?.id?.let {
             store.muteHousehold(it, muted)
             _state.update { it.copy(household = it.household?.copy(muted = muted)) }
+        }
+    }
+
+    fun onMuteHouseMember(id: Int, muted: Boolean) {
+        store.mutePerson(id, muted)
+        _state.update {
+            it.copy(household = it.household?.copy(members = it.household.members.map { member ->
+                member.takeIf { it.id == id }?.copy(muted = muted)
+                    ?: member
+            }))
         }
     }
 

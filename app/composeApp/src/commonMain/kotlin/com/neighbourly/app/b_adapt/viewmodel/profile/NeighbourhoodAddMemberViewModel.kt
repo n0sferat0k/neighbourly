@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.b_adapt.viewmodel.bean.MemberVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.NameAndAccessVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.toMemberVS
 import com.neighbourly.app.c_business.usecase.profile.FetchProfileUseCase
 import com.neighbourly.app.c_business.usecase.profile.NeighbourhoodManagementUseCase
 import com.neighbourly.app.d_entity.data.OpException
@@ -60,16 +61,7 @@ class NeighbourhoodAddMemberViewModel(
                 fetchProfileUseCase.execute(id, username)?.let { user ->
                     _state.update { state ->
                         state.copy(
-                            member = MemberVS(
-                                id = user.id,
-                                username = user.username,
-                                fullname = user.fullname.orEmpty(),
-                                email = user.email.orEmpty(),
-                                phone = user.phone.orEmpty(),
-                                about = user.about.orEmpty(),
-                                imageurl = user.imageurl,
-                                hasEstablishedHousehold = user.household != null && user.household.location != null,
-                            ),
+                            member = user.toMemberVS(),
 
                             personsAndAcc = user.household?.members?.map {
                                 it.id to NameAndAccessVS(

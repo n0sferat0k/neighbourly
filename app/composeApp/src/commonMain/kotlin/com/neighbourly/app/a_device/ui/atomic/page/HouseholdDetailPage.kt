@@ -26,7 +26,8 @@ fun HouseholdDetailPage(
         onHouseholdImage = {
             state.household?.id?.let { navigationViewModel.goToHouseholdGallery(householdId = it) }
         },
-        onMute = viewModel::onMute,
+        onMuteHouse = viewModel::onMuteHouse,
+        onMuteHouseMember = viewModel::onMuteHouseMember,
         onSelectItem = navigationViewModel::goToItemDetails,
         onClose = navigationViewModel::goBack
     )

@@ -95,6 +95,21 @@ class SessionHybridStore(
         saveToStore()
     }
 
+    override fun mutePerson(personId: Int, mute: Boolean) {
+        userState.update {
+            it?.copy(
+                mutedUsers = (
+                        if (mute)
+                            it.mutedUsers + personId
+                        else
+                            it.mutedUsers.filter { it != personId }
+                        )
+                    .toSet()
+            )
+        }
+        saveToStore()
+    }
+
     private fun loadUserFromStore() {
         userState = MutableStateFlow(
             keyValueRegistry.getString(KEY_USER)?.let {

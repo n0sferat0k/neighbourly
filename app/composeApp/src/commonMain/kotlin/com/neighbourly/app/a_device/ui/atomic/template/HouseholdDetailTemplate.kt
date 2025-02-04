@@ -15,7 +15,8 @@ import com.neighbourly.app.b_adapt.viewmodel.household.HouseholdDetailsViewModel
 fun HouseholdDetailTemplate(
     state: HouseholdDetailsViewModel.HouseholdDetailsViewState,
     onHouseholdImage: () -> Unit,
-    onMute: (muted: Boolean) -> Unit,
+    onMuteHouse: (muted: Boolean) -> Unit,
+    onMuteHouseMember: (id: Int, muted: Boolean) -> Unit,
     onSelectItem: (id: Int) -> Unit,
     onClose: () -> Unit,
 ) {
@@ -26,7 +27,8 @@ fun HouseholdDetailTemplate(
                 OrganismHouseholdDetailsView(
                     household = household,
                     onHouseholdImage = onHouseholdImage,
-                    onMute = onMute
+                    onMuteHouse = onMuteHouse,
+                    onMuteHouseMember = onMuteHouseMember,
                 )
             }
 

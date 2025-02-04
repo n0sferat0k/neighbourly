@@ -3,6 +3,7 @@ package com.neighbourly.app.b_adapt.viewmodel.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.b_adapt.viewmodel.bean.HouseholdVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.toMemberVS
 import com.neighbourly.app.c_business.usecase.profile.HouseholdManagementUseCase
 import com.neighbourly.app.d_entity.data.OpException
 import com.neighbourly.app.d_entity.interf.SessionStore
@@ -33,7 +34,7 @@ class HouseholdInfoEditViewModel(
                                 address = household.address.orEmpty(),
                                 about = household.about.orEmpty(),
                                 imageurl = household.imageurl,
-                                members = household.members?.map { it.fullname ?: it.username }.orEmpty(),
+                                members = household.members?.map { it.toMemberVS() }.orEmpty(),
                             ),
 
                             isHouseHead = household.headid == user.id,
