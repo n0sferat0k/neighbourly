@@ -6,6 +6,7 @@ import com.neighbourly.app.GeoLocationCallback
 import com.neighbourly.app.GetLocation
 import com.neighbourly.app.b_adapt.viewmodel.bean.GpsItemVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.HouseholdSummaryVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemAugmentVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.NeighbourhoodVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.pullFrom
@@ -91,11 +92,19 @@ class WebMapViewModel(
 
     fun onContentRefresh() {
         viewModelScope.launch {
-            database.filterItems(ids = database.getItemIds().shuffled().subList(0, 3))
-                .map { it.toItemVS() }
-                .let { items ->
-                    _state.update { it.copy(randomItems = items) }
+            val randomItems =
+                database.filterItems(ids = database.getItemIds().shuffled().subList(0, 3))
+                    .distinctBy { it.householdId }
+
+            val randomItemsByHouse = randomItems.map { item ->
+                _state.value.otherHouseholds.firstOrNull { it.id == item.householdId }?.let { house ->
+                    house to
+                            item.toItemVS()
+                                .copy(augmentation = ItemAugmentVS(imageUrl = item.images.randomOrNull()?.url))
                 }
+            }.filterNotNull().toMap()
+
+            _state.update { it.copy(randomItems = randomItemsByHouse) }
         }
     }
 
@@ -161,6 +170,6 @@ class WebMapViewModel(
         val neighbourhoods: List<NeighbourhoodVS> = emptyList(),
         val heatmap: List<GpsItemVS>? = null,
         val lastSync: Int? = null,
-        val randomItems: List<ItemVS> = emptyList()
+        val randomItems: Map<HouseholdSummaryVS, ItemVS> = emptyMap()
     )
 }
