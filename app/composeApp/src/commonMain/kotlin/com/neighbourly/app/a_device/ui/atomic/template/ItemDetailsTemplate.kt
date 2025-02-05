@@ -39,13 +39,17 @@ fun ItemDetailsTemplate(
     onPostItemMessage: (message: String) -> Unit,
     onDeleteItemMessage: (messageId: Int) -> Unit,
     onSelectHousehold: (id: Int) -> Unit,
+    onWatchItem: (watched: Boolean) -> Unit
 ) {
     state.item?.let { item ->
         OrganismContentBubble(
             scrollable = false,
             busy = state.saving,
             content = {
-                LazyColumn(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                LazyColumn(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     item {
                         if (state.editable) {
                             OrganismEditableItemDetails(
@@ -66,6 +70,7 @@ fun ItemDetailsTemplate(
                                 users = state.users,
                                 onImageSelected = onImageSelected,
                                 onUrlSelected = onUrlSelected,
+                                onWatchItem = onWatchItem,
                             )
                         }
                     }

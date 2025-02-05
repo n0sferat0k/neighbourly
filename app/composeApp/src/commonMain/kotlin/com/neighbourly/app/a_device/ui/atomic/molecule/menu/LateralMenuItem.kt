@@ -80,7 +80,7 @@ fun LateralMenuItem(
         } + fadeIn()
     ) {
         Box(
-            modifier = Modifier.height(48.dp).fillMaxWidth(.8f)
+            modifier = Modifier.height(48.dp).fillMaxWidth(.85f)
                 .clickable { onClick() }
                 .border(1.dp, AppColors.primary, cornerShape).background(
                     color = Color.White,

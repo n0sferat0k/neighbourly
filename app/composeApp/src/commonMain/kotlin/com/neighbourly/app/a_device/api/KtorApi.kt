@@ -466,7 +466,11 @@ object KtorApi {
         }
     }
 
-    suspend fun addItemMessage(baseUrl: String, token: String, message: ItemMessageDTO): ItemMessageDTO {
+    suspend fun addItemMessage(
+        baseUrl: String,
+        token: String,
+        message: ItemMessageDTO
+    ): ItemMessageDTO {
         val response = client.post(baseUrl + "content/addItemMessage") {
             contentType(ContentType.Application.Json)
             setBody(message)
@@ -481,10 +485,20 @@ object KtorApi {
         }
     }
 
-    suspend fun getItemMessages(baseUrl: String, token: String, itemId: Int): List<ItemMessageDTO> {
-        val response = client.get(baseUrl + "content/getItemMessages?itemId=$itemId") {
+    suspend fun getItemsMessages(
+        baseUrl: String,
+        token: String,
+        itemIds: List<Int>,
+        lastSyncTs: Int
+    ): List<ItemMessageDTO> {
+        val response = client.post(
+            baseUrl + "content/getItemsMessages"
+        ) {
+            contentType(ContentType.Application.Json)
+            setBody(itemIds)
             headers {
                 append(HttpHeaders.Authorization, "Bearer " + token)
+                append(HttpHeaders.IfModifiedSince, lastSyncTs.toString())
             }
         }
         if (response.status.value == 200) {
@@ -494,12 +508,13 @@ object KtorApi {
         }
     }
 
-    suspend fun deleteItemMessage(baseUrl: String, token: String, itemMessageId:Int) {
-        val response = client.get(baseUrl + "content/deleteItemMessage?itemMessageId=$itemMessageId") {
-            headers {
-                append(HttpHeaders.Authorization, "Bearer " + token)
+    suspend fun deleteItemMessage(baseUrl: String, token: String, itemMessageId: Int) {
+        val response =
+            client.get(baseUrl + "content/deleteItemMessage?itemMessageId=$itemMessageId") {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer " + token)
+                }
             }
-        }
         if (response.status.value != 200) {
             throw ApiException(response.bodyAsText())
         }

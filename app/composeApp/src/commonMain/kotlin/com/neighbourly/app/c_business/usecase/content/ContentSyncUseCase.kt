@@ -25,6 +25,8 @@ class ContentSyncUseCase(
                 database.clear()
             }
             if (force || (currentTs - lastSyncTs) > SYNC_DEBOUNCE_S) {
+
+                //first sync all item modifications
                 val lastModifTs = database.getLastModifTs()
                 val knownIds = database.getItemIds()
                 val syncData = apiGw.synchronizeContent(token, lastModifTs)
@@ -37,15 +39,26 @@ class ContentSyncUseCase(
                 database.stripUsers(syncData.userIds)
                 database.stripHouseholds(syncData.houseIds)
 
+                //next sync messages for owned items only
+                val ownedItemIds =
+                    database.filterItems(householdId = sessionStore.user?.householdid).map { it.id }
+                        .filterNotNull()
+                val watchedItems = sessionStore.user?.watchedItems.orEmpty()
+
+                val newMessages = apiGw.getItemsMessages(token, ownedItemIds + watchedItems, sessionStore.lastSyncTs)
+
                 summonable.summonOnContentSyncComplete(
                     lastSyncTs,
                     syncData.itemIds.filter { !knownIds.contains(it) },
                     syncData.items.map { it.id }.filterNotNull(),
                     syncData.users.map { it.id },
-                    syncData.houses.map { it.householdid })
+                    syncData.houses.map { it.householdid },
+                    newMessages
+                )
 
                 sessionStore.lastSyncTs = currentTs
             }
         }
     }
+
 }

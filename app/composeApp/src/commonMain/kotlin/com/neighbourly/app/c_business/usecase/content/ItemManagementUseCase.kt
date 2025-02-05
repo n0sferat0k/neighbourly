@@ -97,7 +97,7 @@ class ItemManagementUseCase(
     suspend fun fetchMessages(itemId: Int): List<ItemMessage> {
         val token = sessionStore.user?.authtoken
         return token?.let {
-            apiGw.getItemMessages(token, itemId)
+            apiGw.getItemsMessages(token, listOf(itemId), null)
         } ?: emptyList()
     }
 

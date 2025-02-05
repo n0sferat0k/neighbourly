@@ -54,7 +54,7 @@ func main() {
 	r.HandleFunc("/content/addOrUpdateItem", content.AddOrUpdateItem).Methods("POST")
 	r.HandleFunc("/content/addItemMessage", content.AddItemMessage).Methods("POST")
 	r.HandleFunc("/content/deleteItemMessage", content.DeleteItemMessage).Methods("GET")
-	r.HandleFunc("/content/getItemMessages", content.GetItemMessages).Methods("GET")
+	r.HandleFunc("/content/getItemsMessages", content.GetItemsMessages).Methods("POST")
 	r.HandleFunc("/box/addBox", box.AddBox).Methods("POST")
 	r.HandleFunc("/box/delBox", box.DelBox).Methods("POST")
 	r.HandleFunc("/box/opBox", box.OpBox).Methods("POST")

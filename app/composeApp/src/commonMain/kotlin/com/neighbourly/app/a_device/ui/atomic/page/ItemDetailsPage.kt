@@ -94,6 +94,7 @@ fun ItemDetailsPage(
         onPostItemMessage = viewModel::onPostItemMessage,
         onDeleteItemMessage = viewModel::onDeleteItemMeddage,
         onSelectHousehold = navigationViewModel::goToHouseholdDetails,
+        onWatchItem = viewModel::onWatchItem
     )
 }
 

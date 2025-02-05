@@ -30,11 +30,13 @@ data class ItemAugmentVS(
     val deletable: Boolean = false,
     val household: HouseholdVS? = null,
     val imageUrl: String? = null,
+    val watched: Boolean = false,
 )
 
 data class ItemMessageVS(
     val deletable: Boolean = false,
     val id: Int,
+    val senderId:Int,
     val message: String,
     val sender: String = "",
     val household: HouseholdVS? = null,
@@ -77,10 +79,11 @@ fun Item.toItemVS() = ItemVS(
     fileCount = files.size,
 )
 
-fun ItemMessage.toItemMessageVS(deletable: Boolean, sender: String, household: HouseholdVS? = null) = ItemMessageVS(
+fun ItemMessage.toItemMessageVS(deletable: Boolean, senderId:Int, sender: String, household: HouseholdVS? = null) = ItemMessageVS(
     deletable = deletable,
     id = id ?: 0,
     message = message,
+    senderId = senderId,
     sender = sender,
     household = household
 )

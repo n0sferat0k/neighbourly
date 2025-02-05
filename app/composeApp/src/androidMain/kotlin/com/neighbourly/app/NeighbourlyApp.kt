@@ -65,11 +65,10 @@ class NeighbourlyApp : Application() {
             )
             .build()
 
-        notificationManager.notify(NOTIFICATION_ID, notification)
+        notificationManager.notify(id.hashCode(), notification)
     }
 
     companion object {
-        const val NOTIFICATION_ID = 1234
         const val NOTIFICATION_CHANNEL_ID = "neighbourly_notification"
         val NOTIFICATION_TIMEOUT_MS = TimeUnit.MILLISECONDS.convert(2, TimeUnit.HOURS)
 

@@ -241,9 +241,10 @@ actual val statusConfigSource = object : StatusMemoryStore() {
 
 actual suspend fun postSystemNotification(id: String?, title: String?, text: String) {
     NeighbourlyApp.appContext.showBasicNotification(
-        id,
-        title ?: getString(Res.string.app_name),
-        text
+
+        id = id,
+        title = title ?: getString(Res.string.app_name),
+        text = text
     )
 }
 

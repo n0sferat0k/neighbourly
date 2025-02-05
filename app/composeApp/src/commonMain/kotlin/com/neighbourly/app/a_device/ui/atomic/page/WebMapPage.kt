@@ -9,6 +9,8 @@ import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.atomic.template.WebMapTemplate
 import com.neighbourly.app.b_adapt.viewmodel.WebMapViewModel
 import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
+import kotlinx.coroutines.delay
+import java.util.concurrent.TimeUnit
 
 
 @Composable
@@ -25,7 +27,10 @@ fun WebMapPage(
     }
 
     LaunchedEffect(state.lastSync) {
-        viewModel.onContentRefresh()
+        while (true) {
+            viewModel.refreshRandomItems()
+            delay(TimeUnit.SECONDS.toMillis(10))
+        }
     }
 
     WebMapTemplate(
@@ -36,6 +41,9 @@ fun WebMapPage(
         },
         onHouseAndTypeSelected = { type, id ->
             navigation.goToFindItems(type, id)
+        },
+        onItemSelected = {
+            navigation.goToItemDetails(it)
         },
         onDrawnUpdate = { drawData ->
             viewModel.onDrawn(drawData)

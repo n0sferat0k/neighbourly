@@ -3,6 +3,7 @@ package com.neighbourly.app.a_device.spirit
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.c_business.usecase.work.ScheduleWorkUseCase
+import com.neighbourly.app.d_entity.data.ItemMessage
 import com.neighbourly.app.d_entity.data.ScheduledWork
 import com.neighbourly.app.d_entity.data.ScheduledWorkType
 import com.neighbourly.app.d_entity.interf.AI
@@ -40,16 +41,68 @@ object NeighbourlySpirit : Summonable {
         novelItemIds: List<Int>,
         syncedItemIds: List<Int>,
         syncedUserIds: List<Int>,
-        syncedHouseIds: List<Int>
+        syncedHouseIds: List<Int>,
+        newMessagesOfInterest: List<ItemMessage>,
     ) {
         spiritScope.launch {
+            //ignore first sync
+            if (lastSyncTs == 0) return@launch
+
+            val muteHouseIds = sessionStore.user?.mutedHouseholds.orEmpty()
+            val mutePersonIds = sessionStore.user?.mutedUsers.orEmpty()
+
+            //react to new messages
+            if (newMessagesOfInterest.isNotEmpty()) {
+                val messagePeople = database.getUsers(ids = newMessagesOfInterest.map { it.userId }
+                    .filter { !mutePersonIds.contains(it) }.filterNotNull())
+                val messageItems = database.filterItems(ids = newMessagesOfInterest.map { it.itemId }
+                    .filterNotNull())
+
+                val messageDesc = newMessagesOfInterest.map { message ->
+                    val person = messagePeople.firstOrNull { it.id == message.userId }
+                    val item = messageItems.firstOrNull { it.id == message.itemId }
+                    item?.let {
+                        person?.let {
+                            message.itemId to "${person.fullname ?: person.username} commented on '${item.name}' : ${message.message}"
+                        }
+                    }
+                }.filterNotNull().toMap()
+
+                if (messageDesc.size > 0) {
+                    kotlin.runCatching {
+                        val messageDescStr = messageDesc.values.joinToString(";")
+                        aiGw.generate(
+                            system = """You are a helpful assistant, your speach is short and concise.
+                                        You will provide a short summary of messages posted by people on items of households in a neighbourhood.
+                                        You will return only the summary, no formatting, no other text, and no longer than 2 sentences!""".trimIndent(),
+                            prompt = "Here are the messages: $messageDescStr"
+                        )
+                    }.getOrNull()?.let { aiSummary ->
+                        postSystemNotification(
+                            id = (messageDesc.keys).joinToString(","),
+                            text = aiSummary
+                        )
+                    } ?: run {
+                        for (entry in messageDesc) {
+                            postSystemNotification(
+                                id = entry.key.toString(),
+                                text = entry.value
+                            )
+                        }
+                    }
+                }
+            }
+
+            //react to new/updated items
             val ids = novelItemIds + syncedItemIds
-            if (lastSyncTs > 0 && ids.isNotEmpty()) {
+            if (ids.isNotEmpty()) {
                 val items = database.filterItems(ids = ids)
-                val muteHouseIds = sessionStore.user?.mutedHouseholds.orEmpty()
-                val mutePersonIds = sessionStore.user?.mutedUsers.orEmpty()
-                val itemHouses = database.filterHouseholds(items.map { it.householdId }.filter { !muteHouseIds.contains(it) }.filterNotNull())
-                val itemPeople = database.getUsers(items.map { it.userId }.filter { !mutePersonIds.contains(it) }.filterNotNull())
+
+                val itemHouses = database.filterHouseholds(items.map { it.householdId }
+                    .filter { !muteHouseIds.contains(it) }.filterNotNull())
+                val itemPeople =
+                    database.getUsers(items.map { it.userId }.filter { !mutePersonIds.contains(it) }
+                        .filterNotNull())
 
                 val itemsDesc = items.map { item ->
                     val person = itemPeople.firstOrNull { it.id == item.userId }
@@ -61,7 +114,7 @@ object NeighbourlySpirit : Summonable {
                     }
                 }.filterNotNull().toMap()
 
-                if(itemsDesc.size > 0) {
+                if (itemsDesc.size > 0) {
                     kotlin.runCatching {
                         val itemDescStr = itemsDesc.values.joinToString(";")
                         aiGw.generate(

@@ -18,10 +18,12 @@ fun StoreUser.toUser() =
         authtoken = this.authtoken,
         householdid = this.householdid,
         lastModifiedTs = this.lastModifiedTs,
+        lastSyncTs = this.lastSyncTs,
         household = this.household?.toHousehold(),
         neighbourhoods = this.neighbourhoods.map { it.toStoreNeighbourhood() },
         mutedHouseholds = this.mutedHouseholds,
         mutedUsers = this.mutedUsers,
+        watchedItems = this.watchedItems,
         localizing = this.localizing,
     )
 
@@ -37,10 +39,12 @@ fun User.toStoreUser(): StoreUser =
         authtoken = this.authtoken,
         householdid = this.householdid,
         lastModifiedTs = this.lastModifiedTs,
+        lastSyncTs = this.lastSyncTs,
         household = this.household?.toStoreHousehold(),
         neighbourhoods = this.neighbourhoods.map { it.toStoreNeighbourhood() },
         mutedHouseholds = this.mutedHouseholds,
         mutedUsers = this.mutedUsers,
+        watchedItems = this.watchedItems,
         localizing = this.localizing,
     )
 
@@ -120,9 +124,12 @@ data class StoreUser(
     val authtoken: String? = null,
     val householdid: Int? = null,
     val lastModifiedTs: Int = 0,
+    val lastSyncTs: Int? = null,
+    val lastMessageSyncTs: Int? = null,
     val household: StoreHousehold? = null,
     val neighbourhoods: List<StoreNeighbourhood> = emptyList(),
     val mutedHouseholds: Set<Int> = emptySet(),
+    val watchedItems: Set<Int> = emptySet(),
     val mutedUsers: Set<Int> = emptySet(),
     val localizing: Boolean = false,
 )

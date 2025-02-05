@@ -138,7 +138,7 @@ interface Api {
 
     suspend fun addItemMessage(token: String, itemId: Int, message:String): ItemMessage
 
-    suspend fun getItemMessages(token: String, itemId: Int): List<ItemMessage>
+    suspend fun getItemsMessages(token: String, itemIds: List<Int>, lastSyncTs: Int?): List<ItemMessage>
 
     suspend fun deleteItemMessage(token: String, itemMessageId: Int)
 

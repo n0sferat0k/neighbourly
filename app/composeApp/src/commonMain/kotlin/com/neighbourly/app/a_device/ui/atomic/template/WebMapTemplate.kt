@@ -18,6 +18,7 @@ import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
 import com.neighbourly.app.a_device.ui.atomic.atom.PlatformWebView
 import com.neighbourly.app.b_adapt.viewmodel.WebMapViewModel.MapViewState
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
+import io.ktor.util.escapeHTML
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
@@ -28,6 +29,7 @@ fun WebMapTemplate(
     onMapReady: () -> Unit,
     onHouseSelected: (householdId: Int) -> Unit,
     onHouseAndTypeSelected: (type: ItemTypeVS, householdId: Int) -> Unit,
+    onItemSelected: (itemId: Int) -> Unit,
     onDrawnUpdate: (drawData: List<List<Float>>) -> Unit
 ) {
     @Serializable
@@ -35,6 +37,7 @@ fun WebMapTemplate(
         val mapReady: Boolean? = null,
         val drawData: List<List<Float>>? = null,
         val householdid: Int? = null,
+        val itemid: Int? = null,
         val type: String? = null,
     )
 
@@ -52,6 +55,9 @@ fun WebMapTemplate(
                 callback: (String) -> Unit,
             ) {
                 val params = Json.decodeFromString<MapFeedbackModel>(message.params)
+                params.itemid?.let {
+                    onItemSelected(it)
+                }
                 params.householdid?.let { householdId ->
                     params.type?.let {
                         onHouseAndTypeSelected(ItemTypeVS.getByName(params.type), householdId)
@@ -60,7 +66,6 @@ fun WebMapTemplate(
                     }
                 }
                 if (params.mapReady == true) {
-
                     onMapReady()
                 }
                 if (params.drawData != null) {
@@ -104,7 +109,7 @@ fun WebMapTemplate(
 
         state.myHousehold.location?.let { myHouseLocation ->
             if (firstGps) {
-                navigator.evaluateJavaScript("center(${myHouseLocation.longitude}, ${myHouseLocation.latitude}, 15);")
+                navigator.evaluateJavaScript("center(${myHouseLocation.longitude}, ${myHouseLocation.latitude}, 16);")
                 firstGps = false
             }
         }
@@ -112,7 +117,6 @@ fun WebMapTemplate(
 
     LaunchedEffect(state.mapReady, state.otherHouseholds, state.myHousehold) {
         if (!state.mapReady) return@LaunchedEffect
-
 
         var housesToShow = state.otherHouseholds
         if (state.myHousehold.location != null) {
@@ -129,10 +133,10 @@ fun WebMapTemplate(
                             "'longitude':${it.location!!.longitude}, " +
                             "'latitude':${it.location.latitude}, " +
                             "'id':${it.id}, " +
-                            "'name':'${it.name}', " +
+                            "'name':'${it.name.escapeHTML()}', " +
                             "'floatName':${it.isCandidate}," +
-                            "'address':'${it.address}', " +
-                            "'description':'${it.description}', " +
+                            "'address':'${it.address.escapeHTML()}', " +
+                            "'description':'${it.description.escapeHTML()}', " +
                             "'donations':${it.donations}, " +
                             "'barterings':${it.barterings}, " +
                             "'sales':${it.sales}, " +
@@ -178,12 +182,12 @@ fun WebMapTemplate(
         }
     }
 
-    LaunchedEffect(state.randomItems) {
+    LaunchedEffect(state.mapReady, state.randomItems) {
         if (!state.mapReady) return@LaunchedEffect
 
         state.randomItems.takeIf { it.isNotEmpty() }?.let {
             val js = it.map { (house, item) ->
-                "{'longitude':${house.location?.longitude}, latitude':${house.location?.latitude}, 'id':${item.id}, 'type': '${item.type.name}', 'name':'${item.name}', 'description':'${item.description}', 'imageurl':'${item.augmentation?.imageUrl}'}"
+                "{'longitude':${house.location?.longitude}, 'latitude':${house.location?.latitude}, 'id':${item.id}, 'type': '${item.type.name}', 'name':'${item.name.escapeHTML()}', 'description':'${item.description.escapeHTML()}', 'imageurl':'${item.augmentation?.imageUrl.orEmpty()}'}"
             }.joinToString(
                 separator = ",",
                 prefix = "addPopups([",
@@ -191,6 +195,8 @@ fun WebMapTemplate(
             )
 
             navigator.evaluateJavaScript(js)
+        } ?: kotlin.run {
+            navigator.evaluateJavaScript("addPopups([])")
         }
     }
 
@@ -231,6 +237,15 @@ val mapHtml =
                 }
                 .popup {                
                     max-width: 320px !important;
+                }
+                .translucent_popup {
+                    max-width: 260px !important;
+                    opacity: 0.7;
+                }
+                .translucent_popup_text {
+                    display: block;
+                    max-width: 230px;
+                    overflow-wrap: break-word;                
                 }
                 .item_icon {
                     margin:3px;
@@ -529,7 +544,7 @@ val mapHtml =
         
                 function centerToDot() {
                     if(dotLat != 0 || dotLng != 0) {
-                        center(dotLng, dotLat, 15);
+                        center(dotLng, dotLat, 16);
                     } else {
                         centerDot = true;
                     }                    
@@ -604,23 +619,32 @@ val mapHtml =
                                 break;
                             default:
                                 iconSvg = donationsSvgPath;
-                        }
-    
+                        }                            
+                        var hasImage = (popupData.imageurl != 'undefined' && popupData.imageurl.length > 0);
                         var html = `<table onclick="callNative({ itemid: `+popupData.id+`});">
                                         <tr>
-                                            <td style="width: 60px; height: 60px; background-image: url('` + popupData.imageurl + `'); background-size: cover; background-position: center;"></td>
-                                            <td style="font-size: 14px; font-weight: bold; color: #5BA9AE;vertical-align: top;">`                                            
+                                            `
+                                            +
+                                            (
+                                                hasImage ? 
+                                                `<td style="width: 50px; height: 50px; background-image: url('` + popupData.imageurl + `'); background-size: cover; background-position: center;"></td>`
+                                                : ''
+                                            )
+                                            +                    
+                                            `<td style="font-size: 14px; font-weight: bold; color: #5BA9AE;vertical-align: top;">`                                            
                                                 +`<svg width="36px" height="36px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:relative;top:6px;">
                                                         `+iconSvg+`
                                                     </svg>`
                                                 + popupData.name + 
                                             `</td>
                                         </tr>
-                                        <tr>
-                                            <td colspan="2" style="font-size: 10px; color: #5BA9AE;">` + popupData.description + `</td>                                        
+                                        <tr>                                            
+                                            <td colspan="`+(hasImage?'2':'1')+`" style="overflow-wrap: break-word; font-size: 10px; color: #5BA9AE;"><span class="translucent_popup_text">` + popupData.description + `</span></td>
                                         </tr>
-                                    </table>`;
-                        popups[popupData.id] = new maplibregl.Popup({offset: {'bottom': [0, -70]}, className: 'popup'})
+                                    </table>`;                                    
+                                    
+                                    
+                        popups[popupData.id] = new maplibregl.Popup({offset: {'bottom': [0, -70]}, className: 'translucent_popup'})
                                                 .setLngLat([23.6685, 47.653])
                                                 .setLngLat([popupData.longitude, popupData.latitude])
                                                 .setHTML(html)
@@ -671,7 +695,7 @@ val mapHtml =
                         el.innerHTML = html;
     
                         var popupHtml = `
-                                            <div style="display: flex; flex-direction: column; align-items: left;">
+                                            <div style="display: flex; flex-direction: column; align-items: left;overflow-wrap: break-word;">
                                                 <span style="padding:3px;text-align:left;font-size:14px;font-weight:bold;line-height:10px;color:#5BA9AE" onclick="callNative({ householdid: `+house.id+`});">` +  house.name + `</span>
                                                 <span style="padding:3px;text-align:left;font-size:10px;line-height:10px;">` +  house.address + `</span>
                                                 <span style="padding:3px;text-align:left;font-size:10px;line-height:10px;">` +  house.description + `</span>

@@ -110,6 +110,21 @@ class SessionHybridStore(
         saveToStore()
     }
 
+    override fun watchItem(itemId: Int, watch: Boolean) {
+        userState.update {
+            it?.copy(
+                watchedItems = (
+                        if (watch)
+                            it.watchedItems + itemId
+                        else
+                            it.watchedItems.filter { it != itemId }
+                        )
+                    .toSet()
+            )
+        }
+        saveToStore()
+    }
+
     private fun loadUserFromStore() {
         userState = MutableStateFlow(
             keyValueRegistry.getString(KEY_USER)?.let {

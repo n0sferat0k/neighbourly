@@ -2,6 +2,7 @@ package com.neighbourly.app.b_adapt.viewmodel.items
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemAugmentVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.MemImgVS
@@ -68,7 +69,16 @@ class ItemDetailsViewModel(
                             editable = item.householdId == store.user?.household?.householdid,
                             admin = store.user?.neighbourhoods?.firstOrNull { it.neighbourhoodid == item.neighbourhoodId }?.access?.let { it >= 499 }
                                 ?: false,
-                            item = item.toItemVS(),
+                            item = item.toItemVS().copy(
+                                augmentation = ItemAugmentVS(
+                                    imageUrl = item.images.randomOrNull()?.url,
+                                    deletable = item.householdId == store.user?.household?.householdid,
+                                    household = item.householdId?.let {
+                                        database.getHousehold(it).toHouseholdVS()
+                                    },
+                                    watched = store.user?.watchedItems?.contains(item.id) ?: false
+                                )
+                            ),
                         )
                     }
 
@@ -84,11 +94,11 @@ class ItemDetailsViewModel(
 
                         val messages = messages.map { message ->
                             val house = userIdToHouseMap[message.userId]
-
+                            val user = messageUsers.firstOrNull { it.id == message.userId }
                             message.toItemMessageVS(
                                 deletable = house?.householdid == store.user?.householdid || _state.value.item?.augmentation?.deletable == true,
-                                sender = messageUsers.firstOrNull { it.id == message.userId }
-                                    ?.let { it.fullname ?: it.username }.orEmpty(),
+                                senderId = user?.id ?: 0,
+                                sender = user?.let { it.fullname ?: it.username }.orEmpty(),
                                 household = house?.toHouseholdVS()
                             )
                         }
@@ -239,18 +249,26 @@ class ItemDetailsViewModel(
     fun onPostItemMessage(message: String) {
         viewModelScope.launch {
             try {
-                val message = _state.value.item?.id?.let {
+                val itemId = _state.value.item?.id
+                val postedMessage = itemId?.let {
                     itemManagementUseCase.postMessage(it, message)
                         ?.toItemMessageVS(
                             deletable = true,
+                            senderId = store.user?.id ?: 0,
                             sender = store.user?.let { it.fullname ?: it.username }.orEmpty(),
                             household = store.user?.household?.toHouseholdVS()
                         )
                 }
+
+                itemId?.let { store.watchItem(it, true) }
+
                 _state.update {
                     it.copy(
                         error = "",
-                        item = it.item?.copy(messages = (it.item.messages + message).filterNotNull())
+                        item = it.item?.copy(
+                            augmentation = it.item.augmentation?.copy(watched = true),
+                            messages = (it.item.messages + postedMessage).filterNotNull()
+                        )
                     )
                 }
             } catch (e: OpException) {
@@ -262,16 +280,35 @@ class ItemDetailsViewModel(
     fun onDeleteItemMeddage(messageId: Int) {
         viewModelScope.launch {
             try {
-                _state.value.item?.id?.let { itemManagementUseCase.deleteMessage(messageId) }
+
+                itemManagementUseCase.deleteMessage(messageId)
+                val remainingMessages =
+                    _state.value.item?.messages?.filter { it.id != messageId }.orEmpty()
+                val watched = remainingMessages.any { it.senderId == store.user?.id }
+                _state.value.item?.id?.let { store.watchItem(it, watched) }
                 _state.update {
                     it.copy(
                         error = "",
-                        item = it.item?.copy(messages = it.item.messages.filter { it.id != messageId })
+                        item = it.item?.copy(
+                            augmentation = it.item.augmentation?.copy(watched = watched),
+                            messages = remainingMessages
+                        )
                     )
                 }
             } catch (e: OpException) {
                 _state.update { it.copy(error = e.msg) }
             }
+        }
+    }
+
+    fun onWatchItem(watched: Boolean) {
+        _state.value.item?.id?.let { store.watchItem(it, watched) }
+        _state.update {
+            it.copy(
+                item = it.item?.copy(
+                    augmentation = it.item.augmentation?.copy(watched = watched),
+                )
+            )
         }
     }
 

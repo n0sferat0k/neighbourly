@@ -5,11 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyIconedText
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ImageGrid
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemTypeOption
@@ -26,11 +27,13 @@ import neighbourly.composeapp.generated.resources.images
 import neighbourly.composeapp.generated.resources.item_description
 import neighbourly.composeapp.generated.resources.item_name
 import neighbourly.composeapp.generated.resources.item_url
+import neighbourly.composeapp.generated.resources.muted
 import neighbourly.composeapp.generated.resources.newbadge
 import neighbourly.composeapp.generated.resources.start_date
 import neighbourly.composeapp.generated.resources.target_user
 import neighbourly.composeapp.generated.resources.type
 import neighbourly.composeapp.generated.resources.unknown
+import neighbourly.composeapp.generated.resources.unmuted
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import java.time.format.DateTimeFormatter
@@ -41,6 +44,7 @@ fun OrganismReadonlyItemDetails(
     users: Map<Int, String>,
     onImageSelected: (imageId: Int) -> Unit,
     onUrlSelected: (url: String) -> Unit,
+    onWatchItem: (watched: Boolean) -> Unit
 ) {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
 
@@ -82,8 +86,15 @@ fun OrganismReadonlyItemDetails(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            FriendlyText(text = stringResource(Res.string.item_name), bold = true)
-            FriendlyText(text = item.name)
+            FriendlyText(text = stringResource(Res.string.item_name), fontSize = 20.sp, bold = true)
+            FriendlyIconedText(
+                text = item.name,
+                painter = painterResource(if (item.augmentation?.watched == false) Res.drawable.muted else Res.drawable.unmuted),
+                bold = false,
+                fontSize = 20.sp,
+                iconSize = 36.dp,
+                iconClick = { onWatchItem(!(item.augmentation?.watched ?: false)) }
+            )
         }
         if (item.description.isNotEmpty()) {
             FriendlyText(

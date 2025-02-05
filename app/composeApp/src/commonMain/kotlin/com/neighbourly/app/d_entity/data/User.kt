@@ -16,5 +16,6 @@ data class User(
     val neighbourhoods: List<Neighbourhood> = emptyList(),
     val mutedHouseholds: Set<Int> = emptySet(),
     val mutedUsers: Set<Int> = emptySet(),
+    val watchedItems: Set<Int> = emptySet(),
     val localizing: Boolean = false,
 )

@@ -25,7 +25,17 @@
             }
             .popup {                
                 max-width: 320px !important;
+            }            
+            .translucent_popup {
+                max-width: 260px !important;
+                opacity: 0.7;
             }
+            .translucent_popup_text {
+                display: block;
+                max-width: 230px;
+                overflow-wrap: break-word;                
+            }
+            
             .item_icon {
                 margin:3px;
             }
@@ -93,8 +103,8 @@
             map.addControl(new maplibregl.NavigationControl());
     
             function callNative(obj) {
-                // alert(JSON.stringify(obj));
-                window.kmpJsBridge.callNative("MapFeedback", JSON.stringify(obj), function (data) { });
+                alert(JSON.stringify(obj));
+                //window.kmpJsBridge.callNative("MapFeedback", JSON.stringify(obj), function (data) { });
             }
 
             map.on('load', () => {                
@@ -102,18 +112,21 @@
                 
                 callNative({mapReady:true});
                         
-                // updateHouseholds([
-                //     {'longitude':23.6685, 'latitude':47.653, 'id':1, 'donations':3, 'skillshare':5,'name':'Fam. Krucz', 'floatName':true, 'address':'Catinei 21','description':'This is our little house on the hill. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a massa at est malesuada faucibus. Donec ultricies, velit a aliquet pulvinar, sapien nibh mollis ante, sed egestas est arcu sed mi. Nullam facilisis efficitur libero vitae vulputate. Mauris nec mauris malesuada, mattis risus eu, pharetra urna. Etiam ac tincidunt tellus, ac commodo urna. Phasellus blandit elit at blandit auctor. Nulla facilisi. Suspendisse potenti. Aliquam diam arcu, aliquet non elementum ut, sollicitudin quis massa. Aliquam erat volutpat. Donec tortor est, blandit nec pellentesque sit amet, placerat quis nisi. Nulla nec facilisis diam. Phasellus convallis hendrerit est a auctor. Praesent vitae mauris convallis, tristique lacus at, porttitor orci. Integer consectetur nec dui vel dictum. Vestibulum sit amet purus sit amet lacus blandit semper vitae ac est. ', 'imageurl':''},
-                //     {'longitude':23.6695, 'latitude':47.653, 'id':2, 'name':'Some other household', 'floatName':false, 'address':'Catinei 13', 'description':"caca"}
-                // ]);
+                updateHouseholds([
+                    {'longitude':23.6685, 'latitude':47.653, 'id':1, 'donations':3, 'skillshare':5,'name':'Fam. Krucz', 'floatName':true, 'address':'Catinei 21','description':'This is our little house on the hill. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a massa at est malesuada faucibus. Donec ultricies, velit a aliquet pulvinar, sapien nibh mollis ante, sed egestas est arcu sed mi. Nullam facilisis efficitur libero vitae vulputate. Mauris nec mauris malesuada, mattis risus eu, pharetra urna. Etiam ac tincidunt tellus, ac commodo urna. Phasellus blandit elit at blandit auctor. Nulla facilisi. Suspendisse potenti. Aliquam diam arcu, aliquet non elementum ut, sollicitudin quis massa. Aliquam erat volutpat. Donec tortor est, blandit nec pellentesque sit amet, placerat quis nisi. Nulla nec facilisis diam. Phasellus convallis hendrerit est a auctor. Praesent vitae mauris convallis, tristique lacus at, porttitor orci. Integer consectetur nec dui vel dictum. Vestibulum sit amet purus sit amet lacus blandit semper vitae ac est. ', 'imageurl':''},
+                    {'longitude':23.6695, 'latitude':47.653, 'id':2, 'name':'Some other household', 'floatName':false, 'address':'Catinei 13', 'description':"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcaca"}
+                ]);
 
                 // addPopups([{'longitude':23.6685, 'latitude':47.653, 'id':1, 'type': 'DONATION', 'name':'Item Name that is really long and also not short like at all','description':'This is our little house on the hill. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a massa at est malesuada faucibus. Donec ultricies, velit a aliquet pulvinar, sapien nibh mollis ante, sed egestas est arcu sed mi. Nullam facilisis efficitur libero vitae vulputate. Mauris nec mauris malesuada, mattis risus eu, pharetra urna. Etiam ac tincidunt tellus, ac commodo urna. Phasellus blandit elit at blandit auctor. Nulla facilisi. Suspendisse potenti. Aliquam diam arcu, aliquet non elementum ut, sollicitudin quis massa. Aliquam erat volutpat. Donec tortor est, blandit nec pellentesque sit amet, placerat quis nisi. Nulla nec facilisis diam. Phasellus convallis hendrerit est a auctor. Praesent vitae mauris convallis, tristique lacus at, porttitor orci. Integer consectetur nec dui vel dictum. Vestibulum sit amet purus sit amet lacus blandit semper vitae ac est. ','imageurl':'https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg'},
                 //             {'longitude':23.6695, 'latitude':47.653, 'id':1, 'type': 'BARTER', 'name':'Item Name that is really long and also not short like at all','description':'This is our little house on the hill. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a massa at est malesuada faucibus. Donec ultricies, velit a aliquet pulvinar, sapien nibh mollis ante, sed egestas est arcu sed mi. Nullam facilisis efficitur libero vitae vulputate. Mauris nec mauris malesuada, mattis risus eu, pharetra urna. Etiam ac tincidunt tellus, ac commodo urna. Phasellus blandit elit at blandit auctor. Nulla facilisi. Suspendisse potenti. Aliquam diam arcu, aliquet non elementum ut, sollicitudin quis massa. Aliquam erat volutpat. Donec tortor est, blandit nec pellentesque sit amet, placerat quis nisi. Nulla nec facilisis diam. Phasellus convallis hendrerit est a auctor. Praesent vitae mauris convallis, tristique lacus at, porttitor orci. Integer consectetur nec dui vel dictum. Vestibulum sit amet purus sit amet lacus blandit semper vitae ac est. ','imageurl':'https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg'}
                 // ]);
+                
+                addPopups([{'longitude':23.668076, 'latitude':47.653004, 'id':202, 'type': 'SALE', 'name':'Jewelry', 'description':'I am selling fiine, hand crafted jewelry, made of feathers and seashells and rocks and stuff.', 'imageurl':''},
+                            {'longitude':23.66856, 'latitude':47.650555, 'id':39, 'type': 'DONATION', 'name':'Za Test', 'description':'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'imageurl':''}]);
 
                 // addOrUpdateMarker("garbage_1", "#5BA9AE", 23.6685, 47.653, "There is A LOOOOT of garbage here");                
                 // addOrUpdateMarker("garbage_2", "#5BA9AE", 23.6695, 47.653, "There is A LOOOOT of garbage here");                
-                // center(23.6684, 47.6531, 15);
+                center(23.6684, 47.6531, 15);
 
                 // updateHouseholds([
                 //                     {'longitude':23.6684, 'latitude':47.6531, 'id':1, 'name':"Krucz House", 'imageurl':'http://localhost/householdsIMGS/boiling-frog.png'},
@@ -133,7 +146,7 @@
                 //     // Add more features as needed
                 // ]);
 
-                //setDot(23.6684, 47.6531, 'current');                                
+                setDot(23.6684, 47.6531, 'current');                                
                 //clearHouseholds();
                                                                 
                 
@@ -399,11 +412,18 @@
                         default:
                             iconSvg = donationsSvgPath;
                     }
-
+                    var hasImage = (popupData.imageurl != 'undefined' && popupData.imageurl.length > 0);
                     var html = `<table onclick="callNative({ itemid: `+popupData.id+`});">
                                     <tr>
-                                        <td style="width: 60px; height: 60px; background-image: url('` + popupData.imageurl + `'); background-size: cover; background-position: center;"></td>
-                                        <td style="font-size: 14px; font-weight: bold; color: #5BA9AE;vertical-align: top;">`                                            
+                                        `
+                                        +
+                                        (
+                                            hasImage ? 
+                                            `<td style="width: 50px; height: 50px; background-image: url('` + popupData.imageurl + `'); background-size: cover; background-position: center;"></td>`
+                                            : ''
+                                        )
+                                        +                    
+                                        `<td style="font-size: 14px; font-weight: bold; color: #5BA9AE;vertical-align: top;">`                                            
                                             +`<svg width="36px" height="36px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:relative;top:6px;">
                                                     `+iconSvg+`
                                                 </svg>`
@@ -411,10 +431,11 @@
                                         `</td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2" style="font-size: 10px; color: #5BA9AE;">` + popupData.description + `</td>                                        
+                                        <td colspan="`+(hasImage?'2':'1')+`" style="overflow-wrap: break-word; font-size: 10px; color: #5BA9AE;"><span class="translucent_popup_text">` + popupData.description + `</span></td>
                                     </tr>
                                 </table>`;
-                    popups[popupData.id] = new maplibregl.Popup({offset: {'bottom': [0, -70]}, className: 'popup'})
+                    
+                    popups[popupData.id] = new maplibregl.Popup({offset: {'bottom': [0, -70]}, className: 'translucent_popup'})
                                             .setLngLat([23.6685, 47.653])
                                             .setLngLat([popupData.longitude, popupData.latitude])
                                             .setHTML(html)
@@ -465,7 +486,7 @@
                     el.innerHTML = html;
 
                     var popupHtml = `
-                                        <div style="display: flex; flex-direction: column; align-items: left;">
+                                        <div style="overflow-wrap: break-word; display: flex; flex-direction: column; align-items: left;">
                                             <span style="padding:3px;text-align:left;font-size:14px;font-weight:bold;line-height:10px;color:#5BA9AE" onclick="callNative({ householdid: `+house.id+`});">` +  house.name + `</span>
                                             <span style="padding:3px;text-align:left;font-size:10px;line-height:10px;">` +  house.address + `</span>
                                             <span style="padding:3px;text-align:left;font-size:10px;line-height:10px;">` +  house.description + `</span>

@@ -123,6 +123,7 @@ class FilteredItemListViewModel(
                                 imageUrl = item.images.randomOrNull()?.url,
                                 deletable = item.householdId == myHouseholdId,
                                 household = house?.toHouseholdVS(),
+                                watched = store.user?.watchedItems?.contains(item.id) ?: false
                             ))
                         })
                     }

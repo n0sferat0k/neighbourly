@@ -27,6 +27,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.math.min
+import kotlin.random.Random
 
 class WebMapViewModel(
     val sessionStore: SessionStore,
@@ -36,6 +38,7 @@ class WebMapViewModel(
 ) : GeoLocationCallback, ViewModel() {
     private val _state = MutableStateFlow(MapViewState())
     val state: StateFlow<MapViewState> = _state.asStateFlow()
+    val myRandom = Random(System.currentTimeMillis())
 
     init {
         //watch for log out and clear map on logout
@@ -90,21 +93,31 @@ class WebMapViewModel(
             }.launchIn(viewModelScope)
     }
 
-    fun onContentRefresh() {
-        viewModelScope.launch {
-            val randomItems =
-                database.filterItems(ids = database.getItemIds().shuffled().subList(0, 3))
-                    .distinctBy { it.householdId }
+    fun refreshRandomItems() {
+        if (0 == myRandom.nextInt() % 3) {
+            viewModelScope.launch {
+                val randomItems =
+                    database.filterItems(
+                        ids = database.getItemIds().shuffled().let { items ->
+                            items.subList(0, min(myRandom.nextInt(2), items.size))
+                        })
+                        .filter { it.householdId != _state.value.myHousehold.id }
+                        .distinctBy { it.householdId }
 
-            val randomItemsByHouse = randomItems.map { item ->
-                _state.value.otherHouseholds.firstOrNull { it.id == item.householdId }?.let { house ->
-                    house to
-                            item.toItemVS()
-                                .copy(augmentation = ItemAugmentVS(imageUrl = item.images.randomOrNull()?.url))
-                }
-            }.filterNotNull().toMap()
 
-            _state.update { it.copy(randomItems = randomItemsByHouse) }
+                val randomItemsByHouse = randomItems.map { item ->
+                    _state.value.otherHouseholds.firstOrNull { it.id == item.householdId }
+                        ?.let { house ->
+                            house to
+                                    item.toItemVS()
+                                        .copy(augmentation = ItemAugmentVS(imageUrl = item.images.randomOrNull()?.url))
+                        }
+                }.filterNotNull().toMap()
+
+                _state.update { it.copy(randomItems = randomItemsByHouse) }
+            }
+        } else {
+            _state.update { it.copy(randomItems = emptyMap()) }
         }
     }
 

@@ -364,13 +364,14 @@ class ApiGateway(
             ).toItemMessage()
         }
 
-    override suspend fun getItemMessages(token: String, itemId: Int): List<ItemMessage> =
+    override suspend fun getItemsMessages(
+        token: String,
+        itemIds: List<Int>,
+        lastSyncTs: Int?
+    ): List<ItemMessage> =
         runContextCatchTranslateThrow {
-            api.getItemMessages(
-                API_BASE_URL,
-                token,
-                itemId
-            ).map { it.toItemMessage() }
+            api.getItemsMessages(API_BASE_URL, token, itemIds, lastSyncTs ?: 0)
+                .map { it.toItemMessage() }
         }
 
     override suspend fun deleteItemMessage(token: String, itemMessageId: Int) =
