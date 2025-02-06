@@ -2,6 +2,7 @@ package com.neighbourly.app.b_adapt.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.c_business.usecase.auth.LogoutUseCase
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.d_entity.interf.ConfigStatusSource
 import com.neighbourly.app.d_entity.interf.SessionStore
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class AppStateInfoViewModel(
+    LogoutUseCase: LogoutUseCase,
     contentSyncUseCase: ContentSyncUseCase,
     configSource: ConfigStatusSource,
     sessionStore: SessionStore,
@@ -41,6 +43,11 @@ class AppStateInfoViewModel(
         }.launchIn(viewModelScope)
         configSource.isAiOnlineFlow.onEach { isAiOnline ->
             _state.update { it.copy(isAiOnline = isAiOnline) }
+        }.launchIn(viewModelScope)
+        configSource.isTokenExpFlow.onEach { isTokenExp ->
+            if(isTokenExp) {
+                LogoutUseCase.execute(false)
+            }
         }.launchIn(viewModelScope)
         configSource.wideScreenFlow.onEach { isWide ->
             _state.update { it.copy(isWideLand = isWide) }

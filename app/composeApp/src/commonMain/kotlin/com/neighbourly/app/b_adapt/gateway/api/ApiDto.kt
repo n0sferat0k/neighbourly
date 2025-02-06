@@ -180,5 +180,6 @@ data class SyncResponseDTO(
 )
 
 class ApiException(
+    val status: Int,
     val msg: String,
 ) : RuntimeException(msg)

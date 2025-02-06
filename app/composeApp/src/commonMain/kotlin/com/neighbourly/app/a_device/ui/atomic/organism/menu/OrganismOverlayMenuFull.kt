@@ -111,7 +111,7 @@ fun OrganismOverlayMenuFull(onSelect: (tab: MenuTabVS) -> Unit) {
             modifier = Modifier.fillMaxHeight().weight(.5f),
             verticalArrangement = Arrangement.spacedBy(15.dp, Alignment.Top),
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             LateralMenuItem(
                 side = RIGHT,

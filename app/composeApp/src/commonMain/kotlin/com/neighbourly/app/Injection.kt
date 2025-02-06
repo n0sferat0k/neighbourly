@@ -140,7 +140,7 @@ val adapterModule =
             ItemDetailsViewModel(get(), get(), get())
         }
         factory {
-            AppStateInfoViewModel(get(), get(), get())
+            AppStateInfoViewModel(get(), get(), get(), get())
         }
         factory {
             BoxManagementViewModel(get(), get(), get(), get())

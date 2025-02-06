@@ -77,7 +77,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -105,7 +105,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -118,7 +118,7 @@ object KtorApi {
             setBody(resetInput)
         }
         if (response.status.value != 200) {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -137,7 +137,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -156,7 +156,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -173,7 +173,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -192,7 +192,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -209,7 +209,7 @@ object KtorApi {
             }
         }
         if (response.status.value != 200) {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -228,7 +228,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -247,7 +247,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -264,7 +264,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -283,7 +283,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -318,7 +318,7 @@ object KtorApi {
         if (response.status.value == 201) {
             return response.body<AttachmentDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -335,7 +335,7 @@ object KtorApi {
                 }
             }
         if (response.status.value != 200) {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -352,7 +352,7 @@ object KtorApi {
             }
         }
         if (response.status.value != 200) {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -369,7 +369,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<List<GpsItemDTO>?>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -385,7 +385,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<GpsItemDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -401,7 +401,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<GpsItemDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -415,7 +415,7 @@ object KtorApi {
             }
         }
         if (response.status.value != 200) {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -429,7 +429,7 @@ object KtorApi {
             }
         }
         if (response.status.value != 200) {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -447,7 +447,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<SyncResponseDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -460,7 +460,7 @@ object KtorApi {
             }
         }
         if (response.status.value != 200) {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -477,7 +477,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<ItemDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -496,7 +496,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<ItemMessageDTO>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -519,7 +519,7 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<List<ItemMessageDTO>>()
         } else {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -531,7 +531,7 @@ object KtorApi {
                 }
             }
         if (response.status.value != 200) {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -544,7 +544,7 @@ object KtorApi {
             }
         }
         if (response.status.value != 200) {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -557,7 +557,7 @@ object KtorApi {
             }
         }
         if (response.status.value != 200) {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 
@@ -570,7 +570,7 @@ object KtorApi {
             }
         }
         if (response.status.value != 200) {
-            throw ApiException(response.bodyAsText())
+            throw ApiException(response.status.value, response.bodyAsText())
         }
     }
 }

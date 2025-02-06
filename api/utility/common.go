@@ -60,7 +60,15 @@ func RequireValidToken(ctx context.Context, w http.ResponseWriter, r *http.Reque
 			}
 		}
 		if existingTokenTs < time.Now().Unix() {
-			http.Error(w, "Expired token", http.StatusUnauthorized)
+			http.Error(w, "Expired token", http.StatusTeapot)
+			return context.WithValue(ctx, CtxKeyContinue, false)
+		}
+
+		//bump token expiration time
+		var tokenExpiration = time.Now().Add(time.Hour * 24 * 7) // 1 week
+		_, err = DB.Exec("UPDATE tokens SET tokens_data = ? WHERE tokens_titlu_EN = ?", tokenExpiration.Unix(), token)
+		if err != nil {
+			http.Error(w, "Failed to update token expiration time", http.StatusInternalServerError)
 			return context.WithValue(ctx, CtxKeyContinue, false)
 		}
 

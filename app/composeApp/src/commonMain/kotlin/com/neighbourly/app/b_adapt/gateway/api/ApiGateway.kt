@@ -11,6 +11,8 @@ import com.neighbourly.app.d_entity.data.SyncData
 import com.neighbourly.app.d_entity.data.User
 import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.StatusUpdater
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
@@ -428,6 +430,7 @@ class ApiGateway(
         const val BOX_CMD_LOCK = "LOCK"
         const val BOX_CMD_UNLOCK = "UNLOCK"
         const val BOX_CMD_OPEN = "OPEN"
+        const val HTTP_RESPONSE_CODE_TEAPOT = 418
     }
 
     suspend inline fun <R> runContextCatchTranslateThrow(crossinline block: suspend () -> R): R =
@@ -438,7 +441,7 @@ class ApiGateway(
         }.let {
             when {
                 it.isSuccess -> {
-                    statusUpdater.setOnline(true, null)
+                    statusUpdater.setOnline(true, false,null)
                     it.getOrElse { throw OpException("Unknown Error") }
                 }
 
@@ -446,6 +449,8 @@ class ApiGateway(
                     val networkError =
                         (it.exceptionOrNull()?.let { it is IOException || it is TimeoutException }
                             ?: false)
+                    val tokenExpired = (it.exceptionOrNull()?.let { it is ApiException && it.status == HTTP_RESPONSE_CODE_TEAPOT }
+                        ?: false)
 
                     val messgae = it.exceptionOrNull().let {
                         when (it) {
@@ -455,7 +460,7 @@ class ApiGateway(
                         }
                     }
 
-                    statusUpdater.setOnline(!networkError, messgae)
+                    statusUpdater.setOnline(!networkError, tokenExpired, messgae)
                     throw OpException(messgae)
                 }
 
