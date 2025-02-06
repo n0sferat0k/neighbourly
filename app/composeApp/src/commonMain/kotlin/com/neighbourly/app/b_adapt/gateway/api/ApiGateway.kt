@@ -290,6 +290,12 @@ class ApiGateway(
             api.login(API_BASE_URL, LoginInput(username, password)).toUser()
         }
 
+    override suspend fun reset(email: String) {
+        runContextCatchTranslateThrow {
+            api.reset(API_BASE_URL, ResetInput(email = email))
+        }
+    }
+
     override suspend fun gpsLog(
         token: String,
         timezone: Int,

@@ -14,6 +14,10 @@ interface Api {
         password: String,
     ): User
 
+    suspend fun reset(
+        email: String,
+    )
+
     suspend fun register(
         username: String,
         password: String,

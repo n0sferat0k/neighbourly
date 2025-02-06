@@ -22,7 +22,8 @@ class ScheduleWorkUseCase(
         var nextReminderId: Int? = null
         var nextTimestamp: Int = Int.MAX_VALUE
         database.filterItems(ItemType.REMINDER).forEach { item ->
-            item.description?.split(",")?.map { it.toInt() }?.sorted()?.firstOrNull { it > now }
+            item.description?.takeIf { it.isNotEmpty() }?.split(",")?.map { it.toInt() }?.sorted()
+                ?.firstOrNull { it > now }
                 ?.let { time ->
                     if (nextTimestamp > time) {
                         nextReminderId = item.id

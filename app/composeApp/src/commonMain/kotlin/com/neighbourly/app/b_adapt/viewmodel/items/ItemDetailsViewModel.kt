@@ -82,33 +82,37 @@ class ItemDetailsViewModel(
                         )
                     }
 
-                    itemManagementUseCase.fetchMessages(itemId).let { messages ->
-                        val messageUsers =
-                            database.getUsers(messages.map { it.userId }.filterNotNull())
-                        val messageUserHouses =
-                            database.filterHouseholds(messageUsers.map { it.householdid }
-                                .filterNotNull())
-                        val userIdToHouseMap = messageUsers.associate { user ->
-                            user.id to messageUserHouses.firstOrNull { user.householdid == it.householdid }
-                        }
+                    try {
+                        itemManagementUseCase.fetchMessages(itemId).let { messages ->
+                            val messageUsers =
+                                database.getUsers(messages.map { it.userId }.filterNotNull())
+                            val messageUserHouses =
+                                database.filterHouseholds(messageUsers.map { it.householdid }
+                                    .filterNotNull())
+                            val userIdToHouseMap = messageUsers.associate { user ->
+                                user.id to messageUserHouses.firstOrNull { user.householdid == it.householdid }
+                            }
 
-                        val messages = messages.map { message ->
-                            val house = userIdToHouseMap[message.userId]
-                            val user = messageUsers.firstOrNull { it.id == message.userId }
-                            message.toItemMessageVS(
-                                deletable = house?.householdid == store.user?.householdid || _state.value.item?.augmentation?.deletable == true,
-                                senderId = user?.id ?: 0,
-                                sender = user?.let { it.fullname ?: it.username }.orEmpty(),
-                                household = house?.toHouseholdVS()
-                            )
-                        }
+                            val messages = messages.map { message ->
+                                val house = userIdToHouseMap[message.userId]
+                                val user = messageUsers.firstOrNull { it.id == message.userId }
+                                message.toItemMessageVS(
+                                    deletable = house?.householdid == store.user?.householdid || _state.value.item?.augmentation?.deletable == true,
+                                    senderId = user?.id ?: 0,
+                                    sender = user?.let { it.fullname ?: it.username }.orEmpty(),
+                                    household = house?.toHouseholdVS()
+                                )
+                            }
 
-                        _state.update { state ->
-                            state.copy(
+                            _state.update { state ->
+                                state.copy(
 
-                                item = state.item?.copy(messages = messages)
-                            )
+                                    item = state.item?.copy(messages = messages)
+                                )
+                            }
                         }
+                    } catch (e: OpException) {
+                        _state.update { it.copy(error = e.msg) }
                     }
                 }
             }
@@ -181,6 +185,7 @@ class ItemDetailsViewModel(
         descriptionOverride: String?,
         datesOverride: List<Instant>?,
         targetUserIdOverride: Int?,
+        accentOverride: Boolean?,
         urlOverride: String?,
         startOverride: Instant?,
         endOverride: Instant?,
@@ -200,6 +205,8 @@ class ItemDetailsViewModel(
                                 id = item.id,
                                 type = type,
                                 name = nameOverride ?: item.name,
+                                targetUserId = targetUserIdOverride ?: item.targetUserId,
+                                accent = accentOverride ?: item.accent,
                                 description = (datesOverride
                                     ?: item.dates).map { it.epochSeconds.toString() }
                                     .joinToString(","),
@@ -214,6 +221,7 @@ class ItemDetailsViewModel(
                                 description = descriptionOverride ?: item.description,
                                 url = urlOverride ?: item.url,
                                 targetUserId = targetUserIdOverride ?: item.targetUserId ?: -1,
+                                accent = false,
                                 startTs = (startOverride ?: item.start)?.epochSeconds?.toInt()
                                     ?: 0,
                                 endTs = (endOverride ?: item.end)?.epochSeconds?.toInt() ?: 0,

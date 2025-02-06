@@ -27,6 +27,7 @@ fun ItemDetailsTemplate(
         descriptionOverride: String?,
         datesOverride: List<Instant>?,
         targetUserIdOverride: Int?,
+        accentOverride: Boolean?,
         urlOverride: String?,
         startOverride: Instant?,
         endOverride: Instant?,

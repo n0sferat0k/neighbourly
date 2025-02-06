@@ -5,8 +5,8 @@ val phoneRegex = """^\+?[0-9\s\-()]+$""".toRegex()
 val urlRegex =
     """(?:[a-zA-Z][a-zA-Z0-9+.-]*://)?(?:\S+(?::\S*)?@)?(?:[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|localhost|\d{1,3}(\.\d{1,3}){3})(?::\d+)?(?:/[^\s]*)?""".toRegex()
 
-fun String.isValidEmail(): Boolean = matches(emailRegex)
+fun String.isValidEmail(): Boolean = this.isNotBlank() && matches(emailRegex)
 
-fun String.isValidPhone(): Boolean = matches(phoneRegex)
+fun String.isValidPhone(): Boolean = this.isNotBlank() && matches(phoneRegex)
 
-fun String.isValidUrl(): Boolean = matches(urlRegex)
+fun String.isValidUrl(): Boolean = this.isNotBlank() && matches(urlRegex)

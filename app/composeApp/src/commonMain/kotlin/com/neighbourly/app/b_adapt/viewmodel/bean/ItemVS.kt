@@ -13,6 +13,7 @@ data class ItemVS(
     val description: String = "",
     val dates: List<Instant> = emptyList(),
     val targetUserId: Int? = null,
+    val accent: Boolean = false,
     val url: String = "",
     val start: Instant? = null,
     val end: Instant? = null,
@@ -55,6 +56,7 @@ fun Item.toItemVS() = ItemVS(
         }.getOrNull() ?: emptyList()
     } else emptyList(),
     targetUserId = targetUserId,
+    accent = accent,
     url = url.orEmpty(),
     start = startTs.takeIf { it > 0 }
         ?.let { fromEpochSeconds(it.toLong()) },

@@ -149,6 +149,7 @@
 
     <string name="no_boxes">Your household doesn't have any boxes !</string>
     <string name="add_box">Add Box</string>
+    <string name="reminder">Reminder</string>
     <string name="reminders">Reminders</string>
 
     <string name="dates">Dates</string>
@@ -165,4 +166,9 @@
     <string name="mute">Mute</string>
     <string name="unmute">Unmute</string>
 
+    <string name="for_all_neighbourhood">For Neighbourhood</string>
+    <string name="forgot_my_pass">I forgot my password !</string>
+
+    <string name="send_reset_link">Send reset link</string>
+    <string name="reset_link_sent">Reset link sent ✔</string>
 </resources>

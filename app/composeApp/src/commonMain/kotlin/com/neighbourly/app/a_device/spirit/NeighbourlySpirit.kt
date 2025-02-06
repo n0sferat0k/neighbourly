@@ -4,6 +4,7 @@ import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.c_business.usecase.work.ScheduleWorkUseCase
 import com.neighbourly.app.d_entity.data.ItemMessage
+import com.neighbourly.app.d_entity.data.ItemType
 import com.neighbourly.app.d_entity.data.ScheduledWork
 import com.neighbourly.app.d_entity.data.ScheduledWorkType
 import com.neighbourly.app.d_entity.interf.AI
@@ -52,13 +53,14 @@ object NeighbourlySpirit : Summonable {
             val mutePersonIds = sessionStore.user?.mutedUsers.orEmpty()
 
             //react to new messages
-            if (newMessagesOfInterest.isNotEmpty()) {
-                val messagePeople = database.getUsers(ids = newMessagesOfInterest.map { it.userId }
+            val messagesFromOthers = newMessagesOfInterest.filter { it.userId != sessionStore.user?.id }
+            if (messagesFromOthers.isNotEmpty()) {
+                val messagePeople = database.getUsers(ids = messagesFromOthers.map { it.userId }
                     .filter { !mutePersonIds.contains(it) }.filterNotNull())
-                val messageItems = database.filterItems(ids = newMessagesOfInterest.map { it.itemId }
+                val messageItems = database.filterItems(ids = messagesFromOthers.map { it.itemId }
                     .filterNotNull())
 
-                val messageDesc = newMessagesOfInterest.map { message ->
+                val messageDesc = messagesFromOthers.map { message ->
                     val person = messagePeople.firstOrNull { it.id == message.userId }
                     val item = messageItems.firstOrNull { it.id == message.itemId }
                     item?.let {
@@ -97,6 +99,7 @@ object NeighbourlySpirit : Summonable {
             val ids = novelItemIds + syncedItemIds
             if (ids.isNotEmpty()) {
                 val items = database.filterItems(ids = ids)
+                    .filter { it.type != ItemType.REMINDER } //reminders show only when they are set, no need to notify of new reminders
 
                 val itemHouses = database.filterHouseholds(items.map { it.householdId }
                     .filter { !muteHouseIds.contains(it) }.filterNotNull())

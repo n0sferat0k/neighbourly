@@ -144,6 +144,7 @@
 
     <string name="no_boxes">Gospodăria dvs. nu are niciun Box!</string>
     <string name="add_box">Adaugă Box</string>
+    <string name="reminder">Memento</string>
     <string name="reminders">Mementouri</string>
 
     <string name="dates">Date</string>
@@ -161,4 +162,10 @@
 
     <string name="mute">Mut</string>
     <string name="unmute">Activ</string>
+
+    <string name="for_all_neighbourhood">Pentru Vecinătate</string>
+    <string name="forgot_my_pass">Mi-am uitat parola !</string>
+
+    <string name="send_reset_link">Trimite link de resetare</string>
+    <string name="reset_link_sent">Link de resetare trimis ✔</string>
 </resources>

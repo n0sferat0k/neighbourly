@@ -71,6 +71,7 @@ type Item struct {
 	Neighbourhoodid *int64        `json:"neighbourhoodId,omitempty"`
 	Householdid     *int64        `json:"householdId,omitempty"`
 	Userid          *int64        `json:"userId,omitempty"`
+	Accent          *bool         `json:"accent,omitempty"`
 }
 
 type ItemMessage struct {

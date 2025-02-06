@@ -3,6 +3,11 @@ package com.neighbourly.app.b_adapt.gateway.api
 import kotlinx.serialization.Serializable
 
 @Serializable
+data class ResetInput(
+    val email: String,
+)
+
+@Serializable
 data class LoginInput(
     val username: String,
     val password: String,
@@ -137,6 +142,7 @@ data class ItemDTO(
     val description: String? = null,
     val url: String? = null,
     val targetUserId: Int,
+    val accent: Boolean = false,
     val images: List<AttachmentDTO> = emptyList(),
     val files: List<AttachmentDTO> = emptyList(),
     val startTs: Int,

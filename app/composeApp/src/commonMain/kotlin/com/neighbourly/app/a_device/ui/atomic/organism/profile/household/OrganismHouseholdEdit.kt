@@ -235,7 +235,7 @@ fun OrganismHouseholdEdit(
             FriendlyText(text = stringResource(Res.string.list_household_members))
 
             household?.members?.forEach {
-                FriendlyText(text = "* " + it, bold = true)
+                FriendlyText(text = "* " + (it.fullname.takeIf { it.isNotBlank() } ?: it.username), bold = true)
             }
         }
     }

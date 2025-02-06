@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func GetItemsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]entity.Item, []int64, error) {
+func GetItemsFromNeighbourhoods(userId string, neighbourhoodids string, sinceTs string) ([]entity.Item, []int64, error) {
 	//get all the item ids that still exist from the neighbourhoods
 	sql := `SELECT 
 				I.items_id 
@@ -17,8 +17,17 @@ func GetItemsFromNeighbourhoods(neighbourhoodids string, sinceTs string) ([]enti
 			ON 
 				NHU.neighbourhood_household_users_id = I.items_add_numerics_0
 			WHERE 
-				NHU.neighbourhood_household_users_add_numerics_0 IN (?)`
-	itemRows, err := utility.DB.Query(sql, neighbourhoodids)
+				(
+						NOT(I.items_add_strings_0 = "REMINDER") 
+					OR 
+						I.items_accent = 1
+					OR
+						I.items_add_numerics_1  =  ?
+				)
+			AND	
+				NHU.neighbourhood_household_users_add_numerics_0 IN (?)
+				`
+	itemRows, err := utility.DB.Query(sql, userId, neighbourhoodids)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -55,6 +64,7 @@ func GetItems(itemIds []int64, sinceTs string) ([]entity.Item, error) {
 						I.items_text_EN,
 						I.items_link,
 						I.items_add_numerics_1 AS target,
+						I.items_accent AS accent,
 						I.items_add_numerics_2 AS start,
 						I.items_add_numerics_3 AS end,
 						I.items_data AS modified,
@@ -92,6 +102,7 @@ func GetItems(itemIds []int64, sinceTs string) ([]entity.Item, error) {
 			&item.Description,
 			&item.Url,
 			&item.TargetUserid,
+			&item.Accent,
 			&item.StartTs,
 			&item.EndTs,
 			&item.LastModifiedTs,

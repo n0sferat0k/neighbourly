@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
 )
 
 func AddOrUpdateItem(w http.ResponseWriter, r *http.Request) {
@@ -22,24 +23,47 @@ func AddOrUpdateItem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var nhuId int64
+	var acc int64
 
 	err := utility.DB.QueryRow(`SELECT 	
-									NHU.neighbourhood_household_users_id													
+									NHU.neighbourhood_household_users_id,
+									NHU.neighbourhood_household_users_add_numerics_3					
 								FROM 
 									neighbourhood_household_users NHU 								
 								WHERE 
 									NHU.neighbourhood_household_users_add_numerics_0 = ?
 								AND 
 									NHU.neighbourhood_household_users_add_numerics_2 = ?
-								LIMIT 1`, item.Neighbourhoodid, userId).Scan(&nhuId)
+								LIMIT 1`, item.Neighbourhoodid, userId).Scan(&nhuId, &acc)
 
 	if err != nil {
 		http.Error(w, "You do not have access to post to this neighbourhood"+err.Error(), http.StatusUnauthorized)
 		return
 	}
 
-	var itemId int64
+	var accent = 0
+	var targetUser string = "-1"
+	if item.TargetUserid != nil {
+		targetUser = strconv.FormatInt(*item.TargetUserid, 10)
+	}
 
+	//if we are setting a reminder
+	if *item.Type == "REMINDER" {
+		if *item.Accent == true {
+			//and the reminder is for the entire neighbourhood
+			if acc < 499 {
+				http.Error(w, "Insufficient access to post neighbourhood wide reminders ", http.StatusUnauthorized)
+				return
+			} else {
+				accent = 1
+			}
+		} else {
+			//and the reminder is for the user, set the target user to be the same as the user
+			targetUser = userId
+		}
+	}
+
+	var itemId int64
 	if item.Itemid == nil {
 		insertResult, err := utility.DB.Exec(`INSERT INTO 
 									items 
@@ -53,17 +77,20 @@ func AddOrUpdateItem(w http.ResponseWriter, r *http.Request) {
 										items_add_numerics_3,																		
 										items_add_strings_0, 
 										items_link,
-										items_pic
+										items_pic,
+										items_accent
 									) 
-									VALUES (?, ?, UNIX_TIMESTAMP(), ?, ?, ?, ?, ?, ?,'')`,
+									VALUES (?, ?, UNIX_TIMESTAMP(), ?, ?, ?, ?, ?, ?,'',?)`,
 			item.Name,
 			item.Description,
 			nhuId,
-			item.TargetUserid,
+			targetUser,
 			item.StartTs,
 			item.EndTs,
 			item.Type,
-			item.Url)
+			item.Url,
+			accent)
+
 		if err != nil {
 			http.Error(w, "Failed to insert item "+err.Error(), http.StatusInternalServerError)
 			return
@@ -84,7 +111,8 @@ func AddOrUpdateItem(w http.ResponseWriter, r *http.Request) {
 									items_add_numerics_2 = ?,
 									items_add_numerics_3 = ?,																		
 									items_add_strings_0 = ?, 
-									items_link = ?
+									items_link = ?,
+									items_accent = ?
 								WHERE 
 									items_id = ? 
 								AND 
@@ -96,6 +124,7 @@ func AddOrUpdateItem(w http.ResponseWriter, r *http.Request) {
 			item.EndTs,
 			item.Type,
 			item.Url,
+			accent,
 			item.Itemid,
 			nhuId)
 

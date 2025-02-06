@@ -41,7 +41,8 @@ import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
-import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
+import com.neighbourly.app.d_entity.util.isValidEmail
+import com.neighbourly.app.d_entity.util.isValidPhone
 import com.neighbourly.app.getPhoneNumber
 import com.neighbourly.app.loadImageFromFile
 import neighbourly.composeapp.generated.resources.Res
@@ -59,12 +60,8 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun OrganismRegisterForm(
-    state: RegisterViewModel.RegisterViewState,
-    updateUsername: (user: String) -> Unit,
-    updateFullname: (name: String) -> Unit,
-    updateEmail: (email: String) -> Unit,
-    updatePhone: (phone: String) -> Unit,
-    updatePassword: (pass: String, confPass: String) -> Unit,
+    loading: Boolean,
+    error: String,
     onRegister: (
         username: String,
         password: String,
@@ -144,10 +141,10 @@ fun OrganismRegisterForm(
             value = username,
             onValueChange = {
                 username = it
-                updateUsername(username)
+
             },
             label = { Text(stringResource(Res.string.username)) },
-            isError = state.usernameError,
+            isError = username.isBlank(),
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -158,10 +155,9 @@ fun OrganismRegisterForm(
             value = password,
             onValueChange = {
                 password = it
-                updatePassword(password, confirmPassword)
             },
             label = { Text(stringResource(Res.string.password)) },
-            isError = state.passwordError,
+            isError = (password.isBlank() || password != confirmPassword),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth().padding(0.dp),
             trailingIcon = {
@@ -181,10 +177,9 @@ fun OrganismRegisterForm(
             value = confirmPassword,
             onValueChange = {
                 confirmPassword = it
-                updatePassword(password, confirmPassword)
             },
             label = { Text(stringResource(Res.string.confirmpassword)) },
-            isError = state.passwordError,
+            isError = (password.isBlank() || password != confirmPassword),
             visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = {
@@ -204,10 +199,9 @@ fun OrganismRegisterForm(
             value = fullName,
             onValueChange = {
                 fullName = it
-                updateFullname(fullName)
             },
             label = { Text(stringResource(Res.string.fullname)) },
-            isError = state.fullnameError,
+            isError = fullName.isBlank(),
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -218,10 +212,9 @@ fun OrganismRegisterForm(
             value = email,
             onValueChange = {
                 email = it
-                updateEmail(email)
             },
             label = { Text(stringResource(Res.string.email)) },
-            isError = state.emailError,
+            isError = !email.isValidEmail(),
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -232,10 +225,9 @@ fun OrganismRegisterForm(
             value = phoneNumber,
             onValueChange = {
                 phoneNumber = it
-                updatePhone(phoneNumber)
             },
             label = { Text(stringResource(Res.string.phone)) },
-            isError = state.phoneError,
+            isError = !phoneNumber.isValidPhone(),
             modifier = Modifier.fillMaxWidth(),
         )
 
@@ -255,7 +247,7 @@ fun OrganismRegisterForm(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        FriendlyButton(text = stringResource(Res.string.register), loading = state.loading) {
+        FriendlyButton(text = stringResource(Res.string.register), loading = loading) {
             onRegister(
                 username,
                 password,
@@ -268,8 +260,8 @@ fun OrganismRegisterForm(
             )
         }
 
-        if (state.error.isNotEmpty()) {
-            FriendlyErrorText(state.error)
+        if (error.isNotEmpty()) {
+            FriendlyErrorText(error)
         }
     }
 }

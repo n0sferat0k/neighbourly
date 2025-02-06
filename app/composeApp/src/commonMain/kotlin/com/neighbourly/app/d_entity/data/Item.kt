@@ -7,6 +7,7 @@ data class Item(
     val description: String? = null,
     val url: String? = null,
     val targetUserId: Int? = null,
+    val accent: Boolean = false,
     val images: List<Attachment> = emptyList(),
     val files: List<Attachment> = emptyList(),
     val messages: List<ItemMessage> = emptyList(),

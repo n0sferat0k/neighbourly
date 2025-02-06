@@ -4,34 +4,41 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.atomic.template.LoginOrRegisterTemplate
-import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
-import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
+import com.neighbourly.app.b_adapt.viewmodel.auth.LoginRegisterViewModel
 
 @Composable
 fun LoginOrRegisterPage(
-    loginViewModel: LoginViewModel = viewModel { KoinProvider.KOIN.get<LoginViewModel>() },
-    registerViewModel: RegisterViewModel = viewModel { KoinProvider.KOIN.get<RegisterViewModel>() }
-) {
-    val loginState by loginViewModel.state.collectAsState()
-    val registerState by registerViewModel.state.collectAsState()
+    viewModel: LoginRegisterViewModel = viewModel { KoinProvider.KOIN.get<LoginRegisterViewModel>() },
+
+    ) {
+    val state by viewModel.state.collectAsState()
+    var index by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
-        loginViewModel.refresh()
+        viewModel.refresh()
+    }
+
+
+    LaunchedEffect(index) {
+        if(index != 2) {
+            viewModel.onReset(null)
+        }
     }
 
     LoginOrRegisterTemplate(
-        loginState, registerState,
-        loginUsername = loginViewModel::updateUsername,
-        loginPassword = loginViewModel::updatePassword,
-        onLogin = loginViewModel::onLogin,
-        registerUsername = registerViewModel::validateUsername,
-        registerFullname = registerViewModel::validateFullname,
-        registerEmail = registerViewModel::validateEmail,
-        registerPhone = registerViewModel::validatePhone,
-        registerPassword = registerViewModel::validatePassword,
-        onRegister = registerViewModel::onRegister
+        state = state,
+        contentIndex = index,
+        onLogin = viewModel::onLogin,
+        onRegister = viewModel::onRegister,
+        onReset = viewModel::onReset,
+        onGoToLogin = { index = 0 },
+        onGoToRegister = { index = 1 },
+        onGoToForgot = { index = 2 }
     )
 }

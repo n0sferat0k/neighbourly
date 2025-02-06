@@ -45,7 +45,7 @@ val TYPE_ASSOC = mapOf(
     SKILLSHARE to Pair(Res.drawable.skillshare, Res.string.skillshare),
 )
 val TYPE_ASSOC_ADMIN = TYPE_ASSOC + mapOf(
-    REMINDER to Pair(Res.drawable.reminder, Res.string.reminders),
+    REMINDER to Pair(Res.drawable.reminder, Res.string.reminder),
 )
 
 val LOCALLY_ALLOWED_SITES =

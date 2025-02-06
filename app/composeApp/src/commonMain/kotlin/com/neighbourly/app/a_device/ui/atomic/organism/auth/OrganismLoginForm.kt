@@ -1,5 +1,7 @@
 package com.neighbourly.app.a_device.ui.atomic.organism.auth
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,12 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
-import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
 import neighbourly.composeapp.generated.resources.Res
+import neighbourly.composeapp.generated.resources.forgot_my_pass
 import neighbourly.composeapp.generated.resources.login
 import neighbourly.composeapp.generated.resources.password
 import neighbourly.composeapp.generated.resources.remember_me
@@ -40,33 +43,36 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun OrganismLoginForm(
-    state: LoginViewModel.LoginViewState,
-    updateUsername: (user: String) -> Unit,
-    updatePassword: (pass: String) -> Unit,
-    onLogin: (remember: Boolean) -> Unit,
+    username: String,
+    password: String,
+    loading: Boolean,
+    error: String,
+    onLogin: (username: String, password: String, remember: Boolean) -> Unit,
+    onForgot: () -> Unit,
 ) {
     var remember by remember { mutableStateOf(true) }
     var passwordVisible by remember { mutableStateOf(false) }
+    var username by remember { mutableStateOf(username) }
+    var password by remember { mutableStateOf(password) }
 
     Column(
         modifier = Modifier
             .widthIn(max = 400.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         // Username Input
         OutlinedTextField(
-            value = state.username,
-            onValueChange = { updateUsername(it) },
+            value = username,
+            onValueChange = { username = it },
             label = { Text(stringResource(Res.string.username)) },
             modifier = Modifier.fillMaxWidth(),
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         // Password Input
         OutlinedTextField(
-            value = state.password,
-            onValueChange = { updatePassword(it) },
+            value = password,
+            onValueChange = { password = it },
             label = { Text(stringResource(Res.string.password)) },
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth().padding(0.dp),
@@ -80,8 +86,6 @@ fun OrganismLoginForm(
             }
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Row {
             FriendlyText(
                 modifier = Modifier.align(Alignment.CenterVertically),
@@ -94,14 +98,19 @@ fun OrganismLoginForm(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        FriendlyButton(text = stringResource(Res.string.login), loading = state.loading) {
-            onLogin(remember)
+        FriendlyButton(text = stringResource(Res.string.login), loading = loading) {
+            onLogin(username, password, remember)
         }
 
-        if (state.error.isNotEmpty()) {
-            FriendlyErrorText(state.error)
+        FriendlyText(
+            modifier = Modifier.clickable { onForgot() },
+            text = stringResource(Res.string.forgot_my_pass),
+            fontSize = 20.sp,
+            bold = true,
+        )
+
+        if (error.isNotEmpty()) {
+            FriendlyErrorText(error)
         }
     }
 }

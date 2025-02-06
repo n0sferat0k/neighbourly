@@ -32,6 +32,7 @@ func main() {
 	r.HandleFunc("/register", onboarding.RegisterUser).Methods("POST")
 	r.HandleFunc("/login", onboarding.LoginUser).Methods("POST")
 	r.HandleFunc("/logout", onboarding.LogoutUser).Methods("POST")
+	r.HandleFunc("/forgot", onboarding.ForgotPassword).Methods("POST")
 	r.HandleFunc("/profile/fetch", profile.FetchProfile).Methods("POST")
 	r.HandleFunc("/profile/refresh", profile.RefreshProfile).Methods("POST")
 	r.HandleFunc("/profile/update", profile.UpdateProfile).Methods("POST")

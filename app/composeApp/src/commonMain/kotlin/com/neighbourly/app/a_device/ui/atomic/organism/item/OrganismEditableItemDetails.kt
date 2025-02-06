@@ -2,7 +2,6 @@ package com.neighbourly.app.a_device.ui.atomic.organism.item
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -11,16 +10,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyAntiButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyErrorText
-import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemEditDateSeries
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemEditDateStartEnd
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemEditDescription
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemEditFiles
+import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemEditForAllNeighbourhood
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemEditImages
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemEditName
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemEditTargetUser
@@ -52,6 +50,7 @@ fun OrganismEditableItemDetails(
         descriptionOverride: String?,
         datesOverride: List<Instant>?,
         targetUserIdOverride: Int?,
+        accentOverride: Boolean?,
         urlOverride: String?,
         startOverride: Instant?,
         endOverride: Instant?,
@@ -68,6 +67,7 @@ fun OrganismEditableItemDetails(
     var descriptionOverride by remember { mutableStateOf<String?>(null) }
     var datesOverride by remember { mutableStateOf<List<Instant>?>(null) }
     var targetUserIdOverride by remember { mutableStateOf<Int?>(null) }
+    var accentOverride by remember { mutableStateOf<Boolean?>(null) }
     var urlOverride by remember { mutableStateOf<String?>(null) }
     var startOverride by remember { mutableStateOf<Instant?>(null) }
     var endOverride by remember { mutableStateOf<Instant?>(null) }
@@ -83,6 +83,7 @@ fun OrganismEditableItemDetails(
             descriptionOverride,
             datesOverride,
             targetUserIdOverride,
+            accentOverride,
             urlOverride,
             startOverride,
             endOverride,
@@ -103,6 +104,7 @@ fun OrganismEditableItemDetails(
         descriptionOverride = null
         datesOverride = null
         targetUserIdOverride = null
+        accentOverride = null
         urlOverride = null
         startOverride = null
         endOverride = null
@@ -131,10 +133,17 @@ fun OrganismEditableItemDetails(
 
         ItemEditTargetUser(
             hidden = !listOf(NEED, REQUEST).contains(typeOverride ?: item.type),
-            selectedUserId = (item.targetUserId ?: targetUserIdOverride),
+            selectedUserId = (targetUserIdOverride ?: item.targetUserId),
             users
         ) {
             targetUserIdOverride = it
+        }
+
+        ItemEditForAllNeighbourhood(
+            hidden = !listOf(REMINDER).contains(typeOverride ?: item.type) || !isAdmin,
+            selected = accentOverride ?: item.accent
+        ) {
+            accentOverride = it
         }
 
         ItemEditName(
@@ -207,6 +216,7 @@ fun OrganismEditableItemDetails(
                     descriptionOverride,
                     datesOverride,
                     targetUserIdOverride,
+                    accentOverride,
                     urlOverride,
                     startOverride,
                     endOverride,

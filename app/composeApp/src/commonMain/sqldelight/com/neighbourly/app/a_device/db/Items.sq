@@ -5,6 +5,7 @@ CREATE TABLE Items (
   description TEXT,
   url TEXT,
   targetuserid INTEGER,
+  accent INTEGER NOT NULL DEFAULT 0,
   images TEXT,
   files TEXT,
   startts INTEGER NOT NULL DEFAULT 0,
@@ -18,11 +19,11 @@ CREATE TABLE Items (
 addOrUpdateItem:
 INSERT OR REPLACE INTO Items(id, type,
                   name,description,url,
-                  targetuserid,
+                  targetuserid, accent,
                   images,files,
                   startts,endts,lastmodifiedts,
                   neighbourhoodid,householdid,userid
-                  )  VALUES(?,?, ?,?,?,?,?,?,?,?,?,?,?,?);
+                  )  VALUES(?,?, ?,?,?,?,?,?,?,?,?,?,?,?,?);
 
 delete:
 DELETE FROM Items WHERE id = ?;

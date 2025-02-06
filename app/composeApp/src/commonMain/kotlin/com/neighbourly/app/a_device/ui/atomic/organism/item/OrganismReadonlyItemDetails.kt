@@ -54,7 +54,8 @@ fun OrganismReadonlyItemDetails(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             FriendlyText(text = stringResource(Res.string.type), bold = true)
             FriendlyText(
@@ -66,7 +67,7 @@ fun OrganismReadonlyItemDetails(
                 icon = painterResource(
                     TYPE_ASSOC[item.type]?.first ?: Res.drawable.newbadge
                 ),
-                selected = true,
+                selected = false,
                 contentDesc = item.type.name,
             ) {}
         }
@@ -84,7 +85,8 @@ fun OrganismReadonlyItemDetails(
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             FriendlyText(text = stringResource(Res.string.item_name), fontSize = 20.sp, bold = true)
             FriendlyIconedText(
@@ -112,7 +114,7 @@ fun OrganismReadonlyItemDetails(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(Res.string.item_url), bold = true
             )
-            FriendlyText(modifier = Modifier.clickable {
+            FriendlyText(modifier = Modifier.fillMaxWidth().clickable {
                 onUrlSelected(item.url)
             }, text = item.url)
         }

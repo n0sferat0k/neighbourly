@@ -11,8 +11,7 @@ import com.neighbourly.app.b_adapt.interactor.DbInteractor
 import com.neighbourly.app.b_adapt.viewmodel.AppStateInfoViewModel
 import com.neighbourly.app.b_adapt.viewmodel.WebMapViewModel
 import com.neighbourly.app.b_adapt.viewmodel.ai.AiInterfaceViewModel
-import com.neighbourly.app.b_adapt.viewmodel.auth.LoginViewModel
-import com.neighbourly.app.b_adapt.viewmodel.auth.RegisterViewModel
+import com.neighbourly.app.b_adapt.viewmodel.auth.LoginRegisterViewModel
 import com.neighbourly.app.b_adapt.viewmodel.box.BoxManagementViewModel
 import com.neighbourly.app.b_adapt.viewmodel.household.HouseholdDetailsViewModel
 import com.neighbourly.app.b_adapt.viewmodel.items.FilteredItemListViewModel
@@ -29,6 +28,7 @@ import com.neighbourly.app.c_business.usecase.ai.AiChatUseCase
 import com.neighbourly.app.c_business.usecase.auth.LoginUseCase
 import com.neighbourly.app.c_business.usecase.auth.LogoutUseCase
 import com.neighbourly.app.c_business.usecase.auth.RegisterUseCase
+import com.neighbourly.app.c_business.usecase.auth.ResetUseCase
 import com.neighbourly.app.c_business.usecase.box.BoxOpsUseCase
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.c_business.usecase.content.FilterItemsUseCase
@@ -110,16 +110,10 @@ val adapterModule =
             NavigationViewModel(get())
         }
         factory {
-            LoginViewModel(get(), get())
-        }
-        factory {
-            RegisterViewModel(get(), get())
+            LoginRegisterViewModel(get(), get(), get(), get(), get())
         }
         factory {
             ProfileViewModel(get(), get(), get(), get(), get(), get())
-        }
-        factory {
-            LoginViewModel(get(), get())
         }
         factory {
             WebMapViewModel(get(), get(), get(), get())
@@ -211,5 +205,8 @@ val useCaseModule =
         }
         factory {
             AiChatUseCase(get(), get(), get())
+        }
+        factory {
+            ResetUseCase(get())
         }
     }

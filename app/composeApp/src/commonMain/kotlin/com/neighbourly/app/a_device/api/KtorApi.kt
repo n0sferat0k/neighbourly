@@ -13,6 +13,7 @@ import com.neighbourly.app.b_adapt.gateway.api.ItemMessageDTO
 import com.neighbourly.app.b_adapt.gateway.api.LoginInput
 import com.neighbourly.app.b_adapt.gateway.api.NeighbourhoodDTO
 import com.neighbourly.app.b_adapt.gateway.api.RegisterInput
+import com.neighbourly.app.b_adapt.gateway.api.ResetInput
 import com.neighbourly.app.b_adapt.gateway.api.SyncResponseDTO
 import com.neighbourly.app.b_adapt.gateway.api.UpdateHouseholdInput
 import com.neighbourly.app.b_adapt.gateway.api.UpdateNeighbourhoodInput
@@ -55,6 +56,7 @@ object KtorApi {
         install(ContentNegotiation) {
             json(
                 Json {
+                    encodeDefaults = true
                     prettyPrint = true
                     isLenient = true
                     ignoreUnknownKeys = true
@@ -103,6 +105,19 @@ object KtorApi {
         if (response.status.value == 200) {
             return response.body<UserDTO>()
         } else {
+            throw ApiException(response.bodyAsText())
+        }
+    }
+
+    suspend fun reset(
+        baseUrl: String,
+        resetInput: ResetInput,
+    ) {
+        val response: HttpResponse = client.post(baseUrl + "forgot") {
+            contentType(ContentType.Application.Json)
+            setBody(resetInput)
+        }
+        if (response.status.value != 200) {
             throw ApiException(response.bodyAsText())
         }
     }
