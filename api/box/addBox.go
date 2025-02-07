@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func AddBox(w http.ResponseWriter, r *http.Request) {
+func AddOrUpdateBox(w http.ResponseWriter, r *http.Request) {
 	var userId string
 	var token string
 	var box entity.Box
@@ -46,7 +46,11 @@ func AddBox(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	} else {
 		if boxHouseholdId == householdId {
-			http.Error(w, "Box already added to household", http.StatusUnauthorized)
+			_, err = utility.DB.Exec(`UPDATE boxes SET boxes_titlu_EN = ? WHERE boxes_text_EN = ? AND boxes_add_numerics_0  = ?`, box.Name, box.Id, householdId)
+			if err != nil {
+				http.Error(w, "Failed to update box name "+err.Error(), http.StatusInternalServerError)
+				return
+			}
 		} else {
 			http.Error(w, "Box in use by a different household", http.StatusUnauthorized)
 		}

@@ -21,6 +21,7 @@ import org.jetbrains.compose.resources.stringResource
 fun BoxManagementTemplate(
     state: BoxManagementViewModel.BoxManagementViewState,
     addBox: (id: String) -> Unit,
+    editBox: (id: String, name: String) -> Unit,
     removeBox: (id: String) -> Unit,
     refresh: () -> Unit,
     updateName: (String) -> Unit,
@@ -55,6 +56,7 @@ fun BoxManagementTemplate(
             } else {
                 OrganismBoxList(
                     state.boxes,
+                    editBox = editBox,
                     removeBox = removeBox,
                     openBox = openBox,
                     unlockBox = unlockBox,

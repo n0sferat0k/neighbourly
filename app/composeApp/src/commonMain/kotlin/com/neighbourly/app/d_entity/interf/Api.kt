@@ -150,7 +150,7 @@ interface Api {
 
     suspend fun deleteItemMessage(token: String, itemMessageId: Int)
 
-    suspend fun addBox(token: String, boxId: String, boxName: String)
+    suspend fun addOrUpdateBox(token: String, boxId: String, boxName: String)
 
     suspend fun removeBox(token: String, boxId: String)
 

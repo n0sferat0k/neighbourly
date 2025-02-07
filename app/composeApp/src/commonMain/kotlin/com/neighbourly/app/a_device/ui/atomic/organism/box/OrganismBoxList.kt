@@ -45,6 +45,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun OrganismBoxList(
     boxes: List<BoxVS>,
+    editBox: (id: String, name: String) -> Unit,
     removeBox: (id: String) -> Unit,
     openBox: (id: String) -> Unit,
     unlockBox: (id: String, unlock: Boolean) -> Unit,
@@ -86,7 +87,7 @@ fun OrganismBoxList(
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
                         ) {
                             Box(
-                                modifier = Modifier.height(48.dp),
+                                modifier = Modifier.height(48.dp).clickable { editBox(box.id, box.name) },
                                 contentAlignment = Alignment.CenterStart
                             ) {
                                 FriendlyText(

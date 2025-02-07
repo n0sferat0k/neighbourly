@@ -31,11 +31,11 @@ class BoxOpsUseCase(
         }
     }
 
-    suspend fun addBox(boxId: String, boxName: String) {
+    suspend fun addOrUpdateBox(boxId: String, boxName: String) {
         val token = sessionStore.user?.authtoken
 
         token?.let {
-            apiGw.addBox(token, boxId, boxName)
+            apiGw.addOrUpdateBox(token, boxId, boxName)
         }
     }
 

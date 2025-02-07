@@ -535,8 +535,8 @@ object KtorApi {
         }
     }
 
-    suspend fun boxAdd(baseUrl: String, token: String, box: BoxDTO) {
-        val response = client.post(baseUrl + "box/addBox") {
+    suspend fun boxAddOrUpdate(baseUrl: String, token: String, box: BoxDTO) {
+        val response = client.post(baseUrl + "box/addOrUpdateBox") {
             contentType(ContentType.Application.Json)
             setBody(box)
             headers {

@@ -31,10 +31,13 @@ class BoxManagementViewModel(
                 user?.household?.let { household ->
                     _state.update {
                         it.copy(
-                            boxes = user.household.boxes?.map {
+                            boxes = user.household.boxes?.map { box ->
                                 BoxVS(
-                                    id = it.id,
-                                    name = it.name
+                                    id = box.id,
+                                    name = box.name,
+                                    //keep the online status for known boxes (in rename case)
+                                    online = _state.value.boxes.firstOrNull { it.id == box.id }?.online
+                                        ?: false
                                 )
                             }.orEmpty()
                         )
@@ -64,7 +67,7 @@ class BoxManagementViewModel(
         viewModelScope.launch {
             if (boxIds.isNullOrEmpty()) {
                 iotComm.requireDisconnect()
-                _state.update { it.copy(boxes = it.boxes.map { it.copy(online = null) })}
+                _state.update { it.copy(boxes = it.boxes.map { it.copy(online = null) }) }
             } else {
                 iotComm.requireConnect()
                 val newBoxes = boxIds.filter { !_state.value.monitoringBoxes.contains(it) }
@@ -101,7 +104,7 @@ class BoxManagementViewModel(
         }
     }
 
-    fun unlockBox(boxId: String, unlock:Boolean) {
+    fun unlockBox(boxId: String, unlock: Boolean) {
         viewModelScope.launch {
             _state.update { it.copy(saving = true) }
             try {
@@ -157,7 +160,7 @@ class BoxManagementViewModel(
             viewModelScope.launch {
                 _state.update { it.copy(saving = true, error = "") }
                 try {
-                    boxOpsUseCase.addBox(_state.value.newBoxId, _state.value.newBoxName)
+                    boxOpsUseCase.addOrUpdateBox(_state.value.newBoxId, _state.value.newBoxName)
                     profileRefreshUseCase.execute()
                     _state.update { it.copy(saving = false, newBoxId = "", newBoxName = "") }
                 } catch (e: OpException) {
@@ -181,6 +184,10 @@ class BoxManagementViewModel(
                 _state.update { it.copy(loading = false, error = e.msg) }
             }
         }
+    }
+
+    fun editBox(boxId: String, boxName: String) {
+        _state.update { it.copy(newBoxId = boxId, newBoxName = boxName) }
     }
 
     data class BoxManagementViewState(

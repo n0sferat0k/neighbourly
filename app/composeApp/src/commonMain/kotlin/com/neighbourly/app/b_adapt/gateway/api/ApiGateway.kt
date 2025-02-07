@@ -389,9 +389,9 @@ class ApiGateway(
             )
         }
 
-    override suspend fun addBox(token: String, boxId: String, boxName: String) {
+    override suspend fun addOrUpdateBox(token: String, boxId: String, boxName: String) {
         runContextCatchTranslateThrow {
-            api.boxAdd(API_BASE_URL, token, BoxDTO(id = boxId, name = boxName))
+            api.boxAddOrUpdate(API_BASE_URL, token, BoxDTO(id = boxId, name = boxName))
         }
     }
 

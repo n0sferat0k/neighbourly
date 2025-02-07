@@ -27,6 +27,7 @@ fun BoxManagementPage(viewModel: BoxManagementViewModel = viewModel { KoinProvid
     BoxManagementTemplate(
         state,
         viewModel::addBox,
+        viewModel::editBox,
         viewModel::removeBox,
         viewModel::refresh,
         viewModel::updateName,
