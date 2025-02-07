@@ -7,11 +7,19 @@ class BoxOpsUseCase(
     val apiGw: Api,
     val sessionStore: SessionStore,
 ) {
-    suspend fun unlockBox(boxId: String) {
+    suspend fun unlockBox(boxId: String, unlock:Boolean) {
         val token = sessionStore.user?.authtoken
 
         token?.let {
-            apiGw.unlockBox(token, boxId)
+            apiGw.unlockBox(token, boxId, unlock)
+        }
+    }
+
+    suspend fun lightBox(boxId: String, light: Boolean) {
+        val token = sessionStore.user?.authtoken
+
+        token?.let {
+            apiGw.lightBox(token, boxId, light)
         }
     }
 

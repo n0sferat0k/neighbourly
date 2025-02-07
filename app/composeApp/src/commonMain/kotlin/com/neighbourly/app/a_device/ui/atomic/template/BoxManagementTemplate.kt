@@ -27,7 +27,8 @@ fun BoxManagementTemplate(
     saveBox: () -> Unit,
     clearBox: () -> Unit,
     openBox: (id: String) -> Unit,
-    unlockBox: (id: String) -> Unit,
+    unlockBox: (id: String, unlock: Boolean) -> Unit,
+    lightBox: (id: String, light: Boolean) -> Unit,
 ) {
     var showBoxScanner by remember { mutableStateOf(false) }
 
@@ -57,6 +58,7 @@ fun BoxManagementTemplate(
                     removeBox = removeBox,
                     openBox = openBox,
                     unlockBox = unlockBox,
+                    lightBox = lightBox
                 )
             }
         },

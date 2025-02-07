@@ -8,5 +8,6 @@ data object AppColors {
     val complementary: Color = Color(0xffae605b)
     val complementaryLight: Color = Color(0xFFeedfde)
     val error: Color = Color(0xFFff0000)
+    val highlight: Color = Color(0xFFffd700)
 }
 

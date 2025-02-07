@@ -11,8 +11,6 @@ import com.neighbourly.app.d_entity.data.SyncData
 import com.neighbourly.app.d_entity.data.User
 import com.neighbourly.app.d_entity.interf.Api
 import com.neighbourly.app.d_entity.interf.StatusUpdater
-import io.ktor.client.statement.HttpResponse
-import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
@@ -403,17 +401,24 @@ class ApiGateway(
         }
     }
 
-    override suspend fun lockBox(token: String, boxId: String) {
+    override suspend fun unlockBox(token: String, boxId: String, unlock: Boolean) =
         runContextCatchTranslateThrow {
-            api.boxOp(API_BASE_URL, token, BoxDTO(id = boxId, command = BOX_CMD_LOCK))
+            api.boxOp(
+                API_BASE_URL,
+                token,
+                BoxDTO(id = boxId, command = if (unlock) BOX_CMD_UNLOCK else BOX_CMD_LOCK)
+            )
         }
-    }
 
-    override suspend fun unlockBox(token: String, boxId: String) {
+    override suspend fun lightBox(token: String, boxId: String, light: Boolean) =
         runContextCatchTranslateThrow {
-            api.boxOp(API_BASE_URL, token, BoxDTO(id = boxId, command = BOX_CMD_UNLOCK))
+            api.boxOp(
+                API_BASE_URL,
+                token,
+                BoxDTO(id = boxId, command = if (light) BOX_CMD_LIGHTON else BOX_CMD_LIGHTOFF)
+            )
         }
-    }
+
 
     override suspend fun openBox(token: String, boxId: String) {
         runContextCatchTranslateThrow {
@@ -429,6 +434,8 @@ class ApiGateway(
         const val TARGET_HOUSEHOLD = "household"
         const val BOX_CMD_LOCK = "LOCK"
         const val BOX_CMD_UNLOCK = "UNLOCK"
+        const val BOX_CMD_LIGHTON = "ON"
+        const val BOX_CMD_LIGHTOFF = "OFF"
         const val BOX_CMD_OPEN = "OPEN"
         const val HTTP_RESPONSE_CODE_TEAPOT = 418
     }
@@ -441,7 +448,7 @@ class ApiGateway(
         }.let {
             when {
                 it.isSuccess -> {
-                    statusUpdater.setOnline(true, false,null)
+                    statusUpdater.setOnline(true, false, null)
                     it.getOrElse { throw OpException("Unknown Error") }
                 }
 
@@ -449,7 +456,8 @@ class ApiGateway(
                     val networkError =
                         (it.exceptionOrNull()?.let { it is IOException || it is TimeoutException }
                             ?: false)
-                    val tokenExpired = (it.exceptionOrNull()?.let { it is ApiException && it.status == HTTP_RESPONSE_CODE_TEAPOT }
+                    val tokenExpired = (it.exceptionOrNull()
+                        ?.let { it is ApiException && it.status == HTTP_RESPONSE_CODE_TEAPOT }
                         ?: false)
 
                     val messgae = it.exceptionOrNull().let {

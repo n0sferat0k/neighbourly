@@ -4,8 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,11 +29,14 @@ import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.a_device.ui.atomic.molecule.misc.SwipeToDeleteContainer
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismAlertDialog
+import com.neighbourly.app.b_adapt.viewmodel.bean.BoxVS
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.confirm_deleteing_box
 import neighbourly.composeapp.generated.resources.deleteing_box
+import neighbourly.composeapp.generated.resources.light
 import neighbourly.composeapp.generated.resources.no_boxes
 import neighbourly.composeapp.generated.resources.openbox
+import neighbourly.composeapp.generated.resources.signal
 import neighbourly.composeapp.generated.resources.unlockbox
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -39,10 +44,11 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun OrganismBoxList(
-    boxes: Map<String, String>?,
+    boxes: List<BoxVS>,
     removeBox: (id: String) -> Unit,
     openBox: (id: String) -> Unit,
-    unlockBox: (id: String) -> Unit,
+    unlockBox: (id: String, unlock: Boolean) -> Unit,
+    lightBox: (id: String, light: Boolean) -> Unit,
 ) {
     var showRemoveAlertForId by remember { mutableStateOf("") }
 
@@ -63,51 +69,76 @@ fun OrganismBoxList(
     if (boxes.isNullOrEmpty()) {
         FriendlyText(text = stringResource(Res.string.no_boxes))
     } else {
-        boxes?.entries?.forEach { (id, name) ->
+        boxes.forEach { box ->
             SwipeToDeleteContainer(
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
                 onDelete = {
-                    showRemoveAlertForId = id
+                    showRemoveAlertForId = box.id
                 }) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(4.dp),
                     elevation = 4.dp
                 ) {
-                    FlowRow(
-                        modifier = Modifier.fillMaxWidth().padding(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        Box(
-                            modifier = Modifier.height(48.dp),
-                            contentAlignment = Alignment.CenterStart
+                    Column(modifier = Modifier.padding(8.dp)) {
+                        FlowRow(
+                            modifier = Modifier.fillMaxWidth().padding(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
                         ) {
-                            FriendlyText(
-                                text = name,
-                                bold = true,
-                                fontSize = 22.sp
+                            Box(
+                                modifier = Modifier.height(48.dp),
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                FriendlyText(
+                                    text = box.name,
+                                    bold = true,
+                                    fontSize = 22.sp
+                                )
+                            }
+
+                            Image(
+                                painter = painterResource(Res.drawable.signal),
+                                contentDescription = "Box online",
+                                contentScale = ContentScale.FillBounds,
+                                colorFilter = ColorFilter.tint(
+                                    when (box.online) {
+                                        null -> AppColors.primaryLight
+                                        true -> AppColors.primary
+                                        false -> AppColors.complementary
+                                    }
+                                ),
+                                modifier = Modifier.size(48.dp).padding(6.dp),
                             )
                         }
-
-                        Image(
-                            painter = painterResource(Res.drawable.openbox),
-                            contentDescription = "Open box",
-                            contentScale = ContentScale.FillBounds,
-                            colorFilter = ColorFilter.tint(AppColors.primary),
-                            modifier = Modifier.size(48.dp).clickable {
-                                openBox(id)
-                            },
-                        )
-                        Image(
-                            painter = painterResource(Res.drawable.unlockbox),
-                            contentDescription = "Unlock box",
-                            contentScale = ContentScale.FillBounds,
-                            colorFilter = ColorFilter.tint(AppColors.primary),
-                            modifier = Modifier.size(48.dp).clickable {
-                                unlockBox(id)
-                            },
-                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            Image(
+                                painter = painterResource(Res.drawable.openbox),
+                                contentDescription = "Open box",
+                                contentScale = ContentScale.FillBounds,
+                                colorFilter = ColorFilter.tint(if (box.triggered) AppColors.highlight else AppColors.primary),
+                                modifier = Modifier.size(48.dp).clickable {
+                                    openBox(box.id)
+                                },
+                            )
+                            Image(
+                                painter = painterResource(Res.drawable.unlockbox),
+                                contentDescription = "Unlock box",
+                                contentScale = ContentScale.FillBounds,
+                                colorFilter = ColorFilter.tint(if (box.unlocked) AppColors.highlight else AppColors.primary),
+                                modifier = Modifier.size(48.dp).clickable {
+                                    unlockBox(box.id, !box.unlocked)
+                                },
+                            )
+                            Image(
+                                painter = painterResource(Res.drawable.light),
+                                contentDescription = "Unlock box",
+                                contentScale = ContentScale.FillBounds,
+                                colorFilter = ColorFilter.tint(if (box.lit) AppColors.highlight else AppColors.primary),
+                                modifier = Modifier.size(48.dp).clickable {
+                                    lightBox(box.id, !box.lit)
+                                },
+                            )
+                        }
                     }
                 }
             }

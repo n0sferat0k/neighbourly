@@ -140,9 +140,13 @@ interface Api {
 
     suspend fun addOrUpdateItem(token: String, item: Item): Item
 
-    suspend fun addItemMessage(token: String, itemId: Int, message:String): ItemMessage
+    suspend fun addItemMessage(token: String, itemId: Int, message: String): ItemMessage
 
-    suspend fun getItemsMessages(token: String, itemIds: List<Int>, lastSyncTs: Int?): List<ItemMessage>
+    suspend fun getItemsMessages(
+        token: String,
+        itemIds: List<Int>,
+        lastSyncTs: Int?
+    ): List<ItemMessage>
 
     suspend fun deleteItemMessage(token: String, itemMessageId: Int)
 
@@ -150,9 +154,9 @@ interface Api {
 
     suspend fun removeBox(token: String, boxId: String)
 
-    suspend fun lockBox(token: String, boxId: String)
+    suspend fun unlockBox(token: String, boxId: String, unlock: Boolean)
 
-    suspend fun unlockBox(token: String, boxId: String)
+    suspend fun lightBox(token: String, boxId: String, light: Boolean)
 
     suspend fun openBox(token: String, boxId: String)
 }

@@ -1,52 +1,81 @@
 package com.neighbourly.app.a_device.remote
 
 import com.neighbourly.app.d_entity.interf.Iot
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import org.eclipse.paho.client.mqttv3.MqttCallback
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttMessage
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
+import java.util.concurrent.Executors
 import org.eclipse.paho.client.mqttv3.MqttClient as PahoMqttClient
 
 class PahoMqttIot : Iot, MqttCallback {
-    private lateinit var client: PahoMqttClient
+    private var client: PahoMqttClient? = null
+    private val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+
     private val _messageFlow = MutableSharedFlow<Iot.TopicMessage>()
     override val messageFlow: Flow<Iot.TopicMessage> = _messageFlow.asSharedFlow()
 
-    override fun connect() {
-        client = PahoMqttClient(brokerUrl, clientId)
-        val options = MqttConnectOptions().apply {
-            this.userName = username
-            this.password = PahoMqttIot.password.toCharArray()
+    override suspend fun requireConnect() {
+        withContext(dispatcher) {
+            if (client == null) {
+                client = PahoMqttClient(brokerUrl, clientId, MemoryPersistence()).apply {
+                    connect(MqttConnectOptions().apply {
+                        this.userName = username
+                        this.password = PahoMqttIot.password.toCharArray()
+                    })
+                    setCallback(this@PahoMqttIot)
+                }
+            }
         }
-        client.connect(options)
-        client.setCallback(this)
     }
 
-    override fun connectionLost(cause: Throwable?) {}
+    override suspend fun requireDisconnect() =
+        withContext(dispatcher) {
+            client?.disconnect()
+            client = null
+        }
+
+    override fun connectionLost(cause: Throwable?) {
+        CoroutineScope(dispatcher).launch {
+            requireDisconnect()
+        }
+    }
+
     override fun messageArrived(topic: String?, message: MqttMessage?) {
-        _messageFlow.tryEmit(Iot.TopicMessage(topic, message?.payload.toString()))
+        if (topic.isNullOrEmpty() || message == null) return
+
+        CoroutineScope(dispatcher).launch {
+            _messageFlow.emit(Iot.TopicMessage(topic, message.toString()))
+        }
     }
 
     override fun deliveryComplete(token: IMqttDeliveryToken?) {}
 
-    override fun publish(topic: String, payload: String) {
-        val message = MqttMessage(payload.toByteArray())
-        client.publish(topic, message)
+    override suspend fun publish(topic: String, payload: String) {
+        withContext(dispatcher) {
+            val message = MqttMessage(payload.toByteArray())
+            client?.publish(topic, message)
+        }
     }
 
-    override fun subscribe(topic: String) =
-        client.subscribe(topic)
-
-
-    override fun unsubscribe(topic: String) {
-        client.unsubscribe(topic)
+    override suspend fun subscribe(topic: String) {
+        withContext(dispatcher) {
+            client?.subscribe(topic)
+        }
     }
 
-    override fun disconnect() {
-        client.disconnect()
+    override suspend fun unsubscribe(topic: String) {
+        withContext(dispatcher) {
+            client?.unsubscribe(topic)
+        }
     }
 
     companion object {
