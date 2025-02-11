@@ -168,4 +168,11 @@
 
     <string name="send_reset_link">Trimite link de resetare</string>
     <string name="reset_link_sent">Link de resetare trimis ✔</string>
+
+    <string name="box_share_name">Nume Box share:</string>
+    <string name="box_share_scan_code">Daca vrei sa împarti acest Box cu o altă gospodărie, un membru al gospodăriei trebuie să scaneze codul de mai jos folosind aplicația:</string>
+    <string name="box_share_use_link">Alternativ poți împartăși link-ul de mai jos, acest link va permite oricui să deschidă Box-ul:</string>
+    <string name="copy_to_clipboard">Copiază link-ul în clipboard</string>
+    <string name="list_shares">împartășiri:</string>
+    <string name="box_share_household">Acest Box este împartășit cu gospodăria:</string>
 </resources>

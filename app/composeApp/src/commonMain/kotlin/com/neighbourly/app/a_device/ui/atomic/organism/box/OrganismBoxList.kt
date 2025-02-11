@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,8 +35,10 @@ import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.confirm_deleteing_box
 import neighbourly.composeapp.generated.resources.deleteing_box
 import neighbourly.composeapp.generated.resources.light
+import neighbourly.composeapp.generated.resources.list_shares
 import neighbourly.composeapp.generated.resources.no_boxes
 import neighbourly.composeapp.generated.resources.openbox
+import neighbourly.composeapp.generated.resources.share
 import neighbourly.composeapp.generated.resources.signal
 import neighbourly.composeapp.generated.resources.unlockbox
 import org.jetbrains.compose.resources.painterResource
@@ -50,6 +53,8 @@ fun OrganismBoxList(
     openBox: (id: String) -> Unit,
     unlockBox: (id: String, unlock: Boolean) -> Unit,
     lightBox: (id: String, light: Boolean) -> Unit,
+    shareBox: (id: String) -> Unit,
+    shareBoxSelect: (id: Int, boxId: String) -> Unit,
 ) {
     var showRemoveAlertForId by remember { mutableStateOf("") }
 
@@ -67,7 +72,7 @@ fun OrganismBoxList(
         )
     }
 
-    if (boxes.isNullOrEmpty()) {
+    if (boxes.isEmpty()) {
         FriendlyText(text = stringResource(Res.string.no_boxes))
     } else {
         boxes.forEach { box ->
@@ -87,7 +92,8 @@ fun OrganismBoxList(
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
                         ) {
                             Box(
-                                modifier = Modifier.height(48.dp).clickable { editBox(box.id, box.name) },
+                                modifier = Modifier.height(48.dp)
+                                    .clickable { editBox(box.id, box.name) },
                                 contentAlignment = Alignment.CenterStart
                             ) {
                                 FriendlyText(
@@ -132,13 +138,39 @@ fun OrganismBoxList(
                             )
                             Image(
                                 painter = painterResource(Res.drawable.light),
-                                contentDescription = "Unlock box",
+                                contentDescription = "Illuminate box",
                                 contentScale = ContentScale.FillBounds,
                                 colorFilter = ColorFilter.tint(if (box.lit) AppColors.highlight else AppColors.primary),
                                 modifier = Modifier.size(48.dp).clickable {
                                     lightBox(box.id, !box.lit)
                                 },
                             )
+
+                            if(box.owned) {
+                                Spacer(modifier = Modifier.weight(1f))
+
+                                Image(
+                                    painter = painterResource(Res.drawable.share),
+                                    contentDescription = "Share box",
+                                    contentScale = ContentScale.FillBounds,
+                                    colorFilter = ColorFilter.tint(AppColors.primary),
+                                    modifier = Modifier.size(48.dp).clickable {
+                                        shareBox(box.id)
+                                    },
+                                )
+                            }
+                        }
+                        if (box.shares.isNotEmpty() && box.owned) {
+                            FriendlyText(text = stringResource(Res.string.list_shares))
+
+                            box.shares.forEach {
+                                FriendlyText(modifier = Modifier
+                                    .padding(top = 4.dp, bottom = 4.dp)
+                                    .clickable {
+                                        shareBoxSelect(it.id, it.boxId)
+                                    }, text = "* " + it.name, bold = true, fontSize = 22.sp
+                                )
+                            }
                         }
                     }
                 }

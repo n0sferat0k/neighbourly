@@ -123,12 +123,21 @@ func RetreiveSessionUserData(userId string) (*entity.User, error) {
 
 		boxRows, err := DB.Query(`SELECT 	
 									B.boxes_titlu_EN AS name,
-									B.boxes_text_EN AS id
+									B.boxes_text_EN AS id,
+									B.boxes_add_numerics_0 AS householdId
 								FROM 
 									boxes B 
 								WHERE 
-									B.boxes_add_numerics_0 = ?`, existingHousehold.Householdid)
-
+									B.boxes_add_numerics_0 = ?
+								OR
+									EXISTS (
+											SELECT * FROM boxshares 
+												WHERE 
+													boxshares_text_EN = B.boxes_text_EN 
+												AND 
+													boxshares_add_numerics_0 = ?
+											)
+									`, existingHousehold.Householdid, existingHousehold.Householdid)
 		if err != nil {
 			return nil, err
 		}
@@ -141,9 +150,47 @@ func RetreiveSessionUserData(userId string) (*entity.User, error) {
 			err := boxRows.Scan(
 				&houseBox.Name,
 				&houseBox.Id,
+				&houseBox.Householdid,
 			)
 			if err != nil {
 				return nil, err
+			}
+
+			//only boxes owned will have shares attached
+			if *houseBox.Householdid == *existingHousehold.Householdid {
+				boxShareRows, err := DB.Query(`SELECT 	
+													boxshares_id AS id, 
+													boxshares_titlu_EN AS name,
+													boxshares_text_EN AS boxId,
+													boxshares_add_numerics_0 AS householdId,
+													boxshares_add_strings_0 AS token
+												FROM 
+													boxshares 
+												WHERE 
+													boxshares_text_EN = ?`, houseBox.Id)
+
+				if err != nil {
+					return nil, err
+				}
+
+				defer boxShareRows.Close()
+				var boxShares []entity.BoxShare
+				for boxShareRows.Next() {
+					var boxShare entity.BoxShare
+					err := boxShareRows.Scan(
+						&boxShare.Id,
+						&boxShare.Name,
+						&boxShare.BoxId,
+						&boxShare.Householdid,
+						&boxShare.Token,
+					)
+					if err != nil {
+						return nil, err
+					}
+
+					boxShares = append(boxShares, boxShare)
+				}
+				houseBox.Shares = boxShares
 			}
 
 			houseBoxes = append(houseBoxes, houseBox)

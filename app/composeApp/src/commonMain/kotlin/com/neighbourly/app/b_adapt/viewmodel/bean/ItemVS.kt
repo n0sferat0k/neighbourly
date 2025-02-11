@@ -64,9 +64,10 @@ fun Item.toItemVS() = ItemVS(
         ?.let { fromEpochSeconds(it.toLong()) },
     images = images.map {
         AttachmentVS(
-            it.id ?: 0,
-            it.url,
-            it.name
+            id = it.id ?: 0,
+            url = it.url,
+            name = it.name,
+            default = it.default,
         )
     },
     files = files.map {
@@ -74,6 +75,7 @@ fun Item.toItemVS() = ItemVS(
             id = it.id ?: 0,
             url = it.url,
             name = it.name,
+            default = it.default,
         )
     },
     neighbourhoodId = neighbourhoodId,

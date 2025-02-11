@@ -2,6 +2,7 @@ package com.neighbourly.app.b_adapt.gateway.api
 
 import com.neighbourly.app.d_entity.data.Attachment
 import com.neighbourly.app.d_entity.data.Box
+import com.neighbourly.app.d_entity.data.BoxShare
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.Household
 import com.neighbourly.app.d_entity.data.Item
@@ -82,6 +83,16 @@ fun Household.toHouseholdDTO(): HouseholdDTO =
 fun BoxDTO.toBox(): Box = Box(
     name = name,
     id = id,
+    householdId = householdId ?: -1,
+    shares = shares.map { it.toBoxShare() }
+)
+
+fun BoxShareDTO.toBoxShare(): BoxShare = BoxShare(
+    id = id,
+    name = name,
+    boxId = boxId,
+    token = token,
+    householdId = householdId,
 )
 
 fun NeighbourhoodDTO.toNeighbourhood(): Neighbourhood =
@@ -159,6 +170,7 @@ fun AttachmentDTO.toAttachment(): Attachment = Attachment(
     id = id,
     url = url.prependResourceUrlBase(),
     name = name,
+    default = default,
 )
 
 fun Attachment.toAttachmentDTO(): AttachmentDTO = AttachmentDTO(

@@ -2,6 +2,7 @@ package com.neighbourly.app.b_adapt.gateway.api
 
 import com.neighbourly.app.a_device.api.KtorApi
 import com.neighbourly.app.d_entity.data.Attachment
+import com.neighbourly.app.d_entity.data.BoxShare
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.Item
@@ -356,9 +357,13 @@ class ApiGateway(
             api.deleteItem(API_BASE_URL, token, itemId)
         }
 
-    override suspend fun addOrUpdateItem(token: String, item: Item): Item =
+    override suspend fun addOrUpdateItem(token: String, item: Item, defaultImageId: String?): Item =
         runContextCatchTranslateThrow {
-            api.addOrUpdateItem(API_BASE_URL, token, item.toItemDTO()).toItem()
+            api.addOrUpdateItem(
+                API_BASE_URL,
+                token,
+                item.toItemDTO().copy(pic = defaultImageId.orEmpty())
+            ).toItem()
         }
 
     override suspend fun addItemMessage(token: String, itemId: Int, message: String): ItemMessage =
@@ -395,11 +400,22 @@ class ApiGateway(
         }
     }
 
+    override suspend fun addSharedBox(token: String, boxShareToken: String) {
+        runContextCatchTranslateThrow {
+            api.boxShareAcquire(API_BASE_URL, token,  boxShareToken)
+        }
+    }
+
     override suspend fun removeBox(token: String, boxId: String) {
         runContextCatchTranslateThrow {
             api.boxDel(API_BASE_URL, token, BoxDTO(id = boxId))
         }
     }
+
+    override suspend fun shareBox(token: String, boxId: String, shareName: String): BoxShare =
+        runContextCatchTranslateThrow {
+            api.shareBox(API_BASE_URL, token, BoxDTO(id = boxId, name = shareName)).toBoxShare()
+        }
 
     override suspend fun unlockBox(token: String, boxId: String, unlock: Boolean) =
         runContextCatchTranslateThrow {

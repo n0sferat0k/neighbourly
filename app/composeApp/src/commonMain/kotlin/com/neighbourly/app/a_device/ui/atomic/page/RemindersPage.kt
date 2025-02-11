@@ -7,10 +7,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.atomic.template.RemidersTemplate
 import com.neighbourly.app.b_adapt.viewmodel.items.RemindersViewModel
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 
 @Composable
-fun RemindersPage(viewModel: RemindersViewModel = viewModel { KoinProvider.KOIN.get<RemindersViewModel>() }) {
+fun RemindersPage(
+    viewModel: RemindersViewModel = viewModel { KoinProvider.KOIN.get<RemindersViewModel>() },
+    navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() },
+) {
     val state by viewModel.state.collectAsState()
 
-    RemidersTemplate(state.reminders)
+    RemidersTemplate(state.reminders) { navigationViewModel.goToItemDetails(it) }
 }

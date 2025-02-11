@@ -7,4 +7,5 @@ data class Attachment(
     val id: Int? = null,
     val url: String = "",
     val name: String = "",
+    val default: Boolean = false,
 )

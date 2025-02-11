@@ -5,6 +5,7 @@ import com.neighbourly.app.b_adapt.gateway.api.AddMemberToNeighbourhoodInput
 import com.neighbourly.app.b_adapt.gateway.api.ApiException
 import com.neighbourly.app.b_adapt.gateway.api.AttachmentDTO
 import com.neighbourly.app.b_adapt.gateway.api.BoxDTO
+import com.neighbourly.app.b_adapt.gateway.api.BoxShareDTO
 import com.neighbourly.app.b_adapt.gateway.api.FetchProfileInput
 import com.neighbourly.app.b_adapt.gateway.api.GpsItemDTO
 import com.neighbourly.app.b_adapt.gateway.api.GpsLogInput
@@ -548,6 +549,18 @@ object KtorApi {
         }
     }
 
+    suspend fun boxShareAcquire(baseUrl: String, token: String, boxShareToken: String) {
+        val response = client.get(baseUrl + "box/acquireShareBox?token=$boxShareToken") {
+            contentType(ContentType.Application.Json)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
+            }
+        }
+        if (response.status.value != 200) {
+            throw ApiException(response.status.value, response.bodyAsText())
+        }
+    }
+
     suspend fun boxDel(baseUrl: String, token: String, box: BoxDTO) {
         val response = client.post(baseUrl + "box/delBox") {
             contentType(ContentType.Application.Json)
@@ -557,6 +570,22 @@ object KtorApi {
             }
         }
         if (response.status.value != 200) {
+            throw ApiException(response.status.value, response.bodyAsText())
+        }
+    }
+
+    suspend fun shareBox(baseUrl: String, token: String, box: BoxDTO): BoxShareDTO {
+        val response = client.post(baseUrl + "box/shareBox") {
+            contentType(ContentType.Application.Json)
+            setBody(box)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
+            }
+        }
+
+        if (response.status.value == 200) {
+            return response.body<BoxShareDTO>()
+        } else {
             throw ApiException(response.status.value, response.bodyAsText())
         }
     }

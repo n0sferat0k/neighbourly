@@ -4,9 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.Icon
@@ -52,8 +50,8 @@ fun OrganismLoginForm(
 ) {
     var remember by remember { mutableStateOf(true) }
     var passwordVisible by remember { mutableStateOf(false) }
-    var username by remember { mutableStateOf(username) }
-    var password by remember { mutableStateOf(password) }
+    var usernameOverride by remember { mutableStateOf<String?>(null) }
+    var passwordOverride by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -63,16 +61,16 @@ fun OrganismLoginForm(
     ) {
         // Username Input
         OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
+            value = usernameOverride ?: username,
+            onValueChange = { usernameOverride = it },
             label = { Text(stringResource(Res.string.username)) },
             modifier = Modifier.fillMaxWidth(),
         )
 
         // Password Input
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = passwordOverride ?: password,
+            onValueChange = { passwordOverride = it },
             label = { Text(stringResource(Res.string.password)) },
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth().padding(0.dp),
@@ -99,7 +97,7 @@ fun OrganismLoginForm(
         }
 
         FriendlyButton(text = stringResource(Res.string.login), loading = loading) {
-            onLogin(username, password, remember)
+            onLogin(usernameOverride ?: username, passwordOverride ?: password, remember)
         }
 
         FriendlyText(

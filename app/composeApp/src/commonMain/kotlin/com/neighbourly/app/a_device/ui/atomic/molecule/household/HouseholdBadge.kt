@@ -1,4 +1,4 @@
-package com.neighbourly.app.a_device.ui.atomic.molecule.item
+package com.neighbourly.app.a_device.ui.atomic.molecule.household
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
+import com.neighbourly.app.b_adapt.viewmodel.bean.HouseholdVS
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import neighbourly.composeapp.generated.resources.Res
@@ -28,11 +29,11 @@ import neighbourly.composeapp.generated.resources.houses
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun ItemHouseholdBadge(householdImage: String?, householdName: String?, onClick: () -> Unit) {
+fun HouseholdBadge(household: HouseholdVS, sizeMultiplyer: Int = 1, onClick: () -> Unit) {
     val defaultHouseImg = painterResource(Res.drawable.houses)
 
     Column(
-        modifier = Modifier.widthIn(max = 72.dp).clickable {
+        modifier = Modifier.widthIn(max = (72 * sizeMultiplyer).dp).clickable {
             onClick()
         },
         horizontalAlignment = Alignment.CenterHorizontally
@@ -40,10 +41,10 @@ fun ItemHouseholdBadge(householdImage: String?, householdName: String?, onClick:
         Box(
             modifier =
             Modifier
-                .size(36.dp)
-                .border(2.dp, AppColors.primary, CircleShape),
+                .size((36 * sizeMultiplyer).dp)
+                .border((2 * sizeMultiplyer).dp, AppColors.primary, CircleShape),
         ) {
-            householdImage.let {
+            household.imageurl.let {
                 if (!it.isNullOrBlank()) {
                     KamelImage(
                         modifier = Modifier.fillMaxSize().clip(CircleShape),
@@ -68,10 +69,10 @@ fun ItemHouseholdBadge(householdImage: String?, householdName: String?, onClick:
             }
         }
 
-        householdName?.let {
+        household.name.let {
             FriendlyText(
                 text = it,
-                fontSize = 12.sp,
+                fontSize = (12 * sizeMultiplyer).sp,
                 textAlign = TextAlign.Center
             )
         }

@@ -171,4 +171,13 @@
 
     <string name="send_reset_link">Send reset link</string>
     <string name="reset_link_sent">Reset link sent ✔</string>
+
+    <string name="box_share_name">Box share name:</string>
+    <string name="box_share_scan_code">If you want to share this box with a household, have a member of the other household scan the below QR code with their app:</string>
+    <string name="box_share_use_link">Alternatively you can share the below link that when used will allow anyone to open this Box:</string>
+    <string name="copy_to_clipboard">Copy link to clipboard</string>
+    <string name="list_shares">Shares:</string>
+    <string name="box_share_household">This Box is being shared with the household:</string>
+
+
 </resources>

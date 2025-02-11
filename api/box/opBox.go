@@ -29,7 +29,22 @@ func OpBox(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var boxVerifiedId string
-	err = utility.DB.QueryRow(`SELECT boxes_text_EN FROM boxes WHERE boxes_text_EN = ? AND boxes_add_numerics_0 = ? LIMIT 1`, box.Id, householdId).Scan(&boxVerifiedId)
+	err = utility.DB.QueryRow(`SELECT boxes_text_EN FROM boxes 
+								WHERE 
+									boxes_text_EN = ? 
+								AND 
+									(
+										boxes_add_numerics_0 = ? 
+									OR
+										EXISTS (
+											SELECT * FROM boxshares 
+												WHERE 
+													boxshares_text_EN = boxes_text_EN 
+												AND 
+													boxshares_add_numerics_0 = ?
+										)
+									)
+								LIMIT 1`, box.Id, householdId, householdId).Scan(&boxVerifiedId)
 	if err != nil {
 		http.Error(w, "You do not have access to this Box"+err.Error(), http.StatusUnauthorized)
 		return

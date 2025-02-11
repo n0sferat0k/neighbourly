@@ -1,7 +1,10 @@
 package com.neighbourly.app.a_device.ui.atomic.molecule.item
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -21,7 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.DefaultShadowColor
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.AppColors
@@ -40,14 +46,17 @@ import neighbourly.composeapp.generated.resources.newbadge
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ImageGrid(
     images: List<AttachmentVS>,
+    highlightImage: String? = null,
     newImages: List<MemImgVS>,
     deleteNew: ((MemImgVS) -> Unit)? = null,
     delete: ((AttachmentVS) -> Unit)? = null,
-    select: ((AttachmentVS) -> Unit)? = null
+    select: ((AttachmentVS) -> Unit)? = null,
+    altSelect: ((AttachmentVS) -> Unit)? = null
+
 ) {
     var showRemoveImageAlertForId by remember { mutableStateOf(-1) }
     var showNewImageAlert by remember { mutableStateOf(false) }
@@ -84,6 +93,22 @@ fun ImageGrid(
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         images.forEach { image ->
+            var color = DefaultShadowColor
+            var borderWidth =  0.dp
+            when {
+                image.default -> {
+                    color = AppColors.primary
+                    borderWidth = 1.dp
+                }
+                image.id.toString() == highlightImage -> {
+                    color = AppColors.complementary
+                    borderWidth = 3.dp
+                }
+                else -> {
+                    color = DefaultShadowColor
+                    borderWidth = 0.dp
+                }
+            }
             SwipeToDeleteContainer(
                 modifier = Modifier.size(84.dp),
                 onDelete = delete?.let {
@@ -94,14 +119,22 @@ fun ImageGrid(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(1f),
+                        .aspectRatio(1f)
+                        .shadow(
+                            elevation = 8.dp,
+                            shape = RectangleShape,
+                            clip = true,
+                            ambientColor = color,
+                            spotColor = color,
+                        )
+                        .border(borderWidth, color),
                     shape = RoundedCornerShape(4.dp),
-                    elevation = 4.dp
                 ) {
                     KamelImage(
-                        modifier = Modifier.fillMaxSize().clickable {
-                            select?.invoke(image)
-                        },
+                        modifier = Modifier.fillMaxSize().combinedClickable(
+                            onClick = { select?.invoke(image) },
+                            onLongClick = { altSelect?.invoke(image) }
+                        ),
                         resource = asyncPainterResource(data = image.url),
                         contentDescription = "Item Image",
                         contentScale = ContentScale.Crop,

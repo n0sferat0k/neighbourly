@@ -72,6 +72,7 @@ type Item struct {
 	Householdid     *int64        `json:"householdId,omitempty"`
 	Userid          *int64        `json:"userId,omitempty"`
 	Accent          *bool         `json:"accent,omitempty"`
+	Pic             *string       `json:"pic,omitempty"`
 }
 
 type ItemMessage struct {
@@ -83,9 +84,10 @@ type ItemMessage struct {
 }
 
 type Attachment struct {
-	Id   *int64  `json:"id,omitempty"`
-	Url  *string `json:"url,omitempty"`
-	Name *string `json:"name,omitempty"`
+	Id      *int64  `json:"id,omitempty"`
+	Url     *string `json:"url,omitempty"`
+	Name    *string `json:"name,omitempty"`
+	Default *bool   `json:"default,omitempty"`
 }
 
 type SyncResponse struct {
@@ -98,7 +100,17 @@ type SyncResponse struct {
 }
 
 type Box struct {
-	Name    *string `json:"name,omitempty"`
-	Id      *string `json:"id,omitempty"`
-	Command *string `json:"command,omitempty"`
+	Name        *string    `json:"name,omitempty"`
+	Id          *string    `json:"id,omitempty"`
+	Householdid *int64     `json:"householdId,omitempty"`
+	Command     *string    `json:"command,omitempty"`
+	Shares      []BoxShare `json:"shares,omitempty"`
+}
+
+type BoxShare struct {
+	Id          *int64  `json:"id,omitempty"`
+	Name        *string `json:"name,omitempty"`
+	BoxId       *string `json:"boxId,omitempty"`
+	Token       *string `json:"token,omitempty"`
+	Householdid *int64  `json:"householdId,omitempty"`
 }

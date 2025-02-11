@@ -447,6 +447,60 @@ $boxes = new combinedObjectTTDI();
 $boxes->setParams($p);
 $classManagger->add($boxes);
 
+/*********************************************************************************BOX SHARE*/
+
+unset($p);
+$p = $combinedObcejtTTDI_defparams;
+$p['KEY']="boxshares";
+$p['MENULABLE']="Boxshares";
+$p['DISPLAYMENUTAB']=true;
+
+$p['PIC']=false;
+$p['MULTIPIC']=false;
+$p['FILE']=false;
+$p['MULTIFILE']=false;
+
+$p['DATE']=false;
+$p['TEXT']=true;
+$p['TITLE']=true;
+$p['LINK']=false;
+$p['ACCENT']=false;
+$p['ZINDEX']=false;
+$p['MOVEABLE']=false;
+$p['SORTINDEX']=false;
+
+$p['DATE_modif']=false;
+$p['TEXT_modif']=true;
+$p['TITLE_modif']=true;
+$p['LINK_modif']=false;
+
+$p['SINGULAR']=false;
+$p['DELETABLE']=true;
+$p['APPENDABLE']=true;
+
+$p['LANGUAGES']=array("EN");
+$p['CURRENTLANGUAGE']=0;
+
+$p['ADD_NUMERICS'] = array(	
+	array("EN" => "Household Id"),
+);
+$p['ADD_NUMERICS_modif'] = array(
+	array(0 => true,1 => true),	
+);
+$p['ADD_STRINGS'] = array(		
+	array("EN" => "Token"),			
+);
+$p['ADD_STRINGS_modif'] = array(
+	array(0 => true,1 => true),	
+);
+
+$p['LIST_template']="TEMPLATES/table_list.php";
+$p['SINGLE_template']="TEMPLATES/single_noedit.php";
+
+$boxes = new combinedObjectTTDI();
+$boxes->setParams($p);
+$classManagger->add($boxes);
+
 /*********************************************************************************MESSAGES*/
 
 unset($p);

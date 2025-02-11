@@ -68,6 +68,7 @@ func GetItems(itemIds []int64, sinceTs string) ([]entity.Item, error) {
 						I.items_add_numerics_2 AS start,
 						I.items_add_numerics_3 AS end,
 						I.items_data AS modified,
+						I.items_pic AS defPicId,
 						NHU.neighbourhood_household_users_add_numerics_0 AS neighbourhood,
 						NHU.neighbourhood_household_users_add_numerics_1 AS household,
 						NHU.neighbourhood_household_users_add_numerics_2 AS user
@@ -96,6 +97,8 @@ func GetItems(itemIds []int64, sinceTs string) ([]entity.Item, error) {
 
 	for itemRows.Next() {
 		var item entity.Item
+		var defPicId int64
+
 		itemRows.Scan(&item.Itemid,
 			&item.Type,
 			&item.Name,
@@ -106,9 +109,11 @@ func GetItems(itemIds []int64, sinceTs string) ([]entity.Item, error) {
 			&item.StartTs,
 			&item.EndTs,
 			&item.LastModifiedTs,
+			&defPicId,
 			&item.Neighbourhoodid,
 			&item.Householdid,
-			&item.Userid)
+			&item.Userid,
+		)
 
 		imagesRows, err := utility.DB.Query("SELECT items_IMGS_id, items_IMGS_pic, items_IMGS_name FROM items_imgs WHERE items_id = ?", item.Itemid)
 		if err != nil {
@@ -120,6 +125,8 @@ func GetItems(itemIds []int64, sinceTs string) ([]entity.Item, error) {
 		for imagesRows.Next() {
 			var image entity.Attachment
 			imagesRows.Scan(&image.Id, &image.Url, &image.Name)
+			isDefault := *image.Id == defPicId
+			image.Default = &isDefault
 			images = append(images, image)
 		}
 		item.Images = images

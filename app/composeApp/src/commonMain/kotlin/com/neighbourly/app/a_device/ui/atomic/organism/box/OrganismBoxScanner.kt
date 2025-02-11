@@ -15,7 +15,7 @@ import neighbourly.composeapp.generated.resources.cancel
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun OrganismBoxScanner(onResult: (id: String?) -> Unit) {
+fun OrganismBoxScanner(onResult: (result: String?) -> Unit) {
     PlatformBarcodeScanner(modifier = Modifier.fillMaxSize()) { scanString ->
         onResult(scanString)
     }

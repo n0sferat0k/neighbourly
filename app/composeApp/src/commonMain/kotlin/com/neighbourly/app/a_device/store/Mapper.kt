@@ -1,6 +1,7 @@
 package com.neighbourly.app.a_device.store
 
 import com.neighbourly.app.d_entity.data.Box
+import com.neighbourly.app.d_entity.data.BoxShare
 import com.neighbourly.app.d_entity.data.Household
 import com.neighbourly.app.d_entity.data.Neighbourhood
 import com.neighbourly.app.d_entity.data.User
@@ -86,12 +87,34 @@ fun Box.toStoreBox(): StoreBox =
     StoreBox(
         name = this.name,
         id = this.id,
+        householdId = this.householdId,
+        shares = this.shares.map { it.toStoreBoxShare() }
     )
 
 fun StoreBox.toBox(): Box =
     Box(
         name = this.name,
         id = this.id,
+        householdId = this.householdId,
+        shares = this.shares.map { it.toBoxShare() }
+    )
+
+fun BoxShare.toStoreBoxShare(): StoreBoxShare =
+    StoreBoxShare(
+        id = this.id,
+        name = this.name,
+        boxId = this.boxId,
+        token = this.token,
+        householdId = this.householdId,
+    )
+
+fun StoreBoxShare.toBoxShare(): BoxShare =
+    BoxShare(
+        id = this.id,
+        name = this.name,
+        boxId = this.boxId,
+        token = this.token,
+        householdId = this.householdId,
     )
 
 fun Neighbourhood.toStoreNeighbourhood(): StoreNeighbourhood =
@@ -138,6 +161,17 @@ data class StoreUser(
 data class StoreBox(
     val name: String,
     val id: String,
+    val householdId: Int,
+    val shares: List<StoreBoxShare>,
+)
+
+@Serializable
+data class StoreBoxShare(
+    val id: Int,
+    val name: String,
+    val boxId: String,
+    val token: String = "",
+    val householdId: Int = -1,
 )
 
 @Serializable

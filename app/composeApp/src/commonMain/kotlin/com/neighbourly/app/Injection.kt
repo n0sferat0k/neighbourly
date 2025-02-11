@@ -143,7 +143,7 @@ val adapterModule =
             AppStateInfoViewModel(get(), get(), get(), get())
         }
         factory {
-            BoxManagementViewModel(get(), get(), get(), get())
+            BoxManagementViewModel(get(), get(), get(), get(), get())
         }
         factory {
             RemindersViewModel(get())

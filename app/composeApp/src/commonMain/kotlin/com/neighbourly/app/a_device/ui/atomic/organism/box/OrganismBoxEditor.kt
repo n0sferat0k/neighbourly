@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyButton
@@ -22,19 +26,20 @@ import org.jetbrains.compose.resources.stringResource
 fun OrganismBoxEditor(
     id: String,
     name: String,
-    nameError: Boolean,
     saving: Boolean,
-    updateName: (name: String) -> Unit,
-    saveBox: () -> Unit,
+    label: String = stringResource(Res.string.box_name),
+    onSave: (name: String) -> Unit,
     clearBox: () -> Unit,
 ) {
+    var nameOverride by remember { mutableStateOf<String?>(null) }
+
     OutlinedTextField(
-        value = name,
+        value = nameOverride ?: name,
         onValueChange = {
-            updateName(it)
+            nameOverride = it
         },
-        label = { Text(stringResource(Res.string.box_name)) },
-        isError = nameError,
+        label = { Text(label) },
+        isError = (nameOverride ?: name).isBlank(),
         modifier = Modifier.fillMaxWidth(),
     )
 
@@ -55,7 +60,7 @@ fun OrganismBoxEditor(
             text = stringResource(Res.string.save),
             loading = saving,
         ) {
-            saveBox()
+            onSave(nameOverride ?: name)
         }
         FriendlyButton(
             text = stringResource(Res.string.cancel),

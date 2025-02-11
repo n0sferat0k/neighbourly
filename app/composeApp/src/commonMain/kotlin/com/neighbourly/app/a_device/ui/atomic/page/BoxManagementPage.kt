@@ -9,9 +9,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.a_device.ui.atomic.template.BoxManagementTemplate
 import com.neighbourly.app.b_adapt.viewmodel.box.BoxManagementViewModel
+import com.neighbourly.app.b_adapt.viewmodel.navigation.NavigationViewModel
 
 @Composable
-fun BoxManagementPage(viewModel: BoxManagementViewModel = viewModel { KoinProvider.KOIN.get<BoxManagementViewModel>() }) {
+fun BoxManagementPage(
+    viewModel: BoxManagementViewModel = viewModel { KoinProvider.KOIN.get<BoxManagementViewModel>() },
+    navigationViewModel: NavigationViewModel = viewModel { KoinProvider.KOIN.get<NavigationViewModel>() },
+) {
     val state by viewModel.state.collectAsState()
 
     LaunchedEffect(state.boxes) {
@@ -25,16 +29,19 @@ fun BoxManagementPage(viewModel: BoxManagementViewModel = viewModel { KoinProvid
     }
 
     BoxManagementTemplate(
-        state,
-        viewModel::addBox,
-        viewModel::editBox,
-        viewModel::removeBox,
-        viewModel::refresh,
-        viewModel::updateName,
-        viewModel::saveBox,
-        viewModel::clearBox,
-        viewModel::openBox,
-        viewModel::unlockBox,
-        viewModel::lightBox
+        state = state,
+        addBox = viewModel::addBox,
+        editBox = viewModel::editBox,
+        removeBox = viewModel::removeBox,
+        refresh = viewModel::refresh,
+        saveBox = viewModel::saveBox,
+        saveBoxShare = viewModel::saveBoxShare,
+        clearBox = viewModel::clearBox,
+        openBox = viewModel::openBox,
+        unlockBox = viewModel::unlockBox,
+        lightBox = viewModel::lightBox,
+        shareBox = viewModel::shareBox,
+        shareBoxSelect = viewModel::shareBoxSelect,
+        onHouseholdClick = navigationViewModel::goToHouseholdDetails
     )
 }

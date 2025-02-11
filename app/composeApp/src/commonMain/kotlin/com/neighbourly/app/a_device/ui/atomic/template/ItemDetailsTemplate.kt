@@ -31,6 +31,7 @@ fun ItemDetailsTemplate(
         urlOverride: String?,
         startOverride: Instant?,
         endOverride: Instant?,
+        defaultImageIdOverride: String?,
         newImages: List<MemImgVS>,
         newFiles: Map<String, String>,
     ) -> Unit,

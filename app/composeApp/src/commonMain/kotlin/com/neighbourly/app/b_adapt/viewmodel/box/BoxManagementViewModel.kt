@@ -2,12 +2,17 @@ package com.neighbourly.app.b_adapt.viewmodel.box
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.b_adapt.viewmodel.bean.BoxShareVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.BoxVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.toBoxShareVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.toHouseholdVS
 import com.neighbourly.app.c_business.usecase.box.BoxOpsUseCase
 import com.neighbourly.app.c_business.usecase.profile.ProfileRefreshUseCase
 import com.neighbourly.app.d_entity.data.OpException
+import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.Iot
 import com.neighbourly.app.d_entity.interf.SessionStore
+import com.neighbourly.app.d_entity.util.isValidMac
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +23,7 @@ import kotlinx.coroutines.launch
 
 class BoxManagementViewModel(
     val sessionStore: SessionStore,
+    val database: Db,
     val iotComm: Iot,
     val boxOpsUseCase: BoxOpsUseCase,
     val profileRefreshUseCase: ProfileRefreshUseCase,
@@ -29,15 +35,27 @@ class BoxManagementViewModel(
         sessionStore.userFlow
             .onEach { user ->
                 user?.household?.let { household ->
+                    val shareHouses =
+                        household.boxes?.map { it.shares.map { it.householdId } }?.flatten()
+                            .let { shareHouseIds ->
+                                database.filterHouseholds(shareHouseIds)
+                            }
                     _state.update {
                         it.copy(
-                            boxes = user.household.boxes?.map { box ->
+                            boxes = household.boxes?.map { box ->
                                 BoxVS(
                                     id = box.id,
                                     name = box.name,
+                                    owned = box.householdId == household.householdid,
                                     //keep the online status for known boxes (in rename case)
                                     online = _state.value.boxes.firstOrNull { it.id == box.id }?.online
-                                        ?: false
+                                        ?: false,
+                                    shares = box.shares.map { share ->
+                                        share.toBoxShareVS(
+                                            shareHouses.firstOrNull { it.householdid == share.householdId }
+                                                ?.toHouseholdVS()
+                                        )
+                                    }
                                 )
                             }.orEmpty()
                         )
@@ -67,7 +85,12 @@ class BoxManagementViewModel(
         viewModelScope.launch {
             if (boxIds.isNullOrEmpty()) {
                 iotComm.requireDisconnect()
-                _state.update { it.copy(boxes = it.boxes.map { it.copy(online = null) }) }
+                _state.update {
+                    it.copy(
+                        boxes = it.boxes.map { it.copy(online = null) },
+                        shareBox = null
+                    )
+                }
             } else {
                 iotComm.requireConnect()
                 val newBoxes = boxIds.filter { !_state.value.monitoringBoxes.contains(it) }
@@ -140,37 +163,79 @@ class BoxManagementViewModel(
         }
     }
 
-    fun addBox(boxId: String) {
-        _state.update { it.copy(newBoxId = boxId) }
+    fun addBox(scanResult: String) {
+        if (scanResult.isValidMac()) {
+            _state.update { it.copy(newBoxId = scanResult) }
+        } else {
+            viewModelScope.launch {
+                _state.update { it.copy(saving = true, error = "") }
+                try {
+                    boxOpsUseCase.addSharedBox(scanResult)
+                    profileRefreshUseCase.execute()
+                    _state.update { it.copy(saving = false, newBoxId = "", boxName = "") }
+                } catch (e: OpException) {
+                    _state.update { it.copy(saving = false, error = e.msg) }
+                }
+            }
+        }
+    }
+
+    fun shareBox(boxId: String) {
+        _state.update { it.copy(shareableBoxId = boxId) }
     }
 
     fun clearBox() {
         _state.update {
             it.copy(
                 newBoxId = "",
-                newBoxName = "",
-                newBoxNameError = true,
+                shareableBoxId = "",
+                boxName = "",
                 error = ""
             )
         }
     }
 
-    fun saveBox() {
-        if (!_state.value.newBoxNameError)
+    fun saveBox(name: String) {
+        if (!name.isBlank()) {
             viewModelScope.launch {
                 _state.update { it.copy(saving = true, error = "") }
                 try {
-                    boxOpsUseCase.addOrUpdateBox(_state.value.newBoxId, _state.value.newBoxName)
+                    boxOpsUseCase.addOrUpdateBox(_state.value.newBoxId, name)
                     profileRefreshUseCase.execute()
-                    _state.update { it.copy(saving = false, newBoxId = "", newBoxName = "") }
+                    _state.update { it.copy(saving = false, newBoxId = "", boxName = "") }
                 } catch (e: OpException) {
                     _state.update { it.copy(saving = false, error = e.msg) }
                 }
             }
+        }
     }
 
-    fun updateName(boxName: String) {
-        _state.update { it.copy(newBoxName = boxName, newBoxNameError = boxName.isBlank()) }
+    fun saveBoxShare(name: String) {
+        if (!name.isBlank()) {
+            viewModelScope.launch {
+                _state.update { it.copy(saving = true, error = "") }
+                try {
+                    val shareBox =
+                        boxOpsUseCase.getBoxShareToken(_state.value.shareableBoxId, name)
+                            ?.toBoxShareVS(null)
+                    profileRefreshUseCase.execute()
+                    _state.update {
+                        it.copy(saving = false, shareableBoxId = "", shareBox = shareBox)
+                    }
+                } catch (e: OpException) {
+                    _state.update { it.copy(saving = false, error = e.msg) }
+                }
+            }
+        }
+    }
+
+    fun shareBoxSelect(shareBoxId: Int, boxId: String) {
+        val shareBox =
+            _state.value.boxes.firstOrNull { it.id == boxId }?.shares?.firstOrNull { it.id == shareBoxId }
+
+        _state.update {
+            it.copy(saving = false, shareableBoxId = "", shareBox = shareBox)
+        }
     }
 
     fun removeBox(boxId: String) {
@@ -187,15 +252,16 @@ class BoxManagementViewModel(
     }
 
     fun editBox(boxId: String, boxName: String) {
-        _state.update { it.copy(newBoxId = boxId, newBoxName = boxName) }
+        _state.update { it.copy(newBoxId = boxId, boxName = boxName) }
     }
 
     data class BoxManagementViewState(
         val saving: Boolean = false,
         val loading: Boolean = false,
         val newBoxId: String = "",
-        val newBoxName: String = "",
-        val newBoxNameError: Boolean = true,
+        val shareableBoxId: String = "",
+        val shareBox: BoxShareVS? = null,
+        val boxName: String = "",
         val error: String = "",
         val boxes: List<BoxVS> = emptyList(),
         val monitoringBoxes: List<String> = emptyList()

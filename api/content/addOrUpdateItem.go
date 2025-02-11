@@ -111,8 +111,9 @@ func AddOrUpdateItem(w http.ResponseWriter, r *http.Request) {
 									items_add_numerics_2 = ?,
 									items_add_numerics_3 = ?,																		
 									items_add_strings_0 = ?, 
-									items_link = ?,
-									items_accent = ?
+									items_link = ?,										
+									items_pic = ?,								
+									items_accent = ?									
 								WHERE 
 									items_id = ? 
 								AND 
@@ -124,6 +125,7 @@ func AddOrUpdateItem(w http.ResponseWriter, r *http.Request) {
 			item.EndTs,
 			item.Type,
 			item.Url,
+			item.Pic,
 			accent,
 			item.Itemid,
 			nhuId)

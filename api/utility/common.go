@@ -88,7 +88,7 @@ func RequirePayload(ctx context.Context, w http.ResponseWriter, r *http.Request,
 			return context.WithValue(ctx, CtxKeyContinue, false)
 		}
 		if err := json.NewDecoder(r.Body).Decode(v); err != nil {
-			http.Error(w, "Bad request", http.StatusBadRequest)
+			http.Error(w, "Bad request "+err.Error(), http.StatusBadRequest)
 			return context.WithValue(ctx, CtxKeyContinue, false)
 		}
 	}

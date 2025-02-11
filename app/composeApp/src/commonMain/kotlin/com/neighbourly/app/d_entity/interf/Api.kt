@@ -1,6 +1,7 @@
 package com.neighbourly.app.d_entity.interf
 
 import com.neighbourly.app.d_entity.data.Attachment
+import com.neighbourly.app.d_entity.data.BoxShare
 import com.neighbourly.app.d_entity.data.FileContents
 import com.neighbourly.app.d_entity.data.GpsItem
 import com.neighbourly.app.d_entity.data.Item
@@ -138,7 +139,7 @@ interface Api {
 
     suspend fun deleteItem(token: String, itemId: Int)
 
-    suspend fun addOrUpdateItem(token: String, item: Item): Item
+    suspend fun addOrUpdateItem(token: String, item: Item, defaultImageId: String?): Item
 
     suspend fun addItemMessage(token: String, itemId: Int, message: String): ItemMessage
 
@@ -152,7 +153,11 @@ interface Api {
 
     suspend fun addOrUpdateBox(token: String, boxId: String, boxName: String)
 
+    suspend fun addSharedBox(token: String, boxShareToken: String)
+
     suspend fun removeBox(token: String, boxId: String)
+
+    suspend fun shareBox(token: String, boxId: String, shareName: String): BoxShare
 
     suspend fun unlockBox(token: String, boxId: String, unlock: Boolean)
 

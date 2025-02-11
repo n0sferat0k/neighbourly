@@ -4,11 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemAugmentVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
-import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.REMINDER
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.toHouseholdVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.toItemType
-import com.neighbourly.app.b_adapt.viewmodel.bean.toItemTypeVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.toItemVS
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.c_business.usecase.content.FilterItemsUseCase
@@ -22,7 +20,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import kotlinx.datetime.Instant.Companion.fromEpochSeconds
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
@@ -105,26 +102,28 @@ class FilteredItemListViewModel(
                 .let { itemsAndHouses ->
                     _state.update {
                         it.copy(loading = false, items = itemsAndHouses.map { (item, house) ->
-                            item.toItemVS().copy(augmentation = ItemAugmentVS(
-                                expLabel = item.endTs.let {
-                                    if (it > 0) {
-                                        val remainingSeconds = it - now
-                                        if (remainingSeconds > MINUTE_IN_SECONDS) {
-                                            if (remainingSeconds < HOUR_IN_SECONDS) {
-                                                "${remainingSeconds / MINUTE_IN_SECONDS} min"
-                                            } else if (remainingSeconds < DAY_IN_SECONDS) {
-                                                "${remainingSeconds / HOUR_IN_SECONDS} hr"
-                                            } else {
-                                                "${remainingSeconds / DAY_IN_SECONDS} d"
-                                            }
-                                        } else "exp"
-                                    } else null
-                                },
-                                imageUrl = item.images.randomOrNull()?.url,
-                                deletable = item.householdId == myHouseholdId,
-                                household = house?.toHouseholdVS(),
-                                watched = store.user?.watchedItems?.contains(item.id) ?: false
-                            ))
+                            item.toItemVS().copy(
+                                augmentation = ItemAugmentVS(
+                                    expLabel = item.endTs.let {
+                                        if (it > 0) {
+                                            val remainingSeconds = it - now
+                                            if (remainingSeconds > MINUTE_IN_SECONDS) {
+                                                if (remainingSeconds < HOUR_IN_SECONDS) {
+                                                    "${remainingSeconds / MINUTE_IN_SECONDS} min"
+                                                } else if (remainingSeconds < DAY_IN_SECONDS) {
+                                                    "${remainingSeconds / HOUR_IN_SECONDS} hr"
+                                                } else {
+                                                    "${remainingSeconds / DAY_IN_SECONDS} d"
+                                                }
+                                            } else "exp"
+                                        } else null
+                                    },
+                                    imageUrl = item.images.firstOrNull { it.default }?.url ?: item.images.randomOrNull()?.url,
+                                    deletable = item.householdId == myHouseholdId,
+                                    household = house?.toHouseholdVS(),
+                                    watched = store.user?.watchedItems?.contains(item.id) ?: false
+                                )
+                            )
                         })
                     }
                 }

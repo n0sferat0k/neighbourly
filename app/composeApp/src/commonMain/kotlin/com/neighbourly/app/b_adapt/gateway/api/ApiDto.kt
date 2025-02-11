@@ -93,7 +93,18 @@ data class UserDTO(
 data class BoxDTO(
     val name: String = "",
     val id: String,
+    val householdId: Int? = null,
     val command: String? = null,
+    val shares: List<BoxShareDTO> = emptyList(),
+)
+
+@Serializable
+data class BoxShareDTO(
+    val id: Int,
+    val name: String,
+    val boxId: String,
+    val token: String = "",
+    val householdId: Int = -1,
 )
 
 @Serializable
@@ -145,6 +156,7 @@ data class ItemDTO(
     val accent: Boolean = false,
     val images: List<AttachmentDTO> = emptyList(),
     val files: List<AttachmentDTO> = emptyList(),
+    val pic: String = "",
     val startTs: Int,
     val endTs: Int,
     val lastModifiedTs: Int? = null,
@@ -167,6 +179,7 @@ data class AttachmentDTO(
     val id: Int? = null,
     val url: String,
     val name: String = "",
+    val default: Boolean = false,
 )
 
 @Serializable

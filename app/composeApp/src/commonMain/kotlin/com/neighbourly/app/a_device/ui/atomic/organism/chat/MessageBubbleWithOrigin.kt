@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
-import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemHouseholdBadge
+import com.neighbourly.app.a_device.ui.atomic.molecule.household.HouseholdBadge
 import com.neighbourly.app.b_adapt.viewmodel.bean.HouseholdVS
 
 @Composable
@@ -30,9 +30,8 @@ fun MessageBubbleWithOrigin(
     ) {
         Row(modifier = Modifier.padding(4.dp)) {
             senderHouse?.let {
-                ItemHouseholdBadge(
-                    householdImage = it.imageurl,
-                    householdName = it.name,
+                HouseholdBadge(
+                    household = it,
                     onClick = onHouseholdClick
                 )
             }

@@ -24,11 +24,11 @@ class ItemManagementUseCase(
         }
     }
 
-    suspend fun addOrUpdate(item: Item): Int? {
+    suspend fun addOrUpdate(item: Item, defaultImageId: String?): Int? {
         val token = sessionStore.user?.authtoken
 
         return token?.let {
-            val updatedItem = apiGw.addOrUpdateItem(token, item)
+            val updatedItem = apiGw.addOrUpdateItem(token, item, defaultImageId)
             database.storeItems(listOf(updatedItem))
             summonable.summonOnItemOp()
             updatedItem.id

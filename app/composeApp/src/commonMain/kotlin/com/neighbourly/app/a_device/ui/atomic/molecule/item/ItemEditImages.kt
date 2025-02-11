@@ -28,9 +28,11 @@ import org.jetbrains.compose.resources.stringResource
 fun ItemEditImages(
     hidden: Boolean = false,
     images: List<AttachmentVS>,
+    highlightImage: String?,
     newImages: List<MemImgVS>,
     onDeleteImage: (imageId: Int) -> Unit,
     onImageSelected: (imageId: Int) -> Unit,
+    onImageSetDefault: (imageId: String) -> Unit,
     onNewImages: (newImages: List<MemImgVS>) -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
@@ -63,6 +65,7 @@ fun ItemEditImages(
             if (images.size > 0 || newImages.size > 0) {
                 ImageGrid(
                     images = images,
+                    highlightImage = highlightImage,
                     newImages = newImages,
                     deleteNew = { delImg ->
                         onNewImages(newImages.filter { it != delImg })
@@ -72,6 +75,9 @@ fun ItemEditImages(
                     },
                     select = {
                         onImageSelected(it.id)
+                    },
+                    altSelect = {
+                        onImageSetDefault(if (it.default) "" else it.id.toString())
                     }
                 )
             }

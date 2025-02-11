@@ -153,7 +153,7 @@ class SessionHybridStore(
     }
 
     companion object {
-        const val STORE_VERSION = "2"
+        const val STORE_VERSION = "4"
         const val KEY_STORE_VERSION = "key.store.version"
         const val KEY_USER = "key.user"
         const val KEY_REM_USER = "key.remembered.user"

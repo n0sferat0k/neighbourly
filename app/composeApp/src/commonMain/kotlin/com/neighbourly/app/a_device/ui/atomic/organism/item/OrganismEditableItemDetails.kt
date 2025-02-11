@@ -54,6 +54,7 @@ fun OrganismEditableItemDetails(
         urlOverride: String?,
         startOverride: Instant?,
         endOverride: Instant?,
+        defaultImageIdOverride: String?,
         newImages: List<MemImgVS>,
         newFiles: Map<String, String>,
     ) -> Unit,
@@ -71,6 +72,7 @@ fun OrganismEditableItemDetails(
     var urlOverride by remember { mutableStateOf<String?>(null) }
     var startOverride by remember { mutableStateOf<Instant?>(null) }
     var endOverride by remember { mutableStateOf<Instant?>(null) }
+    var defaultImageIdOverride by remember { mutableStateOf<String?>(null) }
     var newImages by remember { mutableStateOf<List<MemImgVS>>(emptyList()) }
     var newFiles by remember { mutableStateOf<Map<String, String>>(emptyMap()) }
     var startedSaving by remember { mutableStateOf(false) }
@@ -87,6 +89,7 @@ fun OrganismEditableItemDetails(
             urlOverride,
             startOverride,
             endOverride,
+            defaultImageIdOverride
         ).any { it != null }
                 || newImages.isNotEmpty()
                 || newFiles.isNotEmpty()
@@ -108,6 +111,7 @@ fun OrganismEditableItemDetails(
         urlOverride = null
         startOverride = null
         endOverride = null
+        defaultImageIdOverride = null
         newImages = emptyList()
         newFiles = emptyMap()
         if (startedSaving) {
@@ -171,8 +175,12 @@ fun OrganismEditableItemDetails(
         ItemEditImages(
             images = item.images,
             newImages = newImages,
+            highlightImage = defaultImageIdOverride,
             onDeleteImage = onDeleteImage,
             onImageSelected = onImageSelected,
+            onImageSetDefault = {
+                defaultImageIdOverride = it
+            },
         ) {
             newImages = it
         }
@@ -220,6 +228,7 @@ fun OrganismEditableItemDetails(
                     urlOverride,
                     startOverride,
                     endOverride,
+                    defaultImageIdOverride,
                     newImages,
                     newFiles,
                 )

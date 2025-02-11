@@ -189,6 +189,7 @@ class ItemDetailsViewModel(
         urlOverride: String?,
         startOverride: Instant?,
         endOverride: Instant?,
+        defaultImageIdOverride: String?,
         newImages: List<MemImgVS>,
         newFiles: Map<String, String>,
     ) {
@@ -230,7 +231,9 @@ class ItemDetailsViewModel(
                         }
 
                         itemManagementUseCase.addOrUpdate(
-                            updateItem
+                            item = updateItem,
+                            defaultImageId = defaultImageIdOverride
+                                ?: item.images.firstOrNull { it.default }?.id.toString(),
                         )?.let { newItemId ->
                             newImages.forEach { newImage ->
                                 loadContentsFromFile(newImage.name)?.let { fileContent ->

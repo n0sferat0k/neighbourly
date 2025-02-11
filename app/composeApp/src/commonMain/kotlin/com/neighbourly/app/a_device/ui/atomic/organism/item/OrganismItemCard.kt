@@ -29,8 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neighbourly.app.a_device.ui.AppColors
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
+import com.neighbourly.app.a_device.ui.atomic.molecule.household.HouseholdBadge
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemBadge
-import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemHouseholdBadge
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
 import io.kamel.image.KamelImage
@@ -119,7 +119,9 @@ fun OrganismItemCard(
 
                 Column {
                     FriendlyText(text = item.name, bold = true, fontSize = 20.sp)
-                    FriendlyText(text = item.description, fontSize = 14.sp)
+                    if (item.type != ItemTypeVS.REMINDER) {
+                        FriendlyText(text = item.description, fontSize = 14.sp)
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -142,9 +144,8 @@ fun OrganismItemCard(
                 Spacer(modifier = Modifier.weight(1f))
 
                 item.augmentation?.household?.let {
-                    ItemHouseholdBadge(
-                        householdImage = it.imageurl,
-                        householdName = it.name,
+                    HouseholdBadge(
+                        household = it,
                         onClick = onHouseholdClick
                     )
                 }
