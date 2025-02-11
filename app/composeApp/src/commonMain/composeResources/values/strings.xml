@@ -179,5 +179,6 @@
     <string name="list_shares">Shares:</string>
     <string name="box_share_household">This Box is being shared with the household:</string>
 
-
+    <string name="deleteing_box_share">Deleteing Box sharing</string>
+    <string name="confirm_deleteing_box_share">Are you sure you want to permanently delete the Box sharing:</string>
 </resources>

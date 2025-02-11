@@ -56,6 +56,14 @@ class BoxOpsUseCase(
         }
     }
 
+    suspend fun delShareBox(shareId: Int) {
+        val token = sessionStore.user?.authtoken
+
+        token?.let {
+            apiGw.delShareBox(token, shareId)
+        }
+    }
+
     suspend fun getBoxShareToken(boxId: String, shareName: String): BoxShare? {
         val token = sessionStore.user?.authtoken
 

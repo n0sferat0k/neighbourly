@@ -412,6 +412,12 @@ class ApiGateway(
         }
     }
 
+    override suspend fun delShareBox(token: String, shareId: Int) {
+        runContextCatchTranslateThrow {
+            api.delShareBox(API_BASE_URL, token, BoxShareDTO(id = shareId))
+        }
+    }
+
     override suspend fun shareBox(token: String, boxId: String, shareName: String): BoxShare =
         runContextCatchTranslateThrow {
             api.shareBox(API_BASE_URL, token, BoxDTO(id = boxId, name = shareName)).toBoxShare()

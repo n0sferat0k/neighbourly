@@ -8,11 +8,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
+import com.neighbourly.app.a_device.ui.atomic.molecule.card.OkCardFooter
 import com.neighbourly.app.a_device.ui.atomic.organism.box.OrganismBoxEditor
 import com.neighbourly.app.a_device.ui.atomic.organism.box.OrganismBoxList
 import com.neighbourly.app.a_device.ui.atomic.organism.box.OrganismBoxScanner
 import com.neighbourly.app.a_device.ui.atomic.organism.box.OrganismBoxShare
 import com.neighbourly.app.a_device.ui.atomic.organism.util.OrganismContentBubble
+import com.neighbourly.app.b_adapt.viewmodel.bean.BoxShareVS
 import com.neighbourly.app.b_adapt.viewmodel.box.BoxManagementViewModel
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.add_box
@@ -33,7 +35,8 @@ fun BoxManagementTemplate(
     unlockBox: (id: String, unlock: Boolean) -> Unit,
     lightBox: (id: String, light: Boolean) -> Unit,
     shareBox: (id: String) -> Unit,
-    shareBoxSelect: (id: Int, boxId: String) -> Unit,
+    shareBoxSelect: (shareBox: BoxShareVS?) -> Unit,
+    shareBoxDelete: (shareBox: BoxShareVS) -> Unit,
     onHouseholdClick: (householdId: Int) -> Unit,
 ) {
     var showBoxScanner by remember { mutableStateOf(false) }
@@ -80,17 +83,23 @@ fun BoxManagementTemplate(
                     lightBox = lightBox,
                     shareBox = shareBox,
                     shareBoxSelect = shareBoxSelect,
+                    shareBoxDelete = shareBoxDelete,
                 )
             }
         },
         footerContent = {
-
-            FriendlyText(
-                modifier = Modifier.clickable {
-                    showBoxScanner = true
-                },
-                text = stringResource(Res.string.add_box), bold = true
-            )
+            if(state.shareBox != null) {
+                OkCardFooter {
+                    shareBoxSelect(null)
+                }
+            } else {
+                FriendlyText(
+                    modifier = Modifier.clickable {
+                        showBoxScanner = true
+                    },
+                    text = stringResource(Res.string.add_box), bold = true
+                )
+            }
         }
     )
 }

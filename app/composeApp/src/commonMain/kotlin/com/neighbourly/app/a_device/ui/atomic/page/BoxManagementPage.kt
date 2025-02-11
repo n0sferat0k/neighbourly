@@ -42,6 +42,7 @@ fun BoxManagementPage(
         lightBox = viewModel::lightBox,
         shareBox = viewModel::shareBox,
         shareBoxSelect = viewModel::shareBoxSelect,
+        shareBoxDelete = viewModel::shareBoxDelete,
         onHouseholdClick = navigationViewModel::goToHouseholdDetails
     )
 }

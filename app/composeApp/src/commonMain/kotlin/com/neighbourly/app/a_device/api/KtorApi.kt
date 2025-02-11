@@ -574,6 +574,19 @@ object KtorApi {
         }
     }
 
+    suspend fun delShareBox(baseUrl: String, token: String, shareBox: BoxShareDTO) {
+        val response = client.post(baseUrl + "box/delShareBox") {
+            contentType(ContentType.Application.Json)
+            setBody(shareBox)
+            headers {
+                append(HttpHeaders.Authorization, "Bearer " + token)
+            }
+        }
+        if (response.status.value != 200) {
+            throw ApiException(response.status.value, response.bodyAsText())
+        }
+    }
+
     suspend fun shareBox(baseUrl: String, token: String, box: BoxDTO): BoxShareDTO {
         val response = client.post(baseUrl + "box/shareBox") {
             contentType(ContentType.Application.Json)

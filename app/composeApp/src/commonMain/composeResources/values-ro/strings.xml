@@ -175,4 +175,8 @@
     <string name="copy_to_clipboard">Copiază link-ul în clipboard</string>
     <string name="list_shares">împartășiri:</string>
     <string name="box_share_household">Acest Box este împartășit cu gospodăria:</string>
+
+    <string name="deleteing_box_share">Ștergere împartășire Box</string>
+    <string name="confirm_deleteing_box_share">Sigur ștergeți definitiv împartășirea de Box:</string>
+
 </resources>

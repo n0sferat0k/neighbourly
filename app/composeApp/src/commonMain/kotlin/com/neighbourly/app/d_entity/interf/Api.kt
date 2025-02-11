@@ -157,6 +157,8 @@ interface Api {
 
     suspend fun removeBox(token: String, boxId: String)
 
+    suspend fun delShareBox(token: String, shareId: Int)
+
     suspend fun shareBox(token: String, boxId: String, shareName: String): BoxShare
 
     suspend fun unlockBox(token: String, boxId: String, unlock: Boolean)

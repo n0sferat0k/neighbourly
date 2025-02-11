@@ -229,12 +229,22 @@ class BoxManagementViewModel(
         }
     }
 
-    fun shareBoxSelect(shareBoxId: Int, boxId: String) {
-        val shareBox =
-            _state.value.boxes.firstOrNull { it.id == boxId }?.shares?.firstOrNull { it.id == shareBoxId }
-
+    fun shareBoxSelect(shareBox: BoxShareVS?) {
         _state.update {
             it.copy(saving = false, shareableBoxId = "", shareBox = shareBox)
+        }
+    }
+
+    fun shareBoxDelete(shareBox: BoxShareVS) {
+        viewModelScope.launch {
+            _state.update { it.copy(loading = true, error = "") }
+            try {
+                boxOpsUseCase.delShareBox(shareBox.id)
+                profileRefreshUseCase.execute()
+                _state.update { it.copy(loading = false) }
+            } catch (e: OpException) {
+                _state.update { it.copy(loading = false, error = e.msg) }
+            }
         }
     }
 

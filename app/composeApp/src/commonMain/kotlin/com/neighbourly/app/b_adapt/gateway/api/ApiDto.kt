@@ -101,8 +101,8 @@ data class BoxDTO(
 @Serializable
 data class BoxShareDTO(
     val id: Int,
-    val name: String,
-    val boxId: String,
+    val name: String = "",
+    val boxId: String = "",
     val token: String = "",
     val householdId: Int = -1,
 )

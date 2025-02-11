@@ -13,6 +13,7 @@ import org.eclipse.paho.client.mqttv3.MqttCallback
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
+import java.util.UUID
 import java.util.concurrent.Executors
 import org.eclipse.paho.client.mqttv3.MqttClient as PahoMqttClient
 
@@ -26,7 +27,7 @@ class PahoMqttIot : Iot, MqttCallback {
     override suspend fun requireConnect() {
         withContext(dispatcher) {
             if (client == null) {
-                client = PahoMqttClient(brokerUrl, clientId, MemoryPersistence()).apply {
+                client = PahoMqttClient(brokerUrl, clientId +  UUID.randomUUID(), MemoryPersistence()).apply {
                     connect(MqttConnectOptions().apply {
                         this.userName = username
                         this.password = PahoMqttIot.password.toCharArray()
@@ -80,7 +81,7 @@ class PahoMqttIot : Iot, MqttCallback {
 
     companion object {
         val brokerUrl: String = "tcp://neighbourly.go.ro:1883"
-        val clientId: String = "neighbourlyapp"
+        val clientId: String = "neighbourlyapp_"
         val username: String = "neighbourly"
         val password: String = "localpass"
     }
