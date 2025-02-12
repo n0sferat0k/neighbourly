@@ -53,7 +53,8 @@ object NeighbourlySpirit : Summonable {
             val mutePersonIds = sessionStore.user?.mutedUsers.orEmpty()
 
             //react to new messages
-            val messagesFromOthers = newMessagesOfInterest.filter { it.userId != sessionStore.user?.id }
+            val messagesFromOthers =
+                newMessagesOfInterest.filter { it.userId != sessionStore.user?.id }
             if (messagesFromOthers.isNotEmpty()) {
                 val messagePeople = database.getUsers(ids = messagesFromOthers.map { it.userId }
                     .filter { !mutePersonIds.contains(it) }.filterNotNull())
@@ -147,23 +148,25 @@ object NeighbourlySpirit : Summonable {
 
     override fun summonOnScheduledWork(work: ScheduledWork) {
         spiritScope.launch {
-            when (work.type) {
-                ScheduledWorkType.REMIND -> {
-                    work.id?.let { database.getItem(it) }?.let { item ->
-                        val neighbourhood =
-                            sessionStore.user?.neighbourhoods?.firstOrNull { it.neighbourhoodid == item.neighbourhoodId }
+            kotlin.runCatching {
+                when (work.type) {
+                    ScheduledWorkType.REMIND -> {
+                        work.id?.let { database.getItem(it) }?.let { item ->
+                            val neighbourhood =
+                                sessionStore.user?.neighbourhoods?.firstOrNull { it.neighbourhoodid == item.neighbourhoodId }
 
-                        postSystemNotification(
-                            id = item.id.toString(),
-                            title = neighbourhood?.name.orEmpty(),
-                            text = item.name.orEmpty()
-                        )
+                            postSystemNotification(
+                                id = item.id.toString(),
+                                title = neighbourhood?.name.orEmpty(),
+                                text = item.name.orEmpty()
+                            )
+                        }
                     }
-                    scheduledWorkUseCase.execute()
-                }
 
-                ScheduledWorkType.SYNC -> contentSyncUseCase.execute(force = true)
+                    ScheduledWorkType.SYNC -> contentSyncUseCase.execute(force = true)
+                }
             }
+            scheduledWorkUseCase.execute()
         }
     }
 }
