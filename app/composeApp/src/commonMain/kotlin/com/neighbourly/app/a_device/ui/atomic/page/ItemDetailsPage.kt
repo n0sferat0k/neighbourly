@@ -84,7 +84,9 @@ fun ItemDetailsPage(
             if (LOCALLY_ALLOWED_SITES.any { url.contains(it) }) {
                 navigationViewModel.goToWebPage(url)
             } else {
-                uriHandler.openUri(url)
+                runCatching {
+                    uriHandler.openUri(url)
+                }
             }
         },
         onDeleteItem = viewModel::deleteItem,

@@ -3,7 +3,7 @@ package com.neighbourly.app.d_entity.interf
 import kotlinx.coroutines.flow.Flow
 
 interface Iot {
-    val messageFlow: Flow<TopicMessage>
+    val messageFlow: Flow<TopicMessage?>
 
     suspend fun requireConnect()
     suspend fun publish(topic: String, payload: String)

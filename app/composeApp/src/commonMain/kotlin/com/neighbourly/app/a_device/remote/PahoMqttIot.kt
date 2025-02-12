@@ -21,8 +21,8 @@ class PahoMqttIot : Iot, MqttCallback {
     private var client: PahoMqttClient? = null
     private val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
-    private val _messageFlow = MutableSharedFlow<Iot.TopicMessage>()
-    override val messageFlow: Flow<Iot.TopicMessage> = _messageFlow.asSharedFlow()
+    private val _messageFlow = MutableSharedFlow<Iot.TopicMessage?>()
+    override val messageFlow: Flow<Iot.TopicMessage?> = _messageFlow.asSharedFlow()
 
     override suspend fun requireConnect() {
         withContext(dispatcher) {
@@ -34,6 +34,8 @@ class PahoMqttIot : Iot, MqttCallback {
                     })
                     setCallback(this@PahoMqttIot)
                 }
+            } else if(client?.isConnected == false) {
+                client?.reconnect()
             }
         }
     }
@@ -46,7 +48,8 @@ class PahoMqttIot : Iot, MqttCallback {
 
     override fun connectionLost(cause: Throwable?) {
         CoroutineScope(dispatcher).launch {
-            requireDisconnect()
+            client?.reconnect()
+            _messageFlow.emit(null)
         }
     }
 

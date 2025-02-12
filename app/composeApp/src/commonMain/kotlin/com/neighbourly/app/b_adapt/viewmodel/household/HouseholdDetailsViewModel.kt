@@ -62,7 +62,7 @@ class HouseholdDetailsViewModel(
                                 } else "exp"
                             } else null
                         },
-                        imageUrl = item.images.randomOrNull()?.url,
+                        imageUrl = item.images.firstOrNull { it.default }?.url ?: item.images.randomOrNull()?.url,
                     )
                 )
             }

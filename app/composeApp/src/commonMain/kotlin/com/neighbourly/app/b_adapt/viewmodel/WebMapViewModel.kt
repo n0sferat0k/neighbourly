@@ -101,7 +101,7 @@ class WebMapViewModel(
                         ids = database.getItemIds().shuffled().let { items ->
                             items.subList(0, min(myRandom.nextInt(2), items.size))
                         })
-                        .filter { it.householdId != _state.value.myHousehold.id }
+                        .filter { it.householdId != _state.value.myHousehold.id && it.type != ItemType.REMINDER }
                         .distinctBy { it.householdId }
 
 

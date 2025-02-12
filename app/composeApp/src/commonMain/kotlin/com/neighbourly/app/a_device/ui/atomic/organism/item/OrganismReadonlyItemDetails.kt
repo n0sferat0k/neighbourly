@@ -3,6 +3,8 @@ package com.neighbourly.app.a_device.ui.atomic.organism.item
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
@@ -16,11 +18,13 @@ import com.neighbourly.app.a_device.ui.atomic.molecule.item.ImageGrid
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemTypeOption
 import com.neighbourly.app.a_device.ui.atomic.page.TYPE_ASSOC
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.REMINDER
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import neighbourly.composeapp.generated.resources.Res
+import neighbourly.composeapp.generated.resources.dates
 import neighbourly.composeapp.generated.resources.end_date
 import neighbourly.composeapp.generated.resources.files
 import neighbourly.composeapp.generated.resources.images
@@ -38,6 +42,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import java.time.format.DateTimeFormatter
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun OrganismReadonlyItemDetails(
     item: ItemVS,
@@ -98,7 +103,7 @@ fun OrganismReadonlyItemDetails(
                 iconClick = { onWatchItem(!(item.augmentation?.watched ?: false)) }
             )
         }
-        if (item.description.isNotEmpty()) {
+        if (item.description.isNotEmpty() && item.type != REMINDER) {
             FriendlyText(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(Res.string.item_description), bold = true
@@ -151,6 +156,23 @@ fun OrganismReadonlyItemDetails(
                         },
                     text = item.name, bold = true
                 )
+            }
+        }
+
+        if (item.dates.isNotEmpty() && item.type == REMINDER) {
+            FriendlyText(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(Res.string.dates), bold = true
+            )
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                item.dates.forEach {
+                    FriendlyText(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = it.toLocalDateTime(TimeZone.currentSystemDefault())
+                            .toJavaLocalDateTime().format(formatter),
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
 
