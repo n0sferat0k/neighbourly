@@ -4,6 +4,7 @@ import (
 	"api/entity"
 	"api/utility"
 	"fmt"
+	"strconv"
 )
 
 func GetItemsFromNeighbourhoods(userId string, neighbourhoodids string, sinceTs string) ([]entity.Item, []int64, error) {
@@ -97,7 +98,7 @@ func GetItems(itemIds []int64, sinceTs string) ([]entity.Item, error) {
 
 	for itemRows.Next() {
 		var item entity.Item
-		var defPicId int64
+		var defPicId string
 
 		itemRows.Scan(&item.Itemid,
 			&item.Type,
@@ -125,7 +126,7 @@ func GetItems(itemIds []int64, sinceTs string) ([]entity.Item, error) {
 		for imagesRows.Next() {
 			var image entity.Attachment
 			imagesRows.Scan(&image.Id, &image.Url, &image.Name)
-			isDefault := *image.Id == defPicId
+			isDefault := strconv.FormatInt(*image.Id, 10) == defPicId
 			image.Default = &isDefault
 			images = append(images, image)
 		}

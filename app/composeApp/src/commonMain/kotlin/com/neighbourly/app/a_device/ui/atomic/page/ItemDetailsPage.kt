@@ -30,7 +30,6 @@ import neighbourly.composeapp.generated.resources.donation
 import neighbourly.composeapp.generated.resources.event
 import neighbourly.composeapp.generated.resources.need
 import neighbourly.composeapp.generated.resources.reminder
-import neighbourly.composeapp.generated.resources.reminders
 import neighbourly.composeapp.generated.resources.request
 import neighbourly.composeapp.generated.resources.sale
 import neighbourly.composeapp.generated.resources.skillshare
@@ -44,7 +43,7 @@ val TYPE_ASSOC = mapOf(
     REQUEST to Pair(Res.drawable.request, Res.string.request),
     SKILLSHARE to Pair(Res.drawable.skillshare, Res.string.skillshare),
 )
-val TYPE_ASSOC_ADMIN = TYPE_ASSOC + mapOf(
+val TYPE_ASSOC_FULL = TYPE_ASSOC + mapOf(
     REMINDER to Pair(Res.drawable.reminder, Res.string.reminder),
 )
 

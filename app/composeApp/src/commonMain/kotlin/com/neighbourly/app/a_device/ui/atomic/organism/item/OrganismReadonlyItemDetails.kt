@@ -16,7 +16,7 @@ import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyIconedText
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ImageGrid
 import com.neighbourly.app.a_device.ui.atomic.molecule.item.ItemTypeOption
-import com.neighbourly.app.a_device.ui.atomic.page.TYPE_ASSOC
+import com.neighbourly.app.a_device.ui.atomic.page.TYPE_ASSOC_FULL
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS.REMINDER
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemVS
@@ -65,12 +65,12 @@ fun OrganismReadonlyItemDetails(
             FriendlyText(text = stringResource(Res.string.type), bold = true)
             FriendlyText(
                 text = stringResource(
-                    TYPE_ASSOC[item.type]?.second ?: Res.string.unknown
+                    TYPE_ASSOC_FULL[item.type]?.second ?: Res.string.unknown
                 ),
             )
             ItemTypeOption(
                 icon = painterResource(
-                    TYPE_ASSOC[item.type]?.first ?: Res.drawable.newbadge
+                    TYPE_ASSOC_FULL[item.type]?.first ?: Res.drawable.newbadge
                 ),
                 selected = false,
                 contentDesc = item.type.name,

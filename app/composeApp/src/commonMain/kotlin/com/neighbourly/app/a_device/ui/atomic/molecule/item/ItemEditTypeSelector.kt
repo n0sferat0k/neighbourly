@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.neighbourly.app.a_device.ui.atomic.atom.FriendlyText
 import com.neighbourly.app.a_device.ui.atomic.page.TYPE_ASSOC
-import com.neighbourly.app.a_device.ui.atomic.page.TYPE_ASSOC_ADMIN
+import com.neighbourly.app.a_device.ui.atomic.page.TYPE_ASSOC_FULL
 import com.neighbourly.app.b_adapt.viewmodel.bean.ItemTypeVS
 import neighbourly.composeapp.generated.resources.Res
 import neighbourly.composeapp.generated.resources.type
@@ -36,7 +36,7 @@ fun ItemEditTypeSelector(
 
                 FriendlyText(
                     text = stringResource(
-                        TYPE_ASSOC_ADMIN.get(type)?.second ?: Res.string.unknown
+                        TYPE_ASSOC_FULL.get(type)?.second ?: Res.string.unknown
                     ),
                     bold = true,
                 )
@@ -47,7 +47,7 @@ fun ItemEditTypeSelector(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalArrangement = Arrangement.Start,
             ) {
-                (if (isAdmin) TYPE_ASSOC_ADMIN else TYPE_ASSOC).forEach { (currentType, iconNamePair) ->
+                (if (isAdmin) TYPE_ASSOC_FULL else TYPE_ASSOC).forEach { (currentType, iconNamePair) ->
                     ItemTypeOption(
                         icon = painterResource(iconNamePair.first),
                         selected = type == currentType,
