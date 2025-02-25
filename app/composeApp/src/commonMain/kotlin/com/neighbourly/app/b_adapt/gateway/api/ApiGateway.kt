@@ -449,7 +449,7 @@ class ApiGateway(
     }
 
     companion object {
-        const val API_BASE_URL = "http://neighbourly.go.ro:8080/"
+        const val API_BASE_URL = "http://neighbourlybox.com:8080/"
         const val TARGET_PROFILE = "profile"
         const val TARGET_ITEM_IMAGE = "itemImage"
         const val TARGET_ITEM_FILE = "itemFile"

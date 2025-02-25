@@ -1,7 +1,8 @@
 package com.neighbourly.app
 
-import com.neighbourly.app.a_device.api.KtorAI
+import com.neighbourly.app.a_device.api.KtorOllamaAI
 import com.neighbourly.app.a_device.api.KtorApi
+import com.neighbourly.app.a_device.api.KtorGeminiAI
 import com.neighbourly.app.a_device.remote.PahoMqttIot
 import com.neighbourly.app.a_device.spirit.NeighbourlySpirit
 import com.neighbourly.app.a_device.store.SessionHybridStore
@@ -98,7 +99,7 @@ val adapterModule =
             ApiGateway(KtorApi, get())
         }
         single<AI> {
-            AiGateway(KtorAI, get())
+            AiGateway(KtorOllamaAI, KtorGeminiAI, get())
         }
         single<Iot> {
             PahoMqttIot()
@@ -204,7 +205,7 @@ val useCaseModule =
             ScheduleWorkUseCase(get(), get())
         }
         factory {
-            AiChatUseCase(get(), get(), get())
+            AiChatUseCase(get(), get(), get(), get())
         }
         factory {
             ResetUseCase(get())

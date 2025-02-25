@@ -3,6 +3,7 @@ package com.neighbourly.app.a_device.spirit
 import com.neighbourly.app.KoinProvider
 import com.neighbourly.app.c_business.usecase.content.ContentSyncUseCase
 import com.neighbourly.app.c_business.usecase.work.ScheduleWorkUseCase
+import com.neighbourly.app.d_entity.data.AiVariant
 import com.neighbourly.app.d_entity.data.ItemMessage
 import com.neighbourly.app.d_entity.data.ItemType
 import com.neighbourly.app.d_entity.data.ScheduledWork
@@ -45,6 +46,7 @@ object NeighbourlySpirit : Summonable {
         syncedHouseIds: List<Int>,
         newMessagesOfInterest: List<ItemMessage>,
     ) {
+        println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA Reacting to sync complete")
         spiritScope.launch {
             //ignore first sync
             if (lastSyncTs == 0) return@launch
@@ -75,6 +77,7 @@ object NeighbourlySpirit : Summonable {
                     kotlin.runCatching {
                         val messageDescStr = messageDesc.values.joinToString(";")
                         aiGw.generate(
+                            aiVariant = AiVariant.AiVariantGemini(apiKey = "AIzaSyB4Yix2w3QUpVKRLrI2Bfckd30XbGriYPg"),
                             system = """You are a helpful assistant, your speach is short and concise.
                                         You will provide a short summary of messages posted by people on items of households in a neighbourhood.
                                         You will return only the summary, no formatting, no other text, and no longer than 2 sentences!""".trimIndent(),
@@ -122,6 +125,7 @@ object NeighbourlySpirit : Summonable {
                     kotlin.runCatching {
                         val itemDescStr = itemsDesc.values.joinToString(";")
                         aiGw.generate(
+                            aiVariant = AiVariant.AiVariantGemini(apiKey = "AIzaSyB4Yix2w3QUpVKRLrI2Bfckd30XbGriYPg"),
                             system = """You are a helpful assistant, your speach is short and concise.
                                         You will provide a short summary of items posted by people in households of a neighbourhood.
                                         You will return only the summary, no formatting, no other text, and no longer than 2 sentences!""".trimIndent(),
@@ -147,6 +151,7 @@ object NeighbourlySpirit : Summonable {
     }
 
     override fun summonOnScheduledWork(work: ScheduledWork) {
+        println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA Handling scheduled work: ${work.type}")
         spiritScope.launch {
             kotlin.runCatching {
                 when (work.type) {
@@ -166,6 +171,7 @@ object NeighbourlySpirit : Summonable {
                     ScheduledWorkType.SYNC -> contentSyncUseCase.execute(force = true)
                 }
             }
+            println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA Done Handling scheduled work: ${work.type}")
             scheduledWorkUseCase.execute()
         }
     }

@@ -5,6 +5,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_HIGH
+import android.app.NotificationManager.IMPORTANCE_MAX
 import android.app.PendingIntent.FLAG_MUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.app.PendingIntent.getActivity
@@ -48,7 +49,7 @@ class NeighbourlyApp : Application() {
             .setSmallIcon(R.mipmap.ic_launcher)
             .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
             .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
-            .setPriority(IMPORTANCE_HIGH)
+            .setPriority(IMPORTANCE_MAX)
             .setAutoCancel(true)
             .setTimeoutAfter(NOTIFICATION_TIMEOUT_MS)
             .setStyle(
@@ -70,7 +71,7 @@ class NeighbourlyApp : Application() {
 
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "neighbourly_notification"
-        val NOTIFICATION_TIMEOUT_MS = TimeUnit.MILLISECONDS.convert(2, TimeUnit.HOURS)
+        val NOTIFICATION_TIMEOUT_MS = TimeUnit.MILLISECONDS.convert(12, TimeUnit.HOURS)
 
         lateinit var appContext: NeighbourlyApp
         val locationProvider: FusedLocationProviderClient

@@ -2,6 +2,8 @@ package com.neighbourly.app.b_adapt.viewmodel.ai
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.neighbourly.app.b_adapt.viewmodel.bean.AiConversationMessageVS
+import com.neighbourly.app.b_adapt.viewmodel.bean.toAiConversationMessageVS
 import com.neighbourly.app.c_business.usecase.ai.AiChatUseCase
 import com.neighbourly.app.d_entity.interf.ConfigStatusSource
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +27,7 @@ class AiInterfaceViewModel(
         }.launchIn(viewModelScope)
 
         configSource.aiMessages.onEach { messages ->
-            _state.update { it.copy(aiMessages = messages) }
+            _state.update { it.copy(aiMessages = messages.map { it.toAiConversationMessageVS() }) }
         }.launchIn(viewModelScope)
     }
 
@@ -39,6 +41,6 @@ class AiInterfaceViewModel(
 
     data class AiInterfaceViewState(
         val isAiOnline: Boolean = false,
-        val aiMessages: List<String> = emptyList()
+        val aiMessages: List<AiConversationMessageVS> = emptyList()
     )
 }

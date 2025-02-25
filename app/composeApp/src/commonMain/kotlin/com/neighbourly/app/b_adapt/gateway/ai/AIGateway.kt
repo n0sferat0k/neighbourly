@@ -1,10 +1,15 @@
 package com.neighbourly.app.b_adapt.gateway.ai
 
-import com.neighbourly.app.a_device.api.KtorAI
+import com.neighbourly.app.a_device.api.KtorGeminiAI
+import com.neighbourly.app.a_device.api.KtorOllamaAI
+import com.neighbourly.app.b_adapt.gateway.ai.bean.AiException
+import com.neighbourly.app.b_adapt.gateway.ai.bean.AppContentDTO
 import com.neighbourly.app.b_adapt.gateway.api.toHouseholdDTO
 import com.neighbourly.app.b_adapt.gateway.api.toItemDTO
 import com.neighbourly.app.b_adapt.gateway.api.toNeighbourhoodDTO
 import com.neighbourly.app.b_adapt.gateway.api.toUserDTO
+import com.neighbourly.app.d_entity.data.AiConversationMessage
+import com.neighbourly.app.d_entity.data.AiVariant
 import com.neighbourly.app.d_entity.data.Household
 import com.neighbourly.app.d_entity.data.Item
 import com.neighbourly.app.d_entity.data.Neighbourhood
@@ -19,24 +24,34 @@ import kotlinx.serialization.json.Json
 import java.io.IOException
 
 class AiGateway(
-    val api: KtorAI,
+    val ollamaApi: KtorOllamaAI,
+    val geminiApi: KtorGeminiAI,
     val statusUpdater: StatusUpdater,
 ) : AI {
 
     override suspend fun generate(
+        aiVariant: AiVariant,
         system: String,
         prompt: String
     ): String =
         runContextCatchTranslateThrow {
-            api.generate(
-                GenerateInput(
-                    system = system,
-                    prompt = prompt,
-                )
-            ).response
+            when (aiVariant) {
+                is AiVariant.AiVariantGemini -> geminiApi.generate(
+                    aiVariant.apiKey,
+                    GenerateInputGemini(
+                        systemInstruction = GeminiContent(listOf(GeminiContentPart(system))),
+                        contents = listOf(GeminiContent(listOf(GeminiContentPart(prompt)))),
+                    )
+                ).candidates[0].content.parts[0].text
+
+                is AiVariant.AiVariantOllama -> ollamaApi.generate(
+                    GenerateInputOllama(system = system, prompt = prompt)
+                ).response
+            }
         }
 
     override suspend fun contentOverview(
+        aiVariant: AiVariant,
         prompt: String,
         items: List<Item>,
         people: List<User>,
@@ -44,17 +59,26 @@ class AiGateway(
         neighbourhoods: List<Neighbourhood>
     ): String =
         runContextCatchTranslateThrow {
-            api.generate(
-                overviewInput(
-                    jsonContext = Json.encodeToString<AppContentDTO>(AppContentDTO(
-                        items = items.map { it.toItemDTO() },
-                        people = people.map { it.toUserDTO() },
-                        houses = houses.map { it.toHouseholdDTO() },
-                        neighbourhoods = neighbourhoods.map { it.toNeighbourhoodDTO() }
-                    )),
-                    prompt = prompt
-                )
-            ).response
+            val jsonContext = Json.encodeToString<AppContentDTO>(AppContentDTO(
+                items = items.map { it.toItemDTO() },
+                people = people.map { it.toUserDTO() },
+                houses = houses.map { it.toHouseholdDTO() },
+                neighbourhoods = neighbourhoods.map { it.toNeighbourhoodDTO() }
+            ))
+
+            when (aiVariant) {
+                is AiVariant.AiVariantGemini -> geminiApi.generate(
+                    aiVariant.apiKey,
+                    overviewInputGemini(jsonContext = jsonContext, prompt = prompt)
+                ).candidates[0].content.parts[0].text
+
+                is AiVariant.AiVariantOllama -> ollamaApi.generate(
+                    overviewInputOllama(
+                        jsonContext = jsonContext,
+                        prompt = prompt
+                    )
+                ).response
+            }
         }
 
     suspend inline fun <R> runContextCatchTranslateThrow(crossinline block: suspend () -> R): R =
@@ -67,7 +91,12 @@ class AiGateway(
                 it.isSuccess -> {
                     statusUpdater.setAiOnline(true)
                     it.getOrElse { throw OpException("Unknown Error") }.also { message ->
-                        statusUpdater.storeAiMessage(message.toString())
+                        statusUpdater.storeAiMessage(
+                            AiConversationMessage(
+                                text = message.toString(),
+                                inbound = true
+                            )
+                        )
                     }
                 }
 

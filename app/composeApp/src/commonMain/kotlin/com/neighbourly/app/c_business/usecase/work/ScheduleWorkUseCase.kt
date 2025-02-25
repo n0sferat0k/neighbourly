@@ -7,8 +7,10 @@ import com.neighbourly.app.d_entity.data.ScheduledWorkType.SYNC
 import com.neighbourly.app.d_entity.interf.Db
 import com.neighbourly.app.d_entity.interf.SessionStore
 import com.neighbourly.app.requestFutureWork
+import kotlinx.datetime.Clock
 import java.util.concurrent.TimeUnit.MINUTES
 import java.util.concurrent.TimeUnit.SECONDS
+import kotlin.math.max
 
 class ScheduleWorkUseCase(
     val sessionStore: SessionStore,
@@ -16,39 +18,45 @@ class ScheduleWorkUseCase(
 ) {
 
     suspend fun execute() {
-        val now = (System.currentTimeMillis() / 1000).toInt()
-        val nextRefresh = sessionStore.user?.lastSyncTs?.plus(REFRESH_PERIOD_SECONDS)
+        println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA scheduling next work")
+        val now = Clock.System.now().epochSeconds.toInt()
+        val nextSyncTimestamp = sessionStore.user?.lastSyncTs?.plus(REFRESH_PERIOD_SECONDS)
 
         var nextReminderId: Int? = null
-        var nextTimestamp: Int = Int.MAX_VALUE
+        var nextReminderTimestamp: Int = Int.MAX_VALUE
         database.filterItems(ItemType.REMINDER).forEach { item ->
             item.description?.takeIf { it.isNotEmpty() }?.split(",")?.map { it.toInt() }?.sorted()
                 ?.firstOrNull { it > now }
                 ?.let { time ->
-                    if (nextTimestamp > time) {
+                    if (nextReminderTimestamp > time) {
                         nextReminderId = item.id
-                        nextTimestamp = time
+                        nextReminderTimestamp = time
                     }
                 }
         }
         val work =
-            if (nextRefresh != null && nextRefresh < nextTimestamp) {
+            if (nextSyncTimestamp != null && nextSyncTimestamp < nextReminderTimestamp) {
                 ScheduledWork(
-                    delaySeconds = nextTimestamp - now,
+                    delaySeconds = max(0, nextSyncTimestamp - now),
                     type = SYNC,
                 )
             } else if (nextReminderId != null) {
                 ScheduledWork(
-                    delaySeconds = nextTimestamp - now,
+                    delaySeconds = max(0, nextReminderTimestamp - now),
                     type = REMIND,
                     id = nextReminderId,
                 )
             } else null
 
-        work?.let { requestFutureWork(it) }
+        work?.let {
+            requestFutureWork(it)
+            println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA next (${it.type}) work in ${it.delaySeconds} s")
+        } ?: run {
+            println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA next work not scheduled")
+        }
     }
 
     companion object {
-        val REFRESH_PERIOD_SECONDS = SECONDS.convert(10, MINUTES)
+        val REFRESH_PERIOD_SECONDS = SECONDS.convert(10, MINUTES).toInt()
     }
 }

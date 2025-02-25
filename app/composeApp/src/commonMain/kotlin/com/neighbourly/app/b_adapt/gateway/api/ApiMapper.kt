@@ -182,4 +182,4 @@ fun Attachment.toAttachmentDTO(): AttachmentDTO = AttachmentDTO(
 fun String.prependResourceUrlBase() =
     this.takeIf { it.isNotBlank() }?.let { CONTENT_BASE_URL + it } ?: this
 
-const val CONTENT_BASE_URL = "http://neighbourly.go.ro/"
+const val CONTENT_BASE_URL = "http://neighbourlybox.com/"

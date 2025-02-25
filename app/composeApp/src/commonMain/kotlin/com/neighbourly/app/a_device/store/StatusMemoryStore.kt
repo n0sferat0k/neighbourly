@@ -1,6 +1,7 @@
 package com.neighbourly.app.a_device.store
 
 import com.neighbourly.app.appVersionString
+import com.neighbourly.app.d_entity.data.AiConversationMessage
 import com.neighbourly.app.d_entity.interf.ConfigStatusSource
 import com.neighbourly.app.d_entity.interf.StatusUpdater
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +24,7 @@ abstract class StatusMemoryStore : ConfigStatusSource, StatusUpdater {
     override val isAiOnlineFlow: Flow<Boolean> =
         _state.map { it.isAiOnline }
 
-    override val aiMessages: Flow<List<String>> = _state.map { it.aiMessages }
+    override val aiMessages: Flow<List<AiConversationMessage>> = _state.map { it.aiMessages }
 
     override fun setOnline(isOnline: Boolean, isTokenExp: Boolean, lastError: String?) {
         _state.update { it.copy(isOnline = isOnline, isTokenExp = isTokenExp, lastError = lastError) }
@@ -33,7 +34,7 @@ abstract class StatusMemoryStore : ConfigStatusSource, StatusUpdater {
         _state.update { it.copy(isAiOnline = isAiOnline) }
     }
 
-    override fun storeAiMessage(message: String) {
+    override fun storeAiMessage(message: AiConversationMessage) {
         _state.update { it.copy(aiMessages = it.aiMessages + message) }
     }
 
@@ -42,6 +43,6 @@ abstract class StatusMemoryStore : ConfigStatusSource, StatusUpdater {
         val isTokenExp: Boolean = false,
         val isAiOnline: Boolean = true,
         val lastError: String? = null,
-        val aiMessages: List<String> = emptyList()
+        val aiMessages: List<AiConversationMessage> = emptyList()
     )
 }

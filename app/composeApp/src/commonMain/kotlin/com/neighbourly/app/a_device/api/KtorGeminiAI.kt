@@ -1,8 +1,8 @@
 package com.neighbourly.app.a_device.api
 
-import com.neighbourly.app.b_adapt.gateway.ai.AIResponse
-import com.neighbourly.app.b_adapt.gateway.ai.AiException
-import com.neighbourly.app.b_adapt.gateway.ai.GenerateInput
+import com.neighbourly.app.b_adapt.gateway.ai.AIResponseGemini
+import com.neighbourly.app.b_adapt.gateway.ai.GenerateInputGemini
+import com.neighbourly.app.b_adapt.gateway.ai.bean.AiException
 import com.neighbourly.app.httpClientEngine
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -21,7 +21,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import java.util.concurrent.TimeUnit
 
-object KtorAI {
+object KtorGeminiAI {
     private val client = HttpClient(httpClientEngine) {
         install(HttpTimeout) {
             requestTimeoutMillis = TimeUnit.MINUTES.toMillis(10)
@@ -51,14 +51,16 @@ object KtorAI {
     }
 
     suspend fun generate(
-        generateInput: GenerateInput,
-    ): AIResponse {
-        val response: HttpResponse = client.post("http://localhost:11434/api/generate") {
-            contentType(ContentType.Application.Json)
-            setBody(generateInput)
-        }
+        apiKey: String,
+        generateInput: GenerateInputGemini,
+    ): AIResponseGemini {
+        val response: HttpResponse =
+            client.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey") {
+                contentType(ContentType.Application.Json)
+                setBody(generateInput)
+            }
         if (response.status.value == 200) {
-            return response.body<AIResponse>()
+            return response.body<AIResponseGemini>()
         } else {
             throw AiException(response.bodyAsText())
         }

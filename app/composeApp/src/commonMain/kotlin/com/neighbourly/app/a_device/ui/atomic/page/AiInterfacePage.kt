@@ -18,6 +18,8 @@ fun AiInterfacePage(
     AiInterfaceTemplate(
         state = state,
         onPrompt = viewModel::onPrompt,
-        onClose = navigationViewModel::goHome
+        onClose = navigationViewModel::goHome,
+        onItemSelect = navigationViewModel::goToItemDetails,
+        onHouseholdSelect = navigationViewModel::goToHouseholdDetails
     )
 }

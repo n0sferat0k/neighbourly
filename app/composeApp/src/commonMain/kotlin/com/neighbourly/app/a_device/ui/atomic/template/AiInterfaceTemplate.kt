@@ -13,14 +13,18 @@ import com.neighbourly.app.b_adapt.viewmodel.ai.AiInterfaceViewModel
 fun AiInterfaceTemplate(
     state: AiInterfaceViewModel.AiInterfaceViewState,
     onPrompt: (prompt: String) -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    onItemSelect: (itemId: Int) -> Unit,
+    onHouseholdSelect: (itemId: Int) -> Unit
 ) {
     OrganismContentBubble(
         scrollable = false,
         content = {
             OrganismChatHistory(
                 modifier = Modifier.fillMaxWidth().weight(1f),
-                messages = state.aiMessages
+                messages = state.aiMessages,
+                onItemSelect = onItemSelect,
+                onHouseholdSelect = onHouseholdSelect,
             )
             OrganismChatPromptInput(onPrompt = onPrompt)
         },

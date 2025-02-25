@@ -45,9 +45,15 @@ sudo systemctl enable mosquitto
 sudo systemctl start mosquitto
 sudo mosquitto_passwd -c /etc/mosquitto/passwd neighbourly	//leave out the -c for additional users
 	password: Tizenegy11
+sudo chown mosquitto:mosquitto /etc/mosquitto/passwd
 sudo nano /etc/mosquitto/acl
 	user neighbourly
 	topic readwrite #
+	user neighbourlybox
+	topic read #
+	user neighbourlyapp
+	topic read #
+sudo chown mosquitto:mosquitto /etc/mosquitto/acl
 sudo nano /etc/mosquitto/mosquitto.conf
 	persistence true
 	persistence_location /home/neighbourly/server/mqtt/
