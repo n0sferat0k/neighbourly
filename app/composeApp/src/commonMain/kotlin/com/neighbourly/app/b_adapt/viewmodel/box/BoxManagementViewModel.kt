@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 class BoxManagementViewModel(
     val sessionStore: SessionStore,
     val database: Db,
-    val iotComm: Iot,
+    val iot: Iot,
     val boxOpsUseCase: BoxOpsUseCase,
     val profileRefreshUseCase: ProfileRefreshUseCase,
 ) : ViewModel() {
@@ -63,61 +63,27 @@ class BoxManagementViewModel(
                 }
             }.launchIn(viewModelScope)
 
-        iotComm.messageFlow.onEach { message ->
-            message?.let {
-                _state.value.boxes.firstOrNull { message.topic.contains(it.id) }?.let { box ->
-                    when {
-                        message.topic.contains("status") -> box.copy(online = message.message == "ONLINE")
-                        message.topic.contains("triggered") -> box.copy(triggered = message.message == "TRUE")
-                        message.topic.contains("locked") -> box.copy(unlocked = message.message == "FALSE")
-                        message.topic.contains("lit") -> box.copy(lit = message.message == "TRUE")
-                        else -> null
-                    }?.let { updatedBox ->
-                        _state.update {
-                            it.copy(boxes = _state.value.boxes.map { if (it.id == updatedBox.id) updatedBox else it })
-                        }
-                    }
+        iot.boxStateFlow
+            .onEach { boxStateUpdate ->
+                _state.update {
+                    it.copy(boxes = _state.value.boxes.map {
+                        if (it.id == boxStateUpdate.id) it.copy(
+                            online = boxStateUpdate.online ?: it.online,
+                            triggered = boxStateUpdate.triggered ?: it.triggered,
+                            unlocked = boxStateUpdate.unlocked ?: it.unlocked,
+                            lit = boxStateUpdate.lit ?: it.lit,
+                        ) else it
+                    })
                 }
-            } ?: run {
-                //null message means disconnect
-                monitor(_state.value.monitoringBoxes)
-            }
-        }.launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
     }
 
-    fun monitor(boxIds: List<String>?) {
+    fun monitor(doMonitor: Boolean = false, boxIds: List<String> = emptyList()) {
         viewModelScope.launch {
-            try {
-                if (boxIds.isNullOrEmpty()) {
-                    iotComm.requireDisconnect()
-                    _state.update {
-                        it.copy(
-                            boxes = it.boxes.map { it.copy(online = null) },
-                            shareBox = null
-                        )
-                    }
-                } else {
-                    iotComm.requireConnect()
-                    val newBoxes = boxIds.filter { !_state.value.monitoringBoxes.contains(it) }
-                    val obsoleteBoxes = _state.value.monitoringBoxes.filter { !boxIds.contains(it) }
-
-                    obsoleteBoxes.forEach {
-                        iotComm.unsubscribe("neighbourlybox/$it/status")
-                        iotComm.unsubscribe("neighbourlybox/$it/triggered")
-                        iotComm.unsubscribe("neighbourlybox/$it/locked")
-                        iotComm.unsubscribe("neighbourlybox/$it/lit")
-                    }
-
-                    newBoxes.forEach {
-                        iotComm.subscribe("neighbourlybox/$it/status")
-                        iotComm.subscribe("neighbourlybox/$it/triggered")
-                        iotComm.subscribe("neighbourlybox/$it/locked")
-                        iotComm.subscribe("neighbourlybox/$it/lit")
-                    }
-                }
-                _state.update { it.copy(monitoringBoxes = boxIds.orEmpty()) }
-            } catch (e: Exception) {
-                _state.update { it.copy(error = e.localizedMessage) }
+            if (doMonitor) {
+                iot.monitorBoxes(boxIds)
+            } else {
+                iot.monitorBoxes(emptyList())
             }
         }
     }
@@ -282,7 +248,6 @@ class BoxManagementViewModel(
         val shareBox: BoxShareVS? = null,
         val boxName: String = "",
         val error: String = "",
-        val boxes: List<BoxVS> = emptyList(),
-        val monitoringBoxes: List<String> = emptyList()
+        val boxes: List<BoxVS> = emptyList()
     )
 }

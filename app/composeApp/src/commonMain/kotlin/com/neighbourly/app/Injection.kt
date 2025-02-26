@@ -3,11 +3,12 @@ package com.neighbourly.app
 import com.neighbourly.app.a_device.api.KtorOllamaAI
 import com.neighbourly.app.a_device.api.KtorApi
 import com.neighbourly.app.a_device.api.KtorGeminiAI
-import com.neighbourly.app.a_device.remote.PahoMqttIot
+import com.neighbourly.app.a_device.iot.PahoMqttIot
 import com.neighbourly.app.a_device.spirit.NeighbourlySpirit
 import com.neighbourly.app.a_device.store.SessionHybridStore
 import com.neighbourly.app.b_adapt.gateway.ai.AiGateway
 import com.neighbourly.app.b_adapt.gateway.api.ApiGateway
+import com.neighbourly.app.b_adapt.gateway.iot.IotGateway
 import com.neighbourly.app.b_adapt.interactor.DbInteractor
 import com.neighbourly.app.b_adapt.viewmodel.AppStateInfoViewModel
 import com.neighbourly.app.b_adapt.viewmodel.WebMapViewModel
@@ -102,7 +103,7 @@ val adapterModule =
             AiGateway(KtorOllamaAI, KtorGeminiAI, get())
         }
         single<Iot> {
-            PahoMqttIot()
+            IotGateway(PahoMqttIot)
         }
         single<Db> {
             DbInteractor(createDatabase())
