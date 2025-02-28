@@ -43,7 +43,7 @@ fun BoxManagementTemplate(
 
     OrganismContentBubble(
         scrollable = true,
-        busy = state.loading,
+        busy = state.loading || !state.online,
         refresh = refresh,
         content = {
             when {
@@ -76,6 +76,7 @@ fun BoxManagementTemplate(
 
                 else -> OrganismBoxList(
                     state.boxes,
+                    state.online,
                     editBox = editBox,
                     removeBox = removeBox,
                     openBox = openBox,

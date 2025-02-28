@@ -24,6 +24,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun OrganismBoxList(
     boxes: List<BoxVS>,
+    online: Boolean,
     removeBox: (id: String) -> Unit,
     editBox: (id: String, name: String) -> Unit,
     openBox: (id: String) -> Unit,
@@ -61,6 +62,7 @@ fun OrganismBoxList(
             ) {
                 BoxListItem(
                     box = box,
+                    online = online,
                     editBox = editBox,
                     openBox = openBox,
                     unlockBox = unlockBox,

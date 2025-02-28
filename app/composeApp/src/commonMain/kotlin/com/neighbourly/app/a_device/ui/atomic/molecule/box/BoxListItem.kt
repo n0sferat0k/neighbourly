@@ -49,6 +49,7 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalLayoutApi::class)
 fun BoxListItem(
     box: BoxVS,
+    online: Boolean,
     editBox: (id: String, name: String) -> Unit,
     openBox: (id: String) -> Unit,
     unlockBox: (id: String, unlock: Boolean) -> Unit,
@@ -100,7 +101,9 @@ fun BoxListItem(
                     contentDescription = "Box online",
                     contentScale = ContentScale.FillBounds,
                     colorFilter = ColorFilter.tint(
-                        when (box.online) {
+                        if (!online) {
+                            AppColors.primaryLight
+                        } else when (box.online) {
                             null -> AppColors.primaryLight
                             true -> AppColors.primary
                             false -> AppColors.complementary

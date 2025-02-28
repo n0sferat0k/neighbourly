@@ -76,6 +76,12 @@ class BoxManagementViewModel(
                     })
                 }
             }.launchIn(viewModelScope)
+
+        iot.iotConnectedFlow.onEach { online ->
+            _state.update {
+                it.copy(online = online)
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun monitor(doMonitor: Boolean = false, boxIds: List<String> = emptyList()) {
@@ -248,6 +254,7 @@ class BoxManagementViewModel(
         val shareBox: BoxShareVS? = null,
         val boxName: String = "",
         val error: String = "",
-        val boxes: List<BoxVS> = emptyList()
+        val boxes: List<BoxVS> = emptyList(),
+        val online: Boolean = false
     )
 }

@@ -8,40 +8,41 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 
 class IotGateway(val pahoMqttIot: PahoMqttIot) : Iot {
+    override val iotConnectedFlow: Flow<Boolean> = pahoMqttIot.connectedFlow
     override val boxStateFlow: Flow<BoxStateUpdate> = pahoMqttIot.messageFlow.map { iotMessage ->
-            val regex = Regex("(?<=neighbourlybox/)[^/]+(?=/)")
-            regex.find(iotMessage.topic)?.value?.let { id ->
-                when {
-                    iotMessage.topic.contains("status") -> BoxStateUpdate(
-                        id = id,
-                        online = iotMessage.message == "ONLINE"
-                    )
+        val regex = Regex("(?<=neighbourlybox/)[^/]+(?=/)")
+        regex.find(iotMessage.topic)?.value?.let { id ->
+            when {
+                iotMessage.topic.contains("status") -> BoxStateUpdate(
+                    id = id,
+                    online = iotMessage.message == "ONLINE"
+                )
 
-                    iotMessage.topic.contains("triggered") -> BoxStateUpdate(
-                        id = id,
-                        triggered = iotMessage.message == "TRUE"
-                    )
+                iotMessage.topic.contains("triggered") -> BoxStateUpdate(
+                    id = id,
+                    triggered = iotMessage.message == "TRUE"
+                )
 
-                    iotMessage.topic.contains("locked") -> BoxStateUpdate(
-                        id = id,
-                        unlocked = iotMessage.message == "FALSE"
-                    )
+                iotMessage.topic.contains("locked") -> BoxStateUpdate(
+                    id = id,
+                    unlocked = iotMessage.message == "FALSE"
+                )
 
-                    iotMessage.topic.contains("lit") -> BoxStateUpdate(
-                        id = id,
-                        lit = iotMessage.message == "TRUE"
-                    )
+                iotMessage.topic.contains("lit") -> BoxStateUpdate(
+                    id = id,
+                    lit = iotMessage.message == "TRUE"
+                )
 
-                    iotMessage.topic.contains("hello") -> BoxStateUpdate(
-                        id = id,
-                        ssd = iotMessage.message.split("/")[0],
-                        signal = iotMessage.message.split("/")[1].toIntOrNull()
-                    )
+                iotMessage.topic.contains("hello") -> BoxStateUpdate(
+                    id = id,
+                    ssd = iotMessage.message.split("/")[0],
+                    signal = iotMessage.message.split("/")[1].toIntOrNull()
+                )
 
-                    else -> null
-                }
+                else -> null
             }
-        }.filterNotNull()
+        }
+    }.filterNotNull()
 
     override suspend fun monitorBoxes(boxIds: List<String>) {
         if (boxIds.isEmpty()) {
