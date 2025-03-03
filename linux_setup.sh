@@ -100,3 +100,9 @@ sudo systemctl enable api.service
 sudo systemctl start api.service
 sudo systemctl status api.service
 
+//SET UP HTTPS AND SSL CERT
+sudo apt install certbot python3-certbot-apache -y
+sudo certbot --apache -d neighbourlybox.com -d www.neighbourlybox.com
+sudo certbot renew --dry-run
+sudo systemctl restart apache2
+//certificate file will be at /etc/letsencrypt/live/neighbourlybox.com

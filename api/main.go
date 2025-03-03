@@ -63,7 +63,11 @@ func main() {
 	r.HandleFunc("/box/openbox", box.OpBoxQuickOpen).Methods("GET")
 	r.HandleFunc("/box/delShareBox", box.DelShareBox).Methods("POST")
 	r.HandleFunc("/box/acquireShareBox", box.AcquireShareBox).Methods("GET")
-	fmt.Println("Starting server on :8080")
+	fmt.Println("Starting server on :8443")
 
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServeTLS(
+		":8443",
+		"/etc/letsencrypt/live/neighbourlybox.com/fullchain.pem",
+		"/etc/letsencrypt/live/neighbourlybox.com/privkey.pem",
+		r))
 }

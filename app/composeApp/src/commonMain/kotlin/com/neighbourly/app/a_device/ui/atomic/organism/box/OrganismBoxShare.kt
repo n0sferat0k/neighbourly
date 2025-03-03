@@ -33,7 +33,7 @@ fun OrganismBoxShare(shareBox: BoxShareVS, onHouseholdClick: (householdId: Int) 
     val clipboard = LocalClipboardManager.current
     val uriHandler = LocalUriHandler.current
 
-    val url = "http://neighbourlybox.com:8080/box/openbox?token=${shareBox.token}"
+    val url = "https://neighbourlybox.com:8443/box/openbox?token=${shareBox.token}"
 
     FriendlyText(
         modifier = Modifier.fillMaxWidth(),

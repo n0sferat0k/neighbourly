@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalLayoutApi::class)
-
 package com.neighbourly.app.a_device.ui.atomic.page
 
 import androidx.compose.foundation.layout.ExperimentalLayoutApi

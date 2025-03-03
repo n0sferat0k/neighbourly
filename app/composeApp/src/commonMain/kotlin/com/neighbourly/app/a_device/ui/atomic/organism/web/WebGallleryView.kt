@@ -15,7 +15,7 @@ fun WebGalleryView(
     imageId: Int,
 ) {
     val webViewState =
-        rememberWebViewState(url = "http://neighbourlybox.com/gallery.php?${if(itemId != null) "itemId=$itemId" else "householdId=$householdId" }&imageId=$imageId")
+        rememberWebViewState(url = "https://neighbourlybox.com/gallery.php?${if(itemId != null) "itemId=$itemId" else "householdId=$householdId" }&imageId=$imageId")
     val navigator = rememberWebViewNavigator()
 
     PlatformWebView(

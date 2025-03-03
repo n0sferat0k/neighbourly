@@ -34,7 +34,7 @@ fun OrganismAppDownloadLink(appVersion: String) {
         Image(
             painter = BitmapPainter(
                 generateQrCode(
-                    "http://neighbourlybox.com/releases/neighbourly-" + appVersion + ".apk",
+                    "https://neighbourlybox.com/releases/neighbourly-" + appVersion + ".apk",
                     600
                 )
             ),
@@ -49,9 +49,9 @@ fun OrganismAppDownloadLink(appVersion: String) {
         )
         FriendlyText(
             modifier = Modifier.clickable {
-                uriHandler.openUri("http://neighbourlybox.com/releases/")
+                uriHandler.openUri("https://neighbourlybox.com/releases/")
             },
-            text = "http://neighbourlybox.com/releases/",
+            text = "https://neighbourlybox.com/releases/",
             fontSize = 22.sp,
             bold = true,
         )
